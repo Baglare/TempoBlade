@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 454f7a2eee8ed634db3a16166880a7f6, type: 3}
+  m_Name: DefaultUpgradeConfig
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeConfigSO
+  healthPerLevel: 10
+  healthBaseCost: 50
+  healthCostPerLevel: 25
+  damageMultiplierPerLevel: 0.1
+  damageBaseCost: 75
+  damageCostPerLevel: 35
+  tempoGainPerLevel: 0.1
+  tempoBaseCost: 100
+  tempoCostPerLevel: 50
+  parryWindowPerLevel: 0.02
+  parryWindowBaseCost: 80
+  parryWindowCostPerLevel: 40
+  parryRecoveryPerLevel: 0.01
+  parryRecoveryBaseCost: 60
+  parryRecoveryCostPerLevel: 30

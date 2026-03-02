@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd69033b2150d1a489f48d5ec80d8ec4, type: 3}
+  m_Name: Room_02
+  m_EditorClassIdentifier: Assembly-CSharp::RoomSO
+  roomName: Room 2
+  roomPrefab: {fileID: 4536495119821451193, guid: 369bf93ef8fee914c93cdb3d471b8339, type: 3}
+  waves:
+  - waveDelay: 0.2
+    enemyGroups:
+    - enemyType: {fileID: 11400000, guid: 3f788deb4bb1a8741bc5cc8299315635, type: 2}
+      count: 5
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: a44d1148312093d408c4687639824975, type: 2}
+      count: 3
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
+      count: 6
+      spawnDelay: 0.1
+  - waveDelay: 0.2
+    enemyGroups:
+    - enemyType: {fileID: 11400000, guid: 3f788deb4bb1a8741bc5cc8299315635, type: 2}
+      count: 5
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: a44d1148312093d408c4687639824975, type: 2}
+      count: 3
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 47963fe3d209ea24d8b15818c3851931, type: 2}
+      count: 6
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 8c1277e0cc1cac84db3081d2cb3f1c88, type: 2}
+      count: 6
+      spawnDelay: 0.1
+  - waveDelay: 0.2
+    enemyGroups:
+    - enemyType: {fileID: 11400000, guid: 3f788deb4bb1a8741bc5cc8299315635, type: 2}
+      count: 5
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: a44d1148312093d408c4687639824975, type: 2}
+      count: 3
+      spawnDelay: 0.2
+    - enemyType: {fileID: 11400000, guid: 47963fe3d209ea24d8b15818c3851931, type: 2}
+      count: 5
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 8c1277e0cc1cac84db3081d2cb3f1c88, type: 2}
+      count: 7
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 8108b8c762843574cbe210f033a7ed72, type: 2}
+      count: 3
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
+      count: 5
+      spawnDelay: 0.1
+  isBossRoom: 0
+  goldReward: 100
+  possibleWeaponDrop: {fileID: 0}
