@@ -12,6 +12,7 @@ public class Projectile : MonoBehaviour, IDeflectable
 
     private Rigidbody2D rb;
     private bool hasBeenDeflected = false;
+    public bool IsDeflected => hasBeenDeflected;
 
     private void Awake()
     {

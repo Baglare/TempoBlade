@@ -11,4 +11,9 @@ public interface IDeflectable
     /// Merminin o anki sahibini (kimin firlattigini veya en son kimin sektirdigini) dondurur.
     /// </summary>
     GameObject ObjectOwner { get; }
+
+    /// <summary>
+    /// Mermi daha önce sektirilmiş mi? Çift deflect'i engellemek için.
+    /// </summary>
+    bool IsDeflected { get; }
 }

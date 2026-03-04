@@ -8,7 +8,10 @@ public class RunManager : MonoBehaviour
     public int roomsCleared = 0;
     
     [Tooltip("The reward the player chose from the previous room. Will be granted when this room is cleared.")]
-    public RewardType pendingReward = RewardType.None;
+    public RewardDefinitionSO pendingReward;
+
+    [Tooltip("Oyuncunun son geçtiği kapının yönü (RewardDoor.DoorDirection int). -1 = ilk oda/belirtilmemiş")]
+    [HideInInspector] public int lastDoorDirection = -1;
 
     [Header("Room Progression")]
     [Tooltip("Odalar bu listedeki sıraya göre oynanır. Son oda temizlendiğinde oyun biter.")]
@@ -71,7 +74,7 @@ public class RunManager : MonoBehaviour
         isNewRun = true;
         savedTempo = 0f;
         roomsCleared = 0;
-        pendingReward = RewardType.None;
+        pendingReward = null;
     }
 
     /// <summary>
@@ -157,7 +160,7 @@ public class RunManager : MonoBehaviour
     }
 
     // Oyuncu bir portaldan gectiginde cagirilir (RoomExitTrigger icinden)
-    public void SetNextRewardContext(RewardType chosenReward)
+    public void SetNextRewardContext(RewardDefinitionSO chosenReward)
     {
         pendingReward = chosenReward;
     }
@@ -167,8 +170,7 @@ public class RunManager : MonoBehaviour
     {
         roomsCleared++; // Odayi her turlu bitirdik, sayaci artir
         
-        if (pendingReward == RewardType.None) return;
-
+        if (pendingReward == null) return;
 
         // TODO: Ileride PlayerStats veya kalici bir veriye islenecek
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -177,45 +179,14 @@ public class RunManager : MonoBehaviour
             var pCombat = player.GetComponent<PlayerCombat>();
             if (pCombat != null)
             {
-                switch (pendingReward)
-                {
-                    case RewardType.Heal:
-                        pCombat.currentHealth = Mathf.Min(pCombat.currentHealth + 20f, pCombat.maxHealth);
-                        break;
-                    case RewardType.MaxHealth:
-                        pCombat.maxHealth += 10f;
-                        pCombat.currentHealth += 10f; // Mevcut cani da artir
-                        break;
-                    case RewardType.DamageUp:
-                        pCombat.damageMultiplier += 0.2f; // %20 Hasar Artisi
-                        break;
-                    case RewardType.TempoBoost:
-                        if (TempoManager.Instance != null)
-                        {
-                            TempoManager.Instance.tempoGainMultiplier += 0.25f; // %25 Fazla Tempo
-                        }
-                        break;
-                    case RewardType.Gold:
-                        if (EconomyManager.Instance != null)
-                        {
-                            // RoomSO'daki goldReward degerini kullan (varsayilan 10)
-                            int goldAmount = 10;
-                            if (RunManager.Instance != null)
-                            {
-                                RoomSO currentRoom = RunManager.Instance.GetCurrentRoomData();
-                                if (currentRoom != null && currentRoom.goldReward > 0)
-                                    goldAmount = currentRoom.goldReward;
-                            }
-                            EconomyManager.Instance.AddRunGold(goldAmount);
-                        }
-                        break;
-                }
+                // Artık tek satır! Hangi ödül olduğunu umursamıyoruz, kendi mantığını çalıştırıyor.
+                pendingReward.GrantReward(pCombat);
                 
                 // UI guncellemesi
                 pCombat.UpdateHealthUI(); 
             }
         }
 
-        pendingReward = RewardType.None; // Odul verildi, sifirla
+        pendingReward = null; // Odul verildi, sifirla
     }
 }

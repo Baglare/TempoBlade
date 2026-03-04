@@ -13,6 +13,10 @@ public class RoomManager : MonoBehaviour
     // Artik Layout uzerinden okuyacagiz
     private RoomLayout currentRoomLayout;
 
+    [Header("Rewards Setup")]
+    [Tooltip("Kapılara rastgele dağıtılacak tüm olası ödül SO'ları (Inspector'dan sürükle)")]
+    public RewardDefinitionSO[] possibleRewards;
+
     [Header("State")]
     public bool isRoomActive = false;
     public int currentWaveIndex = 0;
@@ -63,12 +67,9 @@ public class RoomManager : MonoBehaviour
         StopAllCoroutines();
         activeEnemies.Clear();
 
-        // Sahnede önceden yerleştirilmiş düşmanları ve eski portalları temizle
+        // Sahnede önceden yerleştirilmiş düşmanları temizle
         EnemyBase[] existingEnemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
         foreach (var enemy in existingEnemies) Destroy(enemy.gameObject);
-
-        ExitPortal[] existingPortals = FindObjectsByType<ExitPortal>(FindObjectsSortMode.None);
-        foreach (var portal in existingPortals) Destroy(portal.gameObject);
         
         // Eski Oda Geometrisini Sil
         if (currentRoomLayout != null)
@@ -89,17 +90,15 @@ public class RoomManager : MonoBehaviour
             }
             else
             {
-                // (Opsiyonel) Oyuncuyu yeni odanin baslangic noktasina isinla
-                if (currentRoomLayout.playerStartPoint != null)
+                // Oyuncuyu yeni odada doğru pozisyona taşı
+                GameObject player = GameObject.FindGameObjectWithTag("Player");
+                if (player != null)
                 {
-                    GameObject player = GameObject.FindGameObjectWithTag("Player");
-                    if (player != null)
-                    {
-                        // Fizik motoru etkilesimlerini engellememek icin Rigidbody pozisyonunu guncelle
-                        Rigidbody2D pRb = player.GetComponent<Rigidbody2D>();
-                        if (pRb != null) pRb.position = currentRoomLayout.playerStartPoint.position;
-                        player.transform.position = currentRoomLayout.playerStartPoint.position;
-                    }
+                    Vector3 spawnPos = GetDirectionalSpawnPosition(currentRoomLayout);
+                    
+                    Rigidbody2D pRb = player.GetComponent<Rigidbody2D>();
+                    if (pRb != null) pRb.position = spawnPos;
+                    player.transform.position = spawnPos;
                 }
             }
         }
@@ -208,9 +207,49 @@ public class RoomManager : MonoBehaviour
          }
     }
 
-    [Header("Visuals & Portals")]
-    public GameObject exitPortalPrefab;
-    
+
+    /// <summary>
+    /// Oyuncunun önceki odadaki kapı yönüne göre yeni odada nerede doğacağını belirler.
+    /// Sol kapıdan çıktıysa → sağ kapının entryPoint'i, üst → alt, vs.
+    /// </summary>
+    private Vector3 GetDirectionalSpawnPosition(RoomLayout layout)
+    {
+        // Fallback: playerStartPoint veya sıfır
+        Vector3 fallback = (layout.playerStartPoint != null) ? layout.playerStartPoint.position : Vector3.zero;
+
+        if (RunManager.Instance == null || RunManager.Instance.lastDoorDirection < 0)
+            return fallback;
+
+        if (layout.rewardDoors == null || layout.rewardDoors.Length == 0)
+            return fallback;
+
+        // Karşı yönü bul: Left↔Right, Top↔Bottom
+        RewardDoor.DoorDirection exitDir = (RewardDoor.DoorDirection)RunManager.Instance.lastDoorDirection;
+        RewardDoor.DoorDirection targetDir;
+
+        switch (exitDir)
+        {
+            case RewardDoor.DoorDirection.Left:   targetDir = RewardDoor.DoorDirection.Right;  break;
+            case RewardDoor.DoorDirection.Right:  targetDir = RewardDoor.DoorDirection.Left;   break;
+            case RewardDoor.DoorDirection.Top:    targetDir = RewardDoor.DoorDirection.Bottom; break;
+            case RewardDoor.DoorDirection.Bottom: targetDir = RewardDoor.DoorDirection.Top;    break;
+            default: return fallback;
+        }
+
+        // Karşı yöndeki kapıyı bul
+        foreach (var door in layout.rewardDoors)
+        {
+            if (door != null && door.direction == targetDir)
+            {
+                // entryPoint atanmışsa onu kullan, yoksa kapının pozisyonunu
+                return (door.entryPoint != null) ? door.entryPoint.position : door.transform.position;
+            }
+        }
+
+        // Karşı yönde kapı yoksa fallback
+        return fallback;
+    }
+
     private void RoomCleared()
     {
         isRoomActive = false;
@@ -228,7 +267,6 @@ public class RoomManager : MonoBehaviour
             RunManager.Instance.GrantPendingReward();
         }
 
-
         // Listedeki son oda temizlendiyse run'i bitir
         if (RunManager.Instance != null && RunManager.Instance.IsRunComplete())
         {
@@ -241,37 +279,39 @@ public class RoomManager : MonoBehaviour
             return;
         }
 
-        Transform[] pPoints = (currentRoomLayout != null) ? currentRoomLayout.portalSpawnPoints : null;
-
-        // Normal oda — portal cikar
-        if (exitPortalPrefab != null && pPoints != null && pPoints.Length > 0)
+        // --- ÖDÜL HAVUZU ---
+        if (possibleRewards == null || possibleRewards.Length == 0)
         {
-            int portalCount = Mathf.Min(3, pPoints.Length);
-            
-            RewardType[] availableRewards = { RewardType.Heal, RewardType.MaxHealth, RewardType.DamageUp, RewardType.TempoBoost, RewardType.Gold };
-            
-            for (int i = 0; i < availableRewards.Length; i++)
-            {
-                RewardType temp = availableRewards[i];
-                int randomIndex = Random.Range(i, availableRewards.Length);
-                availableRewards[i] = availableRewards[randomIndex];
-                availableRewards[randomIndex] = temp;
-            }
+            Debug.LogError("RoomManager: possibleRewards dizisi boş! Lütfen Inspector'dan ödül SO'larını ekleyin.");
+            return;
+        }
 
-            for (int i = 0; i < portalCount; i++)
+        // Listeye kopyala ve karıştır (Shuffle)
+        List<RewardDefinitionSO> availableRewards = new List<RewardDefinitionSO>(possibleRewards);
+        for (int i = 0; i < availableRewards.Count; i++)
+        {
+            RewardDefinitionSO temp = availableRewards[i];
+            int randomIndex = Random.Range(i, availableRewards.Count);
+            availableRewards[i] = availableRewards[randomIndex];
+            availableRewards[randomIndex] = temp;
+        }
+
+        // --- Fiziksel Kapılar (RewardDoor) ---
+        RewardDoor[] doors = (currentRoomLayout != null) ? currentRoomLayout.rewardDoors : null;
+        if (doors != null && doors.Length > 0)
+        {
+            for (int i = 0; i < doors.Length; i++)
             {
-                GameObject portalObj = Instantiate(exitPortalPrefab, pPoints[i].position, Quaternion.identity);
-                ExitPortal portalScript = portalObj.GetComponent<ExitPortal>();
-                
-                if (portalScript != null)
-                {
-                    portalScript.Initialize(availableRewards[i]);
-                }
+                if (doors[i] == null) continue;
+                // Kapı sayısına göre dağıt (Eğer kapı sayısı ödül çeşidinden fazlaysa mod alıp başa döner)
+                RewardDefinitionSO reward = availableRewards[i % availableRewards.Count];
+                doors[i].Initialize(reward);
+                doors[i].Unlock();
             }
         }
         else
         {
-            Debug.LogWarning("RoomManager: Portal Spawn Points NOT assigned in this RoomLayout or ExitPrefab is missing! Cannot spawn doors.");
+            Debug.LogWarning("RoomManager: RoomLayout'ta RewardDoor atanmamış! Kapı açılamıyor.");
         }
     }
 }

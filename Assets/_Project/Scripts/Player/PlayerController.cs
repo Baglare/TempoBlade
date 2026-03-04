@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private ParrySystem parrySystem;
+    private PlayerCombat playerCombat;
     
     [Header("Movement")]
     public float moveSpeed = 6f;
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         parrySystem = GetComponent<ParrySystem>();
+        playerCombat = GetComponent<PlayerCombat>();
 
         // Otomatik Ayarlar
         if (rb != null)
@@ -169,6 +171,15 @@ public class PlayerController : MonoBehaviour
     public void OnMove(InputValue value)
     {
         moveInput = value.Get<Vector2>();
+    }
+
+    public void OnAttack(InputValue value)
+    {
+        if (!value.isPressed) return;
+        if (playerCombat == null) return;
+        
+        // Örn: GameManager durduysa falan buradan kesebiliriz (ileride)
+        playerCombat.TryAttack();
     }
 
     public void OnDodge(InputValue value)

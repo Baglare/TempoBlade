@@ -179,29 +179,23 @@ public class TempoManager : MonoBehaviour
         return TempoTier.T0;
     }
 
+    private PlayerCombat cachedPlayer;
+
     private void ApplyGlobalSpeed(TempoTier tier)
     {
         // GameManager'in duraklamadigi bir durumdaysak hizi degistir
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameManager.GameState.Gameplay) return;
 
-        switch (tier)
+        // Çift bindirme sorunu için TimeScale sabit 1.0f yapıldı.
+        // Hız zaten GetSpeedMultiplier() ile çarpan olarak karakter scriptlerinde kullanılıyor.
+        Time.timeScale = 1.0f;
+    }
+
+    private void TryCachePlayer()
+    {
+        if (cachedPlayer == null)
         {
-            case TempoTier.T0:
-                Time.timeScale = 1.0f;
-
-                break;
-            case TempoTier.T1:
-                Time.timeScale = 1.1f;
-
-                break;
-            case TempoTier.T2:
-                Time.timeScale = 1.2f;
-
-                break;
-            case TempoTier.T3:
-                Time.timeScale = 1.3f;
-
-                break;
+            cachedPlayer = FindFirstObjectByType<PlayerCombat>();
         }
     }
 
@@ -218,11 +212,10 @@ public class TempoManager : MonoBehaviour
                 regenTimer -= Time.deltaTime;
                 if (regenTimer <= 0f)
                 {
-                    // Oyuncuyu bul ve heal at
-                    PlayerCombat player = FindFirstObjectByType<PlayerCombat>();
-                    if (player != null)
+                    TryCachePlayer();
+                    if (cachedPlayer != null)
                     {
-                        player.Heal(currentConfig.healAmount);
+                        cachedPlayer.Heal(currentConfig.healAmount);
                     }
                     // Timer'i resetle
                     regenTimer = currentConfig.healInterval;

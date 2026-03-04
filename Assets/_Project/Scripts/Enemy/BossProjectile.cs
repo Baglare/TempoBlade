@@ -18,6 +18,7 @@ public class BossProjectile : MonoBehaviour, IDeflectable
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private bool hasBeenDeflected = false;
+    public bool IsDeflected => hasBeenDeflected;
 
     private void Awake()
     {

@@ -123,26 +123,29 @@ public class ParrySystem : MonoBehaviour
         }
     }
 
+    // ── NonAlloc Buffer (Sabit boyut, GC sıfır) ──────────────────────
+    private static readonly Collider2D[] scanBuffer = new Collider2D[20];
+
     private void PerformActiveParryScan()
     {
-        // Silah menzili tam ucu (Range + Offset) tarariz, fazladan esneme/sasma toleransini iptal ediyoruz.
+        // Silah menzili tam ucu (Range + Offset) tarariz
         float atkOff = (playerCombat != null && playerCombat.currentWeapon != null) ? playerCombat.currentWeapon.attackOffset : 1.0f;
         float maxRange = playerCombat != null ? playerCombat.GetEffectiveRange() + atkOff : 2.5f;
 
-        // Bütün objeleri GORMEK ve Unity filter ayarlarina takilmamak icin dogrudan OverlapCircleAll kullaniyoruz
-        // (Unity Project Settings > Physics 2D > Queries Hit Triggers Acik Olmali)
-        Collider2D[] currentHits = Physics2D.OverlapCircleAll(transform.position, maxRange);
-        
-        for (int i = 0; i < currentHits.Length; i++)
+        // NonAlloc: Sabit buffer'a yaz, yeni dizi yaratma
+        int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, maxRange, scanBuffer);
+
+        for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = currentHits[i];
+            Collider2D hit = scanBuffer[i];
             if (hit == null) continue;
 
             // --- 1) MERMI (PROJECTILE) TARAMASI ---
-            IDeflectable proj = hit.GetComponent<IDeflectable>();
-            if (proj != null && proj.ObjectOwner != gameObject)
+            if (hit.TryGetComponent<IDeflectable>(out var proj))
             {
-                // Mermi Pasta Konisinin İcinde Mi? (Merkezleri baz aliyoruz)
+                // Sahibi biz miyiz veya zaten sektirilmiş mi?
+                if (proj.ObjectOwner == gameObject || proj.IsDeflected) continue;
+
                 Vector2 toProj = (hit.transform.position - transform.position);
                 float dist = toProj.magnitude;
                 
@@ -153,7 +156,6 @@ public class ParrySystem : MonoBehaviour
                     
                     if (angle <= parryArcHalfAngle)
                     {
-                        // Deflect the projectile (TryDeflect'i pas gecip direkt blokluyoruz cunku "Açı Hızı" hatasi yaratiyordu)
                         RegisterBlock(isRanged: true);
                         proj.Deflect(gameObject); 
                         
@@ -162,13 +164,14 @@ public class ParrySystem : MonoBehaviour
                             DamagePopupManager.Instance.CreateText(hit.transform.position + Vector3.up, "DEFLECT!", Color.cyan, 6f);
                     }
                 }
+                continue; // Bu collider mermi olduğundan melee kontrolüne geçme
             }
             
             // --- 2) KILIC (MELEE HITBOX) TARAMASI ---
-            AttackHitbox enemyHitbox = hit.GetComponent<AttackHitbox>();
-            if (enemyHitbox != null && enemyHitbox.owner != null)
+            if (hit.TryGetComponent<AttackHitbox>(out var enemyHitbox))
             {
-                // Dusman kılıcının ucu Pasta Konisinin İcinde Mi?
+                if (enemyHitbox.owner == null) continue;
+
                 Vector2 toHitbox = (enemyHitbox.transform.position - transform.position);
                 float dist = toHitbox.magnitude;
                 
@@ -185,7 +188,7 @@ public class ParrySystem : MonoBehaviour
                         if (DamagePopupManager.Instance != null)
                             DamagePopupManager.Instance.CreateHitParticle(enemyHitbox.transform.position);
                             
-                        // Hitbox'in o darbesini bitir ki sonraki frame saniyede 60 kere parry yemesin!
+                        // Hitbox'in o darbesini bitir ki sonraki frame tekrar parry yemesin
                         enemyHitbox.gameObject.SetActive(false); 
                     }
                 }

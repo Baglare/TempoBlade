@@ -218,23 +218,21 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         // Kombo penceresi sayacı
         comboWindowTimer -= Time.deltaTime;
-
-        // Saldırı inputu (parry aktifken saldırı yasak)
-        if (Time.time >= nextAttackTime && !isExecutingComboStep && !_isParrying)
-        {
-            if (UnityEngine.InputSystem.Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                TryAttack();
-            }
-        }
     }
 
     // ──────────────────────────────────────────────────────────────────────────
     // COMBO SİSTEMİ
     // ──────────────────────────────────────────────────────────────────────────
 
-    private void TryAttack()
+    public void TryAttack()
     {
+        // --- Cooldown / State Guard ---
+        if (Time.time < nextAttackTime) return;
+        if (isExecutingComboStep) return;
+
+        ParrySystem ps = GetComponent<ParrySystem>();
+        if (ps != null && ps.IsParryActive) return;
+
         ComboStepData[] steps = currentWeapon?.comboSteps;
 
         // Silahta kombo tanımlı değilse eski tek vuruş davranışı (geriye dönük uyumlu)
