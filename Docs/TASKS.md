@@ -15,13 +15,7 @@
 
 ## Aktif Görevler
 
-### [ ] Kombo Adımlarındaki Dash (Atılma) Sorununun Çözümü
-**Açıklama:** Silahlara eklenen kombo sistemindeki "DashStrike" (atılma vuruşu) adımında yaşanan sorun/takılmalar giderilecek.
-**Kabul Kriterleri:**
-- Oyuncu DashStrike adımına geldiğinde pürüzsüz ilerlemeli ve kontrolleri bozulmamalı.
-- Yürüme veya kaçınma (dodge) State'leri ile çakışması engellenmeli.
-
-### [ ] Yeni Kılıç Assetlerinin Oyuna Eklenmesi
+### [x] Yeni Kılıç Assetlerinin Oyuna Eklenmesi
 **Açıklama:** Kullanıcının elindeki free kılıç assetlerini projeye entegre edip oynanabilir hale getirmek.
 **Kabul Kriterleri (Acceptance Criteria):**
 - Kılıç sprite'ları Unity'ye 'Sprite (2D and UI)' ve 'Point (no filter)' ayarlarıyla aktarılmalı.
@@ -42,10 +36,5 @@
 ### [ ] Kalıcı Ödül ve Ekonomi Sistemi
 **Açıklama:** Silah veya para / run türü daha fazla meta-progression ödülleri geliştirilecek.
 
-### [ ] Daha Fazla Silah Türü ve Düşman Çeşidi
-**Açıklama:** Oyuna menzilli düşmanlar (Ranged) veya patlayan düşmanlar (Kamikaze) ve yeni kılıçlar eklenecek.
-
-### [ ] Procedural Harita / Oda Üretimi (Gelecek)
-**Açıklama:** Sabit odalar yerine parçalardan oluşan procedural rastgele harita/oda yapısı kurulacak.
-
-### [ ] Bug: Build'de arkadaşlarda save çalışmıyor (araştırılacak)
+### [ ] Daha Fazla Silah Türü (Mekaniksel Olarak)
+**Açıklama:** Oyuna yeni kılıç ve silah türleri eklenecek. Bunlar (balyoz, bıçak vb.) sadece statifik olarak değil oynanış/kombo ve hız olarak da ayrışacak.
