@@ -891,10 +891,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomManager
   currentRoomData: {fileID: 0}
+  possibleRewards:
+  - {fileID: 11400000, guid: c43236420a151bc4fad939de83d9b065, type: 2}
+  - {fileID: 11400000, guid: f10aa8435c3c82848beb179dece8bbc1, type: 2}
+  - {fileID: 11400000, guid: 055e24dca5d72e94eb0667eb31686784, type: 2}
+  - {fileID: 11400000, guid: 56f6c940c803b61499610789145890a2, type: 2}
+  - {fileID: 11400000, guid: dd75c4ddb93adc94d90cfe8a19192791, type: 2}
   isRoomActive: 0
   currentWaveIndex: 0
   activeEnemies: []
-  exitPortalPrefab: {fileID: 8356715085484467370, guid: 185e82d6a5ef802439b262a7571ad0cc, type: 3}
 --- !u!4 &206417561
 Transform:
   m_ObjectHideFlags: 0
@@ -3504,7 +3509,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RunManager
   roomsCleared: 0
-  pendingReward: 0
+  pendingReward: {fileID: 0}
+  lastDoorDirection: -1
   roomSequence:
   - {fileID: 11400000, guid: a85425745b9298945a5d54a69eb0dbb2, type: 2}
   - {fileID: 11400000, guid: 866aa13e0e724d342add88e3971c63c0, type: 2}
