@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DamageUpReward
   m_EditorClassIdentifier: Assembly-CSharp::DamageUpRewardSO
   rewardName: Hasar
-  icon: {fileID: 0}
+  icon: {fileID: 245113569542779292, guid: 5266a44a6d6e0d342a1d6f2310360a8d, type: 3}
   tintColor: {r: 0.7924528, g: 0, b: 0, a: 1}
   category: 1
   damageMultiplierBonus: 0.1

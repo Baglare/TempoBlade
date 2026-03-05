@@ -12,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
 
     [Header("UI Panels")]
     public GameObject settingsPanel;
+    public GameObject howToPlayPanel;
 
     private void Start()
     {
@@ -20,6 +21,7 @@ public class MainMenuManager : MonoBehaviour
         
         // Eger ayarlari acik unutursak kapatarak basla
         if (settingsPanel != null) settingsPanel.SetActive(false);
+        if (howToPlayPanel != null) howToPlayPanel.SetActive(false);
 
         // Eger GameManager varsa durumunu Menu olarak guncelle
         if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameManager.GameState.Menu)
@@ -83,6 +85,33 @@ public class MainMenuManager : MonoBehaviour
         if (settingsPanel != null)
         {
             settingsPanel.SetActive(false);
+        }
+    }
+
+    /// <summary>
+    /// "Nasıl Oynanır" butonuna tıklandığında çalışır.
+    /// </summary>
+    public void ToggleHowToPlay()
+    {
+        if (howToPlayPanel == null)
+        {
+            Debug.LogWarning("MainMenuManager: How To Play Panel is not assigned in the Inspector.");
+            return;
+        }
+        
+        // Eger panel zaten aciksa kapat, kapaliysa ac
+        bool isActive = howToPlayPanel.activeSelf;
+        howToPlayPanel.SetActive(!isActive);
+    }
+    
+    /// <summary>
+    /// Nasıl Oynanır panelini dogrudan kapatmak icin kullanilir ("X" veya "Kapat" butonu)
+    /// </summary>
+    public void CloseHowToPlay()
+    {
+        if (howToPlayPanel != null)
+        {
+            howToPlayPanel.SetActive(false);
         }
     }
 

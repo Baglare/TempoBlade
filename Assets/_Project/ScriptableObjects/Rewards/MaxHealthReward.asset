@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MaxHealthReward
   m_EditorClassIdentifier: Assembly-CSharp::MaxHealthRewardSO
   rewardName: "Can Artt\u0131r"
-  icon: {fileID: 0}
+  icon: {fileID: -2490258417949989419, guid: 2d38ff30c77a73f449e9b69c2b1db13e, type: 3}
   tintColor: {r: 1, g: 0.5235849, b: 0.5235849, a: 1}
   category: 0
   maxHealthIncrease: 10

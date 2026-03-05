@@ -1,22 +1,16 @@
 fileFormatVersion: 2
-guid: 6b31b61f7c551454fb4e1dec46584cdb
+guid: 90e6f62985ed59f42b7df13890d06c9e
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8746982570549950277
-    second: T0_gecici_0
+      213: 127247162306161751
+    second: tempopng_0
   - first:
-      213: -3939234737898312795
-    second: T0_gecici_1
+      213: 4160994017064921514
+    second: tempopng_1
   - first:
-      213: 4097540060861150680
-    second: T0_gecici_2
-  - first:
-      213: 8125995878617551038
-    second: T0_gecici_3
-  - first:
-      213: -3186435973381161967
-    second: T0_gecici_4
+      213: -1386742821717610453
+    second: tempopng_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -63,8 +57,8 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 650
-  spriteBorder: {x: 381, y: 91, z: 448, w: 41}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -112,89 +106,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: T0_gecici_0
+      name: tempopng_0
       rect:
         serializedVersion: 2
-        x: 290
-        y: 82
-        width: 898
-        height: 898
+        x: 3
+        y: 80
+        width: 176
+        height: 76
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bb846d112b97c9680800000000000000
-      internalID: -8746982570549950277
+      spriteID: 75c6fe3be9214c100800000000000000
+      internalID: 127247162306161751
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: T0_gecici_2
+      name: tempopng_1
       rect:
         serializedVersion: 2
-        x: 995
-        y: 963
-        width: 6
-        height: 6
+        x: 128
+        y: 67
+        width: 55
+        height: 55
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8d5bf84c9f26dd830800000000000000
-      internalID: 4097540060861150680
+      spriteID: aa92eab3302deb930800000000000000
+      internalID: 4160994017064921514
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: T0_gecici_3
+      name: tempopng_2
       rect:
         serializedVersion: 2
-        x: 1041
-        y: 39
-        width: 6
-        height: 9
+        x: 182
+        y: 81
+        width: 42
+        height: 42
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eb0994fb23655c070800000000000000
-      internalID: 8125995878617551038
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: T0_gecici_4
-      rect:
-        serializedVersion: 2
-        x: 994
-        y: 24
-        width: 6
-        height: 8
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 11cf61b5d5187c3d0800000000000000
-      internalID: -3186435973381161967
+      spriteID: b20f2bc30cc41cce0800000000000000
+      internalID: -1386742821717610453
       vertices: []
       indices: 
       edges: []
@@ -203,8 +175,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: c5f151f281b79aa419dbca7d37b4c2e9
-    internalID: -937568318
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -213,11 +185,9 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      T0_gecici_0: -8746982570549950277
-      T0_gecici_1: -3939234737898312795
-      T0_gecici_2: 4097540060861150680
-      T0_gecici_3: 8125995878617551038
-      T0_gecici_4: -3186435973381161967
+      tempopng_0: 127247162306161751
+      tempopng_1: 4160994017064921514
+      tempopng_2: -1386742821717610453
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

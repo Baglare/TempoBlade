@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GoldReward
   m_EditorClassIdentifier: Assembly-CSharp::GoldRewardSO
   rewardName: "Alt\u0131n"
-  icon: {fileID: 0}
+  icon: {fileID: -4313374141487840644, guid: fc12cd15aa9e4a045aada8187148111c, type: 3}
   tintColor: {r: 0.9528302, g: 0.9528302, b: 0.20225172, a: 1}
   category: 3
   defaultGoldAmount: 0
