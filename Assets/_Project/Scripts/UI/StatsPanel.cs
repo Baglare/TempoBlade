@@ -161,7 +161,7 @@ public class StatsPanel : MonoBehaviour
             stats += "\n\n<b>─── Silah ───</b>";
             stats += "\nSilah: " + combat.currentWeapon.GetDisplayName(level);
             stats += "\nHasar: " + combat.GetEffectiveDamage().ToString("F1");
-            stats += "\nSaldiri Hizi: " + combat.GetEffectiveAttackRate().ToString("F2") + "s";
+            stats += "\nSaldırı Hızı: " + combat.GetEffectiveAttackRate().ToString("F2") + "s";
             stats += "\nMenzil: " + combat.GetEffectiveRange().ToString("F1");
         }
 
@@ -293,13 +293,13 @@ public class StatsPanel : MonoBehaviour
             if (isEquipped)
             {
                 if (equipButtonText != null)
-                    equipButtonText.text = "Zaten Kusanildi";
+                    equipButtonText.text = "Zaten Kuşanıldı";
                 equipButton.interactable = false;
             }
             else
             {
                 if (equipButtonText != null)
-                    equipButtonText.text = "Kusan";
+                    equipButtonText.text = "Kuşan";
                 equipButton.interactable = true;
 
                 WeaponSO wpn = weapon;

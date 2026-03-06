@@ -92,7 +92,7 @@ public class ShopUI : MonoBehaviour
 
         // Altin goster
         if (goldText != null)
-            goldText.text = "Altin: " + data.totalGold;
+            goldText.text = "Altın: " + data.totalGold;
 
         // --- Yukseltme bilgileri ---
         const float baseMaxHealth     = 100f;
@@ -384,7 +384,7 @@ public class ShopUI : MonoBehaviour
             else
             {
                 if (weaponBuyButtonText != null)
-                    weaponBuyButtonText.text = "Satin Al";
+                    weaponBuyButtonText.text = "Satın Al";
                 weaponBuyButton.interactable = true;
 
                 string wpnName = weapon.weaponName;

@@ -70,7 +70,7 @@ public class BlacksmithUI : MonoBehaviour
     private void RefreshGold()
     {
         if (goldText != null && SaveManager.Instance != null)
-            goldText.text = "Altin: " + SaveManager.Instance.data.totalGold;
+            goldText.text = "Altın: " + SaveManager.Instance.data.totalGold;
     }
 
     /// <summary>
@@ -126,7 +126,7 @@ public class BlacksmithUI : MonoBehaviour
         {
             currentStatsText.text =
                 "Hasar: " + weapon.GetUpgradedDamage(level).ToString("F1")
-                + "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(level).ToString("F2")
+                + "\nSaldırı Hızı: " + weapon.GetUpgradedAttackRate(level).ToString("F2")
                 + "\nMenzil: " + weapon.GetUpgradedRange(level).ToString("F1");
         }
 
@@ -140,9 +140,9 @@ public class BlacksmithUI : MonoBehaviour
             else
             {
                 int nextLevel = level + 1;
-                nextStatsText.text = "+" + nextLevel + " Sonrasi:"
+                nextStatsText.text = "+" + nextLevel + " Sonrası:"
                     + "\nHasar: " + weapon.GetUpgradedDamage(nextLevel).ToString("F1")
-                    + "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(nextLevel).ToString("F2")
+                    + "\nSaldırı Hızı: " + weapon.GetUpgradedAttackRate(nextLevel).ToString("F2")
                     + "\nMenzil: " + weapon.GetUpgradedRange(nextLevel).ToString("F1");
             }
         }
@@ -162,7 +162,7 @@ public class BlacksmithUI : MonoBehaviour
             if (isMaxLevel)
                 successRateText.text = "";
             else
-                successRateText.text = "Basari: %" + Mathf.RoundToInt(weapon.GetSuccessRate(level) * 100);
+                successRateText.text = "Başarı: %" + Mathf.RoundToInt(weapon.GetSuccessRate(level) * 100);
         }
 
         // Sonuc temizle
@@ -183,7 +183,7 @@ public class BlacksmithUI : MonoBehaviour
             else
             {
                 if (upgradeButtonText != null)
-                    upgradeButtonText.text = "Yukselt (+" + (level + 1) + ")";
+                    upgradeButtonText.text = "Yükselt (+" + (level + 1) + ")";
                 upgradeButton.interactable = true;
 
                 WeaponSO wpn = weapon;
@@ -210,7 +210,7 @@ public class BlacksmithUI : MonoBehaviour
         if (SaveManager.Instance.data.totalGold < cost)
         {
             if (resultText != null)
-                resultText.text = "<color=red>Yeterli altin yok!</color>";
+                resultText.text = "<color=red>Yeterli altın yok!</color>";
             return;
         }
 
@@ -226,7 +226,7 @@ public class BlacksmithUI : MonoBehaviour
             SaveManager.Instance.Save();
 
             if (resultText != null)
-                resultText.text = "<color=green>Yukseltme basarili! +" + (level + 1) + "</color>";
+                resultText.text = "<color=green>Yükseltme başarılı! +" + (level + 1) + "</color>";
         }
         else
         {
@@ -234,7 +234,7 @@ public class BlacksmithUI : MonoBehaviour
             SaveManager.Instance.Save();
 
             if (resultText != null)
-                resultText.text = "<color=red>Yukseltme basarisiz! Silah ayni kaldi.</color>";
+                resultText.text = "<color=red>Yükseltme başarısız! Silah aynı kaldı.</color>";
         }
 
         // UI guncelle
@@ -243,7 +243,7 @@ public class BlacksmithUI : MonoBehaviour
 
     private void ClearDetail()
     {
-        if (weaponNameText != null) weaponNameText.text = "Bir silah secin";
+        if (weaponNameText != null) weaponNameText.text = "Bir silah seçin";
         if (currentStatsText != null) currentStatsText.text = "";
         if (nextStatsText != null) nextStatsText.text = "";
         if (costText != null) costText.text = "";
