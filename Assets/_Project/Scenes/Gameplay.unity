@@ -861,6 +861,9 @@ MonoBehaviour:
     - Weapon_Starter
     equippedWeaponName: Weapon_Starter
     weaponUpgrades: []
+    unlockedSkillNodeIds: []
+    formAffinities: []
+    axisCommitments: []
 --- !u!1 &206417559
 GameObject:
   m_ObjectHideFlags: 0

@@ -142,6 +142,11 @@ public class SaveData
     // Silah yukseltme seviyeleri (her silah icin ayri)
     public List<WeaponUpgradeEntry> weaponUpgrades = new List<WeaponUpgradeEntry>();
 
+    // ── Eksen Bazlı Progression (Skill Tree) State ──
+    public List<string> unlockedSkillNodeIds = new List<string>();
+    public List<FormAffinityEntry> formAffinities = new List<FormAffinityEntry>();
+    public List<AxisCommitmentEntry> axisCommitments = new List<AxisCommitmentEntry>();
+
     /// <summary>
     /// Belirtilen silahın yükseltme seviyesini döndürür (0-9).
     /// </summary>
@@ -171,4 +176,23 @@ public class SaveData
         // Yeni entry olustur
         weaponUpgrades.Add(new WeaponUpgradeEntry { weaponName = weaponName, upgradeLevel = level });
     }
+}
+
+// ── Skill Tree Save Yapıları ──
+
+[System.Serializable]
+public class FormAffinityEntry
+{
+    public string formId;
+    public int affinity;
+}
+
+[System.Serializable]
+public class AxisCommitmentEntry
+{
+    public string axisId;
+    public bool isCommitted;
+    public string commitmentNodeId = "";
+    public string chosenRoute = "";
+    public int highestUnlockedTier;
 }

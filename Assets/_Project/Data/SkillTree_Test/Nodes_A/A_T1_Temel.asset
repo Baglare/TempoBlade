@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: A_T1_Temel
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: a_t1_temel
+  displayName: "Temel G\xFC\xE7"
+  description: "Eksen-A giri\u015F node'u"
+  icon: {fileID: 0}
+  tier: 1
+  isCommitmentNode: 0
+  regionTag: 
+  prerequisites: []
+  effects:
+  - type: 0
+    key: damage
+    modifierOp: 0
+    numericValue: 2
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

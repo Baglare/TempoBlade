@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d594e78d7251e0149a3c19f56121f1bf, type: 3}
+  m_Name: Axis_B_Defense
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressionAxisSO
+  axisId: axis_defense
+  displayName: Eksen-B (Savunma)
+  icon: {fileID: 0}
+  axisColor: {r: 0.3, g: 0.5, b: 1, a: 1}
+  nodes:
+  - {fileID: 11400000, guid: 6bbd9622150cfb243be3a92dcf8be07d, type: 2}
+  - {fileID: 11400000, guid: 35ac438be2bec394c9bda753a47198a7, type: 2}
+  - {fileID: 11400000, guid: 781303bdcce829b47a7bcaa7a8452d77, type: 2}
+  - {fileID: 11400000, guid: 67d48ac09d5105f41ad7f92d9274e982, type: 2}
