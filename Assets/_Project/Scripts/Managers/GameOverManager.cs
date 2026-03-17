@@ -17,6 +17,27 @@ public class GameOverManager : MonoBehaviour
 
     private bool isGameOverTriggered = false;
 
+    public static GameOverManager EnsureInstance()
+    {
+        GameOverManager mgr = FindFirstObjectByType<GameOverManager>(FindObjectsInactive.Include);
+        if (mgr != null) return mgr;
+
+        if (GameManager.Instance != null)
+        {
+            mgr = GameManager.Instance.GetComponent<GameOverManager>();
+            if (mgr != null) return mgr;
+        }
+
+        GameOverManager[] all = Resources.FindObjectsOfTypeAll<GameOverManager>();
+        for (int i = 0; i < all.Length; i++)
+        {
+            if (all[i] == null) continue;
+            if (!all[i].gameObject.scene.IsValid() || !all[i].gameObject.scene.isLoaded) continue;
+            return all[i];
+        }
+        return null;
+    }
+
     private void Start()
     {
         // Baslangicta bu paneli gizle ve tetiklenmeyi sifirla
@@ -26,13 +47,8 @@ public class GameOverManager : MonoBehaviour
             gameOverPanel.SetActive(false);
         }
 
-        // Bug Fix A: Yeni bir sahne yüklendiğinde (veya retry yapıldığında) GameManager 
-        // DontDestroyOnLoad olduğu için eski "GameOver" state'inde kalıyordu. 
-        // Bu script sahne yüklendiğinde her zaman baştan oluştuğu için state'i kosulsuz Gameplay'e zorluyoruz.
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.SetState(GameManager.GameState.Gameplay);
-        }
+        // Not: Burada state'i zorla Gameplay'e çekmiyoruz.
+        // Retry/Menu akışları zaten state'i doğru yerde set ediyor.
     }
 
     private void Update()
@@ -48,6 +64,17 @@ public class GameOverManager : MonoBehaviour
         }
     }
 
+    public void TriggerGameOver()
+    {
+        if (isGameOverTriggered) return;
+        isGameOverTriggered = true;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetState(GameManager.GameState.GameOver);
+
+        ShowGameOverScreen();
+    }
+
     private void ShowGameOverScreen()
     {
         // Zaman yavas yavas dursun (dramatik etki)
@@ -59,23 +86,36 @@ public class GameOverManager : MonoBehaviour
             EconomyManager.Instance.DepositRunGold();
         }
         
+        if (gameOverPanel == null || !gameOverPanel || !gameOverPanel.scene.IsValid() || !gameOverPanel.scene.isLoaded)
+        {
+            gameOverPanel = FindGameObjectInLoadedScenes("GameOverPanel");
+        }
+
         if (gameOverPanel == null)
         {
             Debug.LogWarning("[GameOverManager] Canvas is missing/destroyed. Searching for a new one in the scene...");
             Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
             foreach (var canvas in canvases)
             {
-                Transform panelTransform = canvas.transform.Find("GameOverPanel");
-                if (panelTransform != null)
+                Transform[] allChildren = canvas.GetComponentsInChildren<Transform>(true);
+                for (int i = 0; i < allChildren.Length; i++)
                 {
-                    gameOverPanel = panelTransform.gameObject;
-                    break;
+                    if (allChildren[i] != null && allChildren[i].name == "GameOverPanel")
+                    {
+                        gameOverPanel = allChildren[i].gameObject;
+                        break;
+                    }
                 }
+                if (gameOverPanel != null) break;
             }
         }
 
         if (gameOverPanel != null)
         {
+            Canvas parentCanvas = gameOverPanel.GetComponentInParent<Canvas>(true);
+            if (parentCanvas != null && !parentCanvas.gameObject.activeSelf)
+                parentCanvas.gameObject.SetActive(true);
+
             gameOverPanel.SetActive(true);
 
             // BUTTON FIX: Sahneler arası geçişte butonların eski referansları yok olan GameManager'lara işaret eder.
@@ -98,12 +138,32 @@ public class GameOverManager : MonoBehaviour
         else
         {
             Debug.LogError("[GameOverManager] GameOverPanel bulunamadi! Sahnede Siyah Panel eksik.");
+            Time.timeScale = 1f;
+            if (IsSceneInBuildSettings(hubSceneName))
+                SceneManager.LoadScene(hubSceneName);
+            else
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            return;
         }
 
-        if (statsText == null && gameOverPanel != null)
+        if ((statsText == null || !statsText) && gameOverPanel != null)
         {
             Transform textTransform = gameOverPanel.transform.Find("StatsText");
-            if (textTransform != null) statsText = textTransform.GetComponent<TMPro.TextMeshProUGUI>();
+            if (textTransform == null)
+            {
+                Transform[] children = gameOverPanel.GetComponentsInChildren<Transform>(true);
+                for (int i = 0; i < children.Length; i++)
+                {
+                    if (children[i] != null && children[i].name == "StatsText")
+                    {
+                        textTransform = children[i];
+                        break;
+                    }
+                }
+            }
+
+            if (textTransform != null)
+                statsText = textTransform.GetComponent<TMPro.TextMeshProUGUI>();
         }
 
         // Istatistikleri goster (oda + kazanilan altin)
@@ -163,6 +223,21 @@ public class GameOverManager : MonoBehaviour
             if (name == sceneName) return true;
         }
         return false;
+    }
+
+    private static GameObject FindGameObjectInLoadedScenes(string objectName)
+    {
+        Transform[] allTransforms = Resources.FindObjectsOfTypeAll<Transform>();
+        for (int i = 0; i < allTransforms.Length; i++)
+        {
+            Transform t = allTransforms[i];
+            if (t == null) continue;
+            if (t.name != objectName) continue;
+            GameObject go = t.gameObject;
+            if (!go.scene.IsValid() || !go.scene.isLoaded) continue;
+            return go;
+        }
+        return null;
     }
 
     /// <summary>

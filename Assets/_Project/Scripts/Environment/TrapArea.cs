@@ -130,6 +130,7 @@ public class TrapArea : MonoBehaviour
                 if (player == null) continue;
 
                 DashSkillRuntime dashRuntime = hit.GetComponent<DashSkillRuntime>();
+                if (dashRuntime == null) dashRuntime = hit.GetComponentInParent<DashSkillRuntime>();
                 bool dodgeProtected = player.IsInvulnerable ||
                                       (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position));
 
@@ -140,6 +141,7 @@ public class TrapArea : MonoBehaviour
 
                 hitPlayer = true;
                 playerDmg = hit.GetComponent<IDamageable>();
+                if (playerDmg == null) playerDmg = hit.GetComponentInParent<IDamageable>();
                 break;
             }
         }

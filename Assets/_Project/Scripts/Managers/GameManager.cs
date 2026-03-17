@@ -2,7 +2,17 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance { get; private set; }
+    private static GameManager _instance;
+    public static GameManager Instance
+    {
+        get
+        {
+            if (_instance == null || !_instance)
+                _instance = FindFirstObjectByType<GameManager>(FindObjectsInactive.Include);
+            return _instance;
+        }
+        private set => _instance = value;
+    }
 
     public enum GameState
     {
@@ -14,14 +24,26 @@ public class GameManager : MonoBehaviour
 
     public GameState CurrentState { get; private set; } = GameState.Gameplay;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatic()
+    {
+        _instance = null;
+    }
+
+    public static GameManager EnsureInstance()
+    {
+        if (Instance != null) return Instance;
+        return FindFirstObjectByType<GameManager>(FindObjectsInactive.Include);
+    }
+
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
-        Instance = this;
+        _instance = this;
         if (transform.parent != null)
             transform.SetParent(null);
         DontDestroyOnLoad(gameObject);

@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerCombat : MonoBehaviour, IDamageable
 {
@@ -28,6 +30,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private DashSkillRuntime dashSkillRuntime;
 
     private float nextAttackTime = 0f;
+    private bool isDead = false;
 
     // Kısa saldırı animasyon durumu (arc aktif renk için)
     private bool isSwinging;
@@ -104,6 +107,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         {
             RunManager.Instance.LoadPlayerState(this, TempoManager.Instance);
         }
+
+        if (DamagePopupManager.Instance == null)
+            Debug.LogWarning("[PlayerCombat] DamagePopupManager bulunamadi. Hit/Parry popup'lari cikmayabilir.");
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
@@ -230,6 +236,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     public void TryAttack()
     {
+        if (isDead) return;
         // --- Cooldown / State Guard ---
         if (Time.time < nextAttackTime) return;
         if (isExecutingComboStep) return;
@@ -449,6 +456,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     public void TakeDamage(float amount)
     {
+        if (isDead) return;
+        if (amount <= 0f) return;
+
         // Hasar sinirlandiricisi (I-frame): Ayni anda pes pese hasar yemeyi onlemek icin
         if (Time.time < nextDamageTime) return;
 
@@ -468,6 +478,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         nextDamageTime = Time.time + 0.2f;
 
         currentHealth -= amount;
+        if (float.IsNaN(currentHealth) || float.IsInfinity(currentHealth))
+            currentHealth = 0f;
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth); // UI Guncelle
 
@@ -492,8 +504,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         if (TempoManager.Instance != null && amount > 0)
              TempoManager.Instance.ApplyDamagePenalty();
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0.01f)
         {
+            currentHealth = 0f;
+            OnHealthChanged?.Invoke(currentHealth, maxHealth);
             Die();
         }
     }
@@ -583,8 +597,91 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     void Die()
     {
-        if (GameManager.Instance != null)
-            GameManager.Instance.SetState(GameManager.GameState.GameOver);
+        if (isDead) return;
+        isDead = true;
+
+        var controller = GetComponent<PlayerController>();
+        if (controller != null)
+        {
+            controller.canMove = false;
+        }
+
+        var rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = false;
+
+        GameManager gm = GameManager.Instance;
+        if (gm != null) gm.SetState(GameManager.GameState.GameOver);
+
+        GameOverManager gameOver = GameOverManager.EnsureInstance();
+        if (gameOver != null)
+        {
+            gameOver.TriggerGameOver();
+            return;
+        }
+
+        GameObject panel = FindSceneObjectByName("GameOverPanel");
+        if (panel != null)
+        {
+            Canvas parentCanvas = panel.GetComponentInParent<Canvas>(true);
+            if (parentCanvas != null && !parentCanvas.gameObject.activeSelf)
+                parentCanvas.gameObject.SetActive(true);
+            panel.SetActive(true);
+
+            TextMeshProUGUI stats = null;
+            Transform statsTr = panel.transform.Find("StatsText");
+            if (statsTr != null) stats = statsTr.GetComponent<TextMeshProUGUI>();
+            if (stats == null) stats = panel.GetComponentInChildren<TextMeshProUGUI>(true);
+            if (stats != null && RunManager.Instance != null)
+            {
+                int rooms = RunManager.Instance.roomsCleared;
+                int goldEarned = EconomyManager.Instance != null ? EconomyManager.Instance.runGold : 0;
+                int totalGold = SaveManager.Instance != null ? SaveManager.Instance.data.totalGold : 0;
+                stats.text = $"Ulasilan Oda: {rooms + 1}\nKazanilan Altin: {goldEarned}\nToplam Altin: {totalGold}";
+            }
+
+            Time.timeScale = 0f;
+            return;
+        }
+
+        if (gm != null)
+        {
+            Debug.LogWarning("[PlayerCombat] GameOverManager bulunamadi. Hub sahnesine fallback yapiliyor.");
+            Time.timeScale = 1f;
+            string fallbackScene = "Hub";
+            bool found = false;
+            for (int i = 0; i < SceneManager.sceneCountInBuildSettings; i++)
+            {
+                string path = SceneUtility.GetScenePathByBuildIndex(i);
+                string name = System.IO.Path.GetFileNameWithoutExtension(path);
+                if (name == fallbackScene) { found = true; break; }
+            }
+            if (found) SceneManager.LoadScene(fallbackScene);
+            else SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        else
+        {
+            Debug.LogError("[PlayerCombat] GameManager.Instance yok, GameOver state tetiklenemedi.");
+        }
+    }
+
+    private static GameObject FindSceneObjectByName(string objectName)
+    {
+        Transform[] allTransforms = Resources.FindObjectsOfTypeAll<Transform>();
+        for (int i = 0; i < allTransforms.Length; i++)
+        {
+            Transform t = allTransforms[i];
+            if (t == null || t.name != objectName) continue;
+            GameObject go = t.gameObject;
+            if (!go.scene.IsValid() || !go.scene.isLoaded) continue;
+            return go;
+        }
+        return null;
     }
 
     private void OnDrawGizmosSelected()

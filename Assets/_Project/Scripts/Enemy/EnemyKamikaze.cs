@@ -185,6 +185,7 @@ public class EnemyKamikaze : EnemyBase
         // 1. Parry kontrolü
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         ParrySystem parry = playerObj != null ? playerObj.GetComponent<ParrySystem>() : null;
+        if (parry == null && playerObj != null) parry = playerObj.GetComponentInParent<ParrySystem>();
         if (parry != null && parry.TryParry())
         {
             // Perfect Parry: patlama iptal, kamikaze ölür
@@ -195,6 +196,7 @@ public class EnemyKamikaze : EnemyBase
         // 2. Dodge i-frame kontrolü
         PlayerController pc = playerObj != null ? playerObj.GetComponent<PlayerController>() : null;
         DashSkillRuntime dashRuntime = playerObj != null ? playerObj.GetComponent<DashSkillRuntime>() : null;
+        if (dashRuntime == null && playerObj != null) dashRuntime = playerObj.GetComponentInParent<DashSkillRuntime>();
         bool playerInvulnerable = (pc != null && pc.IsInvulnerable) ||
                                   (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position));
 
@@ -203,7 +205,11 @@ public class EnemyKamikaze : EnemyBase
         foreach (var hit in hits)
         {
             if (hit.CompareTag("Player") && !playerInvulnerable)
-                hit.GetComponent<IDamageable>()?.TakeDamage(explosionDamage);
+            {
+                IDamageable dmgable = hit.GetComponent<IDamageable>();
+                if (dmgable == null) dmgable = hit.GetComponentInParent<IDamageable>();
+                dmgable?.TakeDamage(explosionDamage);
+            }
         }
 
         Die();
