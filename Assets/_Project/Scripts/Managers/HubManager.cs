@@ -12,7 +12,7 @@ public class HubManager : MonoBehaviour
 
     [Header("Scene Settings")]
     [Tooltip("Oyuncuyu gonderecegin ilk gameplay sahnesi")]
-    public string gameplaySceneName = "GameScene";
+    public string gameplaySceneName = "Gameplay";
 
     [Header("UI References")]
     [Tooltip("Dukkan / Yukseltme panelini buraya surekle (ShopUI Canvas)")]

@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: dash_t1_counter
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: dash_t1_counter
+  displayName: T1 - Karsi Saldiri
+  description: T1 - Karsi Saldiri
+  icon: {fileID: 0}
+  tier: 1
+  isCommitmentNode: 0
+  regionTag: 
+  prerequisites:
+  - {fileID: 11400000, guid: 992dd07a3b59feb4eb98e41b273edc76, type: 2}
+  - {fileID: 11400000, guid: 505e0242ef13dab4a9b4029799cbc2e8, type: 2}
+  effects:
+  - type: 1
+    key: dash_t1_counter
+    modifierOp: 0
+    numericValue: 0
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

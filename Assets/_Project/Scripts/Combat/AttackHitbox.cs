@@ -8,9 +8,18 @@ public class AttackHitbox : MonoBehaviour
     {
         if (!other.CompareTag("Player")) return;
 
+        // Dash Tier1: Melee Dodge penceresi
+        var dashRuntime = other.GetComponent<DashSkillRuntime>();
+        Vector2 attackerPos = owner != null ? (Vector2)owner.transform.position : (Vector2)transform.position;
+        if (dashRuntime != null && dashRuntime.TryDodgeMelee(attackerPos))
+        {
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(other.transform.position + Vector3.up, "DODGE!", Color.cyan, 5f);
+            return;
+        }
+
         // Player uzerinde ParrySystem var mi? (Yonlu blok: saldirganin pozisyonuyla kontrol)
         var parry = other.GetComponent<ParrySystem>();
-        Vector2 attackerPos = owner != null ? (Vector2)owner.transform.position : (Vector2)transform.position;
         if (parry != null && parry.TryBlockMelee(attackerPos))
         {
             // Parry basarili: dusman reaksiyon alabilir

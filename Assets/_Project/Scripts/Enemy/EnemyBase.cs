@@ -7,6 +7,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected float currentHealth;
     protected bool isStunned;
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
 
     protected virtual void Start()
     {

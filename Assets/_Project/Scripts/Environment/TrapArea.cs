@@ -129,14 +129,9 @@ public class TrapArea : MonoBehaviour
                 player = hit.GetComponent<PlayerController>();
                 if (player == null) continue;
 
-                // Dodge Koruma Kontrolü:
-                // Oyuncu şu an invulnerable mi? → Korunur
-                // VEYA son dodge'unu YETERİNCE YAKIN zamanda attı mı?
-                // Yani: dodge başlangıcından bu yana geçen süre <= activationDelay + dodgeDuration
-                // Bu formül şunu garantiler: oyuncu trapı tetiklediği anda ya da tetiklenmeden
-                // kısa süre önce dodge attıysa, dodge'un invuln süresi tuzak patlamasını kapsıyor demektir.
-                float timeSinceDodge = player.GetTimeSinceDodgeStart();
-                bool dodgeProtected = player.IsInvulnerable || timeSinceDodge <= (activationDelay + dodgeDuration);
+                DashSkillRuntime dashRuntime = hit.GetComponent<DashSkillRuntime>();
+                bool dodgeProtected = player.IsInvulnerable ||
+                                      (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position));
 
                 if (dodgeProtected)
                 {

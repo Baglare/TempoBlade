@@ -105,16 +105,17 @@ public class RunManager : MonoBehaviour
                 if (SaveManager.Instance != null)
                 {
                     SaveData saveData = SaveManager.Instance.data;
-                    savedMaxHealth += saveData.bonusMaxHealth * 10f;                    // Her seviye +10 can
-                    savedDamageMultiplier += saveData.bonusDamageMultiplier * 0.1f;     // Her seviye +%10 hasar
 
                     // Parry yukseltmelerini uygula (UpgradeConfigSO'daki base değerler üzerinden)
                     ParrySystem parry = player.GetComponent<ParrySystem>();
                     if (parry != null)
                     {
-                        // UpgradeConfigSO'yu bul
-                        var shopUI = FindFirstObjectByType<ShopUI>();
-                        UpgradeConfigSO upgradeConfig = shopUI != null ? shopUI.upgradeConfig : null;
+                        UpgradeConfigSO upgradeConfig = player.upgradeConfig;
+                        if (upgradeConfig == null)
+                        {
+                            var shopUI = FindFirstObjectByType<ShopUI>();
+                            upgradeConfig = shopUI != null ? shopUI.upgradeConfig : null;
+                        }
                         
                         if (upgradeConfig != null)
                         {

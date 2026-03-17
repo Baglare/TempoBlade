@@ -782,6 +782,7 @@ GameObject:
   - component: {fileID: 2833685781671096526}
   - component: {fileID: 3604936443535050603}
   - component: {fileID: -2761618015594950017}
+  - component: {fileID: 980185175462617111}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1109,6 +1110,19 @@ MonoBehaviour:
   visualConfig: {fileID: 11400000, guid: 19b0734e61090304db7d03fa74df5c64, type: 2}
   tintLerpDuration: 0.25
   scalePunchAmount: 0.15
+--- !u!114 &980185175462617111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7397368891858854368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eaff243ed648b84e8fce8dbddbe27f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashSkillRuntime
+  config: {fileID: 11400000, guid: 7432640ce5a26c74781fa26a2bc425b3, type: 2}
 --- !u!1 &7431630693877334261
 GameObject:
   m_ObjectHideFlags: 0

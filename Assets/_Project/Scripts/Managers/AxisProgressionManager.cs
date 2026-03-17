@@ -41,7 +41,16 @@ public class AxisProgressionManager : MonoBehaviour
             return;
         }
         Instance = this;
+        transform.SetParent(null);
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        if (SaveManager.Instance != null)
+        {
+            LoadFromSave(SaveManager.Instance.data);
+        }
     }
 
     /// <summary>
@@ -175,36 +184,83 @@ public class AxisProgressionManager : MonoBehaviour
     /// <summary>
     /// Bir node'u açmayı dener. Başarılıysa true döner.
     /// </summary>
-    public bool TryUnlockNode(SkillNodeSO node)
+public bool TryUnlockNode(SkillNodeSO node)
+{
+    if (node == null) return false;
+    if (GetNodeStatus(node) != NodeStatus.Unlockable) return false;
+
+    _unlockedNodeIds.Add(node.nodeId);
+
+    if (node.isCommitmentNode)
     {
-        if (node == null) return false;
-        if (GetNodeStatus(node) != NodeStatus.Unlockable) return false;
-
-        // State'e ekle
-        _unlockedNodeIds.Add(node.nodeId);
-
-        // Commitment kontrolü
-        if (node.isCommitmentNode)
-        {
-            HandleCommitment(node);
-        }
-
-        // Axis'in en yüksek tier'ını güncelle
-        UpdateAxisHighestTier(node);
-
-        // Build yeniden derle
-        RebuildPlayerBuild();
-
-        // Events
-        OnNodeUnlocked?.Invoke(node);
-        OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.Unlocked);
-
-        // Karşıt eksende kilitlenen node'lar için status changed eventi
-        NotifyAffectedNodes(node);
-
-        Debug.Log($"[AxisProgression] Node açıldı: {node.displayName} (ID: {node.nodeId})");
-        return true;
+        HandleCommitment(node);
     }
+
+    UpdateAxisHighestTier(node);
+    RebuildPlayerBuild();
+
+    OnNodeUnlocked?.Invoke(node);
+    OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.Unlocked);
+    NotifyAffectedNodes(node);
+
+    RequestSave();
+    Debug.Log($"[AxisProgression] Node acildi: {node.displayName} (ID: {node.nodeId})");
+    return true;
+}
+
+public bool TryLockNode(SkillNodeSO node, bool removeDependents = true)
+{
+    if (node == null) return false;
+    if (node.startsUnlocked) return false;
+    if (!_unlockedNodeIds.Contains(node.nodeId)) return false;
+
+    var toRemove = new HashSet<string> { node.nodeId };
+
+    if (removeDependents && database != null && database.allAxes != null)
+    {
+        bool changed;
+        do
+        {
+            changed = false;
+            foreach (var axis in database.allAxes)
+            {
+                if (axis == null || axis.nodes == null) continue;
+                foreach (var candidate in axis.nodes)
+                {
+                    if (candidate == null) continue;
+                    if (!_unlockedNodeIds.Contains(candidate.nodeId)) continue;
+                    if (toRemove.Contains(candidate.nodeId)) continue;
+                    if (candidate.prerequisites == null || candidate.prerequisites.Length == 0) continue;
+
+                    for (int i = 0; i < candidate.prerequisites.Length; i++)
+                    {
+                        var prereq = candidate.prerequisites[i];
+                        if (prereq != null && toRemove.Contains(prereq.nodeId))
+                        {
+                            toRemove.Add(candidate.nodeId);
+                            changed = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        } while (changed);
+    }
+
+    foreach (var id in toRemove)
+        _unlockedNodeIds.Remove(id);
+
+    RecalculateAxisCommitmentsFromUnlockedNodes();
+    RebuildPlayerBuild();
+
+    foreach (var id in toRemove)
+        OnNodeStatusChanged?.Invoke(id, NodeStatus.VisibleLocked);
+
+    RequestSave();
+    Debug.Log($"[AxisProgression] Node kilitlendi: {node.displayName} (toplam kapatilan: {toRemove.Count})");
+    return true;
+}
+
 
     // ═══════════ Form Affinity ═══════════
 
@@ -438,6 +494,55 @@ public class AxisProgressionManager : MonoBehaviour
             }
         }
     }
+
+private void RequestSave()
+{
+    if (SaveManager.Instance != null)
+        SaveManager.Instance.Save();
+}
+
+
+private void RecalculateAxisCommitmentsFromUnlockedNodes()
+{
+    _axisCommitments.Clear();
+    if (database == null || database.allAxes == null) return;
+
+    foreach (var axis in database.allAxes)
+    {
+        if (axis == null || axis.nodes == null) continue;
+
+        var state = new CommitmentState
+        {
+            isCommitted = false,
+            commitmentNodeId = "",
+            chosenRoute = "",
+            highestUnlockedTier = 0
+        };
+
+        bool hasAnyUnlocked = false;
+
+        foreach (var node in axis.nodes)
+        {
+            if (node == null || !_unlockedNodeIds.Contains(node.nodeId))
+                continue;
+
+            hasAnyUnlocked = true;
+            if (node.tier > state.highestUnlockedTier)
+                state.highestUnlockedTier = node.tier;
+
+            if (node.isCommitmentNode)
+            {
+                state.isCommitted = true;
+                state.commitmentNodeId = node.nodeId;
+                state.chosenRoute = node.regionTag ?? "";
+            }
+        }
+
+        if (hasAnyUnlocked)
+            _axisCommitments[axis.axisId] = state;
+    }
+}
+
 
     // ═══════════ Debug Yardımcıları ═══════════
 

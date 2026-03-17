@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: dash_t2_hunter_mark
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: dash_t2_hunter_mark
+  displayName: T2 - Av Isareti
+  description: T2 - Av Isareti
+  icon: {fileID: 0}
+  tier: 2
+  isCommitmentNode: 1
+  regionTag: 
+  prerequisites:
+  - {fileID: 11400000, guid: f92cc62ddba05834d8ed20b1b213b051, type: 2}
+  - {fileID: 11400000, guid: 18a5e246f9466a94989ad6ab86d899b1, type: 2}
+  effects:
+  - type: 1
+    key: dash_t2_selected
+    modifierOp: 0
+    numericValue: 0
+  - type: 1
+    key: dash_hunter_mark
+    modifierOp: 0
+    numericValue: 0
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

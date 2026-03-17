@@ -255,6 +255,13 @@ public class EnemyBoss : EnemyBase
         if (!isMeleeAttacking) return;
         if (!other.CompareTag("Player")) return;
 
+        var dashRuntime = other.GetComponent<DashSkillRuntime>();
+        if (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position))
+        {
+            isMeleeAttacking = false;
+            return;
+        }
+
         var parry = other.GetComponent<ParrySystem>();
         if (parry != null && parry.TryParry())
         {

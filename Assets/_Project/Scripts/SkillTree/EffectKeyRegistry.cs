@@ -21,6 +21,22 @@ public static class EffectKeyRegistry
     public const string ParryHeal     = "parryHeal";
     public const string DashDamage    = "dashDamage";
     public const string CritOnTempo   = "critOnTempo";
+    public const string DashT1RangedDodge = "dash_t1_ranged_dodge";
+    public const string DashT1MeleeDodge = "dash_t1_melee_dodge";
+    public const string DashT1Counter = "dash_t1_counter";
+    public const string DashT1TempoGain = "dash_t1_tempo_gain";
+    public const string DashT1AttackSpeed = "dash_t1_attack_speed";
+    public const string DashT2Selected = "dash_t2_selected";
+    public const string DashHunterMark = "dash_hunter_mark";
+    public const string DashHunterBlindSpot = "dash_hunter_blind_spot";
+    public const string DashHunterFlow = "dash_hunter_flow";
+    public const string DashHunterExecution = "dash_hunter_execution";
+    public const string DashHunterSuccession = "dash_hunter_succession";
+    public const string DashFlowMarkStream = "dash_flow_mark_stream";
+    public const string DashFlowRebound = "dash_flow_rebound";
+    public const string DashFlowChain = "dash_flow_chain";
+    public const string DashFlowBlackHole = "dash_flow_black_hole";
+    public const string DashFlowBlast = "dash_flow_blast";
 
     // ═══════════ Feature Keys ═══════════
     public const string DoubleJump    = "doubleJump";
@@ -34,6 +50,9 @@ public static class EffectKeyRegistry
         ParryWindow, ParryRecovery, MoveSpeed, DashCooldown,
         // Flag
         ParryHeal, DashDamage, CritOnTempo,
+        DashT1RangedDodge, DashT1MeleeDodge, DashT1Counter, DashT1TempoGain, DashT1AttackSpeed,
+        DashT2Selected, DashHunterMark, DashHunterBlindSpot, DashHunterFlow, DashHunterExecution,
+        DashHunterSuccession, DashFlowMarkStream, DashFlowRebound, DashFlowChain, DashFlowBlackHole, DashFlowBlast,
         // Feature
         DoubleJump, WallSlide
     };

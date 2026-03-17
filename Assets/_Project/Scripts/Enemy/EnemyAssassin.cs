@@ -150,6 +150,10 @@ public class EnemyAssassin : EnemyBase
         {
             if (!hit.CompareTag("Player")) continue;
 
+            DashSkillRuntime dashRuntime = hit.GetComponent<DashSkillRuntime>();
+            if (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position))
+                continue;
+
             ParrySystem parry = hit.GetComponent<ParrySystem>();
             if (parry != null && parry.TryBlockMelee(transform.position))
                 continue; // Parry basarili — suikastci geri cekiliyor

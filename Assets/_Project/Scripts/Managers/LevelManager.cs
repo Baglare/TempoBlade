@@ -6,12 +6,13 @@ public class LevelManager : MonoBehaviour
     public static LevelManager Instance { get; private set; }
 
     public int currentLevelIndex = 1;
+    public string gameplaySceneName = "Gameplay";
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this); // Sadece scripti sil, objeyi silme
+            Destroy(gameObject);
             return;
         }
 
@@ -29,14 +30,12 @@ public class LevelManager : MonoBehaviour
     public void LoadNextLevel()
     {
         currentLevelIndex++;
-
-        
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(gameplaySceneName);
     }
 
     public void RestartGame()
     {
         currentLevelIndex = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene(gameplaySceneName);
     }
 }

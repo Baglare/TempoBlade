@@ -74,6 +74,15 @@ public class BossProjectile : MonoBehaviour, IDeflectable
             // Eğer Oyuncuya çarptıysa ve Parry yapıyorsa -> DEFLECT (yonlu kontrol)
             if (other.CompareTag("Player") && !hasBeenDeflected)
             {
+                DashSkillRuntime dashRuntime = other.GetComponent<DashSkillRuntime>();
+                if (dashRuntime != null && dashRuntime.TryDodgeProjectile(transform.position))
+                {
+                    if (DamagePopupManager.Instance != null)
+                        DamagePopupManager.Instance.CreateText(other.transform.position + Vector3.up, "DODGE!", Color.cyan, 5f);
+                    Destroy(gameObject);
+                    return;
+                }
+
                 ParrySystem parry = other.GetComponent<ParrySystem>();
                 if (parry != null && parry.TryDeflect(transform.position)) // Hiz yerine konum veriyoruz
                 {

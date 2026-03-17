@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(this); // Sadece scripti sil, objeyi silme
+            Destroy(gameObject);
             return;
         }
         Instance = this;
