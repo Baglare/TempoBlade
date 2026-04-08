@@ -194,9 +194,7 @@ public class EnemyKamikaze : EnemyBase
 
         // 2. Dodge i-frame kontrolü
         PlayerController pc = playerObj != null ? playerObj.GetComponent<PlayerController>() : null;
-        DashSkillRuntime dashRuntime = playerObj != null ? playerObj.GetComponent<DashSkillRuntime>() : null;
-        bool playerInvulnerable = (pc != null && pc.IsInvulnerable) ||
-                                  (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position));
+        bool playerInvulnerable = pc != null && pc.IsInvulnerable;
 
         // 3. AoE hasar
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);

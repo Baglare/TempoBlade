@@ -5,10 +5,10 @@ public class MainMenuManager : MonoBehaviour
 {
     [Header("Menu Navigation Settings")]
     [Tooltip("Hub sahnesinin adi (oyuncu buraya yonlendirilir)")]
-    public string hubSceneName = "Hub";
+    public string hubSceneName = "Scene_Hub";
 
     [Tooltip("Eger Hub henuz yoksa dogrudan gameplay sahnesine gonder (fallback)")]
-    public string firstGameplaySceneName = "Gameplay";
+    public string firstGameplaySceneName = "GameScene";
 
     [Header("UI Panels")]
     public GameObject settingsPanel;

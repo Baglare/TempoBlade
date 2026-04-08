@@ -25,7 +25,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     [Header("Run Modifiers")]
     public float damageMultiplier = 1.0f;
-    private DashSkillRuntime dashSkillRuntime;
 
     private float nextAttackTime = 0f;
 
@@ -87,8 +86,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void Start()
     {
-        dashSkillRuntime = GetComponent<DashSkillRuntime>();
-
         // Save'den kusanilan silahi yukle
         LoadEquippedWeapon();
 
@@ -98,9 +95,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // Default baslangic
         currentHealth = maxHealth;
 
-        // RunManager varsa run state'i geri yukle.
-        // Ilk odada da tempo/parry gibi kalici bonuslarin uygulanmasi icin kosulsuz cagiriyoruz.
-        if (RunManager.Instance != null)
+        // RunManager varsa, onceki odadaki ayarlari geri yukle
+        if (RunManager.Instance != null && RunManager.Instance.roomsCleared > 0)
         {
             RunManager.Instance.LoadPlayerState(this, TempoManager.Instance);
         }
@@ -269,8 +265,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // cooldownAfter veya silahın attackRate'inden hangisi büyükse onu kullan
         // Böylece yavaş silahlar (attackRate=1.0s) kombo cooldown'uyla (0.15s) bypass edilemez
         float effectiveCooldown = Mathf.Max(step.cooldownAfter, GetEffectiveAttackRate());
-        if (dashSkillRuntime != null)
-            effectiveCooldown *= dashSkillRuntime.ConsumeAttackSpeedCooldownMultiplier();
         nextAttackTime = Time.time + effectiveCooldown;
         StartCoroutine(ExecuteComboStep(step, isLastStep));
     }
@@ -343,45 +337,15 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         float tempo   = TempoManager.Instance != null ? TempoManager.Instance.GetDamageMultiplier() : 1f;
         float total   = baseDmg * damageMultiplier * tempo * multiplier * (1f + counterBonus);
 
-        bool dashCounterConsumed = false;
-        float dashCounterMult = 1f;
-        float dashCounterStagger = 0f;
-
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, range, enemyLayers);
         bool hitAny = false;
 
         foreach (var col in hits)
         {
-            EnemyBase enemy = col.GetComponent<EnemyBase>();
-            if (enemy == null)
-                enemy = col.GetComponentInParent<EnemyBase>();
             var dmgable = col.GetComponent<IDamageable>();
             if (dmgable != null)
             {
-                if (!dashCounterConsumed && dashSkillRuntime != null &&
-                    dashSkillRuntime.TryConsumeCounterBonus(out float dc, out float ds))
-                {
-                    dashCounterMult = 1f + dc;
-                    dashCounterStagger = ds;
-                    dashCounterConsumed = true;
-                }
-
-                float finalDamage = total;
-                finalDamage *= dashCounterMult;
-                if (dashSkillRuntime != null)
-                    finalDamage *= dashSkillRuntime.GetPerAttackDamageMultiplier(enemy);
-
-                dmgable.TakeDamage(finalDamage);
-
-                if (enemy != null && dashSkillRuntime != null)
-                {
-                    if (dashCounterStagger > 0f)
-                    {
-                        enemy.Stun(dashCounterStagger);
-                    }
-                    dashSkillRuntime.OnPrimaryHitApplied(enemy, finalDamage);
-                }
-
+                dmgable.TakeDamage(total);
                 if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(2f);
                 hitAny = true;
             }
@@ -434,10 +398,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     /// </summary>
     private void Attack()
     {
-        float cooldown = GetEffectiveAttackRate();
-        if (dashSkillRuntime != null)
-            cooldown *= dashSkillRuntime.ConsumeAttackSpeedCooldownMultiplier();
-        nextAttackTime = Time.time + cooldown;
+        nextAttackTime = Time.time + GetEffectiveAttackRate();
         PerformHit(1f, 0f);
     }
 
@@ -452,15 +413,26 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // Hasar sinirlandiricisi (I-frame): Ayni anda pes pese hasar yemeyi onlemek icin
         if (Time.time < nextDamageTime) return;
 
-        // DashStrike veya harici kisa i-frame kontrolu
+        // Dodge / DashStrike i-frame kontrolu
         PlayerController pc = GetComponent<PlayerController>();
-        bool inDashState = pc != null &&
-                           (pc.currentState == PlayerController.PlayerState.Dodging ||
-                            pc.currentState == PlayerController.PlayerState.DashStriking);
-        if (pc != null && pc.IsInvulnerable && inDashState)
+        if (pc != null && pc.IsInvulnerable)
         {
-            if (DamagePopupManager.Instance != null)
-                DamagePopupManager.Instance.CreateText(transform.position + Vector3.up, "MISS!", Color.gray, 5f);
+            // --- TIMED DODGE KONTROLU ---
+            float timeSinceDodge = pc.GetTimeSinceDodgeStart();
+            if (timeSinceDodge <= 0.12f) // Cok dar bir pencere: 0.12 saniyeden kisa sure once dodge atilmissa
+            {
+                if (DamagePopupManager.Instance != null)
+                    DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "TIMED DODGE!", Color.cyan, 6f);
+
+                if (TempoManager.Instance != null)
+                    TempoManager.Instance.AddTempo(15f); // Buyuk odul
+            }
+            else
+            {
+                if (DamagePopupManager.Instance != null)
+                    DamagePopupManager.Instance.CreateText(transform.position + Vector3.up, "MISS!", Color.gray, 5f);
+            }
+
             return; // Hasari alma
         }
 

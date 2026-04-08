@@ -128,10 +128,6 @@ public class EnemyDuelist : EnemyBase
             {
                 if (!hit.CompareTag("Player")) continue;
 
-                DashSkillRuntime dashRuntime = hit.GetComponent<DashSkillRuntime>();
-                if (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position))
-                    continue;
-
                 // Yonlu parry kontrolu (saldiri noktasindan geliyormus gibi degerlendir)
                 ParrySystem parry = hit.GetComponent<ParrySystem>();
                 Vector2 strikeOrigin = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;

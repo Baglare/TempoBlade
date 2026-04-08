@@ -43,11 +43,6 @@ public class SaveManager : MonoBehaviour
     // ===================== SAVE =====================
     public void Save()
     {
-        if (AxisProgressionManager.Instance != null)
-        {
-            AxisProgressionManager.Instance.SaveToData(data);
-        }
-
         string json = JsonUtility.ToJson(data, true); // prettyPrint = true
         File.WriteAllText(SaveFilePath, json);
     }
@@ -64,11 +59,6 @@ public class SaveManager : MonoBehaviour
         {
             data = new SaveData(); // Ilk kez oynaniyor, bos veri olustur
         }
-
-        if (AxisProgressionManager.Instance != null)
-        {
-            AxisProgressionManager.Instance.LoadFromSave(data);
-        }
     }
 
     // ===================== DELETE =====================
@@ -79,11 +69,6 @@ public class SaveManager : MonoBehaviour
             File.Delete(SaveFilePath);
         }
         data = new SaveData();
-
-        if (AxisProgressionManager.Instance != null)
-        {
-            AxisProgressionManager.Instance.LoadFromSave(data);
-        }
     }
 
     // ===================== HELPERS =====================

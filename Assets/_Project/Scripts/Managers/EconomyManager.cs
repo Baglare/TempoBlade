@@ -12,7 +12,6 @@ public class EconomyManager : MonoBehaviour
     [Header("Run Economy")]
     [Tooltip("Bu run boyunca kazanilan gecici altin miktari.")]
     public int runGold = 0;
-    private bool hasDepositedThisRun = false;
 
     private void Awake()
     {
@@ -42,16 +41,11 @@ public class EconomyManager : MonoBehaviour
     /// </summary>
     public void DepositRunGold()
     {
-        if (hasDepositedThisRun)
-            return;
-
         if (SaveManager.Instance == null)
         {
             Debug.LogWarning("[EconomyManager] SaveManager not found! Cannot deposit gold.");
             return;
         }
-
-        hasDepositedThisRun = true;
 
         if (runGold > 0)
         {
@@ -78,6 +72,5 @@ public class EconomyManager : MonoBehaviour
     public void ResetRunGold()
     {
         runGold = 0;
-        hasDepositedThisRun = false;
     }
 }

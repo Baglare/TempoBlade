@@ -13,7 +13,7 @@ public class GameOverManager : MonoBehaviour
 
     [Header("Settings")]
     public string mainMenuSceneName = "MainMenu";
-    public string hubSceneName = "Hub";
+    public string hubSceneName = "Scene_Hub";
 
     private bool isGameOverTriggered = false;
 

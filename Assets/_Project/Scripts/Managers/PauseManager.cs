@@ -18,7 +18,7 @@ public class PauseManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Destroy(this); // Sadece scripti sil, objeyi silme (baska scriptler de bu objede olabilir)
             return;
         }
         Instance = this;

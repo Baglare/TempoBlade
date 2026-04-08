@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
 
     private ParrySystem parrySystem;
     private PlayerCombat playerCombat;
-    private DashSkillRuntime dashSkillRuntime;
     
     [Header("Movement")]
     public float moveSpeed = 6f;
@@ -40,14 +39,11 @@ public class PlayerController : MonoBehaviour
     public bool IsInvulnerable { get; private set; } = false;
     private float lastDodgeStartTime = -999f;
     private float currentDodgeSpeed;
-    private float manualInvulnerableUntil = -999f;
 
     // --- EXTERNAL DASH (DashStrike kombosu için PlayerCombat tarafından çağrılır) ---
     private Vector2 externalDashDir;
     private float   externalDashSpeed;
     private float   externalDashTimer;
-    private bool    externalDashInvulnerable;
-    private bool    externalDashCountsAsPerkDash;
     
     // Timed Dodge kontrolu icin kac saniye once dodge atildigini dondurur
     public float GetTimeSinceDodgeStart()
@@ -71,10 +67,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         parrySystem = GetComponent<ParrySystem>();
         playerCombat = GetComponent<PlayerCombat>();
-        dashSkillRuntime = GetComponent<DashSkillRuntime>();
-        if (dashSkillRuntime == null)
-            dashSkillRuntime = gameObject.AddComponent<DashSkillRuntime>();
-        dashSkillRuntime.Initialize(this, playerCombat, parrySystem);
 
         // Otomatik Ayarlar
         if (rb != null)
@@ -92,8 +84,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        RefreshInvulnerabilityState();
-
         // Debug amaciyla inspector'dan tempoyu degistirmek icin
         if (applyTempoButton && TempoManager.Instance != null)
         {
@@ -125,6 +115,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        // Hareket kilitliyse dur
+        if (!canMove)
+        {
+            rb.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (currentState == PlayerState.Dodging)
         {
             UpdateDodge();
@@ -134,15 +131,6 @@ public class PlayerController : MonoBehaviour
         if (currentState == PlayerState.DashStriking)
         {
             UpdateExternalDash();
-            return;
-        }
-
-        // Hareket kilitliyse dur
-        // Not: Dash/Dodge state'leri yukarida ilerlemeye devam etmeli,
-        // aksi halde timer donup i-frame sonsuza uzayabilir.
-        if (!canMove)
-        {
-            rb.linearVelocity = Vector2.zero;
             return;
         }
 
@@ -197,11 +185,7 @@ public class PlayerController : MonoBehaviour
     public void OnDodge(InputValue value)
     {
         if (!value.isPressed) return;
-
-        if (dashSkillRuntime != null && dashSkillRuntime.TryTriggerRebound())
-            return;
-
-        if (currentState == PlayerState.Dodging || currentState == PlayerState.DashStriking) return;
+        if (currentState == PlayerState.Dodging) return;
         if (dodgeCooldownTimer > 0f) return;
 
         dodgeDir = (moveInput.sqrMagnitude > 0.01f) ? moveInput.normalized : lastNonZeroMove;
@@ -230,13 +214,21 @@ public class PlayerController : MonoBehaviour
         dodgeTimer = dodgeDuration;
         dodgeDir = dir;
 
+        IsInvulnerable = true; 
         lastDodgeStartTime = Time.time;
+        
+        // T2 ve T3 Tempo'da Dodge menzili (hizi uzerinden) %30 artar
         currentDodgeSpeed = dodgeSpeed;
+        if (TempoManager.Instance != null)
+        {
+            var tier = TempoManager.Instance.CurrentTier;
+            if (tier == TempoManager.TempoTier.T2 || tier == TempoManager.TempoTier.T3)
+            {
+                currentDodgeSpeed *= 1.30f; 
+            }
+        }
         
         rb.linearVelocity = dodgeDir * currentDodgeSpeed;
-
-        if (dashSkillRuntime != null)
-            dashSkillRuntime.NotifyDashStarted(transform.position, dodgeDir);
     }
 
     private void UpdateDodge()
@@ -255,8 +247,6 @@ public class PlayerController : MonoBehaviour
 
         if (dodgeTimer <= 0f)
         {
-            if (dashSkillRuntime != null)
-                dashSkillRuntime.NotifyDashEnded(transform.position);
             EndDodge();
         }
     }
@@ -281,8 +271,8 @@ public class PlayerController : MonoBehaviour
 
     private void EndDodge()
     {
-        float cdMul = dashSkillRuntime != null ? dashSkillRuntime.GetDashCooldownMultiplier() : 1f;
-        dodgeCooldownTimer = dodgeCooldown * cdMul;
+        IsInvulnerable = false;
+        dodgeCooldownTimer = dodgeCooldown;
 
         rb.linearVelocity = Vector2.zero;
 
@@ -294,20 +284,16 @@ public class PlayerController : MonoBehaviour
     /// PlayerCombat tarafından DashStrike adımında çağrılır.
     /// Dodge cooldown'u ve ghost trail olmaksızın kısa süreliğine i-frame + hareketi uygular.
     /// </summary>
-    public void StartExternalDash(Vector2 dir, float speed, float duration, bool grantInvulnerability = true, bool countsAsPerkDash = false)
+    public void StartExternalDash(Vector2 dir, float speed, float duration)
     {
         if (currentState == PlayerState.Dodging) return; // Aktif dodge'u ezme
         currentState      = PlayerState.DashStriking;
         externalDashDir   = dir;
         externalDashSpeed = speed;
         externalDashTimer = duration;
-        externalDashInvulnerable = grantInvulnerability;
-        externalDashCountsAsPerkDash = countsAsPerkDash;
+        IsInvulnerable    = true;
         ghostSpawnTimer   = 0f; // Ghost Trail hemen başlasın
         rb.linearVelocity = dir * speed;
-        RefreshInvulnerabilityState();
-        if (countsAsPerkDash && dashSkillRuntime != null)
-            dashSkillRuntime.NotifyDashStarted(transform.position, dir);
     }
 
     private void UpdateExternalDash()
@@ -325,14 +311,9 @@ public class PlayerController : MonoBehaviour
 
         if (externalDashTimer <= 0f)
         {
-            if (externalDashCountsAsPerkDash && dashSkillRuntime != null)
-                dashSkillRuntime.NotifyDashEnded(transform.position);
-
-            externalDashInvulnerable = false;
-            externalDashCountsAsPerkDash = false;
+            IsInvulnerable    = false;
             rb.linearVelocity = Vector2.zero;
             currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
-            RefreshInvulnerabilityState();
 
             // Dash bitti, trail'leri fade'e al
             foreach (var trail in activeTrails)
@@ -348,12 +329,7 @@ public class PlayerController : MonoBehaviour
     {
 
         if (TempoManager.Instance != null)
-        {
-            float gain = TempoManager.Instance.gainOnPerfectParry;
-            if (dashSkillRuntime != null)
-                gain *= dashSkillRuntime.GetParryTempoMultiplier();
-            TempoManager.Instance.AddTempo(gain);
-        }
+            TempoManager.Instance.AddTempo(TempoManager.Instance.gainOnPerfectParry);
 
         if (HitStopManager.Instance != null)
             HitStopManager.Instance.PlayHitStop();
@@ -410,24 +386,5 @@ public class PlayerController : MonoBehaviour
 
 
         if (parrySystem != null) parrySystem.TryParry();
-    }
-
-    private void RefreshInvulnerabilityState()
-    {
-        // Guvenlik: manuel i-frame suresi beklenmeyen bir sekilde uzarsa sinirla.
-        if (manualInvulnerableUntil > Time.time + 2f)
-            manualInvulnerableUntil = Time.time + 2f;
-
-        bool inDashState = currentState == PlayerState.Dodging || currentState == PlayerState.DashStriking;
-        bool manual = Time.time < manualInvulnerableUntil && inDashState;
-        bool external = currentState == PlayerState.DashStriking && externalDashInvulnerable;
-        IsInvulnerable = manual || external;
-    }
-
-    public void SetManualInvulnerability(float duration)
-    {
-        float clampedDuration = Mathf.Clamp(duration, 0f, 1.5f);
-        manualInvulnerableUntil = Mathf.Max(manualInvulnerableUntil, Time.time + clampedDuration);
-        RefreshInvulnerabilityState();
     }
 }
