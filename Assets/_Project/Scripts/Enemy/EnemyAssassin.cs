@@ -151,18 +151,14 @@ public class EnemyAssassin : EnemyBase
             if (!hit.CompareTag("Player")) continue;
 
             DashSkillRuntime dashRuntime = hit.GetComponent<DashSkillRuntime>();
-            if (dashRuntime == null) dashRuntime = hit.GetComponentInParent<DashSkillRuntime>();
             if (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position))
                 continue;
 
             ParrySystem parry = hit.GetComponent<ParrySystem>();
-            if (parry == null) parry = hit.GetComponentInParent<ParrySystem>();
             if (parry != null && parry.TryBlockMelee(transform.position))
                 continue; // Parry basarili — suikastci geri cekiliyor
 
-            IDamageable dmgable = hit.GetComponent<IDamageable>();
-            if (dmgable == null) dmgable = hit.GetComponentInParent<IDamageable>();
-            dmgable?.TakeDamage(attackDamage);
+            hit.GetComponent<IDamageable>()?.TakeDamage(attackDamage);
         }
 
         // 4. Görünmez ol + çekil

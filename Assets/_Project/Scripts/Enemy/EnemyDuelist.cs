@@ -129,13 +129,11 @@ public class EnemyDuelist : EnemyBase
                 if (!hit.CompareTag("Player")) continue;
 
                 DashSkillRuntime dashRuntime = hit.GetComponent<DashSkillRuntime>();
-                if (dashRuntime == null) dashRuntime = hit.GetComponentInParent<DashSkillRuntime>();
                 if (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position))
                     continue;
 
                 // Yonlu parry kontrolu (saldiri noktasindan geliyormus gibi degerlendir)
                 ParrySystem parry = hit.GetComponent<ParrySystem>();
-                if (parry == null) parry = hit.GetComponentInParent<ParrySystem>();
                 Vector2 strikeOrigin = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
                 if (parry != null && parry.TryBlockMelee(strikeOrigin))
                 {
@@ -144,7 +142,6 @@ public class EnemyDuelist : EnemyBase
                 }
 
                 IDamageable damageable = hit.GetComponent<IDamageable>();
-                if (damageable == null) damageable = hit.GetComponentInParent<IDamageable>();
                 if (damageable != null)
                 {
                     damageable.TakeDamage(damage);

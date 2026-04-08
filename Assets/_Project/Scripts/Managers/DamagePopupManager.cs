@@ -2,61 +2,19 @@ using UnityEngine;
 
 public class DamagePopupManager : MonoBehaviour
 {
-    private static DamagePopupManager _instance;
-    public static DamagePopupManager Instance
-    {
-        get
-        {
-            if (_instance == null || !_instance)
-                _instance = FindFirstObjectByType<DamagePopupManager>(FindObjectsInactive.Include);
-            return _instance;
-        }
-        private set => _instance = value;
-    }
+    public static DamagePopupManager Instance { get; private set; }
 
     [SerializeField] private Transform damagePopupPrefab;
     [SerializeField] private GameObject hitParticlePrefab;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetStatic()
-    {
-        _instance = null;
-    }
-
     private void Awake()
     {
-        if (_instance != null && _instance != this)
+        if (Instance != null && Instance != this)
         {
-            bool thisHasRefs = damagePopupPrefab != null || hitParticlePrefab != null;
-            bool instanceMissingRefs = _instance.damagePopupPrefab == null && _instance.hitParticlePrefab == null;
-
-            if (instanceMissingRefs && thisHasRefs)
-            {
-                Destroy(_instance.gameObject);
-                _instance = this;
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
+            Destroy(this); // Sadece scripti sil, objeyi silme
+            return;
         }
-
         Instance = this;
-        if (transform.parent != null)
-            transform.SetParent(null);
-        DontDestroyOnLoad(gameObject);
-
-        if (damagePopupPrefab == null || hitParticlePrefab == null)
-        {
-            Debug.LogWarning("[DamagePopupManager] Prefab referanslari eksik. damagePopupPrefab/hitParticlePrefab kontrol et.");
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (_instance == this)
-            _instance = null;
     }
 
     public void Create(Vector3 position, int damageAmount, bool isCriticalHit)

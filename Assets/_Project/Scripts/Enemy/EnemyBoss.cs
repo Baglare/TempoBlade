@@ -256,7 +256,6 @@ public class EnemyBoss : EnemyBase
         if (!other.CompareTag("Player")) return;
 
         var dashRuntime = other.GetComponent<DashSkillRuntime>();
-        if (dashRuntime == null) dashRuntime = other.GetComponentInParent<DashSkillRuntime>();
         if (dashRuntime != null && dashRuntime.TryDodgeMelee(transform.position))
         {
             isMeleeAttacking = false;
@@ -264,7 +263,6 @@ public class EnemyBoss : EnemyBase
         }
 
         var parry = other.GetComponent<ParrySystem>();
-        if (parry == null) parry = other.GetComponentInParent<ParrySystem>();
         if (parry != null && parry.TryParry())
         {
             Stun(1.5f);
@@ -273,7 +271,6 @@ public class EnemyBoss : EnemyBase
         }
 
         var playerCombat = other.GetComponent<PlayerCombat>();
-        if (playerCombat == null) playerCombat = other.GetComponentInParent<PlayerCombat>();
         if (playerCombat != null)
         {
              float dmg = enemyData != null ? enemyData.damage : 10f;

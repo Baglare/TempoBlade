@@ -33,8 +33,7 @@ public class Projectile : MonoBehaviour, IDeflectable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        GameObject targetRoot = other.attachedRigidbody != null ? other.attachedRigidbody.gameObject : other.gameObject;
-        if (owner != null && (other.gameObject == owner || targetRoot == owner)) return;
+        if (owner != null && other.gameObject == owner) return;
 
         if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
         {
@@ -43,22 +42,15 @@ public class Projectile : MonoBehaviour, IDeflectable
         }
 
         IDamageable damageable = other.GetComponent<IDamageable>();
-        if (damageable == null) damageable = other.GetComponentInParent<IDamageable>();
         if (damageable == null) return;
 
-        bool isTargetPlayer = targetRoot.CompareTag("Player") || other.CompareTag("Player");
-        bool isTargetEnemy = targetRoot.CompareTag("Enemy") || other.CompareTag("Enemy") ||
-                             other.GetComponentInParent<EnemyBase>() != null;
+        bool isHittingEnemy = other.CompareTag("Enemy");
+        if (isHittingEnemy && !hasBeenDeflected)
+            return;
 
-        // Deflect edilmemis projectile sadece oyuncuya hasar verir.
-        if (!hasBeenDeflected && !isTargetPlayer) return;
-        // Deflect edilmis projectile sadece dusmanlara hasar verir.
-        if (hasBeenDeflected && !isTargetEnemy) return;
-
-        if (isTargetPlayer && !hasBeenDeflected)
+        if (other.CompareTag("Player") && !hasBeenDeflected)
         {
             DashSkillRuntime dashRuntime = other.GetComponent<DashSkillRuntime>();
-            if (dashRuntime == null) dashRuntime = other.GetComponentInParent<DashSkillRuntime>();
             if (dashRuntime != null && dashRuntime.TryDodgeProjectile(transform.position))
             {
                 if (DamagePopupManager.Instance != null)
@@ -68,7 +60,6 @@ public class Projectile : MonoBehaviour, IDeflectable
             }
 
             ParrySystem parry = other.GetComponent<ParrySystem>();
-            if (parry == null) parry = other.GetComponentInParent<ParrySystem>();
             if (parry != null && parry.TryDeflect(transform.position))
             {
                 Deflect(other.gameObject);
@@ -103,3 +94,4 @@ public class Projectile : MonoBehaviour, IDeflectable
         Destroy(gameObject);
     }
 }
+
