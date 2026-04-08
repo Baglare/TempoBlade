@@ -782,6 +782,7 @@ GameObject:
   - component: {fileID: 2833685781671096526}
   - component: {fileID: 3604936443535050603}
   - component: {fileID: -2761618015594950017}
+  - component: {fileID: -5123481897325554022}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -938,6 +939,9 @@ MonoBehaviour:
   counterWindowDuration: 1
   counterBonusPerMelee: 0.15
   counterBonusPerRanged: 0.1
+  externalTempoMultiplier: 1
+  externalCooldownMultiplier: 1
+  externalWindowMultiplier: 1
 --- !u!114 &2833685781671096526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1109,6 +1113,86 @@ MonoBehaviour:
   visualConfig: {fileID: 11400000, guid: 19b0734e61090304db7d03fa74df5c64, type: 2}
   tintLerpDuration: 0.25
   scalePunchAmount: 0.15
+--- !u!114 &-5123481897325554022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7397368891858854368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93513c95238a66249a7e6d2cdad6955b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashPerkController
+  projectileDodgeWindow: 0.14
+  projectileDodgeDetectionRange: 0.18
+  projectileSafeExitMargin: 0.05
+  projectileThreatDistance: 2.5
+  meleeDodgeWindow: 0.12
+  meleeDodgeDetectionRange: 0.16
+  meleeSafeExitMargin: 0.04
+  meleeThreatDistance: 1.8
+  counterWindowDuration: 1
+  counterDamageBonus: 0.35
+  counterStaggerBonus: 0.2
+  maxCounterCharges: 1
+  tempoPerAggressiveDash: 8
+  aggressiveDashDetectRange: 2.4
+  tempoGainInternalCooldown: 1.25
+  tempoGainMax: 8
+  postDashAttackWindow: 0.75
+  attackSpeedBonus: 0.2
+  recoveryResetRatio: 0.6
+  attackSpeedInternalCooldown: 4
+  commitDashTempoEfficiency: 0.25
+  commitDashCooldownReduction: 0.2
+  commitDodgeWindowBonus: 0.15
+  commitParryTempoReduction: 0.3
+  commitParryCooldownPenalty: 0.2
+  commitParryWindowReduction: 0.2
+  huntMarkCooldown: 5
+  activeCombatDetectionTime: 1.25
+  randomTargetRange: 8
+  markIdleTimeout: 1.5
+  newHuntTransitionDelay: 0.25
+  newHuntSearchRange: 10
+  frontConeAngle: 110
+  blindSpotDashRange: 2.2
+  targetRotationSlow: 0.35
+  rotationSlowDuration: 1.25
+  blindSpotStunDuration: 0.5
+  blindSpotCounterBonus: 0.4
+  huntProximityRange: 3.2
+  huntCooldownRegenBonus: 0.3
+  huntAttackSpeedCDBonus: 0.35
+  huntFlowCheckInterval: 0.2
+  executeHealthThreshold: 0.18
+  executeRearConeAngle: 70
+  executeDashEntryRange: 2
+  executeInvulnDuration: 0.35
+  executeEntryWindow: 0.2
+  huntKillDamageBonus: 0.01
+  huntKillMaxBonus: 0.15
+  flowMarkWindow: 1.4
+  flowMarkDuration: 6
+  flowMarkDamagePerUnique: 0.04
+  flowMarkMaxUnique: 5
+  snapbackWindow: 0.9
+  snapbackCooldown: 5
+  snapbackDuration: 0.1
+  chainBounceMax: 2
+  chainFirstBounceRatio: 0.6
+  chainFalloffPerBounce: 0.15
+  chainBounceRange: 5
+  blackHoleMarkThreshold: 4
+  blackHoleRadius: 4.5
+  blackHolePullDuration: 1
+  blackHoleCooldown: 10
+  burstWindow: 1.2
+  burstMainMultiplier: 2.2
+  burstPerMarkBonus: 0.2
+  burstSplashRatio: 0.8
 --- !u!1 &7431630693877334261
 GameObject:
   m_ObjectHideFlags: 0

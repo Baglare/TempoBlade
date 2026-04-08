@@ -417,23 +417,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         PlayerController pc = GetComponent<PlayerController>();
         if (pc != null && pc.IsInvulnerable)
         {
-            // --- TIMED DODGE KONTROLU ---
-            float timeSinceDodge = pc.GetTimeSinceDodgeStart();
-            if (timeSinceDodge <= 0.12f) // Cok dar bir pencere: 0.12 saniyeden kisa sure once dodge atilmissa
-            {
-                if (DamagePopupManager.Instance != null)
-                    DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "TIMED DODGE!", Color.cyan, 6f);
-
-                if (TempoManager.Instance != null)
-                    TempoManager.Instance.AddTempo(15f); // Buyuk odul
-            }
-            else
-            {
-                if (DamagePopupManager.Instance != null)
-                    DamagePopupManager.Instance.CreateText(transform.position + Vector3.up, "MISS!", Color.gray, 5f);
-            }
-
-            return; // Hasari alma
+            // Perk sistemi (DashPerkController) tarafından yönetilen dodge window.
+            // DashPerkController, dodge sırasında uygun perkler aktifse
+            // PlayerController.IsInvulnerable'ı açar/kapar.
+            return; // Hasar alma
         }
 
         // Hasar alindi, i-frame baslat

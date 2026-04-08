@@ -530,6 +530,67 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 79438264}
   m_CullTransparentMesh: 1
+--- !u!1 &109084780
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 109084782}
+  - component: {fileID: 109084781}
+  m_Layer: 0
+  m_Name: SkillTreePanel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &109084781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109084780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25ed8d48d2b2da438bfed41994a873d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillTreePanelUI
+  toggleKey: 3
+  dashAxis: {fileID: 11400000, guid: 86094b1508013ec46b6cdbefbfb8526d, type: 2}
+  lockedColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+  unlockedColor: {r: 0.15, g: 0.85, b: 0.55, a: 1}
+  commitmentColor: {r: 1, g: 0.65, b: 0.15, a: 1}
+  t1Color: {r: 0.4, g: 0.75, b: 1, a: 1}
+  hunterColor: {r: 0.9, g: 0.35, b: 0.2, a: 1}
+  flowColor: {r: 0.3, g: 0.55, b: 1, a: 1}
+  panelBg: {r: 0.08, g: 0.08, b: 0.12, a: 0.96}
+  nodeBg: {r: 0.15, g: 0.15, b: 0.2, a: 1}
+  lineColor: {r: 0.4, g: 0.4, b: 0.5, a: 0.6}
+  lineUnlockedColor: {r: 0.15, g: 0.85, b: 0.55, a: 0.8}
+  nodeWidth: 180
+  nodeHeight: 55
+  horizontalSpacing: 50
+  verticalSpacing: 90
+  lineWidth: 2.5
+--- !u!4 &109084782
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 109084780}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &137088244
 GameObject:
   m_ObjectHideFlags: 0
@@ -1698,6 +1759,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550299959}
   m_CullTransparentMesh: 1
+--- !u!1 &751721263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 751721264}
+  - component: {fileID: 751721265}
+  m_Layer: 0
+  m_Name: AxisProgressionManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &751721264
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751721263}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.699542, y: -3.19514, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1875743220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &751721265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 751721263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd8a6ada9cd35fc459da97977f7b60bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AxisProgressionManager
+  database: {fileID: 11400000, guid: e181b6bd1782eb042a3bb7ac8ec4063d, type: 2}
 --- !u!1 &813974534
 GameObject:
   m_ObjectHideFlags: 0
@@ -5222,6 +5328,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 751721264}
   - {fileID: 813974535}
   - {fileID: 1269762879}
   - {fileID: 206417561}
@@ -5697,3 +5804,4 @@ SceneRoots:
   - {fileID: 1010949358}
   - {fileID: 979184716}
   - {fileID: 346856117}
+  - {fileID: 109084782}

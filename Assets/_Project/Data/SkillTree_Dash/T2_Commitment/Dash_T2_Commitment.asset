@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: Dash_T2_Commitment
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: dash_t2_commitment
+  displayName: "Dash Oda\u011F\u0131"
+  description: "Dash'i ana savunma-sald\u0131r\u0131 ritmi olarak se\xE7er. Parry
+    zay\u0131flar, Dash g\xFC\xE7lenir."
+  icon: {fileID: 0}
+  tier: 2
+  isCommitmentNode: 1
+  regionTag: 
+  prerequisites:
+  - {fileID: 11400000, guid: 3091ee561a09f24498fc4b149f6fb51b, type: 2}
+  - {fileID: 11400000, guid: b99e294bd9c42844bbd550bc4ea3b005, type: 2}
+  effects:
+  - type: 1
+    key: dashT2Commitment
+    modifierOp: 0
+    numericValue: 0
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

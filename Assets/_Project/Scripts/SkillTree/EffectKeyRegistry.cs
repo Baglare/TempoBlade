@@ -22,6 +22,30 @@ public static class EffectKeyRegistry
     public const string DashDamage    = "dashDamage";
     public const string CritOnTempo   = "critOnTempo";
 
+    // ═══════════ Dash Perk Keys (T1) ═══════════
+    public const string DashProjectileDodge = "dashProjectileDodge";
+    public const string DashMeleeDodge      = "dashMeleeDodge";
+    public const string DashCounter         = "dashCounter";
+    public const string DashTempoGain       = "dashTempoGain";
+    public const string DashAttackSpeed     = "dashAttackSpeed";
+
+    // ═══════════ Dash Perk Keys (T2 Commitment) ═══════════
+    public const string DashT2Commitment    = "dashT2Commitment";
+
+    // ═══════════ Dash Perk Keys (T2 Avcı) ═══════════
+    public const string DashHuntMark        = "dashHuntMark";
+    public const string DashBlindSpot       = "dashBlindSpot";
+    public const string DashHuntFlow        = "dashHuntFlow";
+    public const string DashExecute         = "dashExecute";
+    public const string DashHuntCycle       = "dashHuntCycle";
+
+    // ═══════════ Dash Perk Keys (T2 Akışçı) ═══════════
+    public const string DashFlowMark        = "dashFlowMark";
+    public const string DashSnapback        = "dashSnapback";
+    public const string DashChainBounce     = "dashChainBounce";
+    public const string DashBlackHole       = "dashBlackHole";
+    public const string DashBurst           = "dashBurst";
+
     // ═══════════ Feature Keys ═══════════
     public const string DoubleJump    = "doubleJump";
     public const string WallSlide     = "wallSlide";
@@ -34,6 +58,14 @@ public static class EffectKeyRegistry
         ParryWindow, ParryRecovery, MoveSpeed, DashCooldown,
         // Flag
         ParryHeal, DashDamage, CritOnTempo,
+        // Dash T1
+        DashProjectileDodge, DashMeleeDodge, DashCounter, DashTempoGain, DashAttackSpeed,
+        // Dash T2
+        DashT2Commitment,
+        // Dash T2 Avcı
+        DashHuntMark, DashBlindSpot, DashHuntFlow, DashExecute, DashHuntCycle,
+        // Dash T2 Akışçı
+        DashFlowMark, DashSnapback, DashChainBounce, DashBlackHole, DashBurst,
         // Feature
         DoubleJump, WallSlide
     };

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -36,9 +37,17 @@ public class PlayerController : MonoBehaviour
     private float dodgeCooldownTimer = 0f;
     private float dodgeTimer = 0f;
     private Vector2 dodgeDir;
-    public bool IsInvulnerable { get; private set; } = false;
+    public bool IsInvulnerable { get; set; } = false;
     private float lastDodgeStartTime = -999f;
     private float currentDodgeSpeed;
+
+    // --- PERK SİSTEMİ EVENT'LERİ ---
+    /// <summary>Dodge başladığında yön bilgisiyle tetiklenir. DashPerkController dinler.</summary>
+    public event Action<Vector2> OnDodgeStarted;
+    /// <summary>Dodge bittiğinde tetiklenir.</summary>
+    public event Action OnDodgeEnded;
+    /// <summary>Dodge başlangıç pozisyonu (Geri Sıçrama perki için).</summary>
+    public Vector2 DodgeStartPos { get; private set; }
 
     // --- EXTERNAL DASH (DashStrike kombosu için PlayerCombat tarafından çağrılır) ---
     private Vector2 externalDashDir;
@@ -214,21 +223,17 @@ public class PlayerController : MonoBehaviour
         dodgeTimer = dodgeDuration;
         dodgeDir = dir;
 
-        IsInvulnerable = true; 
+        // NOT: IsInvulnerable artık burada açılmaz.
+        // Perk sistemi (DashPerkController) dodge window'a göre açar/kapar.
         lastDodgeStartTime = Time.time;
+        DodgeStartPos = rb.position;
         
-        // T2 ve T3 Tempo'da Dodge menzili (hizi uzerinden) %30 artar
         currentDodgeSpeed = dodgeSpeed;
-        if (TempoManager.Instance != null)
-        {
-            var tier = TempoManager.Instance.CurrentTier;
-            if (tier == TempoManager.TempoTier.T2 || tier == TempoManager.TempoTier.T3)
-            {
-                currentDodgeSpeed *= 1.30f; 
-            }
-        }
+        // NOT: Tempo T2/T3 hız bonusu kaldırıldı — skill tree bonusları ile değiştirilecek.
         
         rb.linearVelocity = dodgeDir * currentDodgeSpeed;
+        
+        OnDodgeStarted?.Invoke(dir);
     }
 
     private void UpdateDodge()
@@ -277,6 +282,8 @@ public class PlayerController : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
 
         currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
+        
+        OnDodgeEnded?.Invoke();
     }
 
     // --- EXTERNAL DASH (DashStrike kombosu) ---

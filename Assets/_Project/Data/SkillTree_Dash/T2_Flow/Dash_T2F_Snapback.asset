@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: Dash_T2F_Snapback
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: dash_t2f_snapback
+  displayName: "Geri S\u0131\xE7rama"
+  description: "Dash sonras\u0131 k\u0131sa pencere i\xE7inde ba\u015Flang\u0131\xE7
+    noktas\u0131na geri d\xF6n."
+  icon: {fileID: 0}
+  tier: 2
+  isCommitmentNode: 0
+  regionTag: 
+  prerequisites:
+  - {fileID: 11400000, guid: 801ed8773c3a765429f75a39a62c0257, type: 2}
+  effects:
+  - type: 1
+    key: dashSnapback
+    modifierOp: 0
+    numericValue: 0
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

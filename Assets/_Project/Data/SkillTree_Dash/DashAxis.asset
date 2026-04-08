@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d594e78d7251e0149a3c19f56121f1bf, type: 3}
+  m_Name: DashAxis
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressionAxisSO
+  axisId: axis_dash
+  displayName: Dash Ekseni
+  icon: {fileID: 0}
+  axisColor: {r: 0.2, g: 0.8, b: 1, a: 1}
+  nodes:
+  - {fileID: 11400000, guid: 5a4de10d363bfaf4a8c5a49dfee3fbd0, type: 2}
+  - {fileID: 11400000, guid: c59412741c02c944fb42e035abdb8151, type: 2}
+  - {fileID: 11400000, guid: 3091ee561a09f24498fc4b149f6fb51b, type: 2}
+  - {fileID: 11400000, guid: fe0a62fa5def0f046bdd23dcf8eb0aee, type: 2}
+  - {fileID: 11400000, guid: b99e294bd9c42844bbd550bc4ea3b005, type: 2}
+  - {fileID: 11400000, guid: 801ed8773c3a765429f75a39a62c0257, type: 2}
+  - {fileID: 11400000, guid: 446cbe533d950894aa2a052219d16720, type: 2}
+  - {fileID: 11400000, guid: 515cea1098f625645ba8cf1c2afcbd78, type: 2}
+  - {fileID: 11400000, guid: 73b096999cae2b44180ae96c94ba7480, type: 2}
+  - {fileID: 11400000, guid: 9145dcd1ef28a3c4389e5da700137c33, type: 2}
+  - {fileID: 11400000, guid: 354da23dfdd044a4e90f1b63b5cd575f, type: 2}
+  - {fileID: 11400000, guid: 1b1e31289cabea74d98ffba5e8cde3b1, type: 2}
+  - {fileID: 11400000, guid: 4af057bc3ddc9334b9c78f2a643b440c, type: 2}
+  - {fileID: 11400000, guid: f64400fb75d21d646b232800e5ccbb63, type: 2}
+  - {fileID: 11400000, guid: 379cbfdfa3058bb43b2a318ed08639f9, type: 2}
+  - {fileID: 11400000, guid: ce4df0deb6810a44795b9891b58f8822, type: 2}

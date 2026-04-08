@@ -44,6 +44,16 @@ public class AxisProgressionManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        // SaveManager varsa otomatik olarak kayıtlı skill state'i yükle
+        if (SaveManager.Instance != null)
+        {
+            LoadFromSave(SaveManager.Instance.data);
+            Debug.Log($"[AxisProgression] Save'den yüklendi. Açık node sayısı: {_unlockedNodeIds.Count}");
+        }
+    }
+
     /// <summary>
     /// Save verisinden state'i yükler. Oyun başladığında veya save yüklendiğinde çağrılmalıdır.
     /// </summary>
@@ -437,6 +447,117 @@ public class AxisProgressionManager : MonoBehaviour
                 OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.VisibleLocked);
             }
         }
+    }
+
+    // ═══════════ Deneysel / Debug Toggle ═══════════
+
+    /// <summary>
+    /// [DENEYSEL] Bir node'u açar veya kapatır.
+    /// Açarken prerequisite'leri kontrol eder. Kapatırken bağımlı node'ları da kapatır.
+    /// Commitment ve form gate kontrollerini atlar (deneysel mod).
+    /// Döndürülen değer: 1 = açıldı, 0 = kapatıldı, -1 = prerequisite eksik.
+    /// </summary>
+    public int SmartToggleNode(SkillNodeSO node)
+    {
+        if (node == null) return -1;
+
+        if (_unlockedNodeIds.Contains(node.nodeId))
+        {
+            // Kapatırken: bu node'a bağımlı açık node'ları da kapat (cascade)
+            CascadeLock(node);
+            return 0; // kapatıldı
+        }
+        else
+        {
+            // Açarken: prerequisite kontrolü
+            if (!ArePrerequisitesMet(node))
+            {
+                Debug.Log($"[AxisProgression] Prerequisite eksik: {node.displayName}");
+                return -1; // açılamaz
+            }
+            ForceUnlockNode(node);
+            return 1; // açıldı
+        }
+    }
+
+    /// <summary>Bu node'u ve bu node'a bağımlı tüm açık node'ları kapatır (cascade).</summary>
+    private void CascadeLock(SkillNodeSO node)
+    {
+        // Önce bu node'a prerequisite olarak bağımlı olan açık node'ları bul ve kapat
+        var dependents = GetDependentNodes(node);
+        foreach (var dep in dependents)
+        {
+            if (_unlockedNodeIds.Contains(dep.nodeId))
+                CascadeLock(dep); // recursive
+        }
+
+        // Sonra kendini kapat
+        ForceLockNode(node);
+    }
+
+    /// <summary>Verilen node'u prerequisite olarak kullanan tüm node'ları döndürür.</summary>
+    private List<SkillNodeSO> GetDependentNodes(SkillNodeSO node)
+    {
+        var result = new List<SkillNodeSO>();
+        if (database == null || database.allAxes == null) return result;
+
+        foreach (var axis in database.allAxes)
+        {
+            if (axis == null || axis.nodes == null) continue;
+            foreach (var n in axis.nodes)
+            {
+                if (n == null || n.prerequisites == null) continue;
+                foreach (var prereq in n.prerequisites)
+                {
+                    if (prereq != null && prereq.nodeId == node.nodeId)
+                    {
+                        result.Add(n);
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /// <summary>[DENEYSEL] Bir node'u zorunlu olarak açar (tüm kuralları bypass).</summary>
+    public void ForceUnlockNode(SkillNodeSO node)
+    {
+        if (node == null) return;
+        _unlockedNodeIds.Add(node.nodeId);
+        RebuildPlayerBuild();
+        OnNodeUnlocked?.Invoke(node);
+        OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.Unlocked);
+        Debug.Log($"[AxisProgression] UNLOCK: {node.displayName}");
+        AutoSave();
+    }
+
+    /// <summary>[DENEYSEL] Bir node'u zorunlu olarak kapatır (tüm kuralları bypass).</summary>
+    public void ForceLockNode(SkillNodeSO node)
+    {
+        if (node == null) return;
+        _unlockedNodeIds.Remove(node.nodeId);
+        RebuildPlayerBuild();
+        OnNodeBecameLocked?.Invoke(node);
+        OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.VisibleLocked);
+        Debug.Log($"[AxisProgression] LOCK: {node.displayName}");
+        AutoSave();
+    }
+
+    /// <summary>Node açık mı?</summary>
+    public bool IsNodeUnlocked(SkillNodeSO node)
+    {
+        return node != null && _unlockedNodeIds.Contains(node.nodeId);
+    }
+
+    // ═══════════ Otomatik Kayıt ═══════════
+
+    private void AutoSave()
+    {
+        if (SaveManager.Instance == null) return;
+        SaveToData(SaveManager.Instance.data);
+        SaveManager.Instance.Save();
+        Debug.Log($"[AxisProgression] Otomatik kaydedildi. ({_unlockedNodeIds.Count} node)");
     }
 
     // ═══════════ Debug Yardımcıları ═══════════

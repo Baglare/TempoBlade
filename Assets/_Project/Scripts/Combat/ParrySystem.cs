@@ -39,6 +39,14 @@ public class ParrySystem : MonoBehaviour
     private float   counterTimer;
     private float   recoveryCooldownTimer;
 
+    // ── DashPerkController Commitment Cezaları ───────────────────
+    /// <summary>Parry başarılı bloktan kazandığı tempo çarpanı (1 = normal, 0.7 = %30 azalma).</summary>
+    [HideInInspector] public float externalTempoMultiplier = 1f;
+    /// <summary>Parry recovery cooldown çarpanı (1 = normal, 1.2 = %20 artış).</summary>
+    [HideInInspector] public float externalCooldownMultiplier = 1f;
+    /// <summary>Parry pencere süresi çarpanı (1 = normal, 0.8 = %20 daralma).</summary>
+    [HideInInspector] public float externalWindowMultiplier = 1f;
+
     // ── Events ────────────────────────────────────────────────────────
     public System.Action<Vector2> OnParryStarted;           // Parry basladiginda (aim yonuyle)
     public System.Action<bool>  OnParrySuccess;            // Her basarili blokta (bool isRanged)
@@ -79,7 +87,7 @@ public class ParrySystem : MonoBehaviour
 
         float tempoSpeed = TempoManager.Instance != null
             ? TempoManager.Instance.GetSpeedMultiplier() : 1f;
-        timer = parryWindow / tempoSpeed;
+        timer = (parryWindow * externalWindowMultiplier) / tempoSpeed;
         initialWindowDuration = timer;
 
         OnParryStarted?.Invoke(aimDirection);
@@ -202,7 +210,7 @@ public class ParrySystem : MonoBehaviour
 
         // Recovery cooldown başlat (parryRecovery süresi boyunca yeni parry atamazsın)
         IsOnCooldown = true;
-        recoveryCooldownTimer = parryRecovery;
+        recoveryCooldownTimer = parryRecovery * externalCooldownMultiplier;
 
         if (blockCount > 0)
         {
