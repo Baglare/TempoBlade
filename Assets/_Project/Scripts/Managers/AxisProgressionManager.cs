@@ -453,9 +453,9 @@ public class AxisProgressionManager : MonoBehaviour
 
     /// <summary>
     /// [DENEYSEL] Bir node'u açar veya kapatır.
-    /// Açarken prerequisite'leri kontrol eder. Kapatırken bağımlı node'ları da kapatır.
-    /// Commitment ve form gate kontrollerini atlar (deneysel mod).
-    /// Döndürülen değer: 1 = açıldı, 0 = kapatıldı, -1 = prerequisite eksik.
+    /// Açarken prerequisite'leri ve yol kısıtlamalarını kontrol eder.
+    /// Kapatırken bağımlı node'ları da kapatır.
+    /// Döndürülen değer: 1 = açıldı, 0 = kapatıldı, -1 = prerequisite eksik, -2 = yol kısıtlaması.
     /// </summary>
     public int SmartToggleNode(SkillNodeSO node)
     {
@@ -475,9 +475,54 @@ public class AxisProgressionManager : MonoBehaviour
                 Debug.Log($"[AxisProgression] Prerequisite eksik: {node.displayName}");
                 return -1; // açılamaz
             }
+
+            // Yol kısıtlaması: Avcı vs Akışçı
+            if (IsPathBlocked(node))
+            {
+                Debug.Log($"[AxisProgression] Yol kısıtlaması: {node.displayName}");
+                return -2; // karşı yol açık
+            }
+
             ForceUnlockNode(node);
             return 1; // açıldı
         }
+    }
+
+    /// <summary>Bu node'un karşı yol kısıtlamasına takılıp takılmadığını kontrol eder.</summary>
+    public bool IsPathBlocked(SkillNodeSO node)
+    {
+        if (node == null) return false;
+        string id = node.nodeId;
+
+        // Hunter node açmak istiyorsak → Flow node açık mı?
+        if (id.Contains("_t2h_"))
+            return HasAnyUnlockedWithPrefix("_t2f_");
+
+        // Flow node açmak istiyorsak → Hunter node açık mı?
+        if (id.Contains("_t2f_"))
+            return HasAnyUnlockedWithPrefix("_t2h_");
+
+        return false;
+    }
+
+    /// <summary>Yol engeli nedenini döndürür (UI'da göstermek için).</summary>
+    public string GetBlockReason(SkillNodeSO node)
+    {
+        if (node == null) return "";
+        if (node.nodeId.Contains("_t2h_"))
+            return "Akışçı yolunda açık perk var. Önce onu kapat.";
+        if (node.nodeId.Contains("_t2f_"))
+            return "Avcı yolunda açık perk var. Önce onu kapat.";
+        return "";
+    }
+
+    private bool HasAnyUnlockedWithPrefix(string prefix)
+    {
+        foreach (var id in _unlockedNodeIds)
+        {
+            if (id.Contains(prefix)) return true;
+        }
+        return false;
     }
 
     /// <summary>Bu node'u ve bu node'a bağımlı tüm açık node'ları kapatır (cascade).</summary>

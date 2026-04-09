@@ -455,20 +455,27 @@ public class SkillTreePanelUI : MonoBehaviour
         var mgr = AxisProgressionManager.Instance;
         bool unlocked = mgr != null && mgr.IsNodeUnlocked(slot.node);
         bool prereqsMet = mgr != null && CheckPrereqs(slot.node);
+        bool pathBlocked = mgr != null && mgr.IsPathBlocked(slot.node);
 
         Color tint = GetNodeTintColor(slot.node);
 
         if (unlocked)
         {
-            // AKTİF — parlak kenarlık + koyu iç
             slot.bgImage.color = new Color(tint.r * 0.3f, tint.g * 0.3f, tint.b * 0.3f, 1f);
             slot.borderImage.color = tint;
             slot.label.text = "✅ AKTİF";
             slot.label.color = unlockedColor;
         }
+        else if (pathBlocked)
+        {
+            // KARŞI YOL — kırmızımsı soluk
+            slot.bgImage.color = new Color(0.12f, 0.08f, 0.08f, 1f);
+            slot.borderImage.color = new Color(0.5f, 0.15f, 0.15f, 1f);
+            slot.label.text = "⛔ KARŞI YOL";
+            slot.label.color = new Color(0.7f, 0.25f, 0.25f);
+        }
         else if (prereqsMet)
         {
-            // AÇILABİLİR — sarımsı kenarlık
             slot.bgImage.color = nodeBg;
             slot.borderImage.color = new Color(tint.r * 0.7f, tint.g * 0.7f, tint.b * 0.5f, 1f);
             slot.label.text = "🔓 AÇILABİLİR";
@@ -476,7 +483,6 @@ public class SkillTreePanelUI : MonoBehaviour
         }
         else
         {
-            // KİLİTLİ — soluk kenarlık
             slot.bgImage.color = new Color(0.10f, 0.10f, 0.13f, 1f);
             slot.borderImage.color = new Color(tint.r * 0.2f, tint.g * 0.2f, tint.b * 0.2f, 1f);
             slot.label.text = "🔒 KİLİTLİ";
@@ -528,9 +534,15 @@ public class SkillTreePanelUI : MonoBehaviour
         {
             _descText.text = $"<color=#FF8844>❌ {node.displayName} kapatıldı</color>";
         }
+        else if (result == -2)
+        {
+            // Yol kısıtlaması
+            string reason = AxisProgressionManager.Instance.GetBlockReason(node);
+            _descText.text = $"<color=#FF4444>⛔ {reason}</color>";
+        }
         else
         {
-            // Prerequisite eksik — hangileri gerekiyor göster
+            // Prerequisite eksik
             string missing = "";
             if (node.prerequisites != null)
             {

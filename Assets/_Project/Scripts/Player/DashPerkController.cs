@@ -337,8 +337,6 @@ public class DashPerkController : MonoBehaviour
         if (AxisProgressionManager.Instance != null)
         {
             HandleBuildChanged(AxisProgressionManager.Instance.CurrentBuild);
-            Debug.Log($"<color=lime>[DashPerkController #{GetInstanceID()}] Delayed sync tamamlandı. " +
-                $"ProjDodge={_hasProjectileDodge}</color>");
         }
         else
         {
@@ -388,20 +386,12 @@ public class DashPerkController : MonoBehaviour
 
         // T2 Commitment cezaları → Parry'ye uygula
         ApplyCommitmentModifiers();
-
-        Debug.Log($"<color=yellow>[DashPerkController] Build güncellendi:</color> " +
-            $"ProjectileDodge={_hasProjectileDodge} MeleeDodge={_hasMeleeDodge} " +
-            $"Counter={_hasCounter} TempoGain={_hasTempoGain} AttackSpeed={_hasAttackSpeed} " +
-            $"T2Commit={_hasT2Commitment}");
     }
 
     // ═══════════ DODGE EVENT'LERİ ═══════════
 
     private void HandleDodgeStarted(Vector2 dir)
     {
-        Debug.Log($"<color=white>[DashPerkController #{GetInstanceID()}] DODGE BAŞLADI → " +
-            $"ProjDodge={_hasProjectileDodge} MeleeDodge={_hasMeleeDodge}</color>");
-
         _isDodging = true;
         _dodgeElapsed = 0f;
         _successfulDodgeThisDash = false;
@@ -419,17 +409,6 @@ public class DashPerkController : MonoBehaviour
         {
             _dodgeWindowTimer = totalWindow;
             playerController.IsInvulnerable = true;
-            Debug.Log($"<color=cyan>[DashPerkController] Dodge penceresi açıldı: {totalWindow:F3}s | Invulnerable=TRUE</color>");
-        }
-        else
-        {
-            Debug.Log("<color=red>[DashPerkController] Dodge penceresi YOK — hiçbir dodge perk aktif değil!</color>");
-        }
-
-        // Tempo Kazancı: aggressive dash tespiti
-        if (_hasTempoGain && _tempoGainCooldownTimer <= 0f)
-        {
-            CheckAggressiveDash();
         }
 
         // Akışçı: Geri Sıçrama penceresi
@@ -454,7 +433,6 @@ public class DashPerkController : MonoBehaviour
 
             if (exitMargin > 0f)
             {
-                // Exit margin kadar daha invulnerable kal (timer devam ediyor)
                 _dodgeWindowTimer = exitMargin;
             }
             else
@@ -464,8 +442,8 @@ public class DashPerkController : MonoBehaviour
             }
         }
 
-        // Counter penceresi aç (başarılı dodge olduysa)
-        if (_hasCounter && _successfulDodgeThisDash)
+        // Counter penceresi aç — dodge perk'i aktifse her dodge sonrası
+        if (_hasCounter && (_hasProjectileDodge || _hasMeleeDodge))
         {
             _isCounterWindowActive = true;
             _counterTimer = counterWindowDuration;
@@ -484,6 +462,18 @@ public class DashPerkController : MonoBehaviour
         {
             _isFlowMarkWindowActive = true;
             _flowMarkWindowTimer = flowMarkWindow;
+        }
+
+        // Tempo Kazancı: dash bitiş noktasında düşman çemberi kontrolü
+        if (_hasTempoGain && _tempoGainCooldownTimer <= 0f)
+        {
+            CheckAggressiveDashAtEnd();
+        }
+
+        // Avcı: Kör Nokta kontrolü
+        if (_hasBlindSpot)
+        {
+            CheckBlindSpot();
         }
     }
 
@@ -627,7 +617,11 @@ public class DashPerkController : MonoBehaviour
 
     // ═══════════ T1: TEMPO KAZANCI ═══════════
 
-    private void CheckAggressiveDash()
+    /// <summary>
+    /// Dash BITİŞ noktasında düşman çemberine girmiş mi kontrol eder.
+    /// Düşmanın etrafındaki görünmez çembere dash ile girilirse tempo verir.
+    /// </summary>
+    private void CheckAggressiveDashAtEnd()
     {
         Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, aggressiveDashDetectRange);
         bool isAggressive = false;
@@ -649,6 +643,11 @@ public class DashPerkController : MonoBehaviour
 
             TempoManager.Instance.AddTempo(gain);
             _tempoGainCooldownTimer = tempoGainInternalCooldown;
+
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(
+                    transform.position + Vector3.up * 1.2f,
+                    $"+{gain:F0} TEMPO", new Color(1f, 0.6f, 0f), 5f);
         }
     }
 

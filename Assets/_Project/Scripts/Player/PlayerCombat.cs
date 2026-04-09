@@ -32,6 +32,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private bool isSwinging;
     private float swingEndTime;
 
+    // DashPerkController referansı (cache)
+    private DashPerkController _dashPerks;
+
     // ──────────── COMBO STATE ────────────
     private Vector2 currentAimDir = Vector2.right;
     private int   comboIndex = 0;
@@ -102,6 +105,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         }
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        // DashPerkController referansını cachele
+        _dashPerks = GetComponent<DashPerkController>();
     }
 
     /// <summary>
@@ -265,6 +271,14 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // cooldownAfter veya silahın attackRate'inden hangisi büyükse onu kullan
         // Böylece yavaş silahlar (attackRate=1.0s) kombo cooldown'uyla (0.15s) bypass edilemez
         float effectiveCooldown = Mathf.Max(step.cooldownAfter, GetEffectiveAttackRate());
+
+        // Dash Saldırı Hızı bonusu — post-dash penceresi aktifse cooldown kısalt
+        if (_dashPerks != null && _dashPerks.IsPostDashAttackSpeedActive)
+        {
+            effectiveCooldown *= (1f - _dashPerks.GetAttackSpeedBonus());
+            _dashPerks.ConsumeAttackSpeed();
+        }
+
         nextAttackTime = Time.time + effectiveCooldown;
         StartCoroutine(ExecuteComboStep(step, isLastStep));
     }
@@ -332,10 +346,27 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         ParrySystem parrySystem = GetComponent<ParrySystem>();
         float counterBonus = parrySystem != null ? parrySystem.GetCounterMultiplier() : 0f;
 
+        // Dash karşı saldırı bonusu (üstüne eklenir)
+        float dashCounterBonus = _dashPerks != null ? _dashPerks.GetCounterMultiplier() : 0f;
+        float totalCounter = counterBonus + dashCounterBonus;
+
+        // Kör nokta bonusu (Avcı T2)
+        float blindSpotBonus = _dashPerks != null ? _dashPerks.GetBlindSpotCounterBonus() : 0f;
+        totalCounter += blindSpotBonus;
+
+        // Akışçı: Flow mark hasar bonusu
+        float flowMarkBonus = _dashPerks != null ? _dashPerks.GetFlowMarkDamageBonus() : 0f;
+
+        // Av Devri bonusu (Avcı T2)
+        float huntBonus = _dashPerks != null ? _dashPerks.HuntKillBonus : 0f;
+
         float range   = GetEffectiveRange() + rangeBonus;
         float baseDmg = GetEffectiveDamage();
         float tempo   = TempoManager.Instance != null ? TempoManager.Instance.GetDamageMultiplier() : 1f;
-        float total   = baseDmg * damageMultiplier * tempo * multiplier * (1f + counterBonus);
+        float total   = baseDmg * damageMultiplier * tempo * multiplier 
+                        * (1f + totalCounter) 
+                        * (1f + flowMarkBonus)
+                        * (1f + huntBonus);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, range, enemyLayers);
         bool hitAny = false;
@@ -348,6 +379,20 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 dmgable.TakeDamage(total);
                 if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(2f);
                 hitAny = true;
+
+                // --- Akışçı Perkleri ---
+                var enemy = col.GetComponent<EnemyBase>();
+                if (enemy != null && _dashPerks != null)
+                {
+                    // İşaretleme Akışı: dash sonrası penceredeyse hedefi işaretle
+                    _dashPerks.TryApplyFlowMark(enemy);
+
+                    // Zincir Sekmesi: işaretli hedefe vurunca hasarı sektirir
+                    _dashPerks.TryChainBounce(enemy, total);
+
+                    // Patlama Vuruşu: pencere aktifse büyük hasar
+                    _dashPerks.TryBurst(enemy, baseDmg);
+                }
             }
             var proj = col.GetComponent<IDeflectable>();
             if (proj != null)
@@ -372,15 +417,26 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                     HitStopManager.Instance.PlayHitStop(0.04f, 0.15f); // 0.04s
             }
 
-            // Karşı saldırı bonusu tüket ve popup göster
+            // Parry karşı saldırı bonusu tüket ve popup göster
             if (counterBonus > 0f && parrySystem != null)
             {
                 parrySystem.ConsumeCounter();
                 float displayMult = 1f + counterBonus;
                 DamagePopupManager.Instance?.CreateText(
                     transform.position + Vector3.up * 2f,
-                    $"COUNTER! x{displayMult:F2}",
+                    $"PARRY COUNTER! x{displayMult:F2}",
                     new Color(1f, 0.85f, 0f), 7f);
+            }
+
+            // Dash karşı saldırı bonusu tüket ve popup göster
+            if (dashCounterBonus > 0f && _dashPerks != null)
+            {
+                _dashPerks.ConsumeCounter();
+                float displayMult = 1f + dashCounterBonus;
+                DamagePopupManager.Instance?.CreateText(
+                    transform.position + Vector3.up * 2.5f,
+                    $"DASH COUNTER! x{displayMult:F2}",
+                    new Color(0f, 0.9f, 1f), 7f);
             }
         }
 
