@@ -176,7 +176,11 @@ public class AxisProgressionManager : MonoBehaviour
         if (node.tier >= 3 && !IsFormGatePassed(node))
             return NodeStatus.VisibleLocked;
 
-        // 6. Hepsi tamam
+        // 6. Ayni tier dalinda karsi yol kilidi var mi?
+        if (IsPathBlocked(node))
+            return NodeStatus.VisibleLocked;
+
+        // 7. Hepsi tamam
         return NodeStatus.Unlockable;
     }
 

@@ -138,6 +138,13 @@ public class EnemyDuelist : EnemyBase
                 }
 
                 IDamageable damageable = hit.GetComponent<IDamageable>();
+                var playerController = hit.GetComponent<PlayerController>();
+                if (playerController != null && playerController.IsInvulnerable)
+                {
+                    hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                    continue;
+                }
+
                 if (damageable != null)
                 {
                     damageable.TakeDamage(damage);

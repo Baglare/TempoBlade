@@ -200,8 +200,15 @@ public class EnemyKamikaze : EnemyBase
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
         foreach (var hit in hits)
         {
-            if (hit.CompareTag("Player") && !playerInvulnerable)
-                hit.GetComponent<IDamageable>()?.TakeDamage(explosionDamage);
+            if (!hit.CompareTag("Player")) continue;
+
+            if (playerInvulnerable)
+            {
+                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                continue;
+            }
+
+            hit.GetComponent<IDamageable>()?.TakeDamage(explosionDamage);
         }
 
         Die();

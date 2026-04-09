@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     private ParrySystem parrySystem;
     private PlayerCombat playerCombat;
+    private DashPerkController dashPerkController;
     
     [Header("Movement")]
     public float moveSpeed = 6f;
@@ -40,6 +41,8 @@ public class PlayerController : MonoBehaviour
     public bool IsInvulnerable { get; set; } = false;
     private float lastDodgeStartTime = -999f;
     private float currentDodgeSpeed;
+    private float baseDodgeCooldown;
+    private float externalDodgeCooldownMultiplier = 1f;
 
     // --- PERK SİSTEMİ EVENT'LERİ ---
     /// <summary>Dodge başladığında yön bilgisiyle tetiklenir. DashPerkController dinler.</summary>
@@ -76,6 +79,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         parrySystem = GetComponent<ParrySystem>();
         playerCombat = GetComponent<PlayerCombat>();
+        dashPerkController = GetComponent<DashPerkController>();
+        baseDodgeCooldown = dodgeCooldown;
 
         // Otomatik Ayarlar
         if (rb != null)
@@ -93,6 +98,15 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (dashPerkController != null && Keyboard.current != null)
+        {
+            if (Keyboard.current.leftCtrlKey.wasPressedThisFrame ||
+                Keyboard.current.rightCtrlKey.wasPressedThisFrame)
+            {
+                dashPerkController.TrySnapback();
+            }
+        }
+
         // Debug amaciyla inspector'dan tempoyu degistirmek icin
         if (applyTempoButton && TempoManager.Instance != null)
         {
@@ -277,7 +291,7 @@ public class PlayerController : MonoBehaviour
     private void EndDodge()
     {
         IsInvulnerable = false;
-        dodgeCooldownTimer = dodgeCooldown;
+        dodgeCooldownTimer = baseDodgeCooldown * externalDodgeCooldownMultiplier;
 
         rb.linearVelocity = Vector2.zero;
 
@@ -393,5 +407,16 @@ public class PlayerController : MonoBehaviour
 
 
         if (parrySystem != null) parrySystem.TryParry();
+    }
+
+    public void SetExternalDodgeCooldownMultiplier(float multiplier)
+    {
+        externalDodgeCooldownMultiplier = Mathf.Max(0.05f, multiplier);
+    }
+
+    public void ReduceDodgeCooldown(float amount)
+    {
+        if (amount <= 0f) return;
+        dodgeCooldownTimer = Mathf.Max(0f, dodgeCooldownTimer - amount);
     }
 }

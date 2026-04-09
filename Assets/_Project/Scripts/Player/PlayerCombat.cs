@@ -233,8 +233,23 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public void TryAttack()
     {
         // --- Cooldown / State Guard ---
-        if (Time.time < nextAttackTime) return;
         if (isExecutingComboStep) return;
+
+        if (Time.time < nextAttackTime)
+        {
+            bool canBypassRecovery =
+                _dashPerks != null &&
+                _dashPerks.IsPostDashAttackSpeedActive;
+
+            if (!canBypassRecovery)
+                return;
+
+            float bypassWindow = GetEffectiveAttackRate() * _dashPerks.GetRecoveryResetRatio();
+            if ((nextAttackTime - Time.time) > bypassWindow)
+                return;
+
+            nextAttackTime = Time.time;
+        }
 
         ParrySystem ps = GetComponent<ParrySystem>();
         if (ps != null && ps.IsParryActive) return;
@@ -275,7 +290,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // Dash Saldırı Hızı bonusu — post-dash penceresi aktifse cooldown kısalt
         if (_dashPerks != null && _dashPerks.IsPostDashAttackSpeedActive)
         {
-            effectiveCooldown *= (1f - _dashPerks.GetAttackSpeedBonus());
             _dashPerks.ConsumeAttackSpeed();
         }
 
@@ -370,6 +384,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, range, enemyLayers);
         bool hitAny = false;
+        bool flowMarkAppliedThisAttack = false;
 
         foreach (var col in hits)
         {
@@ -385,7 +400,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 if (enemy != null && _dashPerks != null)
                 {
                     // İşaretleme Akışı: dash sonrası penceredeyse hedefi işaretle
-                    _dashPerks.TryApplyFlowMark(enemy);
+                    if (_dashPerks.TryApplyFlowMark(enemy))
+                        flowMarkAppliedThisAttack = true;
 
                     // Zincir Sekmesi: işaretli hedefe vurunca hasarı sektirir
                     _dashPerks.TryChainBounce(enemy, total);
@@ -401,6 +417,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(10f);
             }
         }
+
+        if (flowMarkAppliedThisAttack && _dashPerks != null)
+            _dashPerks.ConsumeFlowMarkWindow();
 
         if (hitAny)
         {
@@ -437,6 +456,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                     transform.position + Vector3.up * 2.5f,
                     $"DASH COUNTER! x{displayMult:F2}",
                     new Color(0f, 0.9f, 1f), 7f);
+            }
+
+            if (blindSpotBonus > 0f && _dashPerks != null)
+            {
+                _dashPerks.ConsumeBlindSpotBonus();
             }
         }
 

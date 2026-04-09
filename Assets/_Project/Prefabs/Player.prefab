@@ -1143,7 +1143,7 @@ MonoBehaviour:
   tempoGainMax: 8
   postDashAttackWindow: 0.75
   attackSpeedBonus: 0.2
-  recoveryResetRatio: 0.6
+  recoveryResetRatio: 0.99
   attackSpeedInternalCooldown: 4
   commitDashTempoEfficiency: 0.25
   commitDashCooldownReduction: 0.2

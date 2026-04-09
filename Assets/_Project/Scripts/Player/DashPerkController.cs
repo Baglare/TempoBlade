@@ -195,6 +195,10 @@ public class DashPerkController : MonoBehaviour
     private float _dodgeWindowTimer;
     private float _dodgeElapsed;
     private bool _successfulDodgeThisDash;
+    private readonly HashSet<int> _countedDodgedThreats = new HashSet<int>();
+    private int _dodgedMeleeCountThisDash;
+    private int _dodgedProjectileCountThisDash;
+    private float _currentCounterBonus;
 
     // -- Counter --
     private bool _isCounterWindowActive;
@@ -203,6 +207,8 @@ public class DashPerkController : MonoBehaviour
 
     // -- Tempo Gain --
     private float _tempoGainCooldownTimer;
+    private readonly HashSet<int> _aggressiveZoneIds = new HashSet<int>();
+    private float _tempoGainedThisDash;
 
     // -- Attack Speed --
     private bool _isPostDashAttackReady;
@@ -246,7 +252,7 @@ public class DashPerkController : MonoBehaviour
     public bool IsCounterWindowActive => _isCounterWindowActive;
 
     /// <summary>Counter hasar çarpanını döndürür. 0 = aktif değil.</summary>
-    public float GetCounterMultiplier() => _isCounterWindowActive ? counterDamageBonus : 0f;
+    public float GetCounterMultiplier() => _isCounterWindowActive ? _currentCounterBonus : 0f;
 
     /// <summary>Counter'ı tüketir (ilk vuruş sonrası).</summary>
     public void ConsumeCounter()
@@ -257,6 +263,7 @@ public class DashPerkController : MonoBehaviour
         {
             _isCounterWindowActive = false;
             _counterTimer = 0f;
+            _currentCounterBonus = 0f;
         }
     }
 
@@ -288,6 +295,16 @@ public class DashPerkController : MonoBehaviour
 
     /// <summary>Patlama vuruşu penceresi aktif mi?</summary>
     public bool IsBurstWindowActive => _isBurstWindowActive;
+
+    public bool NotifyProjectileDodged(Object threatSource)
+    {
+        return RegisterDodgedThreat(true, threatSource);
+    }
+
+    public bool NotifyMeleeDodged(Object threatSource)
+    {
+        return RegisterDodgedThreat(false, threatSource);
+    }
 
     // ═══════════ LİFECYCLE ═══════════
 
@@ -384,6 +401,8 @@ public class DashPerkController : MonoBehaviour
         _hasBlackHole = build.HasFlag(EffectKeyRegistry.DashBlackHole);
         _hasBurst = build.HasFlag(EffectKeyRegistry.DashBurst);
 
+        ResetInactivePerkState();
+
         // T2 Commitment cezaları → Parry'ye uygula
         ApplyCommitmentModifiers();
     }
@@ -395,6 +414,11 @@ public class DashPerkController : MonoBehaviour
         _isDodging = true;
         _dodgeElapsed = 0f;
         _successfulDodgeThisDash = false;
+        _countedDodgedThreats.Clear();
+        _dodgedMeleeCountThisDash = 0;
+        _dodgedProjectileCountThisDash = 0;
+        _tempoGainedThisDash = 0f;
+        RefreshAggressiveZoneIds();
 
         // Dodge window hesapla (perk'e göre)
         float totalWindow = 0f;
@@ -411,12 +435,6 @@ public class DashPerkController : MonoBehaviour
             playerController.IsInvulnerable = true;
         }
 
-        // Akışçı: Geri Sıçrama penceresi
-        if (_hasSnapback && _snapbackCooldownTimer <= 0f)
-        {
-            _canSnapback = true;
-            _snapbackWindowTimer = snapbackWindow;
-        }
     }
 
     private void HandleDodgeEnded()
@@ -443,12 +461,7 @@ public class DashPerkController : MonoBehaviour
         }
 
         // Counter penceresi aç — dodge perk'i aktifse her dodge sonrası
-        if (_hasCounter && (_hasProjectileDodge || _hasMeleeDodge))
-        {
-            _isCounterWindowActive = true;
-            _counterTimer = counterWindowDuration;
-            _counterCharges = maxCounterCharges;
-        }
+        ActivateCounterWindowFromCurrentDash();
 
         // Post-dash Attack Speed
         if (_hasAttackSpeed && _attackSpeedCooldownTimer <= 0f)
@@ -464,13 +477,18 @@ public class DashPerkController : MonoBehaviour
             _flowMarkWindowTimer = flowMarkWindow;
         }
 
-        // Tempo Kazancı: dash bitiş noktasında düşman çemberi kontrolü
-        if (_hasTempoGain && _tempoGainCooldownTimer <= 0f)
+        if (_hasSnapback && _snapbackCooldownTimer <= 0f)
         {
-            CheckAggressiveDashAtEnd();
+            _canSnapback = true;
+            _snapbackWindowTimer = snapbackWindow;
         }
 
         // Avcı: Kör Nokta kontrolü
+        if (_hasExecute)
+        {
+            TryExecute();
+        }
+
         if (_hasBlindSpot)
         {
             CheckBlindSpot();
@@ -497,7 +515,7 @@ public class DashPerkController : MonoBehaviour
         if (_isDodging)
         {
             _dodgeElapsed += dt;
-            CheckSuccessfulDodge();
+            CheckAggressiveDashEntries();
         }
 
         // -- Counter Timer --
@@ -508,6 +526,7 @@ public class DashPerkController : MonoBehaviour
             {
                 _isCounterWindowActive = false;
                 _counterCharges = 0;
+                _currentCounterBonus = 0f;
             }
         }
 
@@ -547,6 +566,16 @@ public class DashPerkController : MonoBehaviour
         if (_snapbackCooldownTimer > 0f)
             _snapbackCooldownTimer -= dt;
 
+        if (_blindSpotTriggered)
+        {
+            _blindSpotBonusTimer -= dt;
+            if (_blindSpotBonusTimer <= 0f)
+            {
+                _blindSpotTriggered = false;
+                _blindSpotBonusTimer = 0f;
+            }
+        }
+
         // -- Akışçı: Kara Delik cooldown --
         if (_blackHoleCooldownTimer > 0f)
             _blackHoleCooldownTimer -= dt;
@@ -573,39 +602,25 @@ public class DashPerkController : MonoBehaviour
 
     // ═══════════ T1: BAŞARILI DODGE TESPİTİ ═══════════
 
-    private void CheckSuccessfulDodge()
+    private bool RegisterDodgedThreat(bool isRanged, Object threatSource)
     {
-        if (_successfulDodgeThisDash) return;
-        if (!_hasProjectileDodge && !_hasMeleeDodge) return;
+        if (!_isDodging && _dodgeWindowTimer <= 0f) return false;
+        if (threatSource == null) return false;
+        if (isRanged && !_hasProjectileDodge) return false;
+        if (!isRanged && !_hasMeleeDodge) return false;
 
-        // Yakınlarda tehdit var mı kontrol et
-        float detectRange = _hasProjectileDodge ? projectileThreatDistance : meleeThreatDistance;
-        Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, detectRange);
+        int id = threatSource.GetInstanceID();
+        if (!_countedDodgedThreats.Add(id)) return false;
 
-        foreach (var col in nearby)
-        {
-            // Projectile tehdidi
-            if (_hasProjectileDodge && col.TryGetComponent<IDeflectable>(out var proj))
-            {
-                if (proj.ObjectOwner != gameObject && !proj.IsDeflected)
-                {
-                    _successfulDodgeThisDash = true;
-                    ShowDodgePopup("DODGE!");
-                    return;
-                }
-            }
+        _successfulDodgeThisDash = true;
+        if (isRanged) _dodgedProjectileCountThisDash++;
+        else _dodgedMeleeCountThisDash++;
 
-            // Melee tehdidi (düşman saldırı hitbox'u)
-            if (_hasMeleeDodge && col.TryGetComponent<AttackHitbox>(out var hitbox))
-            {
-                if (hitbox.owner != null)
-                {
-                    _successfulDodgeThisDash = true;
-                    ShowDodgePopup("DODGE!");
-                    return;
-                }
-            }
-        }
+        if (!_isDodging)
+            ActivateCounterWindowFromCurrentDash();
+
+        ShowDodgePopup("DODGE!");
+        return true;
     }
 
     private void ShowDodgePopup(string text)
@@ -621,34 +636,64 @@ public class DashPerkController : MonoBehaviour
     /// Dash BITİŞ noktasında düşman çemberine girmiş mi kontrol eder.
     /// Düşmanın etrafındaki görünmez çembere dash ile girilirse tempo verir.
     /// </summary>
-    private void CheckAggressiveDashAtEnd()
+    private void CheckAggressiveDashEntries()
     {
+        if (!_hasTempoGain) return;
+        if (_tempoGainCooldownTimer > 0f) return;
+
         Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, aggressiveDashDetectRange);
-        bool isAggressive = false;
+        HashSet<int> insideNow = new HashSet<int>();
 
         foreach (var col in nearby)
         {
             if (col.CompareTag("Enemy"))
             {
-                isAggressive = true;
-                break;
+                int id = col.gameObject.GetInstanceID();
+                insideNow.Add(id);
+
+                if (!_aggressiveZoneIds.Contains(id))
+                    GrantAggressiveDashTempo();
             }
         }
 
-        if (isAggressive && TempoManager.Instance != null)
+        _aggressiveZoneIds.Clear();
+        foreach (int id in insideNow)
+            _aggressiveZoneIds.Add(id);
+    }
+
+    private void RefreshAggressiveZoneIds()
+    {
+        _aggressiveZoneIds.Clear();
+
+        Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, aggressiveDashDetectRange);
+        foreach (var col in nearby)
         {
-            float gain = tempoPerAggressiveDash;
-            if (_hasT2Commitment) gain *= (1f + commitDashTempoEfficiency);
-            gain = Mathf.Min(gain, tempoGainMax);
-
-            TempoManager.Instance.AddTempo(gain);
-            _tempoGainCooldownTimer = tempoGainInternalCooldown;
-
-            if (DamagePopupManager.Instance != null)
-                DamagePopupManager.Instance.CreateText(
-                    transform.position + Vector3.up * 1.2f,
-                    $"+{gain:F0} TEMPO", new Color(1f, 0.6f, 0f), 5f);
+            if (col.CompareTag("Enemy"))
+                _aggressiveZoneIds.Add(col.gameObject.GetInstanceID());
         }
+    }
+
+    private void GrantAggressiveDashTempo()
+    {
+        if (TempoManager.Instance == null) return;
+
+        float remainingCap = tempoGainMax - _tempoGainedThisDash;
+        if (remainingCap <= 0f) return;
+
+        float gain = tempoPerAggressiveDash;
+        if (_hasT2Commitment) gain *= (1f + commitDashTempoEfficiency);
+        gain = Mathf.Min(gain, remainingCap);
+
+        if (gain <= 0f) return;
+
+        TempoManager.Instance.AddTempo(gain);
+        _tempoGainCooldownTimer = tempoGainInternalCooldown;
+        _tempoGainedThisDash += gain;
+
+        if (DamagePopupManager.Instance != null)
+            DamagePopupManager.Instance.CreateText(
+                transform.position + Vector3.up * 1.2f,
+                $"+{gain:F0} TEMPO", new Color(1f, 0.6f, 0f), 5f);
     }
 
     // ═══════════ T2: COMMITMENT ═══════════
@@ -663,15 +708,17 @@ public class DashPerkController : MonoBehaviour
             parrySystem.externalCooldownMultiplier = 1f + commitParryCooldownPenalty;
             parrySystem.externalWindowMultiplier = 1f - commitParryWindowReduction;
 
-            // Dash cooldown iyileşmesi
             if (playerController != null)
-                playerController.dodgeCooldown *= (1f - commitDashCooldownReduction);
+                playerController.SetExternalDodgeCooldownMultiplier(1f - commitDashCooldownReduction);
         }
         else
         {
             parrySystem.externalTempoMultiplier = 1f;
             parrySystem.externalCooldownMultiplier = 1f;
             parrySystem.externalWindowMultiplier = 1f;
+
+            if (playerController != null)
+                playerController.SetExternalDodgeCooldownMultiplier(1f);
         }
     }
 
@@ -682,7 +729,7 @@ public class DashPerkController : MonoBehaviour
         _huntMarkTimer -= dt;
 
         // Mevcut hedef öldü mü?
-        if (_currentHuntTarget != null && _currentHuntTarget.gameObject == null)
+        if (_currentHuntTarget != null && _currentHuntTarget.HealthPercent <= 0f)
         {
             OnHuntTargetKilled();
             return;
@@ -716,7 +763,13 @@ public class DashPerkController : MonoBehaviour
             }
         }
 
+        if (_currentHuntTarget != null && _currentHuntTarget != closest)
+            _currentHuntTarget.SetPerkMarker(false, Color.red);
+
         _currentHuntTarget = closest;
+
+        if (_currentHuntTarget != null)
+            _currentHuntTarget.SetPerkMarker(true, Color.red);
     }
 
     private void OnHuntTargetKilled()
@@ -728,6 +781,9 @@ public class DashPerkController : MonoBehaviour
                 _huntKillBonusAccumulated + huntKillDamageBonus,
                 huntKillMaxBonus);
         }
+
+        if (_currentHuntTarget != null)
+            _currentHuntTarget.SetPerkMarker(false, Color.red);
 
         _currentHuntTarget = null;
         // Kısa gecikme sonrası yeni hedef aranacak (UpdateHuntMark'ta)
@@ -747,10 +803,11 @@ public class DashPerkController : MonoBehaviour
         float dist = Vector2.Distance(transform.position, _currentHuntTarget.transform.position);
         if (dist <= huntProximityRange)
         {
-            // Dash cooldown daha hızlı doluyor — PlayerController'ın timer'ına müdahale
-            // Bu, Update'te sürekli çağrılarak cooldown'u hızlandırır
-            // Basit yaklaşım: cooldown'u küçük miktarda azalt
-            // (Daha temiz bir yaklaşım playerController'a multiplier eklemek olurdu)
+            if (playerController != null)
+                playerController.ReduceDodgeCooldown(dt * huntCooldownRegenBonus);
+
+            if (_attackSpeedCooldownTimer > 0f)
+                _attackSpeedCooldownTimer = Mathf.Max(0f, _attackSpeedCooldownTimer - (dt * huntAttackSpeedCDBonus));
         }
     }
 
@@ -759,25 +816,32 @@ public class DashPerkController : MonoBehaviour
     /// <summary>
     /// Bir düşmana flow mark ekler. PlayerCombat.PerformHit'ten çağrılır.
     /// </summary>
-    public void TryApplyFlowMark(EnemyBase target)
+    public bool TryApplyFlowMark(EnemyBase target)
     {
-        if (!_hasFlowMark || !_isFlowMarkWindowActive || target == null) return;
+        if (!_hasFlowMark || !_isFlowMarkWindowActive || target == null) return false;
 
         if (_flowMarkedTargets.ContainsKey(target))
         {
             // Süreyi tazele
             _flowMarkedTargets[target] = Time.time + flowMarkDuration;
+            target.SetPerkMarker(true, Color.cyan);
+            return true;
         }
         else if (_flowMarkedTargets.Count < flowMarkMaxUnique)
         {
             _flowMarkedTargets[target] = Time.time + flowMarkDuration;
+            target.SetPerkMarker(true, Color.cyan);
 
             // Kara Delik eşik kontrolü
             if (_hasBlackHole && _flowMarkedTargets.Count >= blackHoleMarkThreshold && _blackHoleCooldownTimer <= 0f)
             {
                 TriggerBlackHole(target);
             }
+
+            return true;
         }
+
+        return false;
     }
 
     /// <summary>İşaretli hedef sayısına göre bonus hasar çarpanı.</summary>
@@ -785,6 +849,12 @@ public class DashPerkController : MonoBehaviour
     {
         if (!_hasFlowMark) return 0f;
         return _flowMarkedTargets.Count * flowMarkDamagePerUnique;
+    }
+
+    public void ConsumeFlowMarkWindow()
+    {
+        _isFlowMarkWindowActive = false;
+        _flowMarkWindowTimer = 0f;
     }
 
     /// <summary>Hedef işaretli mi?</summary>
@@ -804,7 +874,11 @@ public class DashPerkController : MonoBehaviour
                 expired.Add(kv.Key);
         }
         foreach (var e in expired)
+        {
+            if (e != null)
+                e.SetPerkMarker(false, Color.cyan);
             _flowMarkedTargets.Remove(e);
+        }
     }
 
     // ═══════════ AKIŞÇI: GERİ SIÇRAMA ═══════════
@@ -938,6 +1012,11 @@ public class DashPerkController : MonoBehaviour
         }
 
         // İşaretleri temizle
+        foreach (var kv in _flowMarkedTargets)
+        {
+            if (kv.Key != null)
+                kv.Key.SetPerkMarker(false, Color.cyan);
+        }
         _flowMarkedTargets.Clear();
 
         return true;
@@ -971,6 +1050,7 @@ public class DashPerkController : MonoBehaviour
             // Stun uygula
             _currentHuntTarget.Stun(blindSpotStunDuration);
             _blindSpotTriggered = true;
+            _blindSpotBonusTimer = counterWindowDuration;
 
             if (DamagePopupManager.Instance != null)
                 DamagePopupManager.Instance.CreateText(
@@ -985,6 +1065,12 @@ public class DashPerkController : MonoBehaviour
     /// <summary>Kör nokta tetiklendiyse ek counter bonusu.</summary>
     public float GetBlindSpotCounterBonus() => _blindSpotTriggered ? blindSpotCounterBonus : 0f;
 
+    public void ConsumeBlindSpotBonus()
+    {
+        _blindSpotTriggered = false;
+        _blindSpotBonusTimer = 0f;
+    }
+
     // ═══════════ T2 AVCI: İNFAZ DASH'İ ═══════════
 
     /// <summary>
@@ -994,11 +1080,36 @@ public class DashPerkController : MonoBehaviour
     {
         if (!_hasExecute || _currentHuntTarget == null) return false;
 
-        // Can eşiği kontrolü (refleksyon kullanamadığımız için EnemyBase'e public getter eklenebilir)
-        // Şimdilik basit yaklaşım: doğrudan field erişimi yok, bu yüzden atlıyoruz
-        // TODO: EnemyBase.HealthPercent property eklenince aktif edilecek
+        if (_currentHuntTarget.HealthPercent > executeHealthThreshold)
+            return false;
 
-        return false;
+        float dist = Vector2.Distance(transform.position, _currentHuntTarget.transform.position);
+        if (dist > executeDashEntryRange)
+            return false;
+
+        Vector2 targetForward = _currentHuntTarget.transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+        Vector2 toPlayer = ((Vector2)transform.position - (Vector2)_currentHuntTarget.transform.position).normalized;
+        float rearAngle = Vector2.Angle(-targetForward, toPlayer);
+        if (rearAngle > executeRearConeAngle * 0.5f)
+            return false;
+
+        float lethalDamage = Mathf.Max(_currentHuntTarget.CurrentHealth, _currentHuntTarget.MaxHealth) + 1f;
+        _currentHuntTarget.TakeDamage(lethalDamage);
+
+        if (DamagePopupManager.Instance != null)
+            DamagePopupManager.Instance.CreateText(
+                _currentHuntTarget.transform.position + Vector3.up * 2f,
+                "INFAZ!", new Color(1f, 0.2f, 0.2f), 8f);
+
+        if (playerController != null)
+            StartCoroutine(TemporaryInvulnerability(executeInvulnDuration));
+
+        if (_currentHuntTarget != null)
+            _currentHuntTarget.SetPerkMarker(false, Color.red);
+
+        _currentHuntTarget = null;
+
+        return true;
     }
 
     // ═══════════ ODA SIFIRLAMA ═══════════
@@ -1007,9 +1118,133 @@ public class DashPerkController : MonoBehaviour
     public void ResetRoomData()
     {
         _huntKillBonusAccumulated = 0f;
+        if (_currentHuntTarget != null)
+            _currentHuntTarget.SetPerkMarker(false, Color.red);
+        foreach (var kv in _flowMarkedTargets)
+        {
+            if (kv.Key != null)
+                kv.Key.SetPerkMarker(false, Color.cyan);
+        }
         _flowMarkedTargets.Clear();
         _currentHuntTarget = null;
         _isBlackHoleActive = false;
         _isBurstWindowActive = false;
+    }
+
+    private float GetCounterBonusPerMelee()
+    {
+        return parrySystem != null ? parrySystem.counterBonusPerMelee : 0.15f;
+    }
+
+    private float GetCounterBonusPerRanged()
+    {
+        return parrySystem != null ? parrySystem.counterBonusPerRanged : 0.10f;
+    }
+
+    private void ActivateCounterWindowFromCurrentDash()
+    {
+        if (!_hasCounter || (_dodgedProjectileCountThisDash <= 0 && _dodgedMeleeCountThisDash <= 0))
+        {
+            _isCounterWindowActive = false;
+            _counterTimer = 0f;
+            _counterCharges = 0;
+            _currentCounterBonus = 0f;
+            return;
+        }
+
+        _isCounterWindowActive = true;
+        _counterTimer = counterWindowDuration;
+        _counterCharges = maxCounterCharges;
+        _currentCounterBonus =
+            (_dodgedMeleeCountThisDash * GetCounterBonusPerMelee()) +
+            (_dodgedProjectileCountThisDash * GetCounterBonusPerRanged());
+    }
+
+    private void ResetInactivePerkState()
+    {
+        if (!_hasCounter)
+        {
+            _isCounterWindowActive = false;
+            _counterTimer = 0f;
+            _counterCharges = 0;
+            _currentCounterBonus = 0f;
+        }
+
+        if (!_hasTempoGain)
+        {
+            _aggressiveZoneIds.Clear();
+            _tempoGainedThisDash = 0f;
+        }
+
+        if (!_hasAttackSpeed)
+        {
+            _isPostDashAttackReady = false;
+            _postDashAttackTimer = 0f;
+            _attackSpeedCooldownTimer = 0f;
+        }
+
+        if (!_hasHuntMark)
+        {
+            if (_currentHuntTarget != null)
+                _currentHuntTarget.SetPerkMarker(false, Color.red);
+            _currentHuntTarget = null;
+            _huntMarkTimer = 0f;
+        }
+
+        if (!_hasHuntCycle)
+        {
+            _huntKillBonusAccumulated = 0f;
+        }
+
+        if (!_hasBlindSpot)
+        {
+            ConsumeBlindSpotBonus();
+        }
+
+        if (!_hasFlowMark)
+        {
+            foreach (var kv in _flowMarkedTargets)
+            {
+                if (kv.Key != null)
+                    kv.Key.SetPerkMarker(false, Color.cyan);
+            }
+            _flowMarkedTargets.Clear();
+            _isFlowMarkWindowActive = false;
+            _flowMarkWindowTimer = 0f;
+        }
+
+        if (!_hasSnapback)
+        {
+            _canSnapback = false;
+            _snapbackWindowTimer = 0f;
+            _snapbackCooldownTimer = 0f;
+        }
+
+        if (!_hasBlackHole)
+        {
+            _isBlackHoleActive = false;
+            _blackHoleCooldownTimer = 0f;
+        }
+
+        if (!_hasBurst)
+        {
+            _isBurstWindowActive = false;
+            _burstWindowTimer = 0f;
+        }
+    }
+
+    private System.Collections.IEnumerator TemporaryInvulnerability(float duration)
+    {
+        if (playerController == null) yield break;
+
+        playerController.IsInvulnerable = true;
+        yield return new WaitForSeconds(duration);
+
+        if (playerController != null &&
+            playerController.currentState != PlayerController.PlayerState.Dodging &&
+            playerController.currentState != PlayerController.PlayerState.DashStriking)
+        {
+            playerController.IsInvulnerable = false;
+        }
     }
 }

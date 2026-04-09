@@ -72,6 +72,14 @@ public class Projectile : MonoBehaviour, IDeflectable
                     Deflect(other.gameObject);
                     return; // Zarar verme, yok olma
                 }
+
+                var playerController = other.GetComponent<PlayerController>();
+                if (playerController != null && playerController.IsInvulnerable)
+                {
+                    other.GetComponent<DashPerkController>()?.NotifyProjectileDodged(this);
+                    DestroyProjectile();
+                    return;
+                }
             }
 
             // Normal Hasar

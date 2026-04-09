@@ -86,6 +86,14 @@ public class BossProjectile : MonoBehaviour, IDeflectable
                     }
                     return;
                 }
+
+                var playerController = other.GetComponent<PlayerController>();
+                if (playerController != null && playerController.IsInvulnerable)
+                {
+                    other.GetComponent<DashPerkController>()?.NotifyProjectileDodged(this);
+                    Destroy(gameObject);
+                    return;
+                }
             }
 
             // Normal Hasar (Sekmişse Boss'a 2xvurur, sekmemişse oyuncuya 1x)

@@ -154,6 +154,13 @@ public class EnemyAssassin : EnemyBase
             if (parry != null && parry.TryBlockMelee(transform.position))
                 continue; // Parry basarili — suikastci geri cekiliyor
 
+            var playerController = hit.GetComponent<PlayerController>();
+            if (playerController != null && playerController.IsInvulnerable)
+            {
+                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                continue;
+            }
+
             hit.GetComponent<IDamageable>()?.TakeDamage(attackDamage);
         }
 

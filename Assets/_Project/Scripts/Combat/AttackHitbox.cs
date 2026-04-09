@@ -22,6 +22,13 @@ public class AttackHitbox : MonoBehaviour
 
 
         var playerCombat = other.GetComponent<PlayerCombat>();
+        var playerController = other.GetComponent<PlayerController>();
+        if (playerController != null && playerController.IsInvulnerable)
+        {
+            other.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+            return;
+        }
+
         if (playerCombat != null)
         {
              float dmg = (owner != null && owner.enemyData != null) ? owner.enemyData.damage : 10f;

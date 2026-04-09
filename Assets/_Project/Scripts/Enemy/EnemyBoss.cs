@@ -264,6 +264,13 @@ public class EnemyBoss : EnemyBase
         }
 
         var playerCombat = other.GetComponent<PlayerCombat>();
+        var playerController = other.GetComponent<PlayerController>();
+        if (playerController != null && playerController.IsInvulnerable)
+        {
+            other.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+            return;
+        }
+
         if (playerCombat != null)
         {
              float dmg = enemyData != null ? enemyData.damage : 10f;

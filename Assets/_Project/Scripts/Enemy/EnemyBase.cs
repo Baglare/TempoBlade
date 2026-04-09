@@ -8,6 +8,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected float currentHealth;
     protected bool isStunned;
 
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
+    public float HealthPercent => MaxHealth > 0f ? currentHealth / MaxHealth : 0f;
+
     protected virtual void Start()
     {
         if (enemyData != null)
@@ -73,6 +77,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     [Header("Effects")]
     [SerializeField] private GameObject deathVFX;
+    private LineRenderer perkMarkerLine;
+    private static Material perkMarkerMaterial;
 
     /// <summary>
     /// Ölüm animasyonu için Destroy gecikmesi (saniye).
@@ -108,5 +114,57 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         // Animasyon hook'u tetikle, ardından gecikmeli yok et (deathDelay=0 ise anında)
         OnDeathAnimationStart();
         Destroy(gameObject, deathDelay);
+    }
+    public void SetPerkMarker(bool active, Color color)
+    {
+        if (!active)
+        {
+            if (perkMarkerLine != null)
+                perkMarkerLine.enabled = false;
+            return;
+        }
+
+        EnsurePerkMarker();
+        perkMarkerLine.enabled = true;
+        perkMarkerLine.startColor = color;
+        perkMarkerLine.endColor = color;
+    }
+
+    private void EnsurePerkMarker()
+    {
+        if (perkMarkerLine != null) return;
+
+        GameObject markerObj = new GameObject("PerkMarker");
+        markerObj.transform.SetParent(transform, false);
+        markerObj.transform.localPosition = new Vector3(0f, 1.1f, 0f);
+
+        perkMarkerLine = markerObj.AddComponent<LineRenderer>();
+        perkMarkerLine.useWorldSpace = false;
+        perkMarkerLine.loop = true;
+        perkMarkerLine.positionCount = 20;
+        perkMarkerLine.widthMultiplier = 0.04f;
+        perkMarkerLine.numCapVertices = 4;
+        perkMarkerLine.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        perkMarkerLine.receiveShadows = false;
+        perkMarkerLine.textureMode = LineTextureMode.Stretch;
+        perkMarkerLine.alignment = LineAlignment.TransformZ;
+        perkMarkerLine.sortingOrder = 100;
+
+        if (perkMarkerMaterial == null)
+        {
+            Shader shader = Shader.Find("Sprites/Default");
+            if (shader != null)
+                perkMarkerMaterial = new Material(shader);
+        }
+
+        if (perkMarkerMaterial != null)
+            perkMarkerLine.material = perkMarkerMaterial;
+
+        float radius = 0.12f;
+        for (int i = 0; i < perkMarkerLine.positionCount; i++)
+        {
+            float t = (i / (float)perkMarkerLine.positionCount) * Mathf.PI * 2f;
+            perkMarkerLine.SetPosition(i, new Vector3(Mathf.Cos(t) * radius, Mathf.Sin(t) * radius, 0f));
+        }
     }
 }
