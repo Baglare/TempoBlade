@@ -3621,6 +3621,7 @@ MonoBehaviour:
   pendingReward: {fileID: 0}
   lastDoorDirection: -1
   roomSequence:
+  - {fileID: 11400000, guid: 8c3c022fa0a1bb04d9066e700d726791, type: 2}
   - {fileID: 11400000, guid: a85425745b9298945a5d54a69eb0dbb2, type: 2}
   - {fileID: 11400000, guid: 866aa13e0e724d342add88e3971c63c0, type: 2}
   - {fileID: 11400000, guid: f8b49919a68a5b545ab55a8c23877735, type: 2}

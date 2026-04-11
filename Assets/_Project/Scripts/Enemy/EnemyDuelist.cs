@@ -3,6 +3,12 @@ using System.Collections;
 
 public class EnemyDuelist : EnemyBase
 {
+    private static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
+    private static readonly int AnimIsGuarding = Animator.StringToHash("IsGuarding");
+    private static readonly int AnimAttack = Animator.StringToHash("Attack");
+    private static readonly int AnimHurt = Animator.StringToHash("Hurt");
+    private static readonly int AnimDie = Animator.StringToHash("Die");
+
     [Header("Duelist Settings")]
     public float moveSpeed = 2f;
     public float attackRange = 1.5f;
@@ -23,16 +29,30 @@ public class EnemyDuelist : EnemyBase
     [Tooltip("WeaponArcVisual component'i. Enemy altındaki child'a eklenir.")]
     public WeaponArcVisual weaponArcVisual;
 
+    [Header("Animation")]
+    [SerializeField] private float deathAnimDuration = 0.5f;
+
+    [Header("Attack Alignment")]
+    [SerializeField] private bool autoAlignAttackPoint = true;
+    [SerializeField] private float attackPointFrontPadding = 0.08f;
+    [SerializeField] private float attackPointHeightOffset = 0f;
+
     private Transform playerTransform;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
     private float nextAttackTime;
     private bool isAttacking;
+    private bool isDead;
 
     protected override void Start()
     {
         base.Start();
+        deathDelay = deathAnimDuration;
         // Find player
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null) playerTransform = player.transform;
+        animator = GetComponentInChildren<Animator>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         
         // Start with guard up
         isGuarding = true;
@@ -43,6 +63,8 @@ public class EnemyDuelist : EnemyBase
 
     private void Update()
     {
+        if (isDead) return;
+
         // Kılıç/yay görselini her frame güncelle
         if (weaponArcVisual != null && playerTransform != null)
         {
@@ -50,13 +72,20 @@ public class EnemyDuelist : EnemyBase
             weaponArcVisual.UpdateVisuals(transform.position, dirToPlayer, isAttacking, false);
         }
 
-        if (isStunned || playerTransform == null) return;
+        bool isMoving = false;
+
+        if (isStunned || playerTransform == null)
+        {
+            UpdateAnimatorState(false);
+            return;
+        }
 
         // Face Player
         FacePlayer();
         
         // Renk degisimi ile durum goster (Gecici Visual Feedback)
         UpdateVisuals();
+        SyncAttackPointToSprite();
 
         if (isAttacking) return;
 
@@ -74,7 +103,10 @@ public class EnemyDuelist : EnemyBase
         {
             // Approach slowly with guard
             MoveTowardsPlayer();
+            isMoving = true;
         }
+
+        UpdateAnimatorState(isMoving);
     }
 
     private void FacePlayer()
@@ -99,6 +131,8 @@ public class EnemyDuelist : EnemyBase
     {
         isAttacking = true;
         isGuarding = false; // Drop guard to attack!
+        UpdateAnimatorState(false);
+        if (animator != null) animator.SetTrigger(AnimAttack);
 
         // 1. Telegraph (Hazirlik)
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
@@ -177,10 +211,13 @@ public class EnemyDuelist : EnemyBase
         isGuarding = true; // Raise guard again
         isAttacking = false;
         nextAttackTime = Time.time + currentCooldown;
+        UpdateAnimatorState(false);
     }
 
     public override void TakeDamage(float amount)
     {
+        if (isDead) return;
+
         // Blok Kontrolu
         if (isGuarding && playerTransform != null)
         {
@@ -206,13 +243,21 @@ public class EnemyDuelist : EnemyBase
         }
 
         // Blok degilse veya arkadan vurduysa hasar ye
+        if (animator != null) animator.SetTrigger(AnimHurt);
         base.TakeDamage(amount);
     }
     
     private void UpdateVisuals()
     {
-        SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
+        SpriteRenderer sr = spriteRenderer != null ? spriteRenderer : GetComponentInChildren<SpriteRenderer>();
         if (sr == null) return;
+
+        if (animator != null)
+        {
+            if (!isAttacking)
+                sr.color = Color.white;
+            return;
+        }
 
         if (isAttacking) 
         {
@@ -228,6 +273,43 @@ public class EnemyDuelist : EnemyBase
             // Not: HitFlash karisabilir, o yuzden surekli set etmemek lazim.
             // Simdilik sadece Guard durumunu mavi yapiyoruz.
         }
+    }
+
+    private void SyncAttackPointToSprite()
+    {
+        if (!autoAlignAttackPoint || attackPoint == null || spriteRenderer == null || spriteRenderer.sprite == null)
+            return;
+
+        Bounds spriteBounds = spriteRenderer.sprite.bounds;
+        Vector3 local = attackPoint.localPosition;
+        local.x = spriteBounds.extents.x + attackPointFrontPadding;
+        local.y = spriteBounds.center.y + attackPointHeightOffset;
+        attackPoint.localPosition = local;
+    }
+
+    protected override void OnDeathAnimationStart()
+    {
+        isDead = true;
+        StopAllCoroutines();
+
+        if (animator != null)
+            animator.SetTrigger(AnimDie);
+
+        var rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        var col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
+    }
+
+    private void UpdateAnimatorState(bool isMoving)
+    {
+        if (animator == null) return;
+
+        animator.SetBool(AnimIsMoving, isMoving);
+        animator.SetBool(AnimIsGuarding, isGuarding && !isAttacking && !isDead && !isStunned);
     }
 
     private void OnDrawGizmosSelected()
