@@ -561,12 +561,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillTreePanelUI
   toggleKey: 3
   dashAxis: {fileID: 11400000, guid: 86094b1508013ec46b6cdbefbfb8526d, type: 2}
+  parryAxis: {fileID: 11400000, guid: 45dd7e8d8a27a664fb0078d3b30bf859, type: 2}
   lockedColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}
   unlockedColor: {r: 0.15, g: 0.85, b: 0.55, a: 1}
   commitmentColor: {r: 1, g: 0.65, b: 0.15, a: 1}
-  t1Color: {r: 0.4, g: 0.75, b: 1, a: 1}
+  dashT1Color: {r: 0.4, g: 0.75, b: 1, a: 1}
   hunterColor: {r: 0.9, g: 0.35, b: 0.2, a: 1}
   flowColor: {r: 0.3, g: 0.55, b: 1, a: 1}
+  parryT1Color: {r: 1, g: 0.55, b: 0.2, a: 1}
+  ballisticColor: {r: 1, g: 0.78, b: 0.28, a: 1}
+  perfectionistColor: {r: 1, g: 0.32, b: 0.32, a: 1}
   panelBg: {r: 0.08, g: 0.08, b: 0.12, a: 0.96}
   nodeBg: {r: 0.15, g: 0.15, b: 0.2, a: 1}
   lineColor: {r: 0.4, g: 0.4, b: 0.5, a: 0.6}

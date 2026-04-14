@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour, IDeflectable
@@ -5,117 +6,220 @@ public class Projectile : MonoBehaviour, IDeflectable
     public float speed = 10f;
     public float damage = 10f;
     public float lifeTime = 5f;
-    
-    // Kim sıktı? (Kendini vurmasın)
+
     [HideInInspector] public GameObject owner;
+    private GameObject sourceOwner;
+
     public GameObject ObjectOwner => owner;
+    public GameObject SourceOwner => sourceOwner;
 
     private Rigidbody2D rb;
-    private bool hasBeenDeflected = false;
+    private SpriteRenderer spriteRenderer;
+    private bool hasBeenDeflected;
+    private float remainingLife;
+    private int remainingPierceCount;
+    private float suppressDuration;
+    private int splitCount;
+    private float splitDamageMultiplier = 0.5f;
+    private float splitAngleSpread = 20f;
+    private float splitSpeedMultiplier = 1f;
+    private bool hasSpawnedSplits;
+    private readonly HashSet<int> hitTargets = new HashSet<int>();
+
     public bool IsDeflected => hasBeenDeflected;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        remainingLife = lifeTime;
     }
 
-    private void Start()
+    private void Update()
     {
-        // Belirli süre sonra yok et (performans)
-        Destroy(gameObject, lifeTime);
+        remainingLife -= Time.deltaTime;
+        if (remainingLife <= 0f)
+            DestroyProjectile();
     }
 
     public void Launch(Vector2 direction)
     {
-        if (rb != null)
-        {
-            rb.linearVelocity = direction.normalized * speed;
-            
-            // Merminin yönüne dönmesi için rotasyon ayarı
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
+        if (sourceOwner == null)
+            sourceOwner = owner;
+
+        ApplyVelocity(direction.normalized * speed);
+    }
+
+    public void Deflect(DeflectContext context)
+    {
+        if (hasBeenDeflected)
+            return;
+
+        hasBeenDeflected = true;
+        sourceOwner = owner != null ? owner : sourceOwner;
+        owner = context.newOwner;
+
+        remainingPierceCount = Mathf.Max(0, context.pierceCount);
+        suppressDuration = Mathf.Max(0f, context.suppressDuration);
+        splitCount = Mathf.Max(0, context.splitCount);
+        splitDamageMultiplier = Mathf.Max(0f, context.splitDamageMultiplier);
+        splitAngleSpread = Mathf.Max(0f, context.splitAngleSpread);
+        splitSpeedMultiplier = Mathf.Max(0.05f, context.splitSpeedMultiplier);
+
+        damage *= Mathf.Max(0f, context.damageMultiplier);
+
+        Vector2 newDirection = ResolveDeflectDirection();
+        float finalSpeed = speed * Mathf.Max(0.05f, context.speedMultiplier);
+        speed = finalSpeed;
+        ApplyVelocity(newDirection * finalSpeed);
+
+        remainingLife = Mathf.Max(remainingLife, lifeTime + 2f);
+        hitTargets.Clear();
+
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.yellow;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Kendine çarpma
-        if (owner != null && other.gameObject == owner) return;
+        if (owner != null && other.gameObject == owner)
+            return;
 
-        // Duvara çarpma (Layer check is safer than Tag)
         if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
         {
             DestroyProjectile();
             return;
         }
 
-        // Oyuncuya veya Düşmana çarpma
         IDamageable damageable = other.GetComponent<IDamageable>();
-        
-        if (damageable != null)
+        if (damageable == null)
+            return;
+
+        bool isHittingEnemy = other.CompareTag("Enemy");
+
+        if (isHittingEnemy && !hasBeenDeflected)
+            return;
+
+        if (other.CompareTag("Player") && !hasBeenDeflected)
         {
-            // Dost atesi (Friendly Fire) Kontrolu
-            bool isHittingEnemy = other.CompareTag("Enemy");
-            
-            // Eger oyuncu tarafindan sekmediyse ve bir dusmana (kendisi olmayan) carptiysa, icinden gec (hicbir sey yapma)
-            if (isHittingEnemy && !hasBeenDeflected)
+            ParrySystem parry = other.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryDeflect(transform.position, gameObject))
             {
+                Deflect(BuildDeflectContext(other.gameObject));
                 return;
             }
 
-            // Eğer Oyuncuya çarptıysa ve Parry yapıyorsa -> DEFLECT
-            if (other.CompareTag("Player") && !hasBeenDeflected)
+            var playerController = other.GetComponent<PlayerController>();
+            if (playerController != null && playerController.IsInvulnerable)
             {
-                ParrySystem parry = other.GetComponent<ParrySystem>();
-                if (parry != null && parry.TryDeflect(transform.position)) // Konum tabanlı parry
-                {
-                    Deflect(other.gameObject);
-                    return; // Zarar verme, yok olma
-                }
-
-                var playerController = other.GetComponent<PlayerController>();
-                if (playerController != null && playerController.IsInvulnerable)
-                {
-                    other.GetComponent<DashPerkController>()?.NotifyProjectileDodged(this);
-                    DestroyProjectile();
-                    return;
-                }
+                other.GetComponent<DashPerkController>()?.NotifyProjectileDodged(this);
+                DestroyProjectile();
+                return;
             }
+        }
 
-            // Normal Hasar
-            damageable.TakeDamage(damage);
-            DestroyProjectile();
+        int targetId = other.GetInstanceID();
+        if (!hitTargets.Add(targetId))
+            return;
+
+        damageable.TakeDamage(damage);
+
+        if (hasBeenDeflected && isHittingEnemy)
+        {
+            owner?.GetComponent<ParryPerkController>()?.HandleProjectileHitReaction(other.gameObject);
+
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(transform.position + Vector3.up, "DEFLECT HIT!", Color.magenta, 8f);
+
+            TrySpawnSplitProjectiles();
+
+            if (remainingPierceCount > 0)
+            {
+                remainingPierceCount--;
+                return;
+            }
+        }
+
+        DestroyProjectile();
+    }
+
+    private DeflectContext BuildDeflectContext(GameObject newOwner)
+    {
+        var parryPerks = newOwner.GetComponent<ParryPerkController>();
+        return parryPerks != null ? parryPerks.BuildDeflectContext() : DeflectContext.Default(newOwner);
+    }
+
+    private Vector2 ResolveDeflectDirection()
+    {
+        if (sourceOwner != null)
+            return ((Vector2)sourceOwner.transform.position - (Vector2)transform.position).normalized;
+
+        if (rb != null && rb.linearVelocity.sqrMagnitude > 0.001f)
+            return -rb.linearVelocity.normalized;
+
+        return Vector2.right;
+    }
+
+    private void ApplyVelocity(Vector2 velocity)
+    {
+        if (rb != null)
+            rb.linearVelocity = velocity;
+
+        if (velocity.sqrMagnitude > 0.001f)
+        {
+            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
     }
 
-    public void Deflect(GameObject newOwner)
+    private void TrySpawnSplitProjectiles()
     {
-        if (hasBeenDeflected) return;
-        
-        hasBeenDeflected = true;
-        // Yönü ters çevir
-        if (rb != null)
+        if (!hasBeenDeflected || hasSpawnedSplits || splitCount <= 0)
+            return;
+
+        hasSpawnedSplits = true;
+
+        Vector2 baseVelocity = rb != null && rb.linearVelocity.sqrMagnitude > 0.001f
+            ? rb.linearVelocity
+            : Vector2.right * speed;
+
+        for (int i = 0; i < splitCount; i++)
         {
-            rb.linearVelocity = -rb.linearVelocity * 1.5f; // Hızlanarak geri dönsün
-            transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z + 180f);
+            float t = splitCount == 1 ? 0.5f : i / (float)(splitCount - 1);
+            float angleOffset = Mathf.Lerp(-splitAngleSpread * 0.5f, splitAngleSpread * 0.5f, t);
+            Vector2 splitVelocity = Quaternion.Euler(0f, 0f, angleOffset) * baseVelocity.normalized * (speed * splitSpeedMultiplier);
+
+            GameObject cloneObj = Instantiate(gameObject, transform.position, Quaternion.identity);
+            Projectile clone = cloneObj.GetComponent<Projectile>();
+            if (clone == null)
+                continue;
+
+            clone.ConfigureSplitClone(owner, sourceOwner, damage * splitDamageMultiplier, splitVelocity, suppressDuration);
         }
+    }
 
-        // Sahibi değiştir (Artık düşmanı vurabilir)
-        owner = newOwner;
-        
-        // Ömrünü uzat
-        lifeTime += 2f; 
-        
-        // Renk değiştir (Görsel feedback)
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null) sr.color = Color.yellow;
-        
+    private void ConfigureSplitClone(GameObject currentOwner, GameObject originalSourceOwner, float newDamage, Vector2 velocity, float splitSuppressDuration)
+    {
+        owner = currentOwner;
+        sourceOwner = originalSourceOwner;
+        damage = newDamage;
+        speed = velocity.magnitude;
+        remainingLife = Mathf.Max(1f, lifeTime * 0.5f);
+        hasBeenDeflected = true;
+        remainingPierceCount = 0;
+        suppressDuration = splitSuppressDuration;
+        splitCount = 0;
+        hasSpawnedSplits = true;
+        hitTargets.Clear();
 
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.yellow;
+
+        ApplyVelocity(velocity);
     }
 
     private void DestroyProjectile()
     {
-        // İleride buraya patlama efekti (VFX) ekleyeceğiz
         Destroy(gameObject);
     }
 }

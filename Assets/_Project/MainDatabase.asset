@@ -14,5 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AxisDatabaseSO
   allAxes:
   - {fileID: 11400000, guid: 86094b1508013ec46b6cdbefbfb8526d, type: 2}
-  opposingPairs: []
+  - {fileID: 11400000, guid: 45dd7e8d8a27a664fb0078d3b30bf859, type: 2}
+  opposingPairs:
+  - {fileID: 11400000, guid: 56fedf08d9dc75c499fd1aa118746233, type: 2}
   formOverlays: []

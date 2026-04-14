@@ -18,7 +18,7 @@ using System.Collections;
 ///   Attack/TakeHit → Idle   (Has Exit Time: true, otomatik dönüş)
 ///   Die → [Exit]            (Has Exit Time: true, Loop Time: false)
 /// </summary>
-public class EnemyCaster : EnemyBase
+public class EnemyCaster : EnemyBase, IParryReactive
 {
     [Header("Caster Settings")]
     public GameObject projectilePrefab;
@@ -44,6 +44,9 @@ public class EnemyCaster : EnemyBase
     private Transform playerTransform;
     private bool isAttacking = false;
     private bool isDead = false;
+    private Coroutine suppressRoutine;
+
+    public bool AllowParryExecute => true;
 
     protected override void Start()
     {
@@ -203,5 +206,32 @@ public class EnemyCaster : EnemyBase
         if (col != null) col.enabled = false;
 
         if (animator != null) animator.SetTrigger("Die");
+    }
+
+    public void OnParryReaction(ParryReactionContext context)
+    {
+        if (isDead)
+            return;
+
+        StopAllCoroutines();
+        isAttacking = false;
+        if (telegraphLine != null)
+            telegraphLine.enabled = false;
+
+        if (animator != null)
+            animator.SetTrigger("TakeHit");
+
+        if (suppressRoutine != null)
+            StopCoroutine(suppressRoutine);
+
+        suppressRoutine = StartCoroutine(SuppressRoutine(Mathf.Max(0.05f, context.duration)));
+    }
+
+    private IEnumerator SuppressRoutine(float duration)
+    {
+        base.Stun(duration);
+        nextFireTime = Mathf.Max(nextFireTime, Time.time + duration);
+        yield return new WaitForSeconds(duration);
+        suppressRoutine = null;
     }
 }

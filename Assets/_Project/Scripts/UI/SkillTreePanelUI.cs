@@ -1,31 +1,28 @@
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
-/// <summary>
-/// Dash Skill Tree görsel paneli.
-/// Tab tuşuyla açılır/kapanır. Runtime'da tüm UI hiyerarşisini programatik oluşturur.
-/// Deneysel modda: Node'ları tıklayarak serbestçe aç/kapat.
-/// </summary>
 public class SkillTreePanelUI : MonoBehaviour
 {
-    [Header("Tuş Ayarı")]
-    [Tooltip("Paneli açma/kapama tuşu")]
+    [Header("Input")]
     public Key toggleKey = Key.Tab;
 
-    [Header("Dash Axis Referansı")]
-    [Tooltip("Dash ekseni SO — node listesi buradan okunur")]
+    [Header("Axis References")]
     public ProgressionAxisSO dashAxis;
+    public ProgressionAxisSO parryAxis;
 
-    [Header("Renk Şeması")]
+    [Header("Colors")]
     public Color lockedColor = new Color(0.30f, 0.30f, 0.35f, 1f);
     public Color unlockedColor = new Color(0.15f, 0.85f, 0.55f, 1f);
     public Color commitmentColor = new Color(1f, 0.65f, 0.15f, 1f);
-    public Color t1Color = new Color(0.4f, 0.75f, 1f, 1f);
+    public Color dashT1Color = new Color(0.4f, 0.75f, 1f, 1f);
     public Color hunterColor = new Color(0.9f, 0.35f, 0.2f, 1f);
     public Color flowColor = new Color(0.3f, 0.55f, 1f, 1f);
+    public Color parryT1Color = new Color(1f, 0.55f, 0.2f, 1f);
+    public Color ballisticColor = new Color(1f, 0.78f, 0.28f, 1f);
+    public Color perfectionistColor = new Color(1f, 0.32f, 0.32f, 1f);
     public Color panelBg = new Color(0.08f, 0.08f, 0.12f, 0.96f);
     public Color nodeBg = new Color(0.15f, 0.15f, 0.20f, 1f);
     public Color lineColor = new Color(0.4f, 0.4f, 0.5f, 0.6f);
@@ -38,22 +35,25 @@ public class SkillTreePanelUI : MonoBehaviour
     public float verticalSpacing = 62f;
     public float lineWidth = 2.5f;
 
-    // ═══════════ Runtime ═══════════
-    private Canvas _canvas;
-    private GameObject _panelRoot;
-    private bool _isOpen;
-    private readonly Dictionary<string, NodeSlot> _slots = new Dictionary<string, NodeSlot>();
-    private readonly List<LineConnection> _lines = new List<LineConnection>();
-    private TextMeshProUGUI _titleText;
-    private TextMeshProUGUI _descText;
+    private Canvas canvas;
+    private GameObject panelRoot;
+    private RectTransform nodeContainer;
+    private RectTransform lineContainer;
+    private RectTransform tierLabelContainer;
+    private TextMeshProUGUI titleText;
+    private TextMeshProUGUI descText;
+    private bool isOpen;
+    private ProgressionAxisSO activeAxis;
+
+    private readonly Dictionary<string, NodeSlot> slots = new Dictionary<string, NodeSlot>();
+    private readonly List<LineConnection> lines = new List<LineConnection>();
 
     private class NodeSlot
     {
         public SkillNodeSO node;
-        public RectTransform rect;
-        public Image bgImage;
-        public TextMeshProUGUI label;
-        public Image borderImage;
+        public Image background;
+        public Image border;
+        public TextMeshProUGUI status;
     }
 
     private class LineConnection
@@ -64,41 +64,52 @@ public class SkillTreePanelUI : MonoBehaviour
         public string toId;
     }
 
-    // ═══════════ LAYOUT TANIMLAMALARI ═══════════
-    // Her node'un grid pozisyonu (col, row) — ağaç yapısına uygun
-
-    private static readonly Dictionary<string, Vector2Int> NodeGridPositions = new Dictionary<string, Vector2Int>
+    private static readonly Dictionary<string, Vector2Int> DashGrid = new Dictionary<string, Vector2Int>
     {
-        // T1 — Row 0
-        { "dash_t1_ranged_dodge",   new Vector2Int(0, 0) },
-        { "dash_t1_melee_dodge",    new Vector2Int(1, 0) },
-        { "dash_t1_tempo_gain",     new Vector2Int(3, 0) },
-        // T1 — Row 1
-        { "dash_t1_counter",        new Vector2Int(0, 1) },   // ranged + melee → counter
-        { "dash_t1_attack_speed",   new Vector2Int(3, 1) },   // tempo → speed
-        // T2 Commitment — Row 2
-        { "dash_t2_commitment",     new Vector2Int(2, 2) },
-        // T2 Avcı — Row 3-5 (sol taraf)
-        { "dash_t2h_hunt_mark",     new Vector2Int(0, 3) },
-        { "dash_t2h_blind_spot",    new Vector2Int(0, 4) },
-        { "dash_t2h_hunt_flow",     new Vector2Int(1, 4) },
-        { "dash_t2h_execute",       new Vector2Int(0, 5) },
-        { "dash_t2h_hunt_cycle",    new Vector2Int(0, 6) },
-        // T2 Akışçı — Row 3-5 (sağ taraf)
-        { "dash_t2f_flow_mark",     new Vector2Int(3, 3) },
-        { "dash_t2f_snapback",      new Vector2Int(4, 3) },
-        { "dash_t2f_chain_bounce",  new Vector2Int(3, 4) },
-        { "dash_t2f_black_hole",    new Vector2Int(3, 5) },
-        { "dash_t2f_burst",         new Vector2Int(4, 5) },
+        { "dash_t1_ranged_dodge", new Vector2Int(0, 0) },
+        { "dash_t1_melee_dodge", new Vector2Int(1, 0) },
+        { "dash_t1_tempo_gain", new Vector2Int(3, 0) },
+        { "dash_t1_counter", new Vector2Int(0, 1) },
+        { "dash_t1_attack_speed", new Vector2Int(3, 1) },
+        { "dash_t2_commitment", new Vector2Int(2, 2) },
+        { "dash_t2h_hunt_mark", new Vector2Int(0, 3) },
+        { "dash_t2h_blind_spot", new Vector2Int(0, 4) },
+        { "dash_t2h_hunt_flow", new Vector2Int(1, 4) },
+        { "dash_t2h_execute", new Vector2Int(0, 5) },
+        { "dash_t2h_hunt_cycle", new Vector2Int(0, 6) },
+        { "dash_t2f_flow_mark", new Vector2Int(3, 3) },
+        { "dash_t2f_snapback", new Vector2Int(4, 3) },
+        { "dash_t2f_chain_bounce", new Vector2Int(3, 4) },
+        { "dash_t2f_black_hole", new Vector2Int(3, 5) },
+        { "dash_t2f_burst", new Vector2Int(4, 5) }
     };
 
-    // ═══════════ LIFECYCLE ═══════════
+    private static readonly Dictionary<string, Vector2Int> ParryGrid = new Dictionary<string, Vector2Int>
+    {
+        { "parry_t1_reflect", new Vector2Int(0, 0) },
+        { "parry_t1_perfect_timing", new Vector2Int(3, 0) },
+        { "parry_t1_counter_stance", new Vector2Int(0, 1) },
+        { "parry_t1_perfect_break", new Vector2Int(3, 1) },
+        { "parry_t1_rhythm_return", new Vector2Int(2, 2) },
+        { "parry_t2_commitment", new Vector2Int(2, 3) },
+        { "parry_t2b_reverse_front", new Vector2Int(0, 4) },
+        { "parry_t2b_overdeflect", new Vector2Int(1, 4) },
+        { "parry_t2b_suppressive_trace", new Vector2Int(0, 5) },
+        { "parry_t2b_fractured_orbit", new Vector2Int(1, 5) },
+        { "parry_t2b_feedback", new Vector2Int(0, 6) },
+        { "parry_t2p_close_execute", new Vector2Int(3, 4) },
+        { "parry_t2p_fine_edge", new Vector2Int(4, 4) },
+        { "parry_t2p_heavy_riposte", new Vector2Int(3, 5) },
+        { "parry_t2p_rotating_cone", new Vector2Int(4, 5) },
+        { "parry_t2p_perfect_cycle", new Vector2Int(4, 6) }
+    };
 
     private void Start()
     {
-        BuildUI();
-        _panelRoot.SetActive(false);
-        _isOpen = false;
+        BuildShell();
+        SetActiveAxis(dashAxis != null ? dashAxis : parryAxis);
+        panelRoot.SetActive(false);
+        isOpen = false;
     }
 
     private void OnEnable()
@@ -116,444 +127,421 @@ public class SkillTreePanelUI : MonoBehaviour
     private void Update()
     {
         if (Keyboard.current != null && Keyboard.current[toggleKey].wasPressedThisFrame)
-        {
             TogglePanel();
-        }
 
-        // ESC ile kapat
-        if (_isOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
+        if (isOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             ClosePanel();
-        }
     }
 
     public void TogglePanel()
     {
-        if (_isOpen) ClosePanel();
+        if (isOpen) ClosePanel();
         else OpenPanel();
     }
 
     private void OpenPanel()
     {
-        _isOpen = true;
-        _panelRoot.SetActive(true);
+        isOpen = true;
+        panelRoot.SetActive(true);
         RefreshAllSlots();
         Time.timeScale = 0f;
     }
 
     private void ClosePanel()
     {
-        _isOpen = false;
-        _panelRoot.SetActive(false);
+        isOpen = false;
+        panelRoot.SetActive(false);
         Time.timeScale = 1f;
-        _descText.text = "";
+        if (descText != null)
+            descText.text = "";
     }
 
-    // ═══════════ UI OLUŞTURMA ═══════════
-
-    private void BuildUI()
+    private void BuildShell()
     {
-        // Canvas
         var canvasGO = new GameObject("SkillTreeCanvas");
         canvasGO.transform.SetParent(transform);
-        _canvas = canvasGO.AddComponent<Canvas>();
-        _canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        _canvas.sortingOrder = 100;
+        canvas = canvasGO.AddComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = 100;
         canvasGO.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         canvasGO.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920, 1080);
         canvasGO.AddComponent<GraphicRaycaster>();
 
-        // Panel root (arka plan)
-        _panelRoot = CreatePanel(canvasGO.transform, "SkillTreePanel", panelBg);
-        var panelRect = _panelRoot.GetComponent<RectTransform>();
+        panelRoot = CreatePanel(canvasGO.transform, "SkillTreePanel", panelBg);
+        var panelRect = panelRoot.GetComponent<RectTransform>();
         panelRect.anchorMin = Vector2.zero;
         panelRect.anchorMax = Vector2.one;
         panelRect.offsetMin = new Vector2(30, 20);
         panelRect.offsetMax = new Vector2(-30, -20);
 
-        // Başlık
-        _titleText = CreateText(_panelRoot.transform, "Title", "⚡ DASH SKILL TREE ⚡",
-            28, FontStyle.Bold, new Color(0.9f, 0.9f, 0.95f));
-        var titleRect = _titleText.GetComponent<RectTransform>();
+        titleText = CreateText(panelRoot.transform, "Title", "SKILL TREE", 28, FontStyles.Bold, new Color(0.9f, 0.9f, 0.95f));
+        var titleRect = titleText.rectTransform;
         titleRect.anchorMin = new Vector2(0.5f, 1f);
         titleRect.anchorMax = new Vector2(0.5f, 1f);
         titleRect.pivot = new Vector2(0.5f, 1f);
-        titleRect.anchoredPosition = new Vector2(0, -8);
-        titleRect.sizeDelta = new Vector2(600, 35);
+        titleRect.anchoredPosition = new Vector2(0, -10);
+        titleRect.sizeDelta = new Vector2(700, 36);
+        titleText.alignment = TextAlignmentOptions.Center;
 
-        // Deneysel uyarı
-        var warnText = CreateText(_panelRoot.transform, "Warning",
-            "[DENEYSEL MOD] Tıklayarak perkleri serbestçe aç/kapat",
-            14, FontStyle.Italic, new Color(1f, 0.8f, 0.3f, 0.7f));
-        var warnRect = warnText.GetComponent<RectTransform>();
-        warnRect.anchorMin = new Vector2(0.5f, 1f);
-        warnRect.anchorMax = new Vector2(0.5f, 1f);
-        warnRect.pivot = new Vector2(0.5f, 1f);
-        warnRect.anchoredPosition = new Vector2(0, -38);
-        warnRect.sizeDelta = new Vector2(500, 22);
+        var warningText = CreateText(panelRoot.transform, "Warning", "[DENEYSEL MOD] Tiklayarak perkleri ac/kapat", 14, FontStyles.Italic, new Color(1f, 0.8f, 0.3f, 0.7f));
+        var warningRect = warningText.rectTransform;
+        warningRect.anchorMin = new Vector2(0.5f, 1f);
+        warningRect.anchorMax = new Vector2(0.5f, 1f);
+        warningRect.pivot = new Vector2(0.5f, 1f);
+        warningRect.anchoredPosition = new Vector2(0, -42);
+        warningRect.sizeDelta = new Vector2(500, 22);
+        warningText.alignment = TextAlignmentOptions.Center;
 
-        // Kapatma butonu
-        var closeBtnGO = CreatePanel(_panelRoot.transform, "CloseBtn", new Color(0.8f, 0.2f, 0.2f, 0.9f));
+        var closeBtnGO = CreatePanel(panelRoot.transform, "CloseBtn", new Color(0.8f, 0.2f, 0.2f, 0.9f));
         var closeBtnRect = closeBtnGO.GetComponent<RectTransform>();
         closeBtnRect.anchorMin = new Vector2(1f, 1f);
         closeBtnRect.anchorMax = new Vector2(1f, 1f);
         closeBtnRect.pivot = new Vector2(1f, 1f);
         closeBtnRect.anchoredPosition = new Vector2(-10, -10);
         closeBtnRect.sizeDelta = new Vector2(40, 40);
-        var closeBtn = closeBtnGO.AddComponent<Button>();
-        closeBtn.onClick.AddListener(ClosePanel);
-        var closeLabel = CreateText(closeBtnGO.transform, "X", "✕", 22, FontStyle.Bold, Color.white);
+        closeBtnGO.AddComponent<Button>().onClick.AddListener(ClosePanel);
+        var closeLabel = CreateText(closeBtnGO.transform, "CloseLabel", "X", 22, FontStyles.Bold, Color.white);
+        Stretch(closeLabel.rectTransform);
         closeLabel.alignment = TextAlignmentOptions.Center;
-        closeLabel.GetComponent<RectTransform>().anchorMin = Vector2.zero;
-        closeLabel.GetComponent<RectTransform>().anchorMax = Vector2.one;
-        closeLabel.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-        closeLabel.GetComponent<RectTransform>().offsetMax = Vector2.zero;
 
-        // Node'lar için container (ortalanmış)
-        var containerGO = new GameObject("NodeContainer");
-        containerGO.transform.SetParent(_panelRoot.transform, false);
-        var containerRect = containerGO.AddComponent<RectTransform>();
-        containerRect.anchorMin = new Vector2(0.5f, 0.5f);
-        containerRect.anchorMax = new Vector2(0.5f, 0.5f);
-        containerRect.pivot = new Vector2(0.5f, 0.5f);
-        containerRect.anchoredPosition = new Vector2(0, -10);
-        containerRect.sizeDelta = new Vector2(1000, 580);
+        CreateAxisButton(panelRoot.transform, "DashTab", "Dash", new Vector2(-70f, -78f), () => SetActiveAxis(dashAxis));
+        CreateAxisButton(panelRoot.transform, "ParryTab", "Parry", new Vector2(70f, -78f), () => SetActiveAxis(parryAxis));
 
-        // Çizgiler için container (node'ların altında)
-        var linesGO = new GameObject("LineContainer");
-        linesGO.transform.SetParent(containerRect, false);
-        var linesRect = linesGO.AddComponent<RectTransform>();
-        linesRect.anchorMin = Vector2.zero;
-        linesRect.anchorMax = Vector2.one;
-        linesRect.offsetMin = Vector2.zero;
-        linesRect.offsetMax = Vector2.zero;
+        var nodeContainerGO = new GameObject("NodeContainer");
+        nodeContainerGO.transform.SetParent(panelRoot.transform, false);
+        nodeContainer = nodeContainerGO.AddComponent<RectTransform>();
+        nodeContainer.anchorMin = new Vector2(0.5f, 0.5f);
+        nodeContainer.anchorMax = new Vector2(0.5f, 0.5f);
+        nodeContainer.pivot = new Vector2(0.5f, 0.5f);
+        nodeContainer.anchoredPosition = new Vector2(0, -15);
+        nodeContainer.sizeDelta = new Vector2(1000, 620);
 
-        // Açıklama alanı (alt kısım)
-        _descText = CreateText(_panelRoot.transform, "Description", "",
-            15, FontStyle.Normal, new Color(0.8f, 0.8f, 0.85f));
-        var descRect = _descText.GetComponent<RectTransform>();
+        var lineContainerGO = new GameObject("LineContainer");
+        lineContainerGO.transform.SetParent(nodeContainer, false);
+        lineContainer = lineContainerGO.AddComponent<RectTransform>();
+        Stretch(lineContainer);
+
+        var tierContainerGO = new GameObject("TierLabelContainer");
+        tierContainerGO.transform.SetParent(nodeContainer, false);
+        tierLabelContainer = tierContainerGO.AddComponent<RectTransform>();
+        Stretch(tierLabelContainer);
+
+        descText = CreateText(panelRoot.transform, "Description", "", 14, FontStyles.Normal, new Color(0.8f, 0.8f, 0.85f));
+        var descRect = descText.rectTransform;
         descRect.anchorMin = new Vector2(0f, 0f);
         descRect.anchorMax = new Vector2(1f, 0f);
         descRect.pivot = new Vector2(0.5f, 0f);
-        descRect.anchoredPosition = new Vector2(0, 5);
-        descRect.sizeDelta = new Vector2(-80, 40);
-        _descText.alignment = TextAlignmentOptions.Center;
-        _descText.fontSize = 13;
-
-        // Tier label'ları
-        CreateTierLabels(containerRect);
-
-        // Node'ları oluştur
-        if (dashAxis != null && dashAxis.nodes != null)
-        {
-            foreach (var node in dashAxis.nodes)
-            {
-                if (node == null) continue;
-                BuildNodeSlot(node, containerRect, linesRect);
-            }
-        }
-
-        // Çizgileri oluştur (prerequisite bağlantıları)
-        if (dashAxis != null && dashAxis.nodes != null)
-        {
-            foreach (var node in dashAxis.nodes)
-            {
-                if (node == null || node.prerequisites == null) continue;
-                foreach (var prereq in node.prerequisites)
-                {
-                    if (prereq == null) continue;
-                    CreateLine(linesRect, prereq.nodeId, node.nodeId);
-                }
-            }
-        }
+        descRect.anchoredPosition = new Vector2(0, 8);
+        descRect.sizeDelta = new Vector2(-90, 48);
+        descText.alignment = TextAlignmentOptions.Center;
     }
 
-    private void CreateTierLabels(RectTransform container)
+    private void CreateAxisButton(Transform parent, string name, string label, Vector2 anchoredPosition, UnityEngine.Events.UnityAction onClick)
     {
-        string[] labels = { "TIER 1", "TIER 1", "COMMITMENT", "TIER 2", "TIER 2", "TIER 2", "TIER 2" };
-        Color[] colors = { t1Color, t1Color, commitmentColor, hunterColor, hunterColor, hunterColor, hunterColor };
+        var buttonGO = CreatePanel(parent, name, new Color(0.18f, 0.18f, 0.24f, 0.95f));
+        var rect = buttonGO.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 1f);
+        rect.anchorMax = new Vector2(0.5f, 1f);
+        rect.pivot = new Vector2(0.5f, 1f);
+        rect.anchoredPosition = anchoredPosition;
+        rect.sizeDelta = new Vector2(120, 34);
+
+        var button = buttonGO.AddComponent<Button>();
+        button.onClick.AddListener(onClick);
+
+        var text = CreateText(buttonGO.transform, "Label", label, 16, FontStyles.Bold, Color.white);
+        Stretch(text.rectTransform);
+        text.alignment = TextAlignmentOptions.Center;
+    }
+
+    private void SetActiveAxis(ProgressionAxisSO axis)
+    {
+        if (axis == null)
+            return;
+
+        activeAxis = axis;
+        titleText.text = axis == parryAxis ? "PARRY SKILL TREE" : "DASH SKILL TREE";
+        RebuildAxisView();
+    }
+
+    private void RebuildAxisView()
+    {
+        slots.Clear();
+        lines.Clear();
+        ClearChildren(nodeContainer, preserve: new HashSet<string> { "LineContainer", "TierLabelContainer" });
+        ClearChildren(lineContainer);
+        ClearChildren(tierLabelContainer);
+
+        if (activeAxis == null || activeAxis.nodes == null)
+            return;
+
+        CreateTierLabels();
+
+        foreach (var node in activeAxis.nodes)
+        {
+            if (node == null)
+                continue;
+
+            BuildNodeSlot(node);
+        }
+
+        foreach (var node in activeAxis.nodes)
+        {
+            if (node == null || node.prerequisites == null)
+                continue;
+
+            foreach (var prereq in node.prerequisites)
+            {
+                if (prereq != null)
+                    CreateLine(prereq.nodeId, node.nodeId);
+            }
+        }
+
+        RefreshAllSlots();
+    }
+
+    private void CreateTierLabels()
+    {
+        string[] labels = { "TIER 1", "TIER 1", "TIER 1", "COMMITMENT", "TIER 2", "TIER 2", "TIER 2" };
+        Color tint = activeAxis == parryAxis ? parryT1Color : dashT1Color;
 
         for (int row = 0; row < labels.Length; row++)
         {
-            Vector2 pos = GridToLocal(new Vector2Int(-1, row), container);
-            var txt = CreateText(container, $"TierLabel_{row}", labels[row],
-                12, FontStyle.Bold, colors[row] * 0.6f);
-            var r = txt.GetComponent<RectTransform>();
-            r.anchorMin = new Vector2(0.5f, 0.5f);
-            r.anchorMax = new Vector2(0.5f, 0.5f);
-            r.pivot = new Vector2(0.5f, 0.5f);
-            r.anchoredPosition = pos;
-            r.sizeDelta = new Vector2(100, 30);
-            txt.alignment = TextAlignmentOptions.Right;
+            Vector2 pos = GridToLocal(new Vector2Int(-1, row));
+            var text = CreateText(tierLabelContainer, $"TierLabel_{row}", labels[row], 12, FontStyles.Bold, tint * 0.7f);
+            var rect = text.rectTransform;
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = pos;
+            rect.sizeDelta = new Vector2(110, 30);
+            text.alignment = TextAlignmentOptions.Right;
         }
     }
 
-    private void BuildNodeSlot(SkillNodeSO node, RectTransform container, RectTransform lineContainer)
+    private void BuildNodeSlot(SkillNodeSO node)
     {
-        if (!NodeGridPositions.TryGetValue(node.nodeId, out Vector2Int gridPos))
+        if (!GetCurrentGrid().TryGetValue(node.nodeId, out Vector2Int gridPos))
         {
-            Debug.LogWarning($"[SkillTreePanel] Grid pozisyonu tanımlı değil: {node.nodeId}");
+            Debug.LogWarning($"[SkillTreePanelUI] Grid position tanimli degil: {node.nodeId}");
             return;
         }
 
-        Vector2 localPos = GridToLocal(gridPos, container);
-
-        // Arka plan + border
+        Vector2 localPos = GridToLocal(gridPos);
         var slotGO = new GameObject($"Node_{node.nodeId}");
-        slotGO.transform.SetParent(container, false);
-        var slotRect = slotGO.AddComponent<RectTransform>();
-        slotRect.anchorMin = new Vector2(0.5f, 0.5f);
-        slotRect.anchorMax = new Vector2(0.5f, 0.5f);
-        slotRect.pivot = new Vector2(0.5f, 0.5f);
-        slotRect.anchoredPosition = localPos;
-        slotRect.sizeDelta = new Vector2(nodeWidth, nodeHeight);
+        slotGO.transform.SetParent(nodeContainer, false);
 
-        // Border (outer glow)
-        var borderImg = slotGO.AddComponent<Image>();
-        borderImg.color = GetNodeTintColor(node);
+        var rect = slotGO.AddComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0.5f, 0.5f);
+        rect.anchoredPosition = localPos;
+        rect.sizeDelta = new Vector2(nodeWidth, nodeHeight);
 
-        // Inner fill
-        var innerGO = CreatePanel(slotGO.transform, "Inner", nodeBg);
-        var innerRect = innerGO.GetComponent<RectTransform>();
+        var border = slotGO.AddComponent<Image>();
+        border.color = GetNodeTintColor(node);
+
+        var inner = CreatePanel(slotGO.transform, "Inner", nodeBg);
+        var innerRect = inner.GetComponent<RectTransform>();
         innerRect.anchorMin = Vector2.zero;
         innerRect.anchorMax = Vector2.one;
         innerRect.offsetMin = new Vector2(2, 2);
         innerRect.offsetMax = new Vector2(-2, -2);
-        var innerImg = innerGO.GetComponent<Image>();
+        var background = inner.GetComponent<Image>();
 
-        // İsim
-        var nameText = CreateText(innerGO.transform, "Name", node.displayName,
-            12, FontStyle.Bold, Color.white);
+        var nameText = CreateText(inner.transform, "Name", node.displayName, 12, FontStyles.Bold, Color.white);
         nameText.alignment = TextAlignmentOptions.Center;
-        var nameRect = nameText.GetComponent<RectTransform>();
-        nameRect.anchorMin = new Vector2(0, 0.25f);
-        nameRect.anchorMax = new Vector2(1, 1);
+        var nameRect = nameText.rectTransform;
+        nameRect.anchorMin = new Vector2(0f, 0.25f);
+        nameRect.anchorMax = new Vector2(1f, 1f);
         nameRect.offsetMin = new Vector2(5, 0);
         nameRect.offsetMax = new Vector2(-5, -4);
 
-        // Durum ikonu
-        var statusText = CreateText(innerGO.transform, "Status", "🔒",
-            11, FontStyle.Normal, Color.gray);
+        var statusText = CreateText(inner.transform, "Status", "LOCKED", 11, FontStyles.Normal, Color.gray);
         statusText.alignment = TextAlignmentOptions.Center;
-        var statusRect = statusText.GetComponent<RectTransform>();
-        statusRect.anchorMin = new Vector2(0, 0);
-        statusRect.anchorMax = new Vector2(1, 0.3f);
+        var statusRect = statusText.rectTransform;
+        statusRect.anchorMin = new Vector2(0f, 0f);
+        statusRect.anchorMax = new Vector2(1f, 0.3f);
         statusRect.offsetMin = new Vector2(5, 2);
         statusRect.offsetMax = new Vector2(-5, 0);
 
-        // Button
-        var btn = slotGO.AddComponent<Button>();
-        btn.targetGraphic = borderImg;
+        var button = slotGO.AddComponent<Button>();
+        button.targetGraphic = border;
+        button.onClick.AddListener(() => OnNodeClicked(node));
 
-        var slot = new NodeSlot
+        var trigger = slotGO.AddComponent<UnityEngine.EventSystems.EventTrigger>();
+        var enter = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter };
+        enter.callback.AddListener(_ => OnNodeHover(node));
+        trigger.triggers.Add(enter);
+        var exit = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit };
+        exit.callback.AddListener(_ => descText.text = "");
+        trigger.triggers.Add(exit);
+
+        slots[node.nodeId] = new NodeSlot
         {
             node = node,
-            rect = slotRect,
-            bgImage = innerImg,
-            label = statusText,
-            borderImage = borderImg
+            background = background,
+            border = border,
+            status = statusText
         };
-        _slots[node.nodeId] = slot;
-
-        // Tıklama olayı
-        btn.onClick.AddListener(() => OnNodeClicked(node));
-
-        // Hover olayları (açıklama gösterme)
-        var trigger = slotGO.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-
-        var enterEntry = new UnityEngine.EventSystems.EventTrigger.Entry();
-        enterEntry.eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter;
-        enterEntry.callback.AddListener((_) => OnNodeHover(node));
-        trigger.triggers.Add(enterEntry);
-
-        var exitEntry = new UnityEngine.EventSystems.EventTrigger.Entry();
-        exitEntry.eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit;
-        exitEntry.callback.AddListener((_) => _descText.text = "");
-        trigger.triggers.Add(exitEntry);
     }
 
-    private void CreateLine(RectTransform container, string fromId, string toId)
+    private void CreateLine(string fromId, string toId)
     {
-        if (!NodeGridPositions.ContainsKey(fromId) || !NodeGridPositions.ContainsKey(toId)) return;
+        if (!GetCurrentGrid().ContainsKey(fromId) || !GetCurrentGrid().ContainsKey(toId))
+            return;
 
         var lineGO = new GameObject($"Line_{fromId}_{toId}");
-        lineGO.transform.SetParent(container, false);
-        var lineRect = lineGO.AddComponent<RectTransform>();
-        var lineImg = lineGO.AddComponent<Image>();
-        lineImg.color = lineColor;
+        lineGO.transform.SetParent(lineContainer, false);
+        var rect = lineGO.AddComponent<RectTransform>();
+        var image = lineGO.AddComponent<Image>();
+        image.color = lineColor;
 
-        _lines.Add(new LineConnection { rect = lineRect, image = lineImg, fromId = fromId, toId = toId });
-
-        // Çizgi pozisyonunu hesapla
-        UpdateLinePosition(lineRect, fromId, toId, container);
+        UpdateLinePosition(rect, fromId, toId);
+        lines.Add(new LineConnection { rect = rect, image = image, fromId = fromId, toId = toId });
     }
 
-    private void UpdateLinePosition(RectTransform lineRect, string fromId, string toId, RectTransform container)
+    private void UpdateLinePosition(RectTransform rect, string fromId, string toId)
     {
-        Vector2 fromPos = GridToLocal(NodeGridPositions[fromId], container);
-        Vector2 toPos = GridToLocal(NodeGridPositions[toId], container);
-
+        Vector2 fromPos = GridToLocal(GetCurrentGrid()[fromId]);
+        Vector2 toPos = GridToLocal(GetCurrentGrid()[toId]);
         Vector2 diff = toPos - fromPos;
         float length = diff.magnitude;
         float angle = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
 
-        lineRect.anchorMin = new Vector2(0.5f, 0.5f);
-        lineRect.anchorMax = new Vector2(0.5f, 0.5f);
-        lineRect.pivot = new Vector2(0f, 0.5f);
-        lineRect.anchoredPosition = fromPos;
-        lineRect.sizeDelta = new Vector2(length, lineWidth);
-        lineRect.localRotation = Quaternion.Euler(0, 0, angle);
+        rect.anchorMin = new Vector2(0.5f, 0.5f);
+        rect.anchorMax = new Vector2(0.5f, 0.5f);
+        rect.pivot = new Vector2(0f, 0.5f);
+        rect.anchoredPosition = fromPos;
+        rect.sizeDelta = new Vector2(length, lineWidth);
+        rect.localRotation = Quaternion.Euler(0f, 0f, angle);
     }
 
-    // ═══════════ GRID → LOKAL POZİSYON ═══════════
-
-    private Vector2 GridToLocal(Vector2Int grid, RectTransform container)
+    private Vector2 GridToLocal(Vector2Int grid)
     {
-        float totalCols = 5;
-        float totalRows = 7;
-
+        float totalCols = 5f;
+        float totalRows = 7f;
         float cellW = nodeWidth + horizontalSpacing;
         float cellH = nodeHeight + verticalSpacing;
-
         float totalW = totalCols * cellW;
         float totalH = totalRows * cellH;
 
         float x = grid.x * cellW - totalW * 0.5f + cellW * 0.5f;
         float y = -grid.y * cellH + totalH * 0.5f - cellH * 0.5f;
-
         return new Vector2(x, y);
     }
 
-    // ═══════════ NODE RENK KATMANI ═══════════
+    private Dictionary<string, Vector2Int> GetCurrentGrid()
+    {
+        return activeAxis == parryAxis ? ParryGrid : DashGrid;
+    }
 
     private Color GetNodeTintColor(SkillNodeSO node)
     {
-        if (node.isCommitmentNode) return commitmentColor;
+        if (node.isCommitmentNode)
+            return commitmentColor;
 
         string id = node.nodeId;
-        if (id.Contains("t1_")) return t1Color;
-        if (id.Contains("t2h_")) return hunterColor;
-        if (id.Contains("t2f_")) return flowColor;
+        if (activeAxis == parryAxis)
+        {
+            if (id.Contains("_t2b_")) return ballisticColor;
+            if (id.Contains("_t2p_")) return perfectionistColor;
+            return parryT1Color;
+        }
 
-        return t1Color;
+        if (id.Contains("_t2h_")) return hunterColor;
+        if (id.Contains("_t2f_")) return flowColor;
+        return dashT1Color;
     }
-
-    // ═══════════ SLOT GÜNCELLEME ═══════════
 
     private void RefreshAllSlots()
     {
-        foreach (var kv in _slots)
-            RefreshSlot(kv.Value);
+        foreach (var slot in slots.Values)
+            RefreshSlot(slot);
 
-        RefreshLines();
+        foreach (var line in lines)
+        {
+            bool fromUnlocked = AxisProgressionManager.Instance != null &&
+                slots.ContainsKey(line.fromId) &&
+                AxisProgressionManager.Instance.IsNodeUnlocked(slots[line.fromId].node);
+            bool toUnlocked = AxisProgressionManager.Instance != null &&
+                slots.ContainsKey(line.toId) &&
+                AxisProgressionManager.Instance.IsNodeUnlocked(slots[line.toId].node);
+            line.image.color = (fromUnlocked && toUnlocked) ? lineUnlockedColor : lineColor;
+        }
     }
 
     private void RefreshSlot(NodeSlot slot)
     {
-        if (slot == null || slot.node == null) return;
+        if (slot == null || slot.node == null)
+            return;
 
         var mgr = AxisProgressionManager.Instance;
-        bool unlocked = mgr != null && mgr.IsNodeUnlocked(slot.node);
-        bool prereqsMet = mgr != null && CheckPrereqs(slot.node);
-        bool pathBlocked = mgr != null && mgr.IsPathBlocked(slot.node);
-
+        NodeStatus status = mgr != null ? mgr.GetNodeStatus(slot.node) : NodeStatus.Hidden;
         Color tint = GetNodeTintColor(slot.node);
 
-        if (unlocked)
+        if (status == NodeStatus.Unlocked)
         {
-            slot.bgImage.color = new Color(tint.r * 0.3f, tint.g * 0.3f, tint.b * 0.3f, 1f);
-            slot.borderImage.color = tint;
-            slot.label.text = "✅ AKTİF";
-            slot.label.color = unlockedColor;
+            slot.background.color = new Color(tint.r * 0.3f, tint.g * 0.3f, tint.b * 0.3f, 1f);
+            slot.border.color = tint;
+            slot.status.text = "ACTIVE";
+            slot.status.color = unlockedColor;
         }
-        else if (pathBlocked)
+        else if (status == NodeStatus.Unlockable)
         {
-            // KARŞI YOL — kırmızımsı soluk
-            slot.bgImage.color = new Color(0.12f, 0.08f, 0.08f, 1f);
-            slot.borderImage.color = new Color(0.5f, 0.15f, 0.15f, 1f);
-            slot.label.text = "⛔ KARŞI YOL";
-            slot.label.color = new Color(0.7f, 0.25f, 0.25f);
-        }
-        else if (prereqsMet)
-        {
-            slot.bgImage.color = nodeBg;
-            slot.borderImage.color = new Color(tint.r * 0.7f, tint.g * 0.7f, tint.b * 0.5f, 1f);
-            slot.label.text = "🔓 AÇILABİLİR";
-            slot.label.color = new Color(1f, 0.85f, 0.3f);
+            slot.background.color = nodeBg;
+            slot.border.color = new Color(tint.r * 0.7f, tint.g * 0.7f, tint.b * 0.5f, 1f);
+            slot.status.text = "UNLOCKABLE";
+            slot.status.color = new Color(1f, 0.85f, 0.3f);
         }
         else
         {
-            slot.bgImage.color = new Color(0.10f, 0.10f, 0.13f, 1f);
-            slot.borderImage.color = new Color(tint.r * 0.2f, tint.g * 0.2f, tint.b * 0.2f, 1f);
-            slot.label.text = "🔒 KİLİTLİ";
-            slot.label.color = new Color(0.4f, 0.4f, 0.45f);
+            slot.background.color = new Color(0.10f, 0.10f, 0.13f, 1f);
+            slot.border.color = new Color(tint.r * 0.2f, tint.g * 0.2f, tint.b * 0.2f, 1f);
+            slot.status.text = "LOCKED";
+            slot.status.color = new Color(0.4f, 0.4f, 0.45f);
         }
     }
 
     private bool CheckPrereqs(SkillNodeSO node)
     {
-        if (node.prerequisites == null || node.prerequisites.Length == 0) return true;
+        if (node.prerequisites == null || node.prerequisites.Length == 0)
+            return true;
+
         var mgr = AxisProgressionManager.Instance;
-        if (mgr == null) return false;
+        if (mgr == null)
+            return false;
+
         foreach (var prereq in node.prerequisites)
         {
             if (prereq != null && !mgr.IsNodeUnlocked(prereq))
                 return false;
         }
+
         return true;
     }
 
-    private void RefreshLines()
-    {
-        foreach (var line in _lines)
-        {
-            bool fromUnlocked = AxisProgressionManager.Instance != null &&
-                _slots.ContainsKey(line.fromId) &&
-                AxisProgressionManager.Instance.IsNodeUnlocked(_slots[line.fromId].node);
-            bool toUnlocked = AxisProgressionManager.Instance != null &&
-                _slots.ContainsKey(line.toId) &&
-                AxisProgressionManager.Instance.IsNodeUnlocked(_slots[line.toId].node);
-
-            line.image.color = (fromUnlocked && toUnlocked) ? lineUnlockedColor : lineColor;
-        }
-    }
-
-    // ═══════════ EVENT HANDLER'LAR ═══════════
-
     private void OnNodeClicked(SkillNodeSO node)
     {
-        if (AxisProgressionManager.Instance == null) return;
+        if (AxisProgressionManager.Instance == null)
+            return;
 
         int result = AxisProgressionManager.Instance.SmartToggleNode(node);
-
         if (result == 1)
         {
-            _descText.text = $"<color=#26D98A>✅ {node.displayName} açıldı!</color>";
+            descText.text = $"<color=#26D98A>{node.displayName} acildi.</color>";
         }
         else if (result == 0)
         {
-            _descText.text = $"<color=#FF8844>❌ {node.displayName} kapatıldı</color>";
+            descText.text = $"<color=#FF8844>{node.displayName} kapatildi.</color>";
         }
         else if (result == -2)
         {
-            // Yol kısıtlaması
-            string reason = AxisProgressionManager.Instance.GetBlockReason(node);
-            _descText.text = $"<color=#FF4444>⛔ {reason}</color>";
+            descText.text = $"<color=#FF4444>{AxisProgressionManager.Instance.GetBlockReason(node)}</color>";
         }
         else
         {
-            // Prerequisite eksik
-            string missing = "";
-            if (node.prerequisites != null)
-            {
-                foreach (var p in node.prerequisites)
-                {
-                    if (p != null && !AxisProgressionManager.Instance.IsNodeUnlocked(p))
-                        missing += p.displayName + ", ";
-                }
-            }
-            if (missing.Length > 2) missing = missing.Substring(0, missing.Length - 2);
-            _descText.text = $"<color=#FF4444>⛔ Önce açılması gereken perkler: {missing}</color>";
+            descText.text = $"<color=#FF4444>On kosullar eksik.</color>";
         }
 
         RefreshAllSlots();
@@ -561,55 +549,78 @@ public class SkillTreePanelUI : MonoBehaviour
 
     private void OnNodeHover(SkillNodeSO node)
     {
-        if (node == null) return;
+        if (node == null)
+            return;
 
         var mgr = AxisProgressionManager.Instance;
-        bool unlocked = mgr != null && mgr.IsNodeUnlocked(node);
-        bool prereqsMet = CheckPrereqs(node);
-
-        string status;
-        if (unlocked) status = "<color=#26D98A>AKTİF</color>";
-        else if (prereqsMet) status = "<color=#FFD94A>AÇILABİLİR</color>";
-        else status = "<color=#666>KİLİTLİ</color>";
+        NodeStatus nodeStatus = mgr != null ? mgr.GetNodeStatus(node) : NodeStatus.Hidden;
+        bool unlocked = nodeStatus == NodeStatus.Unlocked;
+        string status = nodeStatus == NodeStatus.Unlocked
+            ? "<color=#26D98A>ACTIVE</color>"
+            : nodeStatus == NodeStatus.Unlockable
+                ? "<color=#FFD94A>UNLOCKABLE</color>"
+                : "<color=#666666>LOCKED</color>";
 
         string prereqInfo = "";
         if (!unlocked && node.prerequisites != null && node.prerequisites.Length > 0)
         {
-            prereqInfo = "\nGerekli: ";
-            foreach (var p in node.prerequisites)
+            prereqInfo = "\nRequired: ";
+            foreach (var prereq in node.prerequisites)
             {
-                if (p == null) continue;
-                bool pUnlocked = mgr != null && mgr.IsNodeUnlocked(p);
-                prereqInfo += pUnlocked ? $"<color=#26D98A>{p.displayName}</color>" : $"<color=#FF4444>{p.displayName}</color>";
-                prereqInfo += "  ";
+                if (prereq == null) continue;
+                bool prereqUnlocked = mgr != null && mgr.IsNodeUnlocked(prereq);
+                prereqInfo += prereqUnlocked ? $"<color=#26D98A>{prereq.displayName}</color> " : $"<color=#FF4444>{prereq.displayName}</color> ";
             }
         }
 
-        _descText.text = $"<b>{node.displayName}</b>  [{status}]\n{node.description}{prereqInfo}";
+        string blockReason = (!unlocked && mgr != null && nodeStatus == NodeStatus.VisibleLocked)
+            ? $"\n<color=#FF6666>{mgr.GetBlockReason(node)}</color>"
+            : "";
+
+        descText.text = $"<b>{node.displayName}</b> [{status}]\n{node.description}{prereqInfo}{blockReason}";
     }
 
     private void HandleNodeStatusChanged(string nodeId, NodeStatus status)
     {
-        if (!_isOpen) return;
-        if (_slots.TryGetValue(nodeId, out var slot))
-            RefreshSlot(slot);
-        RefreshLines();
+        if (!isOpen || !slots.TryGetValue(nodeId, out var slot))
+            return;
+
+        RefreshSlot(slot);
+        RefreshAllSlots();
     }
 
-    // ═══════════ YARDIMCI METOTLAR ═══════════
+    private static void Stretch(RectTransform rect)
+    {
+        rect.anchorMin = Vector2.zero;
+        rect.anchorMax = Vector2.one;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+    }
+
+    private static void ClearChildren(RectTransform parent, HashSet<string> preserve = null)
+    {
+        for (int i = parent.childCount - 1; i >= 0; i--)
+        {
+            Transform child = parent.GetChild(i);
+            if (preserve != null && preserve.Contains(child.name))
+                continue;
+
+            child.gameObject.SetActive(false);
+            Object.Destroy(child.gameObject);
+        }
+    }
 
     private GameObject CreatePanel(Transform parent, string name, Color color)
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
-        var img = go.AddComponent<Image>();
-        img.color = color;
+        var image = go.AddComponent<Image>();
+        image.color = color;
         go.AddComponent<RectTransform>();
         return go;
     }
 
-    private TextMeshProUGUI CreateText(Transform parent, string name, string content,
-        float fontSize, FontStyle style, Color color)
+    private TextMeshProUGUI CreateText(Transform parent, string name, string content, float fontSize, FontStyles style, Color color)
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
@@ -617,8 +628,7 @@ public class SkillTreePanelUI : MonoBehaviour
         var tmp = go.AddComponent<TextMeshProUGUI>();
         tmp.text = content;
         tmp.fontSize = fontSize;
-        tmp.fontStyle = style == FontStyle.Bold ? TMPro.FontStyles.Bold :
-                        style == FontStyle.Italic ? TMPro.FontStyles.Italic : TMPro.FontStyles.Normal;
+        tmp.fontStyle = style;
         tmp.color = color;
         tmp.enableAutoSizing = false;
         tmp.overflowMode = TextOverflowModes.Truncate;

@@ -783,6 +783,7 @@ GameObject:
   - component: {fileID: 3604936443535050603}
   - component: {fileID: -2761618015594950017}
   - component: {fileID: -5123481897325554022}
+  - component: {fileID: 6353034195548989723}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -939,9 +940,18 @@ MonoBehaviour:
   counterWindowDuration: 1
   counterBonusPerMelee: 0.15
   counterBonusPerRanged: 0.1
-  externalTempoMultiplier: 1
-  externalCooldownMultiplier: 1
-  externalWindowMultiplier: 1
+  allowProjectileDeflect: 0
+  enablePerfectParry: 0
+  enableCounterWindow: 0
+  normalWindowMultiplier: 1
+  perfectWindowDuration: 0.06
+  deflectEdgeThickness: 0.35
+  useDualArc: 0
+  dualArcFrontHalfAngle: 55
+  dualArcRearHalfAngle: 55
+  rotateArcWhileActive: 0
+  rotatingArcDegreesPerSecond: 1080
+  rotatingArcDuration: 0.18
 --- !u!114 &2833685781671096526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1193,6 +1203,65 @@ MonoBehaviour:
   burstMainMultiplier: 2.2
   burstPerMarkBonus: 0.2
   burstSplashRatio: 0.8
+--- !u!114 &6353034195548989723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7397368891858854368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e4052e6a94d07c47b8ee71698fcdc6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ParryPerkController
+  baseReflectSpeedMultiplier: 1.5
+  baseReflectDamageMultiplier: 1
+  reflectEdgeThickness: 0.05
+  perfectWindowDuration: 0.08
+  counterWindowDuration: 0.5
+  counterBonusPerMelee: 0.15
+  counterBonusPerRanged: 0.1
+  perfectMeleeStunDuration: 1.5
+  perfectBossInterruptDuration: 0.35
+  successRecoveryRefund: 0.03
+  perfectRecoveryRefund: 0.07
+  perfectTempoGain: 8
+  commitmentParryTempoMultiplier: 1.3
+  commitmentParryRecoveryMultiplier: 0.8
+  commitmentParryWindowMultiplier: 1.2
+  commitmentPerfectWindowMultiplier: 1.3
+  commitmentCounterMultiplier: 1.25
+  commitmentDashCooldownMultiplier: 1.2
+  commitmentDashWindowMultiplier: 0.85
+  commitmentDashTempoMultiplier: 0.75
+  reverseFrontHalfAngle: 55
+  reverseRearHalfAngle: 55
+  overdeflectSpeedMultiplier: 1.5
+  overdeflectDamageMultiplier: 1.5
+  overdeflectPierceCount: 2
+  suppressDuration: 0.75
+  suppressBossInterruptDuration: 0.25
+  fracturedSplitCount: 2
+  fracturedSplitDamageMultiplier: 0.45
+  fracturedSplitAngleSpread: 24
+  fracturedSplitSpeedMultiplier: 1
+  feedbackMaxStacks: 5
+  feedbackStackDuration: 5
+  feedbackRecoveryRefund: 0.02
+  feedbackSpeedBonusPerStack: 0.08
+  feedbackDamageBonusPerStack: 0.08
+  closeExecuteRange: 2.2
+  fineEdgePerfectWindowMultiplier: 1.5
+  fineEdgeNormalWindowMultiplier: 0.35
+  heavyRiposteStunDuration: 2.25
+  heavyRiposteBossInterruptDuration: 0.5
+  guardBreakDuration: 2
+  rotatingConeDegreesPerSecond: 1080
+  rotatingConeDuration: 0.18
+  perfectCycleRecoveryRefund: 0.08
+  perfectCycleCounterRefreshDuration: 0.35
+  perfectCycleTempoGain: 6
 --- !u!1 &7431630693877334261
 GameObject:
   m_ObjectHideFlags: 0
@@ -1363,6 +1432,11 @@ MonoBehaviour:
   counterSlider: {fileID: 7695557194947712958}
   playerSprite: {fileID: 6800482323370749570}
   counterGlowColor: {r: 1, g: 0.85, b: 0.1, a: 1}
+  parryNormalColor: {r: 0.2, g: 0.95, b: 0.45, a: 1}
+  perfectWindowColor: {r: 1, g: 0.82, b: 0.2, a: 1}
+  perfectSuccessColor: {r: 1, g: 1, b: 1, a: 1}
+  perfectPulseScale: 1.15
+  perfectSuccessFlashDuration: 0.12
 --- !u!1 &8503054484506776447
 GameObject:
   m_ObjectHideFlags: 0

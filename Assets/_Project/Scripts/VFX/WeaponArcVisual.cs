@@ -44,7 +44,6 @@ public class WeaponArcVisual : MonoBehaviour
 
     [Tooltip("Parry anında yay rengi.")]
     public Color arcColorParry = new Color(0f, 0.8f, 1f, 0.6f);
-
     [Tooltip("Yay çizgisinin genişliği (world unit).")]
     public float lineWidth = 0.07f;
 
@@ -69,26 +68,31 @@ public class WeaponArcVisual : MonoBehaviour
 
     private void InitLineRenderer()
     {
-        lr.useWorldSpace = true;
-        lr.startWidth = lineWidth;
-        lr.endWidth = lineWidth;
-        lr.positionCount = arcSegments + 1;
-        lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        lr.receiveShadows = false;
+        ConfigureLineRenderer(lr, arcSegments + 1);
+    }
+
+    private void ConfigureLineRenderer(LineRenderer target, int positions)
+    {
+        target.useWorldSpace = true;
+        target.startWidth = lineWidth;
+        target.endWidth = lineWidth;
+        target.positionCount = positions;
+        target.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        target.receiveShadows = false;
 
         if (arcMaterial != null)
         {
-            lr.material = arcMaterial;
+            target.material = arcMaterial;
         }
         else
         {
-            lr.material = new Material(Shader.Find("Sprites/Default"));
+            target.material = new Material(Shader.Find("Sprites/Default"));
             runtimeMaterialCreated = true;
         }
 
-        lr.sortingLayerName = "Default";
-        lr.sortingOrder = 5;
-        lr.enabled = false;
+        target.sortingLayerName = "Default";
+        target.sortingOrder = 5;
+        target.enabled = false;
     }
 
     private void OnDestroy()
@@ -101,7 +105,7 @@ public class WeaponArcVisual : MonoBehaviour
     // PUBLIC API
     // ================================================================== //
 
-    public void UpdateVisuals(Vector2 origin, Vector2 dir, bool isAttacking, bool isParrying, float overrideAngle = -1f)
+    public void UpdateVisuals(Vector2 origin, Vector2 dir, bool isAttacking, bool isParrying, float overrideAngle = -1f, float parryEdgeThickness = -1f)
     {
         if (overrideAngle > 0f)
             arcAngle = overrideAngle;
@@ -115,7 +119,7 @@ public class WeaponArcVisual : MonoBehaviour
         lr.enabled = isVisible;
         if (isVisible)
         {
-            DrawArc(origin, range, isAttacking, isParrying);
+            DrawArc(origin, range, isAttacking, isParrying, parryEdgeThickness);
         }
         
         // Eğer parry yapılıyorsa silahı ileri fırlatma (PositionWeapon'ı atla), sadece saldırıda silahı konumlandır
@@ -157,7 +161,7 @@ public class WeaponArcVisual : MonoBehaviour
         weaponTransform.rotation = Quaternion.Euler(0f, 0f, angle + weaponRotationOffset);
     }
 
-    private void DrawArc(Vector2 origin, float range, bool isAttacking, bool isParrying)
+    private void DrawArc(Vector2 origin, float range, bool isAttacking, bool isParrying, float parryEdgeThickness)
     {
         Color c = arcColorIdle;
         if (isAttacking) c = arcColorActive;
@@ -165,6 +169,12 @@ public class WeaponArcVisual : MonoBehaviour
 
         lr.startColor = c;
         lr.endColor = c;
+        float drawWidth = lineWidth;
+        if (isParrying && parryEdgeThickness > 0f)
+            drawWidth = Mathf.Max(lineWidth, parryEdgeThickness);
+
+        lr.startWidth = drawWidth;
+        lr.endWidth = drawWidth;
 
         float halfAngle = arcAngle * 0.5f;
         float baseAngleDeg = Mathf.Atan2(lastDirection.y, lastDirection.x) * Mathf.Rad2Deg;

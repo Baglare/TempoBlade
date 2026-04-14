@@ -185,7 +185,7 @@ public class EnemyKamikaze : EnemyBase
         // 1. Parry kontrolü
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         ParrySystem parry = playerObj != null ? playerObj.GetComponent<ParrySystem>() : null;
-        if (parry != null && parry.TryParry())
+        if (parry != null && parry.TryParry(gameObject))
         {
             // Perfect Parry: patlama iptal, kamikaze ölür
             Die();

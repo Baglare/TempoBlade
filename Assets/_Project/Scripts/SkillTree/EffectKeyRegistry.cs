@@ -46,6 +46,30 @@ public static class EffectKeyRegistry
     public const string DashBlackHole       = "dashBlackHole";
     public const string DashBurst           = "dashBurst";
 
+    // ═══════════ Parry Perk Keys (T1) ═══════════
+    public const string ParryReflect          = "parryReflect";
+    public const string ParryPerfectTiming    = "parryPerfectTiming";
+    public const string ParryCounterStance    = "parryCounterStance";
+    public const string ParryPerfectBreak     = "parryPerfectBreak";
+    public const string ParryRhythmReturn     = "parryRhythmReturn";
+
+    // ═══════════ Parry Perk Keys (T2 Commitment) ═══════════
+    public const string ParryT2Commitment     = "parryT2Commitment";
+
+    // ═══════════ Parry Perk Keys (T2 Balistik) ═══════════
+    public const string ParryReverseFront     = "parryReverseFront";
+    public const string ParryOverdeflect      = "parryOverdeflect";
+    public const string ParrySuppressiveTrace = "parrySuppressiveTrace";
+    public const string ParryFracturedOrbit   = "parryFracturedOrbit";
+    public const string ParryFeedback         = "parryFeedback";
+
+    // ═══════════ Parry Perk Keys (T2 Mükemmeliyetçi) ═══════════
+    public const string ParryCloseExecute     = "parryCloseExecute";
+    public const string ParryFineEdge         = "parryFineEdge";
+    public const string ParryHeavyRiposte     = "parryHeavyRiposte";
+    public const string ParryRotatingCone     = "parryRotatingCone";
+    public const string ParryPerfectCycle     = "parryPerfectCycle";
+
     // ═══════════ Feature Keys ═══════════
     public const string DoubleJump    = "doubleJump";
     public const string WallSlide     = "wallSlide";
@@ -66,6 +90,14 @@ public static class EffectKeyRegistry
         DashHuntMark, DashBlindSpot, DashHuntFlow, DashExecute, DashHuntCycle,
         // Dash T2 Akışçı
         DashFlowMark, DashSnapback, DashChainBounce, DashBlackHole, DashBurst,
+        // Parry T1
+        ParryReflect, ParryPerfectTiming, ParryCounterStance, ParryPerfectBreak, ParryRhythmReturn,
+        // Parry T2 Commitment
+        ParryT2Commitment,
+        // Parry T2 Balistik
+        ParryReverseFront, ParryOverdeflect, ParrySuppressiveTrace, ParryFracturedOrbit, ParryFeedback,
+        // Parry T2 Mükemmeliyetçi
+        ParryCloseExecute, ParryFineEdge, ParryHeavyRiposte, ParryRotatingCone, ParryPerfectCycle,
         // Feature
         DoubleJump, WallSlide
     };

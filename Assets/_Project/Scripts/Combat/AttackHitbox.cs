@@ -11,11 +11,11 @@ public class AttackHitbox : MonoBehaviour
         // Player uzerinde ParrySystem var mi? (Yonlu blok: saldirganin pozisyonuyla kontrol)
         var parry = other.GetComponent<ParrySystem>();
         Vector2 attackerPos = owner != null ? (Vector2)owner.transform.position : (Vector2)transform.position;
-        if (parry != null && parry.TryBlockMelee(attackerPos))
+        if (parry != null && parry.TryBlockMelee(attackerPos, gameObject))
         {
-            // Parry basarili: dusman reaksiyon alabilir
-            if (owner != null)
-                owner.Stun(1.5f);
+            var ownCollider = GetComponent<Collider2D>();
+            if (ownCollider != null)
+                ownCollider.enabled = false;
             return;
         }
 

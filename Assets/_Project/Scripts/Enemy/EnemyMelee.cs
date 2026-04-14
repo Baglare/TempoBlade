@@ -133,6 +133,5 @@ public class EnemyMelee : EnemyBase
         base.Stun(finalDuration);
         isAttacking = false;
         if (hitboxCollider != null) hitboxCollider.enabled = false;
-        GetComponent<SpriteRenderer>().color = Color.white; // Reset color
     }
 }

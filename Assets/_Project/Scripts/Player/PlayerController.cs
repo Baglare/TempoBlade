@@ -42,7 +42,9 @@ public class PlayerController : MonoBehaviour
     private float lastDodgeStartTime = -999f;
     private float currentDodgeSpeed;
     private float baseDodgeCooldown;
-    private float externalDodgeCooldownMultiplier = 1f;
+    private float dashCommitmentDodgeCooldownMultiplier = 1f;
+    private float parryCommitmentDodgeCooldownMultiplier = 1f;
+    private float lastPerfectParryPopupTime = -999f;
 
     // --- PERK SİSTEMİ EVENT'LERİ ---
     /// <summary>Dodge başladığında yön bilgisiyle tetiklenir. DashPerkController dinler.</summary>
@@ -91,8 +93,17 @@ public class PlayerController : MonoBehaviour
 
         if (parrySystem != null)
         {
-            parrySystem.OnParrySuccess += HandleParrySuccess;
+            parrySystem.OnParryResolved += HandleParryResolved;
             parrySystem.OnParryFail += HandleParryFail;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (parrySystem != null)
+        {
+            parrySystem.OnParryResolved -= HandleParryResolved;
+            parrySystem.OnParryFail -= HandleParryFail;
         }
     }
 
@@ -291,7 +302,7 @@ public class PlayerController : MonoBehaviour
     private void EndDodge()
     {
         IsInvulnerable = false;
-        dodgeCooldownTimer = baseDodgeCooldown * externalDodgeCooldownMultiplier;
+        dodgeCooldownTimer = baseDodgeCooldown * dashCommitmentDodgeCooldownMultiplier * parryCommitmentDodgeCooldownMultiplier;
 
         rb.linearVelocity = Vector2.zero;
 
@@ -346,21 +357,44 @@ public class PlayerController : MonoBehaviour
     }
 
     // --- PARRY FEEDBACK ---
-    private void HandleParrySuccess(bool isRanged)
+    private void HandleParryResolved(ParryEventData data)
     {
-
-        if (TempoManager.Instance != null)
-            TempoManager.Instance.AddTempo(TempoManager.Instance.gainOnPerfectParry);
+        if (data.isPerfect && TempoManager.Instance != null)
+        {
+            float gain = TempoManager.Instance.gainOnPerfectParry;
+            gain *= parrySystem != null ? parrySystem.externalTempoMultiplier : 1f;
+            TempoManager.Instance.AddTempo(gain);
+        }
 
         if (HitStopManager.Instance != null)
             HitStopManager.Instance.PlayHitStop();
 
-        // Melee → "PARRY!", Ranged → popup yok (ParrySystem zaten "DEFLECT!" yazıyor)
-        if (!isRanged && DamagePopupManager.Instance != null)
-            DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "PARRY!", Color.yellow, 6f);
+        if (DamagePopupManager.Instance != null)
+        {
+            if (data.isPerfect)
+            {
+                if (!data.isRanged)
+                {
+                    DamagePopupManager.Instance.CreateText(
+                        transform.position + Vector3.up * 1.5f,
+                        "PERFECT PARRY!",
+                        new Color(1f, 0.9f, 0.25f),
+                        6f);
+                    lastPerfectParryPopupTime = Time.unscaledTime;
+                }
+            }
+            else if (!data.isRanged && Time.unscaledTime - lastPerfectParryPopupTime > 0.05f)
+            {
+                DamagePopupManager.Instance.CreateText(
+                    transform.position + Vector3.up * 1.5f,
+                    "PARRY!",
+                    Color.yellow,
+                    6f);
+            }
+        }
             
         // --- T2/T3 Şok Dalgası (Shockwave) ---
-        if (TempoManager.Instance != null)
+        if (data.isPerfect && TempoManager.Instance != null)
         {
             var tier = TempoManager.Instance.CurrentTier;
             if (tier == TempoManager.TempoTier.T2 || tier == TempoManager.TempoTier.T3)
@@ -409,9 +443,19 @@ public class PlayerController : MonoBehaviour
         if (parrySystem != null) parrySystem.TryParry();
     }
 
+    public void SetDashCommitmentDodgeCooldownMultiplier(float multiplier)
+    {
+        dashCommitmentDodgeCooldownMultiplier = Mathf.Max(0.05f, multiplier);
+    }
+
+    public void SetParryCommitmentDodgeCooldownMultiplier(float multiplier)
+    {
+        parryCommitmentDodgeCooldownMultiplier = Mathf.Max(0.05f, multiplier);
+    }
+
     public void SetExternalDodgeCooldownMultiplier(float multiplier)
     {
-        externalDodgeCooldownMultiplier = Mathf.Max(0.05f, multiplier);
+        SetDashCommitmentDodgeCooldownMultiplier(multiplier);
     }
 
     public void ReduceDodgeCooldown(float amount)

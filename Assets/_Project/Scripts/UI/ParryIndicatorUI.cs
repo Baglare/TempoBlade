@@ -25,14 +25,22 @@ public class ParryIndicatorUI : MonoBehaviour
 
     [Header("Colors")]
     public Color counterGlowColor = new Color(1f, 0.85f, 0.1f, 1f);
+    public Color parryNormalColor = new Color(0.20f, 0.95f, 0.45f, 1f);
+    public Color perfectWindowColor = new Color(1f, 0.82f, 0.2f, 1f);
+    public Color perfectSuccessColor = Color.white;
+    public float perfectPulseScale = 1.15f;
+    public float perfectSuccessFlashDuration = 0.12f;
 
 
 
     // ── Internal State ──────────────────────────────────────────────────
     private Color     originalSpriteColor = Color.white;
     private Vector3   baseSelfScale;
+    private Vector3   parrySliderBaseScale = Vector3.one;
     private Vector2   currentParryDir;
     private Transform playerRoot;
+    private Image     parryFillImage;
+    private float     perfectSuccessFlashTimer;
 
 
 
@@ -66,6 +74,13 @@ public class ParryIndicatorUI : MonoBehaviour
         if (playerSprite != null)
             originalSpriteColor = playerSprite.color;
 
+        if (parrySlider != null)
+        {
+            parrySliderBaseScale = parrySlider.transform.localScale;
+            if (parrySlider.fillRect != null)
+                parryFillImage = parrySlider.fillRect.GetComponent<Image>();
+        }
+
         SetParrySliderVisible(false);
         SetCounterSliderVisible(false);
     }
@@ -78,6 +93,7 @@ public class ParryIndicatorUI : MonoBehaviour
         parrySystem.OnCounterNormalized    += UpdateCounterSlider;
         parrySystem.OnCounterWindowStarted += ShowCounterSlider;
         parrySystem.OnCounterWindowEnded   += HideCounterSlider;
+        parrySystem.OnParryResolved        += HandleParryResolved;
         parrySystem.OnParryFail            += HideParrySlider;
     }
 
@@ -89,6 +105,7 @@ public class ParryIndicatorUI : MonoBehaviour
         parrySystem.OnCounterNormalized    -= UpdateCounterSlider;
         parrySystem.OnCounterWindowStarted -= ShowCounterSlider;
         parrySystem.OnCounterWindowEnded   -= HideCounterSlider;
+        parrySystem.OnParryResolved        -= HandleParryResolved;
         parrySystem.OnParryFail            -= HideParrySlider;
     }
 
@@ -106,6 +123,13 @@ public class ParryIndicatorUI : MonoBehaviour
                 :  Mathf.Abs(baseSelfScale.x);
             transform.localScale = new Vector3(sx, baseSelfScale.y, baseSelfScale.z);
         }
+
+        if (perfectSuccessFlashTimer > 0f)
+        {
+            perfectSuccessFlashTimer -= Time.unscaledDeltaTime;
+            if (perfectSuccessFlashTimer <= 0f)
+                ApplyPerfectWindowVisuals();
+        }
     }
 
     // ── Event Handlers ───────────────────────────────────────────────────
@@ -122,6 +146,8 @@ public class ParryIndicatorUI : MonoBehaviour
 
         if (parrySlider.gameObject.activeSelf)
             parrySlider.value = normalized;
+
+        ApplyPerfectWindowVisuals();
 
         if (normalized <= 0f)
             SetParrySliderVisible(false);
@@ -151,6 +177,21 @@ public class ParryIndicatorUI : MonoBehaviour
     private void HideParrySlider()
     {
         SetParrySliderVisible(false);
+        ApplyPerfectWindowVisuals();
+    }
+
+    private void HandleParryResolved(ParryEventData data)
+    {
+        if (!data.isPerfect)
+            return;
+
+        perfectSuccessFlashTimer = perfectSuccessFlashDuration;
+
+        if (parryFillImage != null)
+            parryFillImage.color = perfectSuccessColor;
+
+        if (parrySlider != null)
+            parrySlider.transform.localScale = parrySliderBaseScale * (perfectPulseScale + 0.05f);
     }
 
 
@@ -167,5 +208,31 @@ public class ParryIndicatorUI : MonoBehaviour
     {
         if (counterSlider != null)
             counterSlider.gameObject.SetActive(visible);
+    }
+
+    private void ApplyPerfectWindowVisuals()
+    {
+        if (parrySlider == null || parryFillImage == null)
+            return;
+
+        if (!parrySlider.gameObject.activeSelf)
+        {
+            parryFillImage.color = parryNormalColor;
+            parrySlider.transform.localScale = parrySliderBaseScale;
+            return;
+        }
+
+        if (perfectSuccessFlashTimer > 0f)
+            return;
+
+        bool inPerfectWindow = parrySystem != null &&
+                               parrySystem.IsParryActive &&
+                               parrySystem.enablePerfectParry &&
+                               parrySystem.IsPerfectWindowActive;
+
+        parryFillImage.color = inPerfectWindow ? perfectWindowColor : parryNormalColor;
+        parrySlider.transform.localScale = inPerfectWindow
+            ? parrySliderBaseScale * perfectPulseScale
+            : parrySliderBaseScale;
     }
 }

@@ -210,16 +210,20 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // Saldırı veya parry inputları için ön kontrol
         ParrySystem _ps = GetComponent<ParrySystem>();
         bool _isParrying = _ps != null && _ps.IsParryActive;
+        if (_isParrying && _ps != null)
+            aimDir = _ps.CurrentParryDirection;
 
         // Yay ve kılıç görselini güncelle (Hem saldırırken hem parry yaparken yay görünsün)
         if (weaponArcVisual != null)
         {
             float atkOff = currentWeapon != null ? currentWeapon.attackOffset : 1.0f;
-            weaponArcVisual.range = GetEffectiveRange() + atkOff;
+            float maxRange = GetEffectiveRange() + atkOff;
+            weaponArcVisual.range = maxRange;
             
             // Eğer Parry yapıyorsak koni açısını silaha göre değil Parry ayarlarına (örn 90 derece = 45*2) göre ez
             float overrideAngle = (_isParrying && _ps != null) ? _ps.parryArcHalfAngle * 2f : -1f;
-            weaponArcVisual.UpdateVisuals(transform.position, aimDir, isSwinging, _isParrying, overrideAngle);
+            float parryEdgeThickness = (_isParrying && _ps != null) ? _ps.deflectEdgeThickness : -1f;
+            weaponArcVisual.UpdateVisuals(transform.position, aimDir, isSwinging, _isParrying, overrideAngle, parryEdgeThickness);
         }
 
         // Kombo penceresi sayacı
@@ -413,7 +417,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             var proj = col.GetComponent<IDeflectable>();
             if (proj != null)
             {
-                proj.Deflect(gameObject);
+                proj.Deflect(DeflectContext.Default(gameObject));
                 if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(10f);
             }
         }

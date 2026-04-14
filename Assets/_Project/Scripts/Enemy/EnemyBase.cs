@@ -4,9 +4,13 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
     [Header("Base Settings")]
     public EnemySO enemyData;
+    [Header("Stun Feedback")]
+    [SerializeField] protected Color stunTintColor = new Color(1f, 0.55f, 0.15f, 1f);
 
     protected float currentHealth;
     protected bool isStunned;
+    protected SpriteRenderer stunSpriteRenderer;
+    protected Color stunOriginalColor = Color.white;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
@@ -31,6 +35,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         // Tempo görsel efektini otomatik ekle (yoksa)
         if (GetComponent<TempoEnemyEffect>() == null)
             gameObject.AddComponent<TempoEnemyEffect>();
+
+        stunSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        if (stunSpriteRenderer != null)
+            stunOriginalColor = stunSpriteRenderer.color;
     }
 
     public virtual void TakeDamage(float damageAmount)
@@ -70,8 +78,17 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected virtual System.Collections.IEnumerator StunRoutine(float duration)
     {
         isStunned = true;
-        // Visual feedback for stun can go here
+        if (stunSpriteRenderer != null)
+        {
+            stunOriginalColor = stunSpriteRenderer.color;
+            stunSpriteRenderer.color = stunTintColor;
+        }
+
         yield return new WaitForSeconds(duration);
+
+        if (stunSpriteRenderer != null)
+            stunSpriteRenderer.color = stunOriginalColor;
+
         isStunned = false;
     }
 

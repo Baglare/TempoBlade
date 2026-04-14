@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d594e78d7251e0149a3c19f56121f1bf, type: 3}
+  m_Name: ParryAxis
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressionAxisSO
+  axisId: axis_parry
+  displayName: Parry Ekseni
+  icon: {fileID: 0}
+  axisColor: {r: 1, g: 0.55, b: 0.2, a: 1}
+  nodes:
+  - {fileID: 11400000, guid: 37f16646393881a4db7f2a2259aaba96, type: 2}
+  - {fileID: 11400000, guid: bfaee508d10c981479c6bb602039b58a, type: 2}
+  - {fileID: 11400000, guid: c4a0ec4008f8e204e8bcac475aff23c1, type: 2}
+  - {fileID: 11400000, guid: e6cada6374234d14eaf78496b7216595, type: 2}
+  - {fileID: 11400000, guid: 33c3147198137934cb796499ebea3d91, type: 2}
+  - {fileID: 11400000, guid: 2acbb116d006f25488fa91e723994736, type: 2}
+  - {fileID: 11400000, guid: 385630a8e191e7644b2dee08f0e8a6b6, type: 2}
+  - {fileID: 11400000, guid: c798833c0242e8048924398dde00557e, type: 2}
+  - {fileID: 11400000, guid: 9dd03de96476a3140bf104ab2b4b534e, type: 2}
+  - {fileID: 11400000, guid: 380ed4a89536233489a7bf60505b6c6f, type: 2}
+  - {fileID: 11400000, guid: dc6f09c40bd5bca47937ff5cf9a8a3e6, type: 2}
+  - {fileID: 11400000, guid: 1c3371c57bda0824ea154341e18ec493, type: 2}
+  - {fileID: 11400000, guid: f5644979e366624499fd55b105a85395, type: 2}
+  - {fileID: 11400000, guid: c385912292a738141b273f0cefb95b30, type: 2}
+  - {fileID: 11400000, guid: 246eebabe0763e240b23b3a09a7d0605, type: 2}
+  - {fileID: 11400000, guid: 5988d7acba5318b4c865690269ddcbde, type: 2}

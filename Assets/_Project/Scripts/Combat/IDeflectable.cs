@@ -3,17 +3,22 @@ using UnityEngine;
 public interface IDeflectable
 {
     /// <summary>
-    /// Mermiyi sektiren kisiyi (yeni sahibi) ayarlayarak hedefini tersine cevirir.
+    /// Mermiyi verilen context ile sektirir.
     /// </summary>
-    void Deflect(GameObject newOwner);
+    void Deflect(DeflectContext context);
 
     /// <summary>
-    /// Merminin o anki sahibini (kimin firlattigini veya en son kimin sektirdigini) dondurur.
+    /// Merminin o anki sahibi.
     /// </summary>
     GameObject ObjectOwner { get; }
 
     /// <summary>
-    /// Mermi daha önce sektirilmiş mi? Çift deflect'i engellemek için.
+    /// Mermiyi ilk atan kaynak.
+    /// </summary>
+    GameObject SourceOwner { get; }
+
+    /// <summary>
+    /// Mermi daha once deflect edildi mi?
     /// </summary>
     bool IsDeflected { get; }
 }

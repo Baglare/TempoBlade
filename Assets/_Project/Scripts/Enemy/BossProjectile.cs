@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BossProjectile : MonoBehaviour, IDeflectable
@@ -6,139 +7,216 @@ public class BossProjectile : MonoBehaviour, IDeflectable
     public float speed = 5f;
     public float damage = 15f;
     public float lifeTime = 5f;
-    
+
     [Header("Deflect Settings")]
     public bool isDeflectable = true;
     public Color normalColor = Color.cyan;
-    public Color deflectedColor = Color.yellow; 
-    
+    public Color deflectedColor = Color.yellow;
+
     [HideInInspector] public GameObject owner;
+    private GameObject sourceOwner;
+
     public GameObject ObjectOwner => owner;
-    
+    public GameObject SourceOwner => sourceOwner;
+    public bool IsDeflected => hasBeenDeflected;
+
     private Rigidbody2D rb;
     private SpriteRenderer sr;
-    private bool hasBeenDeflected = false;
-    public bool IsDeflected => hasBeenDeflected;
+    private bool hasBeenDeflected;
+    private float remainingLife;
+    private int remainingPierceCount;
+    private int splitCount;
+    private float splitDamageMultiplier = 0.5f;
+    private float splitAngleSpread = 20f;
+    private float splitSpeedMultiplier = 1f;
+    private bool hasSpawnedSplits;
+    private readonly HashSet<int> hitTargets = new HashSet<int>();
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
-        
-        if (sr != null) sr.color = normalColor;
+        remainingLife = lifeTime;
+
+        if (sr != null)
+            sr.color = normalColor;
     }
 
-    private void Start()
+    private void Update()
     {
-        Destroy(gameObject, lifeTime); // Güvenlik çemberi
+        remainingLife -= Time.deltaTime;
+        if (remainingLife <= 0f)
+            Destroy(gameObject);
     }
 
     public void Fire(Vector2 direction, GameObject creator = null)
     {
         owner = creator;
-        
-        if (rb != null)
-        {
-            rb.linearVelocity = direction.normalized * speed;
-            
-            // Rotasyon
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
-        }
+        if (sourceOwner == null)
+            sourceOwner = creator;
+
+        ApplyVelocity(direction.normalized * speed);
+    }
+
+    public void Deflect(DeflectContext context)
+    {
+        if (!isDeflectable || hasBeenDeflected)
+            return;
+
+        hasBeenDeflected = true;
+        sourceOwner = owner != null ? owner : sourceOwner;
+        owner = context.newOwner;
+
+        remainingPierceCount = Mathf.Max(0, context.pierceCount);
+        splitCount = Mathf.Max(0, context.splitCount);
+        splitDamageMultiplier = Mathf.Max(0f, context.splitDamageMultiplier);
+        splitAngleSpread = Mathf.Max(0f, context.splitAngleSpread);
+        splitSpeedMultiplier = Mathf.Max(0.05f, context.splitSpeedMultiplier);
+
+        damage *= Mathf.Max(0f, context.damageMultiplier);
+        speed *= Mathf.Max(0.05f, context.speedMultiplier);
+        remainingLife = Mathf.Max(remainingLife, lifeTime + 2f);
+        hitTargets.Clear();
+
+        Vector2 direction = ResolveDeflectDirection();
+        ApplyVelocity(direction * speed);
+
+        if (sr != null)
+            sr.color = deflectedColor;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Kendi sahibine çarpma (Çıktığı gibi patlamayı önler)
-        if (owner != null && other.gameObject == owner) return;
+        if (owner != null && other.gameObject == owner)
+            return;
 
-        // Duvarlara çarpma
         if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
         {
             Destroy(gameObject);
             return;
         }
 
-        // Oyuncuya veya Düşmana (Boss'a) çarpma
         IDamageable damageable = other.GetComponent<IDamageable>();
-        if (damageable != null)
+        if (damageable == null)
+            return;
+
+        bool isHittingEnemy = other.CompareTag("Enemy");
+        if (isHittingEnemy && !hasBeenDeflected)
+            return;
+
+        if (other.CompareTag("Player") && !hasBeenDeflected)
         {
-            // Dost atesi (Friendly Fire) Kontrolu
-            bool isHittingEnemy = other.CompareTag("Enemy");
-            
-            // Eger oyuncu tarafindan sekmediyse ve bir dusmana (kendisi olmayan) carptiysa es gec (icinden gecsin)
-            if (isHittingEnemy && !hasBeenDeflected)
+            ParrySystem parry = other.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryDeflect(transform.position, gameObject))
             {
-                return; 
-            }
-            // Eğer Oyuncuya çarptıysa ve Parry yapıyorsa -> DEFLECT (yonlu kontrol)
-            if (other.CompareTag("Player") && !hasBeenDeflected)
-            {
-                ParrySystem parry = other.GetComponent<ParrySystem>();
-                if (parry != null && parry.TryDeflect(transform.position)) // Hiz yerine konum veriyoruz
-                {
-                    Deflect(other.gameObject);
-
-                    // Ekstra tempo
-                    if (TempoManager.Instance != null)
-                    {
-                        TempoManager.Instance.AddTempo(10f);
-                    }
-                    return;
-                }
-
-                var playerController = other.GetComponent<PlayerController>();
-                if (playerController != null && playerController.IsInvulnerable)
-                {
-                    other.GetComponent<DashPerkController>()?.NotifyProjectileDodged(this);
-                    Destroy(gameObject);
-                    return;
-                }
+                Deflect(BuildDeflectContext(other.gameObject));
+                return;
             }
 
-            // Normal Hasar (Sekmişse Boss'a 2xvurur, sekmemişse oyuncuya 1x)
-            float finalDamage = hasBeenDeflected ? damage * 2f : damage;
-            damageable.TakeDamage(finalDamage);
-            
-            if (hasBeenDeflected && DamagePopupManager.Instance != null && other.CompareTag("Enemy"))
+            var playerController = other.GetComponent<PlayerController>();
+            if (playerController != null && playerController.IsInvulnerable)
             {
+                other.GetComponent<DashPerkController>()?.NotifyProjectileDodged(this);
+                Destroy(gameObject);
+                return;
+            }
+        }
+
+        int targetId = other.GetInstanceID();
+        if (!hitTargets.Add(targetId))
+            return;
+
+        damageable.TakeDamage(damage);
+
+        if (hasBeenDeflected && isHittingEnemy)
+        {
+            owner?.GetComponent<ParryPerkController>()?.HandleProjectileHitReaction(other.gameObject);
+
+            if (DamagePopupManager.Instance != null)
                 DamagePopupManager.Instance.CreateText(transform.position + Vector3.up, "DEFLECT HIT!", Color.magenta, 8f);
+
+            TrySpawnSplitProjectiles();
+
+            if (remainingPierceCount > 0)
+            {
+                remainingPierceCount--;
+                return;
             }
-            
-            Destroy(gameObject);
         }
+
+        Destroy(gameObject);
     }
-    
-    public void Deflect(GameObject newOwner)
+
+    private DeflectContext BuildDeflectContext(GameObject newOwner)
     {
-        if (!isDeflectable || hasBeenDeflected) return;
-        
-        hasBeenDeflected = true;
-        owner = newOwner; // Sahibi artık Player! Boss'a çarpabilir.
-        lifeTime += 2f;
-        
-        // Mermiyi dogrudan Boss'a nisanla
-        Vector2 currentDir;
-        EnemyBoss boss = Object.FindFirstObjectByType<EnemyBoss>();
-        if (boss != null)
-        {
-             currentDir = (boss.transform.position - transform.position).normalized;
-        }
-        else
-        {
-             currentDir = -rb.linearVelocity.normalized; // Boss yoksa geldiği yere dön
-        }
-        
+        var parryPerks = newOwner.GetComponent<ParryPerkController>();
+        return parryPerks != null ? parryPerks.BuildDeflectContext() : DeflectContext.Default(newOwner);
+    }
+
+    private Vector2 ResolveDeflectDirection()
+    {
+        if (sourceOwner != null)
+            return ((Vector2)sourceOwner.transform.position - (Vector2)transform.position).normalized;
+
+        if (rb != null && rb.linearVelocity.sqrMagnitude > 0.001f)
+            return -rb.linearVelocity.normalized;
+
+        return Vector2.left;
+    }
+
+    private void ApplyVelocity(Vector2 velocity)
+    {
         if (rb != null)
+            rb.linearVelocity = velocity;
+
+        if (velocity.sqrMagnitude > 0.001f)
         {
-            rb.linearVelocity = currentDir * (speed * 1.5f); // Geri donen mermi %50 daha hizlidir
-            
-            // Rotasyonu ayarla
-            float angle = Mathf.Atan2(currentDir.y, currentDir.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
         }
-        
-        // Renk Degisimi
-        if (sr != null) sr.color = deflectedColor;
+    }
+
+    private void TrySpawnSplitProjectiles()
+    {
+        if (!hasBeenDeflected || hasSpawnedSplits || splitCount <= 0)
+            return;
+
+        hasSpawnedSplits = true;
+        Vector2 baseVelocity = rb != null && rb.linearVelocity.sqrMagnitude > 0.001f
+            ? rb.linearVelocity
+            : Vector2.left * speed;
+
+        for (int i = 0; i < splitCount; i++)
+        {
+            float t = splitCount == 1 ? 0.5f : i / (float)(splitCount - 1);
+            float angleOffset = Mathf.Lerp(-splitAngleSpread * 0.5f, splitAngleSpread * 0.5f, t);
+            Vector2 splitVelocity = Quaternion.Euler(0f, 0f, angleOffset) * baseVelocity.normalized * (speed * splitSpeedMultiplier);
+
+            GameObject cloneObj = Instantiate(gameObject, transform.position, Quaternion.identity);
+            BossProjectile clone = cloneObj.GetComponent<BossProjectile>();
+            if (clone == null)
+                continue;
+
+            clone.ConfigureSplitClone(owner, sourceOwner, damage * splitDamageMultiplier, splitVelocity);
+        }
+    }
+
+    private void ConfigureSplitClone(GameObject currentOwner, GameObject originalSourceOwner, float newDamage, Vector2 velocity)
+    {
+        owner = currentOwner;
+        sourceOwner = originalSourceOwner;
+        damage = newDamage;
+        speed = velocity.magnitude;
+        remainingLife = Mathf.Max(1f, lifeTime * 0.5f);
+        hasBeenDeflected = true;
+        remainingPierceCount = 0;
+        splitCount = 0;
+        hasSpawnedSplits = true;
+        hitTargets.Clear();
+
+        if (sr != null)
+            sr.color = deflectedColor;
+
+        ApplyVelocity(velocity);
     }
 }

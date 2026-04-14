@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyDuelist : EnemyBase
+public class EnemyDuelist : EnemyBase, IParryReactive
 {
     private static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
     private static readonly int AnimIsGuarding = Animator.StringToHash("IsGuarding");
@@ -43,6 +43,10 @@ public class EnemyDuelist : EnemyBase
     private float nextAttackTime;
     private bool isAttacking;
     private bool isDead;
+    private bool guardBroken;
+    private Coroutine guardBreakRoutine;
+
+    public bool AllowParryExecute => true;
 
     protected override void Start()
     {
@@ -56,6 +60,7 @@ public class EnemyDuelist : EnemyBase
         
         // Start with guard up
         isGuarding = true;
+        guardBroken = false;
 
         if (weaponArcVisual != null)
             weaponArcVisual.range = attackRadius;
@@ -94,7 +99,7 @@ public class EnemyDuelist : EnemyBase
         if (dist <= attackRange)
         {
             // Stop and Attack if ready
-            if (Time.time >= nextAttackTime)
+            if (Time.time >= nextAttackTime && !guardBroken)
             {
                 StartCoroutine(AttackRoutine());
             }
@@ -165,9 +170,8 @@ public class EnemyDuelist : EnemyBase
                 // Yonlu parry kontrolu (saldiri noktasindan geliyormus gibi degerlendir)
                 ParrySystem parry = hit.GetComponent<ParrySystem>();
                 Vector2 strikeOrigin = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
-                if (parry != null && parry.TryBlockMelee(strikeOrigin))
+                if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
                 {
-                    Stun(1.0f); // Duelist parry edilirse sendeler
                     continue;
                 }
 
@@ -208,7 +212,7 @@ public class EnemyDuelist : EnemyBase
 
         yield return new WaitForSeconds(recoveryTime);
 
-        isGuarding = true; // Raise guard again
+        isGuarding = !guardBroken; // Raise guard again
         isAttacking = false;
         nextAttackTime = Time.time + currentCooldown;
         UpdateAnimatorState(false);
@@ -219,7 +223,7 @@ public class EnemyDuelist : EnemyBase
         if (isDead) return;
 
         // Blok Kontrolu
-        if (isGuarding && playerTransform != null)
+        if (isGuarding && !guardBroken && playerTransform != null)
         {
             // Basit x yonu kontrolu (Cunku sadece saga/sola donuyoruz)
             float facingDir = transform.localScale.x; // 1 (Right) or -1 (Left)
@@ -309,7 +313,52 @@ public class EnemyDuelist : EnemyBase
         if (animator == null) return;
 
         animator.SetBool(AnimIsMoving, isMoving);
-        animator.SetBool(AnimIsGuarding, isGuarding && !isAttacking && !isDead && !isStunned);
+        animator.SetBool(AnimIsGuarding, isGuarding && !guardBroken && !isAttacking && !isDead && !isStunned);
+    }
+
+    public void OnParryReaction(ParryReactionContext context)
+    {
+        if (isDead)
+            return;
+
+        StopAllCoroutines();
+        isAttacking = false;
+        isGuarding = false;
+
+        if (animator != null)
+            animator.SetTrigger(AnimHurt);
+
+        if (context.breakGuard)
+        {
+            if (guardBreakRoutine != null)
+                StopCoroutine(guardBreakRoutine);
+
+            guardBreakRoutine = StartCoroutine(GuardBreakRoutine(Mathf.Max(0.05f, context.duration)));
+            return;
+        }
+
+        base.Stun(Mathf.Max(0.05f, context.duration));
+        StartCoroutine(RestoreGuardAfterDelay(Mathf.Max(0.05f, context.duration)));
+    }
+
+    private IEnumerator GuardBreakRoutine(float duration)
+    {
+        guardBroken = true;
+        base.Stun(duration);
+        yield return new WaitForSeconds(duration);
+
+        guardBroken = false;
+        if (!isDead)
+            isGuarding = true;
+
+        guardBreakRoutine = null;
+    }
+
+    private IEnumerator RestoreGuardAfterDelay(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if (!isDead && !guardBroken)
+            isGuarding = true;
     }
 
     private void OnDrawGizmosSelected()

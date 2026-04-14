@@ -2,104 +2,155 @@ using UnityEngine;
 
 public class ParrySystem : MonoBehaviour
 {
+    private static readonly Collider2D[] projectileScanBuffer = new Collider2D[32];
+
     [Header("Parry Timing")]
-    [Tooltip("Parry penceresi (saniye). Orn: 0.15 - 0.20")]
-    public float parryWindow   = 0.18f;
-    [Tooltip("Parry kacarsa ceza suresi (saniye).")]
+    [Tooltip("Parry penceresi (saniye). Ornek: 0.15 - 0.20")]
+    public float parryWindow = 0.18f;
+    [Tooltip("Parry kacarsa recovery suresi (saniye).")]
     public float parryRecovery = 0.08f;
 
     [Header("Multi-Block Window Extension")]
-    [Tooltip("Her basarili blokta pencere kac saniye uzasin (Zincirleme sekmeler icin)")]
+    [Tooltip("Her basarili blokta pencere kac saniye uzasin.")]
     public float windowExtensionPerBlock = 0.12f;
-    [Tooltip("Maksimum parry penceresi suresi (uzama dahil)")]
-    public float maxParryWindow          = 0.60f;
+    [Tooltip("Uzama dahil maksimum parry penceresi.")]
+    public float maxParryWindow = 0.60f;
 
     [Header("Directional Parry")]
-    [Tooltip("Parry yari acisi (derece). 90 = +/-90 = 180 derece koni")]
+    [Tooltip("Parry yari acisi (derece). 90 = +/-90 = 180 derece koni.")]
     public float parryArcHalfAngle = 90f;
 
     [Header("Counter Attack")]
-    [Tooltip("Parry bittikten sonra karsi saldiri penceresi (s)")]
+    [Tooltip("Parry bittikten sonra karsi saldiri penceresi (s).")]
     public float counterWindowDuration = 0.5f;
-    [Tooltip("Her melee bloku icin eklenen karsi saldiri carpani")]
-    public float counterBonusPerMelee  = 0.15f;
-    [Tooltip("Her ranged deflect icin eklenen karsi saldiri carpani")]
+    [Tooltip("Her melee blok icin eklenen karsi saldiri carpani.")]
+    public float counterBonusPerMelee = 0.15f;
+    [Tooltip("Her ranged deflect icin eklenen karsi saldiri carpani.")]
     public float counterBonusPerRanged = 0.10f;
 
-    // ── State ─────────────────────────────────────────────────────────
-    public bool IsParryActive         { get; private set; }
+    [Header("Perk-Gated Runtime")]
+    [HideInInspector] public bool allowProjectileDeflect = false;
+    [HideInInspector] public bool enablePerfectParry = false;
+    [HideInInspector] public bool enableCounterWindow = false;
+    [HideInInspector] public float normalWindowMultiplier = 1f;
+    [HideInInspector] public float perfectWindowDuration = 0.06f;
+    [HideInInspector] public float deflectEdgeThickness = 0.35f;
+    [HideInInspector] public bool useDualArc = false;
+    [HideInInspector] public float dualArcFrontHalfAngle = 55f;
+    [HideInInspector] public float dualArcRearHalfAngle = 55f;
+    [HideInInspector] public bool rotateArcWhileActive = false;
+    [HideInInspector] public float rotatingArcDegreesPerSecond = 1080f;
+    [HideInInspector] public float rotatingArcDuration = 0.18f;
+
+    public bool IsParryActive { get; private set; }
     public bool IsCounterWindowActive { get; private set; }
-    public bool IsOnCooldown          { get; private set; }
+    public bool IsOnCooldown { get; private set; }
+    public bool IsPerfectWindowActive => enablePerfectParry && IsParryActive && parryElapsed <= currentPerfectWindow;
 
-    private float   timer;
-    private float   initialWindowDuration;
-    private Vector2 parryDirection;
-    private int     blockCount;
-    private float   accumulatedCounterBonus;
-    private float   counterTimer;
-    private float   recoveryCooldownTimer;
-
-    // ── DashPerkController Commitment Cezaları ───────────────────
-    /// <summary>Parry başarılı bloktan kazandığı tempo çarpanı (1 = normal, 0.7 = %30 azalma).</summary>
-    [HideInInspector] public float externalTempoMultiplier = 1f;
-    /// <summary>Parry recovery cooldown çarpanı (1 = normal, 1.2 = %20 artış).</summary>
-    [HideInInspector] public float externalCooldownMultiplier = 1f;
-    /// <summary>Parry pencere süresi çarpanı (1 = normal, 0.8 = %20 daralma).</summary>
-    [HideInInspector] public float externalWindowMultiplier = 1f;
-
-    // ── Events ────────────────────────────────────────────────────────
-    public System.Action<Vector2> OnParryStarted;           // Parry basladiginda (aim yonuyle)
-    public System.Action<bool>  OnParrySuccess;            // Her basarili blokta (bool isRanged)
-    public System.Action          OnParryFail;               // Pencere blogsuz kapandi
-    public System.Action<float>   OnWindowNormalized;        // UI: 0-1 doluluk (yesil slider)
-    public System.Action<float>   OnCounterNormalized;       // UI: 0-1 doluluk (turuncu slider)
-    public System.Action          OnCounterWindowStarted;
-    public System.Action          OnCounterWindowEnded;
-
+    private float timer;
+    private float initialWindowDuration;
+    private float currentWindowExtension;
+    private float currentMaxParryWindow;
+    private float currentPerfectWindow;
+    private float parryElapsed;
+    private Vector2 parryDirection = Vector2.right;
+    private int blockCount;
+    private float accumulatedCounterBonus;
+    private float counterTimer;
+    private float recoveryCooldownTimer;
+    private float pendingRecoveryReduction;
     private PlayerCombat playerCombat;
+    private ParryPerkController parryPerkController;
 
-    private void Start()
+    // Dash/Parry commitment carpanlari
+    private float dashTempoMultiplier = 1f;
+    private float dashCooldownMultiplier = 1f;
+    private float dashWindowMultiplier = 1f;
+    private float parryTempoMultiplier = 1f;
+    private float parryCooldownMultiplier = 1f;
+    private float parryWindowMultiplier = 1f;
+
+    public float externalTempoMultiplier => dashTempoMultiplier * parryTempoMultiplier;
+    public float externalCooldownMultiplier => dashCooldownMultiplier * parryCooldownMultiplier;
+    public float externalWindowMultiplier => dashWindowMultiplier * parryWindowMultiplier;
+
+    // Events
+    public System.Action<Vector2> OnParryStarted;
+    public System.Action<bool> OnParrySuccess;
+    public System.Action<ParryEventData> OnParryResolved;
+    public System.Action OnParryFail;
+    public System.Action<float> OnWindowNormalized;
+    public System.Action<float> OnCounterNormalized;
+    public System.Action OnCounterWindowStarted;
+    public System.Action OnCounterWindowEnded;
+
+    public Vector2 CurrentParryDirection => GetCurrentParryDirection();
+
+    private void Awake()
     {
         playerCombat = GetComponent<PlayerCombat>();
+        parryPerkController = GetComponent<ParryPerkController>();
     }
 
-    // ─────────────────────────────────────────────────────────────────
+    public void SetDashCommitmentParryMultipliers(float tempoMultiplier, float cooldownMultiplier, float windowMultiplier)
+    {
+        dashTempoMultiplier = Mathf.Max(0f, tempoMultiplier);
+        dashCooldownMultiplier = Mathf.Max(0.05f, cooldownMultiplier);
+        dashWindowMultiplier = Mathf.Max(0.05f, windowMultiplier);
+    }
 
-    /// <summary>
-    /// Parry'yi baslatir. Aim yonu PlayerController.OnParry'den gecirilir.
-    /// </summary>
+    public void SetParryCommitmentMultipliers(float tempoMultiplier, float cooldownMultiplier, float windowMultiplier)
+    {
+        parryTempoMultiplier = Mathf.Max(0f, tempoMultiplier);
+        parryCooldownMultiplier = Mathf.Max(0.05f, cooldownMultiplier);
+        parryWindowMultiplier = Mathf.Max(0.05f, windowMultiplier);
+    }
+
     public void StartParry(Vector2 aimDirection)
     {
-        // Aktif parry varken veya cooldown'dayken yeni parry başlatma
-        if (IsParryActive || IsOnCooldown) return;
+        if (IsParryActive || IsOnCooldown)
+            return;
 
-        IsParryActive  = true;
-        parryDirection = aimDirection;
-        blockCount     = 0;
+        if (aimDirection.sqrMagnitude < 0.001f)
+            aimDirection = Vector2.right;
+
+        IsParryActive = true;
+        parryDirection = aimDirection.normalized;
+        blockCount = 0;
         accumulatedCounterBonus = 0f;
+        pendingRecoveryReduction = 0f;
+        parryElapsed = 0f;
 
-        // Onceki counter window'u iptal et
         if (IsCounterWindowActive)
         {
             IsCounterWindowActive = false;
+            counterTimer = 0f;
             OnCounterWindowEnded?.Invoke();
         }
 
-        float tempoSpeed = TempoManager.Instance != null
-            ? TempoManager.Instance.GetSpeedMultiplier() : 1f;
-        timer = (parryWindow * externalWindowMultiplier) / tempoSpeed;
-        initialWindowDuration = timer;
+        float tempoSpeed = TempoManager.Instance != null ? TempoManager.Instance.GetSpeedMultiplier() : 1f;
+        float scaledWindow = (parryWindow * externalWindowMultiplier * normalWindowMultiplier) / Mathf.Max(0.01f, tempoSpeed);
 
-        OnParryStarted?.Invoke(aimDirection);
+        timer = Mathf.Max(0.01f, scaledWindow);
+        initialWindowDuration = timer;
+        currentWindowExtension = windowExtensionPerBlock / Mathf.Max(0.01f, tempoSpeed);
+        currentMaxParryWindow = (maxParryWindow * externalWindowMultiplier * normalWindowMultiplier) / Mathf.Max(0.01f, tempoSpeed);
+        currentPerfectWindow = enablePerfectParry ? perfectWindowDuration / Mathf.Max(0.01f, tempoSpeed) : 0f;
+
+        OnParryStarted?.Invoke(parryDirection);
+        OnWindowNormalized?.Invoke(1f);
     }
 
     private void Update()
     {
         if (IsParryActive)
         {
-            PerformActiveParryScan(); // Her frame menzili tara
-
+            parryElapsed += Time.deltaTime;
             timer -= Time.deltaTime;
+
+            if (allowProjectileDeflect)
+                PerformActiveProjectileScan();
+
             float norm = Mathf.Clamp01(timer / Mathf.Max(0.001f, initialWindowDuration));
             OnWindowNormalized?.Invoke(norm);
 
@@ -109,224 +160,271 @@ public class ParrySystem : MonoBehaviour
 
         if (IsCounterWindowActive)
         {
-            counterTimer -= Time.deltaTime;
-            OnCounterNormalized?.Invoke(Mathf.Clamp01(counterTimer / counterWindowDuration));
+            if (!IsParryActive)
+                counterTimer -= Time.deltaTime;
 
-            if (counterTimer <= 0f)
+            OnCounterNormalized?.Invoke(Mathf.Clamp01(counterTimer / Mathf.Max(0.001f, counterWindowDuration)));
+
+            if (!IsParryActive && counterTimer <= 0f)
             {
-                IsCounterWindowActive   = false;
+                IsCounterWindowActive = false;
                 accumulatedCounterBonus = 0f;
+                counterTimer = 0f;
                 OnCounterWindowEnded?.Invoke();
             }
         }
 
-        // Recovery cooldown sayacı
         if (IsOnCooldown)
         {
             recoveryCooldownTimer -= Time.deltaTime;
             if (recoveryCooldownTimer <= 0f)
             {
+                recoveryCooldownTimer = 0f;
                 IsOnCooldown = false;
             }
         }
     }
 
-    // ── NonAlloc Buffer (Sabit boyut, GC sıfır) ──────────────────────
-    private static readonly Collider2D[] scanBuffer = new Collider2D[20];
-
-    private void PerformActiveParryScan()
+    public bool TryDeflect(Vector2 projectileWorldPos, GameObject sourceObject = null)
     {
-        // Silah menzili tam ucu (Range + Offset) tarariz
-        float atkOff = (playerCombat != null && playerCombat.currentWeapon != null) ? playerCombat.currentWeapon.attackOffset : 1.0f;
-        float maxRange = playerCombat != null ? playerCombat.GetEffectiveRange() + atkOff : 2.5f;
+        if (!allowProjectileDeflect || !IsParryActive)
+            return false;
 
-        // NonAlloc: Sabit buffer'a yaz, yeni dizi yaratma
-        int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, maxRange, scanBuffer);
+        float maxRange = GetDeflectRange();
+        Vector2 toProjectile = projectileWorldPos - (Vector2)transform.position;
+        if (!IsWithinDeflectEdge(toProjectile, maxRange))
+            return false;
 
-        for (int i = 0; i < hitCount; i++)
+        Vector2 incomingDir = toProjectile.sqrMagnitude > 0.001f ? toProjectile.normalized : GetCurrentParryDirection();
+        if (!IsDirectionParryable(incomingDir))
+            return false;
+
+        RegisterBlock(true, sourceObject);
+        return true;
+    }
+
+    public bool TryBlockMelee(Vector2 attackerWorldPos, GameObject sourceObject = null)
+    {
+        if (!IsParryActive)
+            return false;
+
+        Vector2 toAttacker = attackerWorldPos - (Vector2)transform.position;
+        Vector2 incomingDir = toAttacker.sqrMagnitude > 0.001f ? toAttacker.normalized : GetCurrentParryDirection();
+        if (!IsDirectionParryable(incomingDir))
+            return false;
+
+        RegisterBlock(false, sourceObject);
+        return true;
+    }
+
+    public bool TryParry(GameObject sourceObject = null)
+    {
+        if (!IsParryActive)
+            return false;
+
+        if (sourceObject != null)
+            return TryBlockMelee(sourceObject.transform.position, sourceObject);
+
+        RegisterBlock(false, sourceObject);
+        return true;
+    }
+
+    public float GetCounterMultiplier()
+    {
+        return IsCounterWindowActive ? accumulatedCounterBonus : 0f;
+    }
+
+    public void ConsumeCounter()
+    {
+        if (!IsCounterWindowActive)
+            return;
+
+        IsCounterWindowActive = false;
+        accumulatedCounterBonus = 0f;
+        counterTimer = 0f;
+        OnCounterWindowEnded?.Invoke();
+    }
+
+    public void ReduceRecoveryCooldown(float amount)
+    {
+        if (amount <= 0f)
+            return;
+
+        if (IsOnCooldown)
         {
-            Collider2D hit = scanBuffer[i];
-            if (hit == null) continue;
-
-            // --- 1) MERMI (PROJECTILE) TARAMASI ---
-            if (hit.TryGetComponent<IDeflectable>(out var proj))
+            recoveryCooldownTimer = Mathf.Max(0f, recoveryCooldownTimer - amount);
+            if (recoveryCooldownTimer <= 0f)
             {
-                // Sahibi biz miyiz veya zaten sektirilmiş mi?
-                if (proj.ObjectOwner == gameObject || proj.IsDeflected) continue;
-
-                Vector2 toProj = (hit.transform.position - transform.position);
-                float dist = toProj.magnitude;
-                
-                if (dist <= maxRange)
-                {
-                    Vector2 dirToProj = dist > 0.001f ? toProj.normalized : parryDirection;
-                    float angle = Vector2.Angle(dirToProj, parryDirection);
-                    
-                    if (angle <= parryArcHalfAngle)
-                    {
-                        RegisterBlock(isRanged: true);
-                        proj.Deflect(gameObject); 
-                        
-                        if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(10f);
-                        if (DamagePopupManager.Instance != null)
-                            DamagePopupManager.Instance.CreateText(hit.transform.position + Vector3.up, "DEFLECT!", Color.cyan, 6f);
-                    }
-                }
-                continue; // Bu collider mermi olduğundan melee kontrolüne geçme
+                recoveryCooldownTimer = 0f;
+                IsOnCooldown = false;
             }
-            
-            // --- 2) KILIC (MELEE HITBOX) TARAMASI ---
-            if (hit.TryGetComponent<AttackHitbox>(out var enemyHitbox))
-            {
-                if (enemyHitbox.owner == null) continue;
-
-                Vector2 toHitbox = (enemyHitbox.transform.position - transform.position);
-                float dist = toHitbox.magnitude;
-                
-                if (dist <= maxRange)
-                {
-                    Vector2 dirToHitbox = dist > 0.001f ? toHitbox.normalized : parryDirection;
-                    float angle = Vector2.Angle(dirToHitbox, parryDirection);
-                    
-                    if (angle <= parryArcHalfAngle)
-                    {
-                        RegisterBlock(isRanged: false);
-                        enemyHitbox.owner.Stun(1.5f);
-                        
-                        if (DamagePopupManager.Instance != null)
-                            DamagePopupManager.Instance.CreateHitParticle(enemyHitbox.transform.position);
-                            
-                        // Hitbox'in o darbesini bitir ki sonraki frame tekrar parry yemesin
-                        enemyHitbox.gameObject.SetActive(false); 
-                    }
-                }
-            }
+            return;
         }
+
+        pendingRecoveryReduction += amount;
+    }
+
+    public void RefreshOrExtendCounterWindow(float duration)
+    {
+        if (!enableCounterWindow || duration <= 0f)
+            return;
+
+        if (IsParryActive && !IsCounterWindowActive)
+        {
+            counterTimer = Mathf.Max(counterTimer, duration);
+            return;
+        }
+
+        if (!IsCounterWindowActive)
+        {
+            IsCounterWindowActive = true;
+            counterTimer = duration;
+            OnCounterWindowStarted?.Invoke();
+            return;
+        }
+
+        counterTimer = Mathf.Max(counterTimer, duration);
     }
 
     private void CloseParryWindow()
     {
         IsParryActive = false;
+        timer = 0f;
+        OnWindowNormalized?.Invoke(0f);
 
-        // Recovery cooldown başlat (parryRecovery süresi boyunca yeni parry atamazsın)
         IsOnCooldown = true;
-        recoveryCooldownTimer = parryRecovery * externalCooldownMultiplier;
+        recoveryCooldownTimer = Mathf.Max(0f, (parryRecovery * externalCooldownMultiplier) - pendingRecoveryReduction);
+        pendingRecoveryReduction = 0f;
 
-        if (blockCount > 0)
+        if (blockCount > 0 && enableCounterWindow)
         {
+            bool wasActive = IsCounterWindowActive;
             IsCounterWindowActive = true;
-            counterTimer          = counterWindowDuration;
-            OnCounterWindowStarted?.Invoke();
+            counterTimer = Mathf.Max(counterWindowDuration, counterTimer);
+            if (!wasActive)
+                OnCounterWindowStarted?.Invoke();
         }
-        else
+        else if (blockCount == 0)
         {
             OnParryFail?.Invoke();
         }
     }
 
-    // ── Dis API ───────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Mermi deflect (yonlu). BossProjectile tarafindan merminin world_position'u ile cagrilir.
-    /// Pencereyi kapatmaz — dogal olarak solar.
-    /// </summary>
-    public bool TryDeflect(Vector2 projectileWorldPos)
-    {
-        if (!IsParryActive) return false;
-
-        Vector2 toProj = projectileWorldPos - (Vector2)transform.position;
-        float distance = toProj.magnitude;
-        Vector2 projDir = distance > 0.001f ? toProj.normalized : parryDirection;
-
-        // Mermi koni açısı içinde mi? (Hızına değil, fiziksel olarak önümüzde mi çarptı ona bakıyoruz)
-        float angle = Vector2.Angle(projDir, parryDirection);
-        if (angle > parryArcHalfAngle) return false;
-
-        RegisterBlock(isRanged: true);
-        return true;
-    }
-
-    /// <summary>
-    /// Yakin dovus bloku (yonlu). AttackHitbox / dusman tarafindan saldirganin pozisyonuyla cagrilir.
-    /// </summary>
-    public bool TryBlockMelee(Vector2 attackerWorldPos)
-    {
-        if (!IsParryActive) return false;
-
-        Vector2 toAttacker = attackerWorldPos - (Vector2)transform.position;
-        float distance = toAttacker.magnitude;
-        Vector2 attackerDir = toAttacker.normalized;
-
-        // 1. Koni Açısı Kontrolü (Pasta Dilimi)
-        float angle = Vector2.Angle(attackerDir, parryDirection);
-        if (angle > parryArcHalfAngle) return false;
-
-        // Mesafeyi Active Scan metodu zaten Hitbox uzerinden hesapliyor.
-        // Bu fonksiyona gelenler fiziksel triggerlar oldugu icin ek mesafeye ihtiyac yok.
-
-        RegisterBlock(isRanged: false);
-        return true;
-    }
-
-    /// <summary>
-    /// Yonsuz parry — Kamikaze gibi ozel durumlarda geri donuk uyumluluk icin.
-    /// </summary>
-    public bool TryParry()
-    {
-        if (!IsParryActive) return false;
-        RegisterBlock(isRanged: false);
-        return true;
-    }
-
-    /// <summary>
-    /// Karsi saldiri carpanini doner (0 = pencere aktif degil).
-    /// PlayerCombat.PerformHit tarafindan okunur.
-    /// </summary>
-    public float GetCounterMultiplier() =>
-        IsCounterWindowActive ? accumulatedCounterBonus : 0f;
-
-    /// <summary>
-    /// Karsi saldiri penceresini kapatir ve birikimli bonusu sifirlar.
-    /// Ilk basarili vurustan sonra PlayerCombat tarafindan cagrilir.
-    /// </summary>
-    public void ConsumeCounter()
-    {
-        if (!IsCounterWindowActive) return;
-        IsCounterWindowActive   = false;
-        accumulatedCounterBonus = 0f;
-        counterTimer            = 0f;
-        OnCounterWindowEnded?.Invoke();
-    }
-
-    // ─────────────────────────────────────────────────────────────────
-
-    private void RegisterBlock(bool isRanged)
+    private void RegisterBlock(bool isRanged, GameObject sourceObject)
     {
         blockCount++;
-        accumulatedCounterBonus += isRanged ? counterBonusPerRanged : counterBonusPerMelee;
 
-        // Pencereyi uzat (cap uygula)
-        timer = Mathf.Min(timer + windowExtensionPerBlock, maxParryWindow);
-        
-        // Cok Onemli Bugfix: UI barının ve timer'ın yeni pencereye ayak uydurması icin max threshold'u guncelle
+        if (enableCounterWindow)
+        {
+            accumulatedCounterBonus += isRanged ? counterBonusPerRanged : counterBonusPerMelee;
+            bool wasActive = IsCounterWindowActive;
+            IsCounterWindowActive = true;
+            counterTimer = Mathf.Max(counterWindowDuration, counterTimer);
+            if (!wasActive)
+                OnCounterWindowStarted?.Invoke();
+        }
+
+        timer = Mathf.Min(timer + currentWindowExtension, Mathf.Max(initialWindowDuration, currentMaxParryWindow));
         initialWindowDuration = Mathf.Max(initialWindowDuration, timer);
 
         if (HitStopManager.Instance != null)
         {
             if (isRanged)
-                HitStopManager.Instance.PlayHitStop(0.05f, 0.1f); // Mermi Sektirme 
+                HitStopManager.Instance.PlayHitStop(0.05f, 0.10f);
             else
-                HitStopManager.Instance.PlayHitStop(0.08f, 0.05f); // Kılıç Çarpışması (Daha Ağır)
+                HitStopManager.Instance.PlayHitStop(0.08f, 0.05f);
         }
 
+        bool isPerfect = enablePerfectParry && parryElapsed <= currentPerfectWindow;
+        Vector2 resolvedDirection = GetCurrentParryDirection();
+
         OnParrySuccess?.Invoke(isRanged);
+        OnParryResolved?.Invoke(new ParryEventData
+        {
+            isRanged = isRanged,
+            isPerfect = isPerfect,
+            source = sourceObject,
+            parryDirection = resolvedDirection,
+            blockedCount = blockCount
+        });
     }
-    
+
+    private void PerformActiveProjectileScan()
+    {
+        float maxRange = GetDeflectRange();
+
+        int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, maxRange, projectileScanBuffer);
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = projectileScanBuffer[i];
+            if (hit == null)
+                continue;
+
+            if (!hit.TryGetComponent<IDeflectable>(out var projectile))
+                continue;
+
+            if (projectile.ObjectOwner == gameObject || projectile.IsDeflected)
+                continue;
+
+            Vector2 toProjectile = (Vector2)hit.transform.position - (Vector2)transform.position;
+            if (!IsWithinDeflectEdge(toProjectile, maxRange))
+                continue;
+
+            Vector2 incomingDir = toProjectile.sqrMagnitude > 0.001f ? toProjectile.normalized : GetCurrentParryDirection();
+            if (!IsDirectionParryable(incomingDir))
+                continue;
+
+            RegisterBlock(true, hit.gameObject);
+
+            DeflectContext context = parryPerkController != null
+                ? parryPerkController.BuildDeflectContext()
+                : DeflectContext.Default(gameObject);
+            projectile.Deflect(context);
+
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(hit.transform.position + Vector3.up, "DEFLECT!", Color.cyan, 6f);
+        }
+    }
+
+    private bool IsDirectionParryable(Vector2 incomingDirection)
+    {
+        Vector2 currentDir = GetCurrentParryDirection();
+        float frontHalfAngle = useDualArc ? dualArcFrontHalfAngle : parryArcHalfAngle;
+        if (Vector2.Angle(incomingDirection, currentDir) <= frontHalfAngle)
+            return true;
+
+        if (!useDualArc || dualArcRearHalfAngle <= 0f)
+            return false;
+
+        return Vector2.Angle(incomingDirection, -currentDir) <= dualArcRearHalfAngle;
+    }
+
+    private Vector2 GetCurrentParryDirection()
+    {
+        if (!IsParryActive || !rotateArcWhileActive)
+            return parryDirection;
+
+        float rotateTime = Mathf.Min(parryElapsed, rotatingArcDuration);
+        float degrees = rotateTime * rotatingArcDegreesPerSecond;
+        return Quaternion.Euler(0f, 0f, degrees) * parryDirection;
+    }
+
+    private float GetDeflectRange()
+    {
+        float attackOffset = (playerCombat != null && playerCombat.currentWeapon != null) ? playerCombat.currentWeapon.attackOffset : 1f;
+        return playerCombat != null ? playerCombat.GetEffectiveRange() + attackOffset : 2.5f;
+    }
+
+    private bool IsWithinDeflectEdge(Vector2 toProjectile, float maxRange)
+    {
+        float distance = toProjectile.magnitude;
+        float minRange = Mathf.Max(0f, maxRange - Mathf.Max(0.01f, deflectEdgeThickness));
+        return distance >= minRange && distance <= maxRange;
+    }
+
     private void OnDrawGizmosSelected()
     {
-        float atkOff = (playerCombat != null && playerCombat.currentWeapon != null) ? playerCombat.currentWeapon.attackOffset : 1.0f;
-        float maxRange = playerCombat != null ? playerCombat.GetEffectiveRange() + atkOff : 2.5f;
-        Gizmos.color = new Color(0, 1, 1, 0.4f);
-        Gizmos.DrawWireSphere(transform.position, maxRange);
+        Gizmos.color = new Color(0f, 1f, 1f, 0.35f);
+        Gizmos.DrawWireSphere(transform.position, 2.5f);
     }
 }

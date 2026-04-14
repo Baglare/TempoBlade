@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EnemyBoss : EnemyBase
+public class EnemyBoss : EnemyBase, IParryReactive
 {
     [Header("Boss Settings")]
     public float phase2HealthThreshold = 0.5f; // %50 Can
@@ -37,6 +37,9 @@ public class EnemyBoss : EnemyBase
     private float nextAttackTime;
     
     private bool isMeleeAttacking = false;
+    private Coroutine parryInterruptRoutine;
+
+    public bool AllowParryExecute => false;
 
     protected override void Start()
     {
@@ -256,9 +259,8 @@ public class EnemyBoss : EnemyBase
         if (!other.CompareTag("Player")) return;
 
         var parry = other.GetComponent<ParrySystem>();
-        if (parry != null && parry.TryParry())
+        if (parry != null && parry.TryParry(gameObject))
         {
-            Stun(1.5f);
             isMeleeAttacking = false; // Parry yenmisse bu saldiriyi hemen kes
             return;
         }
@@ -448,5 +450,42 @@ public class EnemyBoss : EnemyBase
             DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 2f, "BOSS DEFEATED!", Color.yellow, 15f);
             
         base.Die();
+    }
+
+    public void OnParryReaction(ParryReactionContext context)
+    {
+        if (currentState == BossState.Dead || currentState == BossState.Intro || currentState == BossState.PhaseTransition)
+            return;
+
+        if (parryInterruptRoutine != null)
+            StopCoroutine(parryInterruptRoutine);
+
+        StopAllCoroutines();
+        parryInterruptRoutine = StartCoroutine(ParryInterruptRoutine(Mathf.Max(0.05f, context.duration)));
+    }
+
+    private IEnumerator ParryInterruptRoutine(float duration)
+    {
+        currentState = BossState.Stunned;
+        isMeleeAttacking = false;
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        if (sr != null)
+            sr.color = new Color(1f, 0.6f, 0.1f);
+
+        yield return new WaitForSeconds(duration);
+
+        if (currentState != BossState.Dead)
+        {
+            if (sr != null)
+                sr.color = Color.white;
+
+            currentState = BossState.Idle;
+            nextAttackTime = Time.time + 0.5f;
+        }
+
+        parryInterruptRoutine = null;
     }
 }

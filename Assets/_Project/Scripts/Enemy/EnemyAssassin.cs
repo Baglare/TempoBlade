@@ -151,7 +151,7 @@ public class EnemyAssassin : EnemyBase
             if (!hit.CompareTag("Player")) continue;
 
             ParrySystem parry = hit.GetComponent<ParrySystem>();
-            if (parry != null && parry.TryBlockMelee(transform.position))
+            if (parry != null && parry.TryBlockMelee(transform.position, gameObject))
                 continue; // Parry basarili — suikastci geri cekiliyor
 
             var playerController = hit.GetComponent<PlayerController>();

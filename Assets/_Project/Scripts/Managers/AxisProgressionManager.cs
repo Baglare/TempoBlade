@@ -11,6 +11,14 @@ public class AxisProgressionManager : MonoBehaviour
 {
     public static AxisProgressionManager Instance { get; private set; }
 
+    private static readonly ExclusiveRouteRule[] ExclusiveRouteRules =
+    {
+        new ExclusiveRouteRule("_t2h_", "_t2f_", "Akışçı yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("_t2f_", "_t2h_", "Avcı yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("_t2b_", "_t2p_", "Mükemmeliyetçi yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("_t2p_", "_t2b_", "Balistik yolunda açık perk var. Önce onu kapat.")
+    };
+
     [Header("Veritabanı")]
     [Tooltip("Tüm eksenleri, karşıt çiftleri ve form overlay'leri barındıran database asset.")]
     public AxisDatabaseSO database;
@@ -453,6 +461,65 @@ public class AxisProgressionManager : MonoBehaviour
         }
     }
 
+    private void RecalculateAxisState(ProgressionAxisSO axis)
+    {
+        if (axis == null || string.IsNullOrEmpty(axis.axisId))
+            return;
+
+        int highestUnlockedTier = 0;
+        SkillNodeSO activeCommitment = null;
+
+        if (axis.nodes != null)
+        {
+            foreach (var axisNode in axis.nodes)
+            {
+                if (axisNode == null || !_unlockedNodeIds.Contains(axisNode.nodeId))
+                    continue;
+
+                highestUnlockedTier = Mathf.Max(highestUnlockedTier, axisNode.tier);
+                if (axisNode.isCommitmentNode)
+                    activeCommitment = axisNode;
+            }
+        }
+
+        if (highestUnlockedTier <= 0 && activeCommitment == null)
+        {
+            _axisCommitments.Remove(axis.axisId);
+            return;
+        }
+
+        _axisCommitments[axis.axisId] = new CommitmentState
+        {
+            isCommitted = activeCommitment != null,
+            commitmentNodeId = activeCommitment != null ? activeCommitment.nodeId : "",
+            chosenRoute = activeCommitment != null ? (activeCommitment.regionTag ?? "") : "",
+            highestUnlockedTier = highestUnlockedTier
+        };
+    }
+
+    private void NotifyAxisStatuses(ProgressionAxisSO axis, string skipNodeId = null)
+    {
+        if (axis == null || axis.nodes == null)
+            return;
+
+        foreach (var axisNode in axis.nodes)
+        {
+            if (axisNode == null || axisNode.nodeId == skipNodeId)
+                continue;
+
+            OnNodeStatusChanged?.Invoke(axisNode.nodeId, GetNodeStatus(axisNode));
+        }
+    }
+
+    private void NotifyAxisPairStatuses(ProgressionAxisSO axis, string skipNodeId = null)
+    {
+        if (axis == null || database == null)
+            return;
+
+        NotifyAxisStatuses(axis, skipNodeId);
+        NotifyAxisStatuses(database.GetOpposingAxis(axis));
+    }
+
     // ═══════════ Deneysel / Debug Toggle ═══════════
 
     /// <summary>
@@ -473,6 +540,12 @@ public class AxisProgressionManager : MonoBehaviour
         }
         else
         {
+            if (IsBlockedByCommitment(node))
+            {
+                Debug.Log($"[AxisProgression] Commitment kilidi: {node.displayName}");
+                return -2;
+            }
+
             // Açarken: prerequisite kontrolü
             if (!ArePrerequisitesMet(node))
             {
@@ -496,28 +569,17 @@ public class AxisProgressionManager : MonoBehaviour
     public bool IsPathBlocked(SkillNodeSO node)
     {
         if (node == null) return false;
-        string id = node.nodeId;
-
-        // Hunter node açmak istiyorsak → Flow node açık mı?
-        if (id.Contains("_t2h_"))
-            return HasAnyUnlockedWithPrefix("_t2f_");
-
-        // Flow node açmak istiyorsak → Hunter node açık mı?
-        if (id.Contains("_t2f_"))
-            return HasAnyUnlockedWithPrefix("_t2h_");
-
-        return false;
+        return TryGetExclusiveRouteRule(node.nodeId, out var rule) &&
+               HasAnyUnlockedWithPrefix(rule.opposingPrefix);
     }
 
     /// <summary>Yol engeli nedenini döndürür (UI'da göstermek için).</summary>
     public string GetBlockReason(SkillNodeSO node)
     {
         if (node == null) return "";
-        if (node.nodeId.Contains("_t2h_"))
-            return "Akışçı yolunda açık perk var. Önce onu kapat.";
-        if (node.nodeId.Contains("_t2f_"))
-            return "Avcı yolunda açık perk var. Önce onu kapat.";
-        return "";
+        if (IsBlockedByCommitment(node))
+            return GetCommitmentBlockReason(node);
+        return TryGetExclusiveRouteRule(node.nodeId, out var rule) ? rule.reason : "";
     }
 
     private bool HasAnyUnlockedWithPrefix(string prefix)
@@ -573,10 +635,18 @@ public class AxisProgressionManager : MonoBehaviour
     public void ForceUnlockNode(SkillNodeSO node)
     {
         if (node == null) return;
+        if (_unlockedNodeIds.Contains(node.nodeId)) return;
+
         _unlockedNodeIds.Add(node.nodeId);
+
+        var axis = database?.GetAxisForNode(node);
+        RecalculateAxisState(axis);
+
         RebuildPlayerBuild();
         OnNodeUnlocked?.Invoke(node);
         OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.Unlocked);
+        NotifyAxisPairStatuses(axis, node.nodeId);
+        NotifyAffectedNodes(node);
         Debug.Log($"[AxisProgression] UNLOCK: {node.displayName}");
         AutoSave();
     }
@@ -585,10 +655,17 @@ public class AxisProgressionManager : MonoBehaviour
     public void ForceLockNode(SkillNodeSO node)
     {
         if (node == null) return;
+        if (!_unlockedNodeIds.Contains(node.nodeId)) return;
+
         _unlockedNodeIds.Remove(node.nodeId);
+
+        var axis = database?.GetAxisForNode(node);
+        RecalculateAxisState(axis);
+
         RebuildPlayerBuild();
         OnNodeBecameLocked?.Invoke(node);
         OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.VisibleLocked);
+        NotifyAxisPairStatuses(axis, node.nodeId);
         Debug.Log($"[AxisProgression] LOCK: {node.displayName}");
         AutoSave();
     }
@@ -627,6 +704,40 @@ public class AxisProgressionManager : MonoBehaviour
 
         Debug.Log(_currentBuild.ToString());
     }
+
+    private static bool TryGetExclusiveRouteRule(string nodeId, out ExclusiveRouteRule rule)
+    {
+        if (!string.IsNullOrEmpty(nodeId))
+        {
+            foreach (var candidate in ExclusiveRouteRules)
+            {
+                if (nodeId.Contains(candidate.ownPrefix))
+                {
+                    rule = candidate;
+                    return true;
+                }
+            }
+        }
+
+        rule = default;
+        return false;
+    }
+
+    private string GetCommitmentBlockReason(SkillNodeSO node)
+    {
+        if (database == null || node == null)
+            return "Karsi eksende commitment aktif.";
+
+        var ownerAxis = database.GetAxisForNode(node);
+        if (ownerAxis == null)
+            return "Karsi eksende commitment aktif.";
+
+        var oppositeAxis = database.GetOpposingAxis(ownerAxis);
+        if (oppositeAxis == null)
+            return "Karsi eksende commitment aktif.";
+
+        return $"{oppositeAxis.displayName} commitment'i acik. Once onu kapat.";
+    }
 }
 
 // ═══════════ Node Durumu Enum ═══════════
@@ -654,4 +765,18 @@ public class CommitmentState
     public string commitmentNodeId = "";
     public string chosenRoute = "";
     public int highestUnlockedTier;
+}
+
+internal readonly struct ExclusiveRouteRule
+{
+    public readonly string ownPrefix;
+    public readonly string opposingPrefix;
+    public readonly string reason;
+
+    public ExclusiveRouteRule(string ownPrefix, string opposingPrefix, string reason)
+    {
+        this.ownPrefix = ownPrefix;
+        this.opposingPrefix = opposingPrefix;
+        this.reason = reason;
+    }
 }

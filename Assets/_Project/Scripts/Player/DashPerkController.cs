@@ -12,6 +12,8 @@ public class DashPerkController : MonoBehaviour
     private PlayerController playerController;
     private PlayerCombat playerCombat;
     private ParrySystem parrySystem;
+    private float externalDodgeWindowMultiplier = 1f;
+    private float externalTempoGainMultiplier = 1f;
 
     // ═══════════ T1: MENZİLLİ KAÇINMA ═══════════
     [Header("=== T1: Menzilli Kaçınma ===")]
@@ -430,6 +432,9 @@ public class DashPerkController : MonoBehaviour
             totalWindow *= (1f + commitDodgeWindowBonus);
 
         if (totalWindow > 0f)
+            totalWindow *= externalDodgeWindowMultiplier;
+
+        if (totalWindow > 0f)
         {
             _dodgeWindowTimer = totalWindow;
             playerController.IsInvulnerable = true;
@@ -682,6 +687,7 @@ public class DashPerkController : MonoBehaviour
 
         float gain = tempoPerAggressiveDash;
         if (_hasT2Commitment) gain *= (1f + commitDashTempoEfficiency);
+        gain *= externalTempoGainMultiplier;
         gain = Mathf.Min(gain, remainingCap);
 
         if (gain <= 0f) return;
@@ -704,21 +710,20 @@ public class DashPerkController : MonoBehaviour
 
         if (_hasT2Commitment)
         {
-            parrySystem.externalTempoMultiplier = 1f - commitParryTempoReduction;
-            parrySystem.externalCooldownMultiplier = 1f + commitParryCooldownPenalty;
-            parrySystem.externalWindowMultiplier = 1f - commitParryWindowReduction;
+            parrySystem.SetDashCommitmentParryMultipliers(
+                1f - commitParryTempoReduction,
+                1f + commitParryCooldownPenalty,
+                1f - commitParryWindowReduction);
 
             if (playerController != null)
-                playerController.SetExternalDodgeCooldownMultiplier(1f - commitDashCooldownReduction);
+                playerController.SetDashCommitmentDodgeCooldownMultiplier(1f - commitDashCooldownReduction);
         }
         else
         {
-            parrySystem.externalTempoMultiplier = 1f;
-            parrySystem.externalCooldownMultiplier = 1f;
-            parrySystem.externalWindowMultiplier = 1f;
+            parrySystem.SetDashCommitmentParryMultipliers(1f, 1f, 1f);
 
             if (playerController != null)
-                playerController.SetExternalDodgeCooldownMultiplier(1f);
+                playerController.SetDashCommitmentDodgeCooldownMultiplier(1f);
         }
     }
 
@@ -1069,6 +1074,16 @@ public class DashPerkController : MonoBehaviour
     {
         _blindSpotTriggered = false;
         _blindSpotBonusTimer = 0f;
+    }
+
+    public void SetExternalDodgeWindowMultiplier(float multiplier)
+    {
+        externalDodgeWindowMultiplier = Mathf.Max(0.05f, multiplier);
+    }
+
+    public void SetExternalTempoGainMultiplier(float multiplier)
+    {
+        externalTempoGainMultiplier = Mathf.Max(0f, multiplier);
     }
 
     // ═══════════ T2 AVCI: İNFAZ DASH'İ ═══════════
