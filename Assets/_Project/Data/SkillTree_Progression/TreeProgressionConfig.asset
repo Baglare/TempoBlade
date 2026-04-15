@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ae755fd81c76cc4f9f0052d6559778e, type: 3}
+  m_Name: TreeProgressionConfig
+  m_EditorClassIdentifier: Assembly-CSharp::TreeProgressionConfigSO
+  rankXpThresholds: 64000000dc0000006801000008020000bc020000840300007e040000aa05000008070000980800005a0a0000
+  normalRoomXp: 28
+  eliteRoomXp: 42
+  miniBossRoomXp: 60
+  bossRoomXp: 90
+  easyMultiplier: 0.9
+  normalMultiplier: 1
+  hardMultiplier: 1.15
+  minimumAffinityForXp: 0.08
+  baseXpFloor: 0.35
+  affinityXpScale: 0.65
+  maxVarietyBonus: 1.15
+  scoreForFullAffinity: 10
+  repeatedEventWindow: 3
+  firstRepeatMultiplier: 1
+  secondRepeatMultiplier: 0.6
+  thirdRepeatMultiplier: 0.3
+  furtherRepeatMultiplier: 0.1
+  dashWeights:
+    axisId: axis_dash
+    primaryWeight: 0.3
+    secondaryWeight: 0.2
+    conversionWeight: 0.25
+    utilityWeight: 0.15
+    fifthWeight: 0.15
+    penaltyWeight: 0.2
+  parryWeights:
+    axisId: axis_parry
+    primaryWeight: 0.25
+    secondaryWeight: 0.3
+    conversionWeight: 0.25
+    utilityWeight: 0.1
+    fifthWeight: 0.15
+    penaltyWeight: 0.2
+  overdriveWeights:
+    axisId: axis_overdrive
+    primaryWeight: 0.2
+    secondaryWeight: 0.2
+    conversionWeight: 0.3
+    utilityWeight: 0.2
+    fifthWeight: 0.15
+    penaltyWeight: 0.25
+  cadenceWeights:
+    axisId: axis_cadence
+    primaryWeight: 0.2
+    secondaryWeight: 0.2
+    conversionWeight: 0.2
+    utilityWeight: 0.2
+    fifthWeight: 0.15
+    penaltyWeight: 0.2
+  highTempoThreshold: 70
+  nearEnemyRadius: 3
+  threatRadius: 4
+  followUpWindow: 1.25
+  thresholdPayoffWindow: 4

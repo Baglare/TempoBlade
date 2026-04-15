@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Perfect melee parry agir stun uygular; boss'ta saldiriyi bozar.
   icon: {fileID: 0}
   tier: 1
+  requiredTreeRank: 4
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

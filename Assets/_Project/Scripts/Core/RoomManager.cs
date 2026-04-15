@@ -109,6 +109,9 @@ public class RoomManager : MonoBehaviour
 
         isRoomActive = true;
         currentWaveIndex = 0;
+
+        GameObject telemetryPlayer = GameObject.FindGameObjectWithTag("Player");
+        EncounterAffinityManager.EnsureInstance().StartEncounter(currentRoomData, telemetryPlayer);
         
         // Eğer odanın wave tanımı yoksa direkt odayı tamamla (Örn: Boş Boss odası test için)
         if (currentRoomData.waves == null || currentRoomData.waves.Count == 0 || currentRoomLayout == null)
@@ -253,6 +256,7 @@ public class RoomManager : MonoBehaviour
     private void RoomCleared()
     {
         isRoomActive = false;
+        EncounterAffinityManager.EnsureInstance().EndEncounter(currentRoomData);
 
         // Oda temizlendiğinde haritadaki tüm tuzakları yok et
         TrapArea[] remainingTraps = FindObjectsByType<TrapArea>(FindObjectsSortMode.None);

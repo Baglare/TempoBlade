@@ -12,6 +12,8 @@ public class SkillTreePanelUI : MonoBehaviour
     [Header("Axis References")]
     public ProgressionAxisSO dashAxis;
     public ProgressionAxisSO parryAxis;
+    public ProgressionAxisSO overdriveAxis;
+    public ProgressionAxisSO cadenceAxis;
 
     [Header("Colors")]
     public Color lockedColor = new Color(0.30f, 0.30f, 0.35f, 1f);
@@ -23,6 +25,12 @@ public class SkillTreePanelUI : MonoBehaviour
     public Color parryT1Color = new Color(1f, 0.55f, 0.2f, 1f);
     public Color ballisticColor = new Color(1f, 0.78f, 0.28f, 1f);
     public Color perfectionistColor = new Color(1f, 0.32f, 0.32f, 1f);
+    public Color overdriveT1Color = new Color(1f, 0.24f, 0.16f, 1f);
+    public Color burstColor = new Color(1f, 0.45f, 0.08f, 1f);
+    public Color predatorColor = new Color(0.95f, 0.08f, 0.08f, 1f);
+    public Color cadenceT1Color = new Color(0.35f, 0.95f, 0.78f, 1f);
+    public Color measuredCadenceColor = new Color(0.30f, 0.75f, 1f, 1f);
+    public Color flowCadenceColor = new Color(0.55f, 0.95f, 0.45f, 1f);
     public Color panelBg = new Color(0.08f, 0.08f, 0.12f, 0.96f);
     public Color nodeBg = new Color(0.15f, 0.15f, 0.20f, 1f);
     public Color lineColor = new Color(0.4f, 0.4f, 0.5f, 0.6f);
@@ -42,6 +50,9 @@ public class SkillTreePanelUI : MonoBehaviour
     private RectTransform tierLabelContainer;
     private TextMeshProUGUI titleText;
     private TextMeshProUGUI descText;
+    private TextMeshProUGUI warningText;
+    private TextMeshProUGUI modeText;
+    private TextMeshProUGUI progressText;
     private bool isOpen;
     private ProgressionAxisSO activeAxis;
 
@@ -104,10 +115,50 @@ public class SkillTreePanelUI : MonoBehaviour
         { "parry_t2p_perfect_cycle", new Vector2Int(4, 6) }
     };
 
+    private static readonly Dictionary<string, Vector2Int> OverdriveGrid = new Dictionary<string, Vector2Int>
+    {
+        { "overdrive_t1_heat_buildup", new Vector2Int(0, 0) },
+        { "overdrive_t1_threshold_burst", new Vector2Int(1, 0) },
+        { "overdrive_t1_red_pressure", new Vector2Int(2, 0) },
+        { "overdrive_t1_overflow_impulse", new Vector2Int(3, 0) },
+        { "overdrive_t1_final_push", new Vector2Int(4, 0) },
+        { "overdrive_t2_commitment", new Vector2Int(2, 2) },
+        { "overdrive_t2burst_short_circuit", new Vector2Int(0, 3) },
+        { "overdrive_t2burst_red_window", new Vector2Int(1, 3) },
+        { "overdrive_t2burst_threshold_echo", new Vector2Int(0, 4) },
+        { "overdrive_t2burst_pressure_break", new Vector2Int(1, 4) },
+        { "overdrive_t2burst_final_flare", new Vector2Int(0, 5) },
+        { "overdrive_t2pred_blood_scent", new Vector2Int(3, 3) },
+        { "overdrive_t2pred_choking_proximity", new Vector2Int(4, 3) },
+        { "overdrive_t2pred_predator_angle", new Vector2Int(3, 4) },
+        { "overdrive_t2pred_pack_breaker", new Vector2Int(4, 4) },
+        { "overdrive_t2pred_execute_pressure", new Vector2Int(4, 5) }
+    };
+
+    private static readonly Dictionary<string, Vector2Int> CadenceGrid = new Dictionary<string, Vector2Int>
+    {
+        { "cadence_t1_steady_pulse", new Vector2Int(0, 0) },
+        { "cadence_t1_transition_rhythm", new Vector2Int(1, 0) },
+        { "cadence_t1_soft_fall", new Vector2Int(2, 0) },
+        { "cadence_t1_measured_power", new Vector2Int(3, 0) },
+        { "cadence_t1_rhythm_shield", new Vector2Int(4, 0) },
+        { "cadence_t2_commitment", new Vector2Int(2, 2) },
+        { "cadence_t2measured_measure_line", new Vector2Int(0, 3) },
+        { "cadence_t2measured_balance_point", new Vector2Int(1, 3) },
+        { "cadence_t2measured_timed_accent", new Vector2Int(0, 4) },
+        { "cadence_t2measured_recovery_return", new Vector2Int(1, 4) },
+        { "cadence_t2measured_perfect_measure", new Vector2Int(0, 5) },
+        { "cadence_t2flow_flow_ring", new Vector2Int(3, 3) },
+        { "cadence_t2flow_sliding_continuation", new Vector2Int(4, 3) },
+        { "cadence_t2flow_wave_bounce", new Vector2Int(3, 4) },
+        { "cadence_t2flow_threshold_surf", new Vector2Int(4, 4) },
+        { "cadence_t2flow_overflow_harmony", new Vector2Int(4, 5) }
+    };
+
     private void Start()
     {
         BuildShell();
-        SetActiveAxis(dashAxis != null ? dashAxis : parryAxis);
+        SetActiveAxis(GetFirstConfiguredAxis());
         panelRoot.SetActive(false);
         isOpen = false;
     }
@@ -115,13 +166,21 @@ public class SkillTreePanelUI : MonoBehaviour
     private void OnEnable()
     {
         if (AxisProgressionManager.Instance != null)
+        {
             AxisProgressionManager.Instance.OnNodeStatusChanged += HandleNodeStatusChanged;
+            AxisProgressionManager.Instance.OnTreeProgressChanged += HandleTreeProgressChanged;
+            AxisProgressionManager.Instance.OnInteractionModeChanged += HandleInteractionModeChanged;
+        }
     }
 
     private void OnDisable()
     {
         if (AxisProgressionManager.Instance != null)
+        {
             AxisProgressionManager.Instance.OnNodeStatusChanged -= HandleNodeStatusChanged;
+            AxisProgressionManager.Instance.OnTreeProgressChanged -= HandleTreeProgressChanged;
+            AxisProgressionManager.Instance.OnInteractionModeChanged -= HandleInteractionModeChanged;
+        }
     }
 
     private void Update()
@@ -143,6 +202,7 @@ public class SkillTreePanelUI : MonoBehaviour
     {
         isOpen = true;
         panelRoot.SetActive(true);
+        RefreshModeAndProgressText();
         RefreshAllSlots();
         Time.timeScale = 0f;
     }
@@ -183,7 +243,7 @@ public class SkillTreePanelUI : MonoBehaviour
         titleRect.sizeDelta = new Vector2(700, 36);
         titleText.alignment = TextAlignmentOptions.Center;
 
-        var warningText = CreateText(panelRoot.transform, "Warning", "[DENEYSEL MOD] Tiklayarak perkleri ac/kapat", 14, FontStyles.Italic, new Color(1f, 0.8f, 0.3f, 0.7f));
+        warningText = CreateText(panelRoot.transform, "Warning", "", 14, FontStyles.Italic, new Color(1f, 0.8f, 0.3f, 0.7f));
         var warningRect = warningText.rectTransform;
         warningRect.anchorMin = new Vector2(0.5f, 1f);
         warningRect.anchorMax = new Vector2(0.5f, 1f);
@@ -204,8 +264,30 @@ public class SkillTreePanelUI : MonoBehaviour
         Stretch(closeLabel.rectTransform);
         closeLabel.alignment = TextAlignmentOptions.Center;
 
-        CreateAxisButton(panelRoot.transform, "DashTab", "Dash", new Vector2(-70f, -78f), () => SetActiveAxis(dashAxis));
-        CreateAxisButton(panelRoot.transform, "ParryTab", "Parry", new Vector2(70f, -78f), () => SetActiveAxis(parryAxis));
+        CreateAxisButton(panelRoot.transform, "DashTab", "Dash", new Vector2(-210f, -78f), () => SetActiveAxis(dashAxis));
+        CreateAxisButton(panelRoot.transform, "ParryTab", "Parry", new Vector2(-70f, -78f), () => SetActiveAxis(parryAxis));
+        CreateAxisButton(panelRoot.transform, "OverdriveTab", "Overdrive", new Vector2(70f, -78f), () => SetActiveAxis(overdriveAxis));
+        CreateAxisButton(panelRoot.transform, "CadenceTab", "Cadence", new Vector2(210f, -78f), () => SetActiveAxis(cadenceAxis));
+        CreateUtilityButton(panelRoot.transform, "ModeToggle", "Mod Degistir", new Vector2(-390f, -78f), () => ToggleMode());
+        CreateUtilityButton(panelRoot.transform, "RankDebug", "Agaca Seviye Ekle", new Vector2(390f, -78f), () => AddRankToActiveAxis());
+
+        modeText = CreateText(panelRoot.transform, "ModeText", "", 14, FontStyles.Bold, new Color(0.85f, 0.9f, 1f));
+        var modeRect = modeText.rectTransform;
+        modeRect.anchorMin = new Vector2(0f, 1f);
+        modeRect.anchorMax = new Vector2(0f, 1f);
+        modeRect.pivot = new Vector2(0f, 1f);
+        modeRect.anchoredPosition = new Vector2(18, -18);
+        modeRect.sizeDelta = new Vector2(420, 24);
+        modeText.alignment = TextAlignmentOptions.Left;
+
+        progressText = CreateText(panelRoot.transform, "ProgressText", "", 14, FontStyles.Normal, new Color(0.75f, 0.82f, 0.9f));
+        var progressRect = progressText.rectTransform;
+        progressRect.anchorMin = new Vector2(1f, 1f);
+        progressRect.anchorMax = new Vector2(1f, 1f);
+        progressRect.pivot = new Vector2(1f, 1f);
+        progressRect.anchoredPosition = new Vector2(-60, -58);
+        progressRect.sizeDelta = new Vector2(520, 24);
+        progressText.alignment = TextAlignmentOptions.Right;
 
         var nodeContainerGO = new GameObject("NodeContainer");
         nodeContainerGO.transform.SetParent(panelRoot.transform, false);
@@ -254,14 +336,41 @@ public class SkillTreePanelUI : MonoBehaviour
         text.alignment = TextAlignmentOptions.Center;
     }
 
+    private void CreateUtilityButton(Transform parent, string name, string label, Vector2 anchoredPosition, UnityEngine.Events.UnityAction onClick)
+    {
+        var buttonGO = CreatePanel(parent, name, new Color(0.22f, 0.20f, 0.16f, 0.95f));
+        var rect = buttonGO.GetComponent<RectTransform>();
+        rect.anchorMin = new Vector2(0.5f, 1f);
+        rect.anchorMax = new Vector2(0.5f, 1f);
+        rect.pivot = new Vector2(0.5f, 1f);
+        rect.anchoredPosition = anchoredPosition;
+        rect.sizeDelta = new Vector2(155, 34);
+
+        var button = buttonGO.AddComponent<Button>();
+        button.onClick.AddListener(onClick);
+
+        var text = CreateText(buttonGO.transform, "Label", label, 13, FontStyles.Bold, Color.white);
+        Stretch(text.rectTransform);
+        text.alignment = TextAlignmentOptions.Center;
+    }
+
     private void SetActiveAxis(ProgressionAxisSO axis)
     {
         if (axis == null)
             return;
 
         activeAxis = axis;
-        titleText.text = axis == parryAxis ? "PARRY SKILL TREE" : "DASH SKILL TREE";
+        titleText.text = $"{axis.displayName.ToUpperInvariant()} SKILL TREE";
+        RefreshModeAndProgressText();
         RebuildAxisView();
+    }
+
+    private ProgressionAxisSO GetFirstConfiguredAxis()
+    {
+        if (dashAxis != null) return dashAxis;
+        if (parryAxis != null) return parryAxis;
+        if (overdriveAxis != null) return overdriveAxis;
+        return cadenceAxis;
     }
 
     private void RebuildAxisView()
@@ -303,7 +412,7 @@ public class SkillTreePanelUI : MonoBehaviour
     private void CreateTierLabels()
     {
         string[] labels = { "TIER 1", "TIER 1", "TIER 1", "COMMITMENT", "TIER 2", "TIER 2", "TIER 2" };
-        Color tint = activeAxis == parryAxis ? parryT1Color : dashT1Color;
+        Color tint = GetAxisBaseColor(activeAxis);
 
         for (int row = 0; row < labels.Length; row++)
         {
@@ -433,7 +542,10 @@ public class SkillTreePanelUI : MonoBehaviour
 
     private Dictionary<string, Vector2Int> GetCurrentGrid()
     {
-        return activeAxis == parryAxis ? ParryGrid : DashGrid;
+        if (activeAxis == parryAxis) return ParryGrid;
+        if (activeAxis == overdriveAxis) return OverdriveGrid;
+        if (activeAxis == cadenceAxis) return CadenceGrid;
+        return DashGrid;
     }
 
     private Color GetNodeTintColor(SkillNodeSO node)
@@ -449,8 +561,30 @@ public class SkillTreePanelUI : MonoBehaviour
             return parryT1Color;
         }
 
+        if (activeAxis == overdriveAxis)
+        {
+            if (id.Contains("_t2burst_")) return burstColor;
+            if (id.Contains("_t2pred_")) return predatorColor;
+            return overdriveT1Color;
+        }
+
+        if (activeAxis == cadenceAxis)
+        {
+            if (id.Contains("_t2measured_")) return measuredCadenceColor;
+            if (id.Contains("_t2flow_")) return flowCadenceColor;
+            return cadenceT1Color;
+        }
+
         if (id.Contains("_t2h_")) return hunterColor;
         if (id.Contains("_t2f_")) return flowColor;
+        return dashT1Color;
+    }
+
+    private Color GetAxisBaseColor(ProgressionAxisSO axis)
+    {
+        if (axis == parryAxis) return parryT1Color;
+        if (axis == overdriveAxis) return overdriveT1Color;
+        if (axis == cadenceAxis) return cadenceT1Color;
         return dashT1Color;
     }
 
@@ -526,7 +660,17 @@ public class SkillTreePanelUI : MonoBehaviour
         if (AxisProgressionManager.Instance == null)
             return;
 
-        int result = AxisProgressionManager.Instance.SmartToggleNode(node);
+        var manager = AxisProgressionManager.Instance;
+        bool testerMode = manager.IsTesterMode;
+        if (!testerMode && manager.IsNodeUnlocked(node))
+        {
+            descText.text = $"<color=#26D98A>{node.displayName} zaten acik.</color>";
+            RefreshAllSlots();
+            return;
+        }
+
+        int result = testerMode ? manager.SmartToggleNode(node) : (manager.TryUnlockNode(node) ? 1 : -2);
+
         if (result == 1)
         {
             descText.text = $"<color=#26D98A>{node.displayName} acildi.</color>";
@@ -537,7 +681,7 @@ public class SkillTreePanelUI : MonoBehaviour
         }
         else if (result == -2)
         {
-            descText.text = $"<color=#FF4444>{AxisProgressionManager.Instance.GetBlockReason(node)}</color>";
+            descText.text = $"<color=#FF4444>{manager.GetBlockReason(node)}</color>";
         }
         else
         {
@@ -577,7 +721,65 @@ public class SkillTreePanelUI : MonoBehaviour
             ? $"\n<color=#FF6666>{mgr.GetBlockReason(node)}</color>"
             : "";
 
-        descText.text = $"<b>{node.displayName}</b> [{status}]\n{node.description}{prereqInfo}{blockReason}";
+        string rankInfo = mgr != null && activeAxis != null
+            ? $"\nRank: {mgr.GetTreeRank(activeAxis)} / Gerekli: {mgr.GetRequiredRankForNode(node)}"
+            : "";
+
+        descText.text = $"<b>{node.displayName}</b> [{status}]\n{node.description}{rankInfo}{prereqInfo}{blockReason}";
+    }
+
+    private void ToggleMode()
+    {
+        if (AxisProgressionManager.Instance == null)
+            return;
+
+        AxisProgressionManager.Instance.ToggleInteractionMode();
+        RefreshModeAndProgressText();
+        RefreshAllSlots();
+    }
+
+    private void AddRankToActiveAxis()
+    {
+        if (AxisProgressionManager.Instance == null || activeAxis == null)
+            return;
+
+        if (AxisProgressionManager.Instance.IsTesterMode)
+        {
+            descText.text = "<color=#FFAA44>Tester modda XP/rank kullanilmaz.</color>";
+            return;
+        }
+
+        AxisProgressionManager.Instance.DebugAddTreeRank(activeAxis);
+        RefreshModeAndProgressText();
+        RefreshAllSlots();
+    }
+
+    private void RefreshModeAndProgressText()
+    {
+        var mgr = AxisProgressionManager.Instance;
+        if (mgr == null)
+            return;
+
+        if (modeText != null)
+            modeText.text = mgr.IsTesterMode
+                ? "MOD: TESTER (XP yok, debug unlock)"
+                : "MOD: NORMAL PROGRESSION";
+
+        if (warningText != null)
+            warningText.text = mgr.IsTesterMode
+                ? "[TESTER] Perk ac/kapat serbest; Focus ve yol kilitleri korunur."
+                : "[NORMAL] XP/rank/prerequisite kurallari aktif.";
+
+        if (progressText != null && activeAxis != null)
+        {
+            int rank = mgr.GetTreeRank(activeAxis);
+            float xp = mgr.GetTreeXp(activeAxis);
+            int nextRank = Mathf.Min(mgr.GetProgressionConfig().MaxRank, rank + 1);
+            int nextXp = mgr.GetProgressionConfig().GetRequiredXpForRank(nextRank);
+            string route = mgr.GetChosenTier2Route(activeAxis);
+            string routeText = string.IsNullOrEmpty(route) ? "" : $" | Route: {route}";
+            progressText.text = $"Rank {rank} | XP {xp:F0}/{nextXp}{routeText}";
+        }
     }
 
     private void HandleNodeStatusChanged(string nodeId, NodeStatus status)
@@ -587,6 +789,22 @@ public class SkillTreePanelUI : MonoBehaviour
 
         RefreshSlot(slot);
         RefreshAllSlots();
+    }
+
+    private void HandleTreeProgressChanged(ProgressionAxisSO axis, int rank, float xp)
+    {
+        if (axis == activeAxis)
+            RefreshModeAndProgressText();
+
+        if (isOpen)
+            RefreshAllSlots();
+    }
+
+    private void HandleInteractionModeChanged(SkillTreeInteractionMode mode)
+    {
+        RefreshModeAndProgressText();
+        if (isOpen)
+            RefreshAllSlots();
     }
 
     private static void Stretch(RectTransform rect)

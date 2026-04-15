@@ -12,6 +12,8 @@ public class RoomSO : ScriptableObject
     [Header("Encounter Config")]
     public List<RoomWave> waves;
     public bool isBossRoom;
+    public EncounterType encounterType = EncounterType.Normal;
+    public DifficultyTier difficulty = DifficultyTier.Normal;
     
     [Header("Rewards")]
     public int goldReward;

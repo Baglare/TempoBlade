@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Basarili parry sonrasinda bonus hasarli counter penceresi acar.
   icon: {fileID: 0}
   tier: 1
+  requiredTreeRank: 3
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

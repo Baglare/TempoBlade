@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "Her av d\xFC\u015F\xFCrd\xFC\u011F\xFCnde oda boyu hasar bonusu kazan."
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 11
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

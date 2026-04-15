@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "Av yak\u0131n\u0131ndayken dash cooldown daha h\u0131zl\u0131 yenilenir."
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 9
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

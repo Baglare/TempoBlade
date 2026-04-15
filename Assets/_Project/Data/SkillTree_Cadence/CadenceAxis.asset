@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d594e78d7251e0149a3c19f56121f1bf, type: 3}
+  m_Name: CadenceAxis
+  m_EditorClassIdentifier: Assembly-CSharp::ProgressionAxisSO
+  axisId: axis_cadence
+  displayName: Cadence
+  icon: {fileID: 0}
+  axisColor: {r: 0.35, g: 0.95, b: 0.78, a: 1}
+  nodes:
+  - {fileID: 11400000, guid: e5aa1a4ac05c32046897cba062d9b900, type: 2}
+  - {fileID: 11400000, guid: 0d15824fd60d6db49996d854781f45ce, type: 2}
+  - {fileID: 11400000, guid: 236b3faea01223d42a59b9c4f7ebc2c7, type: 2}
+  - {fileID: 11400000, guid: 9befbd3d134fd9b409303ff02927d4b5, type: 2}
+  - {fileID: 11400000, guid: 9daeeed28434f2b49b09bbfbc3da6f8e, type: 2}
+  - {fileID: 11400000, guid: 70ebf2c10dd516046bf95b3adb4bf113, type: 2}
+  - {fileID: 11400000, guid: ac2451cc71b7a3f4d8b48d7c54cc4ee8, type: 2}
+  - {fileID: 11400000, guid: 678dff78a451d50409d7b251df675e65, type: 2}
+  - {fileID: 11400000, guid: a06086439ee7a0545a6bb3ba088d433b, type: 2}
+  - {fileID: 11400000, guid: 1f2f99c32164fa148a8bef6aea3f2eaa, type: 2}
+  - {fileID: 11400000, guid: 00f39af29dd77d444802a11000aef7bd, type: 2}
+  - {fileID: 11400000, guid: 613ebd5666a3ee54ea30a933ea3c8ec7, type: 2}
+  - {fileID: 11400000, guid: 608ddf26d9eb6a643858ba586d331c8f, type: 2}
+  - {fileID: 11400000, guid: 89be336ac5721b94680b603dcb2091cf, type: 2}
+  - {fileID: 11400000, guid: 93dce17275d5ae447b468cf0b5b85ec1, type: 2}
+  - {fileID: 11400000, guid: ac197177be1b77647b53aa148aa68b7b, type: 2}

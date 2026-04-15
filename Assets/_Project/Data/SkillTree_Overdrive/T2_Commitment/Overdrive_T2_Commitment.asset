@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: Overdrive_T2_Commitment
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: overdrive_t2_commitment
+  displayName: Overdrive Odagi
+  description: Dusuk ve orta tempoda guvenli oyun zayiflar; yuksek tempodaki Overdrive
+    etkileri guclenir.
+  icon: {fileID: 0}
+  tier: 2
+  requiredTreeRank: 6
+  isCommitmentNode: 1
+  regionTag: overdrive_commitment
+  prerequisites:
+  - {fileID: 11400000, guid: 18d1d30e96ec9b64696a6b3e93ce56c9, type: 2}
+  - {fileID: 11400000, guid: a7734da3df81cc54a8aa38582778d2a3, type: 2}
+  - {fileID: 11400000, guid: 8066af91897733245970b603a3e6fc55, type: 2}
+  - {fileID: 11400000, guid: a7fea3bf14d255444a01eaf5e5ad0629, type: 2}
+  - {fileID: 11400000, guid: fc384f9b087707e4a89b1b8e3a422e79, type: 2}
+  effects:
+  - type: 1
+    key: overdriveT2Commitment
+    modifierOp: 0
+    numericValue: 0
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

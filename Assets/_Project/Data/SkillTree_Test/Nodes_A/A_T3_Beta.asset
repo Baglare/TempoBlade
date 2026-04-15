@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Form-B gerektirir (beta_path)
   icon: {fileID: 0}
   tier: 3
+  requiredTreeRank: 12
   isCommitmentNode: 0
   regionTag: beta_path
   prerequisites:

@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a4abec1e9a56d24fa644e41ff923054, type: 3}
+  m_Name: Overdrive_T2Pred_ExecutePressure
+  m_EditorClassIdentifier: Assembly-CSharp::SkillNodeSO
+  nodeId: overdrive_t2pred_execute_pressure
+  displayName: Infaz Baskisi
+  description: Dusen canli ava karsi counter/heavy saldirilar cok guclu bitirici
+    baski kazanir.
+  icon: {fileID: 0}
+  tier: 2
+  requiredTreeRank: 11
+  isCommitmentNode: 0
+  regionTag: 
+  prerequisites:
+  - {fileID: 11400000, guid: 797b1f0f5839cbe478b837d88bb9005f, type: 2}
+  effects:
+  - type: 1
+    key: overdriveExecutePressure
+    modifierOp: 0
+    numericValue: 0
+  visibility:
+    rule: 0
+    formOverlayId: 
+    requiredDirection: 0
+    formThreshold: 0
+    regionTag: 
+  startsUnlocked: 0

@@ -18,6 +18,7 @@ MonoBehaviour:
     ka\xE7\u0131nma sa\u011Flar."
   icon: {fileID: 0}
   tier: 1
+  requiredTreeRank: 2
   isCommitmentNode: 0
   regionTag: 
   prerequisites: []

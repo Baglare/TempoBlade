@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Parry'i ana savunma ritmi olarak secer. Dash zayiflar, Parry guclenir.
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 6
   isCommitmentNode: 1
   regionTag: parry_commitment
   prerequisites:

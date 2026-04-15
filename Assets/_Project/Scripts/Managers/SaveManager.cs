@@ -146,6 +146,7 @@ public class SaveData
     public List<string> unlockedSkillNodeIds = new List<string>();
     public List<FormAffinityEntry> formAffinities = new List<FormAffinityEntry>();
     public List<AxisCommitmentEntry> axisCommitments = new List<AxisCommitmentEntry>();
+    public List<TreeProgressionEntry> treeProgressions = new List<TreeProgressionEntry>();
 
     /// <summary>
     /// Belirtilen silahın yükseltme seviyesini döndürür (0-9).

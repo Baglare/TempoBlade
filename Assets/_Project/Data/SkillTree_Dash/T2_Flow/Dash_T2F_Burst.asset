@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "Kara Delik sonras\u0131 birikimli b\xFCy\xFCk hasar vuru\u015Fu."
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 11
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

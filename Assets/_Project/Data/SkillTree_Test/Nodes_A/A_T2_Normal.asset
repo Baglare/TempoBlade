@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Commitment OLMAYAN T2 node
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 7
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

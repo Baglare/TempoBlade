@@ -36,6 +36,10 @@ public class TempoManager : MonoBehaviour
     [Header("Decay")]
     public bool enableDecay = true;
     public float decayPerSecond = 6f; // Decay başladıktan sonraki saniyelik düşüş hızı
+    private float overdriveDecayMultiplier = 1f;
+    private float cadenceDecayMultiplier = 1f;
+    private float overdriveDamagePenaltyMultiplier = 1f;
+    private float cadenceDamagePenaltyMultiplier = 1f;
     
     // Tier bazlı Decay bekleme süreleri
     private float GetDecayDelayForTier(TempoTier tier)
@@ -56,6 +60,18 @@ public class TempoManager : MonoBehaviour
 
     public System.Action<TempoTier> OnTierChanged;
     public System.Action<float> OnTempoChanged;
+
+    public void SetOverdriveTempoMultipliers(float decayMultiplier, float damagePenaltyMultiplier)
+    {
+        overdriveDecayMultiplier = Mathf.Max(0f, decayMultiplier);
+        overdriveDamagePenaltyMultiplier = Mathf.Max(0f, damagePenaltyMultiplier);
+    }
+
+    public void SetCadenceTempoMultipliers(float decayMultiplier, float damagePenaltyMultiplier)
+    {
+        cadenceDecayMultiplier = Mathf.Max(0f, decayMultiplier);
+        cadenceDamagePenaltyMultiplier = Mathf.Max(0f, damagePenaltyMultiplier);
+    }
 
     private void Awake()
     {
@@ -111,26 +127,28 @@ public class TempoManager : MonoBehaviour
     public void ApplyDamagePenalty()
     {
         float prevTempo = tempo;
+        float penaltyMultiplier = overdriveDamagePenaltyMultiplier * cadenceDamagePenaltyMultiplier;
 
         if (CurrentTier == TempoTier.T3)
         {
             // T3'te hasar yenirse direkt T2'nin en üstüne (veya biraz altına) çakılır.
-            tempo = tier3Start - 1f; // Örn: 89
+            float penalty = Mathf.Max(0f, tempo - (tier3Start - 1f));
+            tempo = Mathf.Clamp(tempo - penalty * penaltyMultiplier, 0f, maxTempo);
         }
         else if (CurrentTier == TempoTier.T2)
         {
             // T2'de hasar yenirse sabit bir ceza, ama direkt T1'e çakılmayabilir
-            tempo = Mathf.Clamp(tempo - 15f, tier1Start, maxTempo); // T1 eşiğinin altına düşmez
+            tempo = Mathf.Clamp(tempo - 15f * penaltyMultiplier, tier1Start, maxTempo); // T1 eşiğinin altına düşmez
         }
         else if (CurrentTier == TempoTier.T1)
         {
             // T1'de yenirse
-            tempo = Mathf.Clamp(tempo - 10f, 0f, maxTempo);
+            tempo = Mathf.Clamp(tempo - 10f * penaltyMultiplier, 0f, maxTempo);
         }
         else
         {
             // T0'da yenirse
-            tempo = Mathf.Clamp(tempo - 5f, 0f, maxTempo);
+            tempo = Mathf.Clamp(tempo - 5f * penaltyMultiplier, 0f, maxTempo);
         }
 
         // Korumayı sıfırlama, hatta hafif afterglow verebiliriz, oyuncu hemen decay yaşamaz
@@ -236,6 +254,6 @@ public class TempoManager : MonoBehaviour
         }
 
         if (tempo > 0f)
-            AddTempo(-decayPerSecond * Time.deltaTime);
+            AddTempo(-decayPerSecond * overdriveDecayMultiplier * cadenceDecayMultiplier * Time.deltaTime);
     }
 }

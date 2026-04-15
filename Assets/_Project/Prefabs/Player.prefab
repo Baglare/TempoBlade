@@ -784,6 +784,8 @@ GameObject:
   - component: {fileID: -2761618015594950017}
   - component: {fileID: -5123481897325554022}
   - component: {fileID: 6353034195548989723}
+  - component: {fileID: 2260471172865495931}
+  - component: {fileID: -9068812226207232767}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1262,6 +1264,133 @@ MonoBehaviour:
   perfectCycleRecoveryRefund: 0.08
   perfectCycleCounterRefreshDuration: 0.35
   perfectCycleTempoGain: 6
+--- !u!114 &2260471172865495931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7397368891858854368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8870f06227642644853882392eae0f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::OverdrivePerkController
+  heatChainWindow: 1.1
+  heatMaxStacks: 5
+  heatTempoPerStack: 0.45
+  thresholdChargeDuration: 4
+  thresholdDamageBonus: 0.25
+  thresholdStunDuration: 0.35
+  redPressureMinTier: 2
+  redPressureDamageBonus: 0.12
+  redPressureStunBonus: 0.2
+  redPressureIncomingDamageMultiplier: 1.1
+  overflowTempoThreshold: 85
+  overflowWhiffPenaltyMultiplier: 0.45
+  overflowDamagePenaltyMultiplier: 0.65
+  finalPushDuration: 3
+  finalPushDamageBonus: 0.2
+  focusHighTempoEffectMultiplier: 1.35
+  focusLowTempoTempoGainMultiplier: 0.8
+  focusLowTempoIncomingDamageMultiplier: 1.08
+  burstWindowDuration: 3
+  burstWindowMaxDuration: 5
+  burstDamageBonus: 0.25
+  burstAttackCooldownMultiplier: 0.82
+  burstTempoDecayMultiplier: 1.45
+  burstEchoExtension: 0.6
+  burstPressureBreakStun: 0.45
+  finalFlareWindow: 0.55
+  finalFlareDamageBonus: 0.55
+  bloodScentHitsToMark: 3
+  bloodScentMemory: 3
+  preyMarkerRange: 6
+  preyMarkerColor: {r: 1, g: 0.18, b: 0.05, a: 1}
+  preyProximityRange: 2.8
+  preyTempoDecayMultiplier: 0.75
+  preyDamageBonus: 0.12
+  predatorAngleDamageBonus: 0.18
+  predatorAngleStun: 0.3
+  executeHealthThreshold: 0.25
+  executeDamageBonus: 0.85
+  bossExecuteDamageBonus: 0.3
+  executePressureStun: 0.75
+--- !u!114 &-9068812226207232767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7397368891858854368}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4fad0b5da9d58a4295eba2956dacb3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CadencePerkController
+  steadyPulseDecayMultiplier: 0.78
+  transitionWindow: 1.25
+  transitionTempoBonus: 2
+  transitionFocusMultiplier: 1.25
+  softFallDuration: 2
+  softFallDamageCarryBonus: 0.08
+  softFallDecayMultiplier: 0.85
+  measuredPowerHoldTime: 2.5
+  measuredPowerDamageBonus: 0.08
+  measuredPowerAttackCooldownMultiplier: 0.96
+  measuredPowerStunDuration: 0.18
+  rhythmShieldWhiffPenaltyMultiplier: 0.55
+  rhythmShieldDamagePenaltyMultiplier: 0.7
+  focusCadenceEffectMultiplier: 1.3
+  focusDecayMultiplier: 0.7
+  focusDamagePenaltyMultiplier: 0.65
+  focusOverdriveThresholdMultiplier: 0.75
+  stableZoneCenter: 0.55
+  stableZoneWidth: 0.28
+  stableZoneDecayMultiplier: 0.82
+  stableZoneDamageBonus: 0.05
+  balanceStackGainPerSecond: 0.65
+  balanceStackDecayPerSecond: 1
+  balanceMaxStacks: 5
+  balanceDamageBonusPerStack: 0.025
+  balanceCounterBonusPerStack: 0.025
+  balanceStunPerStack: 0.04
+  rhythmMinInterval: 0.45
+  rhythmMaxInterval: 1.25
+  timedAccentActionsRequired: 3
+  timedAccentDamageBonus: 0.22
+  timedAccentTempoBonus: 1.5
+  timedAccentStunDuration: 0.25
+  recoveryReturnWhiffMultiplier: 0.45
+  recoveryReturnGraceDuration: 1.2
+  perfectMeasureRequiredTime: 5
+  perfectMeasureDamageBonus: 0.35
+  perfectMeasureTempoBonus: 3
+  perfectMeasureStunDuration: 0.45
+  perfectMeasureDodgeRefund: 0.08
+  perfectMeasureParryRefund: 0.06
+  perfectMeasureCounterRefresh: 0.35
+  flowMaxStacks: 6
+  flowStackGrace: 1.6
+  flowStackDecayPerSecond: 1
+  flowDamageBonusPerStack: 0.018
+  flowTempoBonusPerStack: 0.2
+  slidingContinuationDecayMultiplier: 0.45
+  movementVelocityThreshold: 0.15
+  targetSwitchGrace: 1
+  waveBounceMinStacks: 4
+  waveBounceRange: 3.5
+  waveBounceDamageRatio: 0.25
+  waveBounceCooldown: 0.7
+  thresholdSurfDuration: 2.2
+  thresholdSurfFlowCarryRatio: 0.5
+  thresholdSurfDamageCarryBonus: 0.06
+  thresholdSurfDecayMultiplier: 0.85
+  overflowHarmonyMinStacks: 5
+  overflowHarmonyInterval: 3
+  overflowHarmonyTempoBonus: 2.5
+  overflowHarmonyDodgeRefund: 0.1
+  overflowHarmonyParryRefund: 0.08
 --- !u!1 &7431630693877334261
 GameObject:
   m_ObjectHideFlags: 0

@@ -562,6 +562,8 @@ MonoBehaviour:
   toggleKey: 3
   dashAxis: {fileID: 11400000, guid: 86094b1508013ec46b6cdbefbfb8526d, type: 2}
   parryAxis: {fileID: 11400000, guid: 45dd7e8d8a27a664fb0078d3b30bf859, type: 2}
+  overdriveAxis: {fileID: 11400000, guid: 46ec3a734bde5e646b8485b74b694097, type: 2}
+  cadenceAxis: {fileID: 11400000, guid: ca465996726c97345b308a07759ef7bd, type: 2}
   lockedColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}
   unlockedColor: {r: 0.15, g: 0.85, b: 0.55, a: 1}
   commitmentColor: {r: 1, g: 0.65, b: 0.15, a: 1}
@@ -571,6 +573,12 @@ MonoBehaviour:
   parryT1Color: {r: 1, g: 0.55, b: 0.2, a: 1}
   ballisticColor: {r: 1, g: 0.78, b: 0.28, a: 1}
   perfectionistColor: {r: 1, g: 0.32, b: 0.32, a: 1}
+  overdriveT1Color: {r: 1, g: 0.24, b: 0.16, a: 1}
+  burstColor: {r: 1, g: 0.45, b: 0.08, a: 1}
+  predatorColor: {r: 0.95, g: 0.08, b: 0.08, a: 1}
+  cadenceT1Color: {r: 0.35, g: 0.95, b: 0.78, a: 1}
+  measuredCadenceColor: {r: 0.3, g: 0.75, b: 1, a: 1}
+  flowCadenceColor: {r: 0.55, g: 0.95, b: 0.45, a: 1}
   panelBg: {r: 0.08, g: 0.08, b: 0.12, a: 0.96}
   nodeBg: {r: 0.15, g: 0.15, b: 0.2, a: 1}
   lineColor: {r: 0.4, g: 0.4, b: 0.5, a: 0.6}

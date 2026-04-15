@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Projectile parry recovery iadesi ve gecici reflect stack'leri verir.
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 11
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

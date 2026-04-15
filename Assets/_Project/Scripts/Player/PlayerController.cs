@@ -82,6 +82,7 @@ public class PlayerController : MonoBehaviour
         parrySystem = GetComponent<ParrySystem>();
         playerCombat = GetComponent<PlayerCombat>();
         dashPerkController = GetComponent<DashPerkController>();
+        CombatTelemetryHub.EnsureFor(gameObject);
         baseDodgeCooldown = dodgeCooldown;
 
         // Otomatik Ayarlar

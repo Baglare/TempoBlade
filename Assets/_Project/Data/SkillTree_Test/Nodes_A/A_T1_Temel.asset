@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "Eksen-A giri\u015F node'u"
   icon: {fileID: 0}
   tier: 1
+  requiredTreeRank: 1
   isCommitmentNode: 0
   regionTag: 
   prerequisites: []

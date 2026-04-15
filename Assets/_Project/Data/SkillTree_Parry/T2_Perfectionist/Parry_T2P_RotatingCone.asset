@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Parry aktifken koni aim yonunden baslayip hizla doner.
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 10
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

@@ -25,6 +25,9 @@ public class SkillNodeSO : ScriptableObject
     [Tooltip("Node'un kademe seviyesi.")]
     public int tier = 1;
 
+    [Tooltip("Normal progression modunda bu node'un acilabilir olmasi icin gereken tree rank. 0 veya altinda otomatik varsayilan kullanilir.")]
+    public int requiredTreeRank = 0;
+
     [Tooltip("Bu node açıldığında karşıt eksenin commitment kilidi tetiklenir mi?")]
     public bool isCommitmentNode = false;
 

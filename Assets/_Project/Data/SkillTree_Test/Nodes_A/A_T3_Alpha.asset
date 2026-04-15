@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Form-A gerektirir (alpha_path)
   icon: {fileID: 0}
   tier: 3
+  requiredTreeRank: 12
   isCommitmentNode: 0
   regionTag: alpha_path
   prerequisites:

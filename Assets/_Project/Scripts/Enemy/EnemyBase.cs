@@ -11,6 +11,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected bool isStunned;
     protected SpriteRenderer stunSpriteRenderer;
     protected Color stunOriginalColor = Color.white;
+    private Coroutine stunRoutine;
+    private float stunEndTime;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
@@ -71,16 +73,27 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     public virtual void Stun(float duration)
     {
-        if (isStunned) return;
-        StartCoroutine(StunRoutine(duration));
+        if (duration <= 0f) return;
+
+        float requestedEnd = Time.time + duration;
+        if (isStunned && requestedEnd <= stunEndTime)
+            return;
+
+        if (stunRoutine != null)
+            StopCoroutine(stunRoutine);
+
+        stunEndTime = requestedEnd;
+        stunRoutine = StartCoroutine(StunRoutine(duration));
     }
 
     protected virtual System.Collections.IEnumerator StunRoutine(float duration)
     {
+        bool wasAlreadyStunned = isStunned;
         isStunned = true;
         if (stunSpriteRenderer != null)
         {
-            stunOriginalColor = stunSpriteRenderer.color;
+            if (!wasAlreadyStunned)
+                stunOriginalColor = stunSpriteRenderer.color;
             stunSpriteRenderer.color = stunTintColor;
         }
 
@@ -90,6 +103,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             stunSpriteRenderer.color = stunOriginalColor;
 
         isStunned = false;
+        stunRoutine = null;
     }
 
     [Header("Effects")]

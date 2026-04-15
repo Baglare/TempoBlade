@@ -13,24 +13,39 @@ public class AxisProgressionManager : MonoBehaviour
 
     private static readonly ExclusiveRouteRule[] ExclusiveRouteRules =
     {
-        new ExclusiveRouteRule("_t2h_", "_t2f_", "Akışçı yolunda açık perk var. Önce onu kapat."),
-        new ExclusiveRouteRule("_t2f_", "_t2h_", "Avcı yolunda açık perk var. Önce onu kapat."),
-        new ExclusiveRouteRule("_t2b_", "_t2p_", "Mükemmeliyetçi yolunda açık perk var. Önce onu kapat."),
-        new ExclusiveRouteRule("_t2p_", "_t2b_", "Balistik yolunda açık perk var. Önce onu kapat.")
+        new ExclusiveRouteRule("dash_t2h_", "dash_t2f_", "Akışçı yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("dash_t2f_", "dash_t2h_", "Avcı yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("parry_t2b_", "parry_t2p_", "Mükemmeliyetçi yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("parry_t2p_", "parry_t2b_", "Balistik yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("overdrive_t2burst_", "overdrive_t2pred_", "Predator Overdrive yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("overdrive_t2pred_", "overdrive_t2burst_", "Burst Overdrive yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("cadence_t2measured_", "cadence_t2flow_", "Flow Cadence yolunda açık perk var. Önce onu kapat."),
+        new ExclusiveRouteRule("cadence_t2flow_", "cadence_t2measured_", "Measured Cadence yolunda açık perk var. Önce onu kapat.")
     };
 
     [Header("Veritabanı")]
     [Tooltip("Tüm eksenleri, karşıt çiftleri ve form overlay'leri barındıran database asset.")]
     public AxisDatabaseSO database;
 
+    [Header("Tree XP / Rank")]
+    [Tooltip("Tree XP, affinity agirliklari, rank esikleri ve anti-cheese ayarlari.")]
+    public TreeProgressionConfigSO progressionConfig;
+
     // ═══════════ Runtime State ═══════════
     private readonly HashSet<string> _unlockedNodeIds = new HashSet<string>();
+    private readonly HashSet<string> _normalUnlockedNodeIds = new HashSet<string>();
+    private readonly HashSet<string> _testerUnlockedNodeIds = new HashSet<string>();
     private readonly Dictionary<string, int> _formAffinities = new Dictionary<string, int>();
     private readonly Dictionary<string, CommitmentState> _axisCommitments = new Dictionary<string, CommitmentState>();
+    private readonly Dictionary<string, TreeProgressionRuntime> _treeProgressions = new Dictionary<string, TreeProgressionRuntime>();
+    private SkillTreeInteractionMode _interactionMode = SkillTreeInteractionMode.NormalProgression;
+    private TreeProgressionConfigSO _runtimeDefaultConfig;
 
     // ═══════════ Derlenmiş Build ═══════════
     private PlayerBuild _currentBuild = new PlayerBuild();
     public PlayerBuild CurrentBuild => _currentBuild;
+    public SkillTreeInteractionMode InteractionMode => _interactionMode;
+    public bool IsTesterMode => _interactionMode == SkillTreeInteractionMode.Tester;
 
     // ═══════════ Events ═══════════
     public event Action<SkillNodeSO> OnNodeUnlocked;
@@ -38,6 +53,8 @@ public class AxisProgressionManager : MonoBehaviour
     public event Action<FormOverlaySO, int, int> OnFormAffinityChanged;
     public event Action<PlayerBuild> OnBuildChanged;
     public event Action<string, NodeStatus> OnNodeStatusChanged;
+    public event Action<ProgressionAxisSO, int, float> OnTreeProgressChanged;
+    public event Action<SkillTreeInteractionMode> OnInteractionModeChanged;
 
     // ═══════════ Lifecycle ═══════════
 
@@ -50,6 +67,12 @@ public class AxisProgressionManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        if (progressionConfig == null)
+        {
+            _runtimeDefaultConfig = ScriptableObject.CreateInstance<TreeProgressionConfigSO>();
+            progressionConfig = _runtimeDefaultConfig;
+        }
     }
 
     private void Start()
@@ -68,8 +91,11 @@ public class AxisProgressionManager : MonoBehaviour
     public void LoadFromSave(SaveData data)
     {
         _unlockedNodeIds.Clear();
+        _normalUnlockedNodeIds.Clear();
+        _testerUnlockedNodeIds.Clear();
         _formAffinities.Clear();
         _axisCommitments.Clear();
+        _treeProgressions.Clear();
 
         if (data == null) return;
 
@@ -77,8 +103,11 @@ public class AxisProgressionManager : MonoBehaviour
         if (data.unlockedSkillNodeIds != null)
         {
             foreach (var id in data.unlockedSkillNodeIds)
-                _unlockedNodeIds.Add(id);
+                _normalUnlockedNodeIds.Add(id);
         }
+
+        foreach (var id in SkillTreeTesterSaveStore.Load())
+            _testerUnlockedNodeIds.Add(id);
 
         // Form affinities
         if (data.formAffinities != null)
@@ -102,6 +131,22 @@ public class AxisProgressionManager : MonoBehaviour
             }
         }
 
+        if (data.treeProgressions != null)
+        {
+            foreach (var entry in data.treeProgressions)
+            {
+                if (entry == null || string.IsNullOrEmpty(entry.axisId))
+                    continue;
+
+                _treeProgressions[entry.axisId] = new TreeProgressionRuntime
+                {
+                    xp = entry.xp,
+                    rank = GetProgressionConfig().CalculateRank(entry.xp),
+                    chosenTier2Route = entry.chosenTier2Route ?? ""
+                };
+            }
+        }
+
         // startsUnlocked node'ları otomatik ekle
         if (database != null && database.allAxes != null)
         {
@@ -111,11 +156,14 @@ public class AxisProgressionManager : MonoBehaviour
                 foreach (var node in axis.nodes)
                 {
                     if (node != null && node.startsUnlocked)
-                        _unlockedNodeIds.Add(node.nodeId);
+                        _normalUnlockedNodeIds.Add(node.nodeId);
                 }
             }
         }
 
+        _interactionMode = SkillTreeInteractionMode.NormalProgression;
+        LoadActiveSetFromBacking();
+        RecalculateAllAxisStates();
         RebuildPlayerBuild();
     }
 
@@ -126,8 +174,10 @@ public class AxisProgressionManager : MonoBehaviour
     {
         if (data == null) return;
 
+        SyncActiveSetToBacking();
+
         // Node'lar
-        data.unlockedSkillNodeIds = new List<string>(_unlockedNodeIds);
+        data.unlockedSkillNodeIds = new List<string>(_normalUnlockedNodeIds);
 
         // Form affinities
         data.formAffinities = new List<FormAffinityEntry>();
@@ -151,6 +201,18 @@ public class AxisProgressionManager : MonoBehaviour
                 commitmentNodeId = kv.Value.commitmentNodeId,
                 chosenRoute = kv.Value.chosenRoute,
                 highestUnlockedTier = kv.Value.highestUnlockedTier
+            });
+        }
+
+        data.treeProgressions = new List<TreeProgressionEntry>();
+        foreach (var kv in _treeProgressions)
+        {
+            data.treeProgressions.Add(new TreeProgressionEntry
+            {
+                axisId = kv.Key,
+                xp = kv.Value.xp,
+                rank = kv.Value.rank,
+                chosenTier2Route = kv.Value.chosenTier2Route
             });
         }
     }
@@ -181,11 +243,17 @@ public class AxisProgressionManager : MonoBehaviour
             return NodeStatus.VisibleLocked;
 
         // 5. T3 form overlay bölge gating?
+        if (IsTier2BlockedByMissingCommitment(node))
+            return NodeStatus.VisibleLocked;
+
         if (node.tier >= 3 && !IsFormGatePassed(node))
             return NodeStatus.VisibleLocked;
 
         // 6. Ayni tier dalinda karsi yol kilidi var mi?
         if (IsPathBlocked(node))
+            return NodeStatus.VisibleLocked;
+
+        if (IsRankLocked(node))
             return NodeStatus.VisibleLocked;
 
         // 7. Hepsi tamam
@@ -213,6 +281,7 @@ public class AxisProgressionManager : MonoBehaviour
 
         // Axis'in en yüksek tier'ını güncelle
         UpdateAxisHighestTier(node);
+        HandleTier2RouteChoice(node);
 
         // Build yeniden derle
         RebuildPlayerBuild();
@@ -224,7 +293,9 @@ public class AxisProgressionManager : MonoBehaviour
         // Karşıt eksende kilitlenen node'lar için status changed eventi
         NotifyAffectedNodes(node);
 
-        Debug.Log($"[AxisProgression] Node açıldı: {node.displayName} (ID: {node.nodeId})");
+        SyncActiveSetToBacking();
+        AutoSave();
+        Debug.Log($"[AxisProgression] Node acildi: {node.displayName} (ID: {node.nodeId})");
         return true;
     }
 
@@ -274,7 +345,7 @@ public class AxisProgressionManager : MonoBehaviour
             if (axis == null || axis.nodes == null) continue;
             foreach (var node in axis.nodes)
             {
-                if (node != null && _unlockedNodeIds.Contains(node.nodeId))
+                if (node != null && _unlockedNodeIds.Contains(node.nodeId) && ShouldApplyNodeToBuild(axis, node))
                 {
                     _currentBuild.ApplyNodeEffects(node);
                 }
@@ -553,6 +624,12 @@ public class AxisProgressionManager : MonoBehaviour
                 return -1; // açılamaz
             }
 
+            if (IsTier2BlockedByMissingCommitment(node))
+            {
+                Debug.Log($"[AxisProgression] Focus eksik: {node.displayName}");
+                return -2;
+            }
+
             // Yol kısıtlaması: Avcı vs Akışçı
             if (IsPathBlocked(node))
             {
@@ -569,8 +646,19 @@ public class AxisProgressionManager : MonoBehaviour
     public bool IsPathBlocked(SkillNodeSO node)
     {
         if (node == null) return false;
-        return TryGetExclusiveRouteRule(node.nodeId, out var rule) &&
-               HasAnyUnlockedWithPrefix(rule.opposingPrefix);
+        if (!TryGetExclusiveRouteRule(node.nodeId, out var rule))
+            return false;
+
+        var axis = database?.GetAxisForNode(node);
+        if (!IsTesterMode && axis != null)
+        {
+            var progress = GetTreeProgress(axis);
+            if (!string.IsNullOrEmpty(progress.chosenTier2Route) &&
+                !node.nodeId.Contains(progress.chosenTier2Route))
+                return true;
+        }
+
+        return HasAnyUnlockedWithPrefix(rule.opposingPrefix);
     }
 
     /// <summary>Yol engeli nedenini döndürür (UI'da göstermek için).</summary>
@@ -579,6 +667,15 @@ public class AxisProgressionManager : MonoBehaviour
         if (node == null) return "";
         if (IsBlockedByCommitment(node))
             return GetCommitmentBlockReason(node);
+        if (IsTier2BlockedByMissingCommitment(node))
+            return "Odak acilmadan Tier 2 yolu acilamaz.";
+        if (IsRankLocked(node))
+        {
+            var axis = database != null ? database.GetAxisForNode(node) : null;
+            int requiredRank = GetRequiredRankForNode(node);
+            int currentRank = axis != null ? GetTreeRank(axis) : 0;
+            return $"Tree Rank {requiredRank} gerekli. Su an: Rank {currentRank}.";
+        }
         return TryGetExclusiveRouteRule(node.nodeId, out var rule) ? rule.reason : "";
     }
 
@@ -641,12 +738,14 @@ public class AxisProgressionManager : MonoBehaviour
 
         var axis = database?.GetAxisForNode(node);
         RecalculateAxisState(axis);
+        HandleTier2RouteChoice(node);
 
         RebuildPlayerBuild();
         OnNodeUnlocked?.Invoke(node);
         OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.Unlocked);
         NotifyAxisPairStatuses(axis, node.nodeId);
         NotifyAffectedNodes(node);
+        SyncActiveSetToBacking();
         Debug.Log($"[AxisProgression] UNLOCK: {node.displayName}");
         AutoSave();
     }
@@ -667,6 +766,7 @@ public class AxisProgressionManager : MonoBehaviour
         OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.VisibleLocked);
         NotifyAxisPairStatuses(axis, node.nodeId);
         Debug.Log($"[AxisProgression] LOCK: {node.displayName}");
+        SyncActiveSetToBacking();
         AutoSave();
     }
 
@@ -676,14 +776,305 @@ public class AxisProgressionManager : MonoBehaviour
         return node != null && _unlockedNodeIds.Contains(node.nodeId);
     }
 
+    public TreeProgressionConfigSO GetProgressionConfig()
+    {
+        if (progressionConfig != null)
+            return progressionConfig;
+
+        if (_runtimeDefaultConfig == null)
+            _runtimeDefaultConfig = ScriptableObject.CreateInstance<TreeProgressionConfigSO>();
+
+        progressionConfig = _runtimeDefaultConfig;
+        return progressionConfig;
+    }
+
+    public void SetInteractionMode(SkillTreeInteractionMode mode)
+    {
+        if (_interactionMode == mode)
+            return;
+
+        SyncActiveSetToBacking();
+        _interactionMode = mode;
+        LoadActiveSetFromBacking();
+        RecalculateAllAxisStates();
+        RebuildPlayerBuild();
+        NotifyAllNodeStatuses();
+        OnInteractionModeChanged?.Invoke(_interactionMode);
+    }
+
+    public void ToggleInteractionMode()
+    {
+        SetInteractionMode(IsTesterMode ? SkillTreeInteractionMode.NormalProgression : SkillTreeInteractionMode.Tester);
+    }
+
+    public int GetTreeRank(ProgressionAxisSO axis)
+    {
+        return axis != null ? GetTreeProgress(axis).rank : 0;
+    }
+
+    public float GetTreeXp(ProgressionAxisSO axis)
+    {
+        return axis != null ? GetTreeProgress(axis).xp : 0f;
+    }
+
+    public string GetChosenTier2Route(ProgressionAxisSO axis)
+    {
+        return axis != null ? GetTreeProgress(axis).chosenTier2Route : "";
+    }
+
+    public void AddTreeXp(ProgressionAxisSO axis, float amount)
+    {
+        if (axis == null || amount <= 0f)
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        int oldRank = progress.rank;
+        progress.xp = Mathf.Max(0f, progress.xp + amount);
+        progress.rank = GetProgressionConfig().CalculateRank(progress.xp);
+
+        OnTreeProgressChanged?.Invoke(axis, progress.rank, progress.xp);
+        if (oldRank != progress.rank)
+            NotifyAxisStatuses(axis);
+
+        AutoSave();
+    }
+
+    public void DebugAddTreeRank(ProgressionAxisSO axis)
+    {
+        if (axis == null)
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        int nextRank = Mathf.Min(GetProgressionConfig().MaxRank, progress.rank + 1);
+        if (nextRank <= progress.rank)
+            return;
+
+        progress.xp = Mathf.Max(progress.xp, GetProgressionConfig().GetRequiredXpForRank(nextRank));
+        progress.rank = nextRank;
+        OnTreeProgressChanged?.Invoke(axis, progress.rank, progress.xp);
+        NotifyAxisStatuses(axis);
+        AutoSave();
+    }
+
+    public bool IsAxisCommitted(ProgressionAxisSO axis)
+    {
+        return axis != null &&
+               _axisCommitments.TryGetValue(axis.axisId, out var state) &&
+               state.isCommitted;
+    }
+
+    public int GetRequiredRankForNode(SkillNodeSO node)
+    {
+        if (node == null)
+            return 0;
+
+        if (node.requiredTreeRank > 0)
+            return node.requiredTreeRank;
+
+        if (node.tier <= 1)
+            return Mathf.Clamp(GetTier1Index(node) + 1, 1, 5);
+
+        if (node.isCommitmentNode)
+            return 6;
+
+        if (node.tier == 2)
+            return Mathf.Clamp(7 + GetTier2RouteIndex(node), 7, 11);
+
+        return 12;
+    }
+
     // ═══════════ Otomatik Kayıt ═══════════
 
     private void AutoSave()
     {
+        SyncActiveSetToBacking();
+
+        if (IsTesterMode)
+        {
+            SkillTreeTesterSaveStore.Save(_testerUnlockedNodeIds);
+            return;
+        }
+
         if (SaveManager.Instance == null) return;
         SaveToData(SaveManager.Instance.data);
         SaveManager.Instance.Save();
         Debug.Log($"[AxisProgression] Otomatik kaydedildi. ({_unlockedNodeIds.Count} node)");
+    }
+
+    private void SyncActiveSetToBacking()
+    {
+        HashSet<string> target = IsTesterMode ? _testerUnlockedNodeIds : _normalUnlockedNodeIds;
+        target.Clear();
+        foreach (var id in _unlockedNodeIds)
+            target.Add(id);
+    }
+
+    private void LoadActiveSetFromBacking()
+    {
+        _unlockedNodeIds.Clear();
+        HashSet<string> source = IsTesterMode ? _testerUnlockedNodeIds : _normalUnlockedNodeIds;
+        foreach (var id in source)
+            _unlockedNodeIds.Add(id);
+    }
+
+    private void RecalculateAllAxisStates()
+    {
+        _axisCommitments.Clear();
+        if (database == null || database.allAxes == null)
+            return;
+
+        foreach (var axis in database.allAxes)
+            RecalculateAxisState(axis);
+
+        if (!IsTesterMode)
+            RecalculateTier2RoutesFromActiveNodes();
+    }
+
+    private void NotifyAllNodeStatuses()
+    {
+        if (database == null || database.allAxes == null)
+            return;
+
+        foreach (var axis in database.allAxes)
+            NotifyAxisStatuses(axis);
+    }
+
+    private TreeProgressionRuntime GetTreeProgress(ProgressionAxisSO axis)
+    {
+        if (axis == null || string.IsNullOrEmpty(axis.axisId))
+            return new TreeProgressionRuntime();
+
+        if (!_treeProgressions.TryGetValue(axis.axisId, out var progress))
+        {
+            progress = new TreeProgressionRuntime();
+            _treeProgressions[axis.axisId] = progress;
+        }
+
+        progress.rank = GetProgressionConfig().CalculateRank(progress.xp);
+        return progress;
+    }
+
+    private bool IsRankLocked(SkillNodeSO node)
+    {
+        if (IsTesterMode || node == null)
+            return false;
+
+        var axis = database != null ? database.GetAxisForNode(node) : null;
+        if (axis == null)
+            return false;
+
+        return GetTreeRank(axis) < GetRequiredRankForNode(node);
+    }
+
+    private bool IsTier2BlockedByMissingCommitment(SkillNodeSO node)
+    {
+        if (node == null || node.tier < 2 || node.isCommitmentNode)
+            return false;
+
+        var axis = database != null ? database.GetAxisForNode(node) : null;
+        return axis != null && !IsAxisCommitted(axis);
+    }
+
+    private bool ShouldApplyNodeToBuild(ProgressionAxisSO axis, SkillNodeSO node)
+    {
+        if (node == null)
+            return false;
+
+        if (node.tier <= 1 || node.isCommitmentNode)
+            return true;
+
+        return axis != null && IsAxisCommitted(axis);
+    }
+
+    private void HandleTier2RouteChoice(SkillNodeSO node)
+    {
+        if (IsTesterMode || node == null || node.tier != 2 || node.isCommitmentNode)
+            return;
+
+        if (!TryGetExclusiveRouteRule(node.nodeId, out var rule))
+            return;
+
+        var axis = database != null ? database.GetAxisForNode(node) : null;
+        if (axis == null)
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        if (string.IsNullOrEmpty(progress.chosenTier2Route))
+            progress.chosenTier2Route = rule.ownPrefix;
+    }
+
+    private void RecalculateTier2RoutesFromActiveNodes()
+    {
+        if (database == null || database.allAxes == null)
+            return;
+
+        foreach (var axis in database.allAxes)
+        {
+            if (axis == null || axis.nodes == null)
+                continue;
+
+            TreeProgressionRuntime progress = GetTreeProgress(axis);
+            if (!string.IsNullOrEmpty(progress.chosenTier2Route))
+                continue;
+
+            foreach (var node in axis.nodes)
+            {
+                if (node == null || !_unlockedNodeIds.Contains(node.nodeId))
+                    continue;
+
+                if (node.tier == 2 && !node.isCommitmentNode && TryGetExclusiveRouteRule(node.nodeId, out var rule))
+                {
+                    progress.chosenTier2Route = rule.ownPrefix;
+                    break;
+                }
+            }
+        }
+    }
+
+    private int GetTier1Index(SkillNodeSO node)
+    {
+        var axis = database != null ? database.GetAxisForNode(node) : null;
+        if (axis == null || axis.nodes == null)
+            return 0;
+
+        int index = 0;
+        foreach (var candidate in axis.nodes)
+        {
+            if (candidate == null || candidate.tier != 1)
+                continue;
+
+            if (candidate == node)
+                return index;
+
+            index++;
+        }
+
+        return 0;
+    }
+
+    private int GetTier2RouteIndex(SkillNodeSO node)
+    {
+        if (node == null || !TryGetExclusiveRouteRule(node.nodeId, out var rule))
+            return 0;
+
+        var axis = database != null ? database.GetAxisForNode(node) : null;
+        if (axis == null || axis.nodes == null)
+            return 0;
+
+        int index = 0;
+        foreach (var candidate in axis.nodes)
+        {
+            if (candidate == null)
+                continue;
+
+            if (candidate == node)
+                return index;
+
+            if (candidate.nodeId.Contains(rule.ownPrefix))
+                index++;
+        }
+
+        return index;
     }
 
     // ═══════════ Debug Yardımcıları ═══════════
@@ -765,6 +1156,13 @@ public class CommitmentState
     public string commitmentNodeId = "";
     public string chosenRoute = "";
     public int highestUnlockedTier;
+}
+
+public class TreeProgressionRuntime
+{
+    public float xp;
+    public int rank;
+    public string chosenTier2Route = "";
 }
 
 internal readonly struct ExclusiveRouteRule

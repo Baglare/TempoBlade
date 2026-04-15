@@ -126,6 +126,8 @@ public class Projectile : MonoBehaviour, IDeflectable
 
         if (hasBeenDeflected && isHittingEnemy)
         {
+            EnemyBase enemy = other.GetComponent<EnemyBase>();
+            owner?.GetComponent<CombatTelemetryHub>()?.RecordDeflectHit(enemy, damage);
             owner?.GetComponent<ParryPerkController>()?.HandleProjectileHitReaction(other.gameObject);
 
             if (DamagePopupManager.Instance != null)

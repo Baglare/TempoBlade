@@ -18,6 +18,7 @@ MonoBehaviour:
     benzersiz i\u015Faret ba\u015F\u0131na bonus hasar."
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 7
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

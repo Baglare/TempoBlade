@@ -12,6 +12,26 @@ public static class DashSkillTreeSetup
 {
     private const string BasePath = "Assets/_Project/Data/SkillTree_Dash";
 
+    [MenuItem("TempoBlade/Skill Tree/Overdrive ve Cadence Agaclarini Olustur")]
+    public static void CreateOverdriveAndCadenceTreeAssets()
+    {
+        foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
+        {
+            var setupType = assembly.GetType("OverdriveCadenceSkillTreeSetup");
+            var createMethod = setupType?.GetMethod(
+                "CreateTrees",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+
+            if (createMethod == null)
+                continue;
+
+            createMethod.Invoke(null, null);
+            return;
+        }
+
+        Debug.LogError("[DashSkillTreeSetup] OverdriveCadenceSkillTreeSetup bulunamadi. Once Assets > Refresh veya script Reimport yap.");
+    }
+
     [MenuItem("TempoBlade/Skill Tree/Dash Ağacı Asset'leri Oluştur")]
     public static void CreateDashTreeAssets()
     {

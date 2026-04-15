@@ -34,6 +34,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     // DashPerkController referansı (cache)
     private DashPerkController _dashPerks;
+    private OverdrivePerkController _overdrivePerks;
+    private CadencePerkController _cadencePerks;
+    private CombatTelemetryHub _telemetry;
 
     // ──────────── COMBO STATE ────────────
     private Vector2 currentAimDir = Vector2.right;
@@ -108,6 +111,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         // DashPerkController referansını cachele
         _dashPerks = GetComponent<DashPerkController>();
+        _overdrivePerks = GetComponent<OverdrivePerkController>();
+        _cadencePerks = GetComponent<CadencePerkController>();
+        _telemetry = CombatTelemetryHub.EnsureFor(gameObject);
     }
 
     /// <summary>
@@ -258,6 +264,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         ParrySystem ps = GetComponent<ParrySystem>();
         if (ps != null && ps.IsParryActive) return;
 
+        if (_cadencePerks != null)
+            _cadencePerks.NotifyAttackAction();
+        _telemetry?.RecordAction(CombatActionType.Attack, gameObject);
+
         ComboStepData[] steps = currentWeapon?.comboSteps;
 
         // Silahta kombo tanımlı değilse eski tek vuruş davranışı (geriye dönük uyumlu)
@@ -290,6 +300,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // cooldownAfter veya silahın attackRate'inden hangisi büyükse onu kullan
         // Böylece yavaş silahlar (attackRate=1.0s) kombo cooldown'uyla (0.15s) bypass edilemez
         float effectiveCooldown = Mathf.Max(step.cooldownAfter, GetEffectiveAttackRate());
+        if (_overdrivePerks != null)
+            effectiveCooldown *= _overdrivePerks.GetAttackCooldownMultiplier();
+        if (_cadencePerks != null)
+            effectiveCooldown *= _cadencePerks.GetAttackCooldownMultiplier();
 
         // Dash Saldırı Hızı bonusu — post-dash penceresi aktifse cooldown kısalt
         if (_dashPerks != null && _dashPerks.IsPostDashAttackSpeedActive)
@@ -327,6 +341,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
             case ComboStepType.DashStrike:
                 PlayerController pc = GetComponent<PlayerController>();
+                if (_cadencePerks != null)
+                    _cadencePerks.NotifyDashAction();
                 if (pc != null)
                     pc.StartExternalDash(currentAimDir, step.dashSpeed, step.dashDuration);
                 yield return new WaitForSeconds(step.dashDuration);
@@ -378,29 +394,61 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // Av Devri bonusu (Avcı T2)
         float huntBonus = _dashPerks != null ? _dashPerks.HuntKillBonus : 0f;
 
+        float overdriveGlobalBonus = _overdrivePerks != null ? _overdrivePerks.GetGlobalDamageBonus(multiplier, totalCounter) : 0f;
+        float cadenceGlobalBonus = _cadencePerks != null ? _cadencePerks.GetGlobalDamageBonus(multiplier, totalCounter) : 0f;
+
         float range   = GetEffectiveRange() + rangeBonus;
         float baseDmg = GetEffectiveDamage();
         float tempo   = TempoManager.Instance != null ? TempoManager.Instance.GetDamageMultiplier() : 1f;
         float total   = baseDmg * damageMultiplier * tempo * multiplier 
                         * (1f + totalCounter) 
                         * (1f + flowMarkBonus)
-                        * (1f + huntBonus);
+                        * (1f + huntBonus)
+                        * (1f + overdriveGlobalBonus + cadenceGlobalBonus);
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, range, enemyLayers);
         bool hitAny = false;
         bool flowMarkAppliedThisAttack = false;
+        bool perkTempoBonusApplied = false;
 
         foreach (var col in hits)
         {
             var dmgable = col.GetComponent<IDamageable>();
             if (dmgable != null)
             {
-                dmgable.TakeDamage(total);
-                if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(2f);
+                var enemy = col.GetComponent<EnemyBase>();
+                float targetTotal = total;
+                if (enemy != null)
+                {
+                    float overdriveTargetBonus = _overdrivePerks != null ? _overdrivePerks.GetTargetDamageBonus(enemy, multiplier, totalCounter) : 0f;
+                    float cadenceTargetBonus = _cadencePerks != null ? _cadencePerks.GetTargetDamageBonus(enemy, multiplier, totalCounter) : 0f;
+                    targetTotal *= 1f + overdriveTargetBonus + cadenceTargetBonus;
+                }
+
+                float beforeHealth = enemy != null ? enemy.CurrentHealth : 0f;
+                dmgable.TakeDamage(targetTotal);
+
+                if (TempoManager.Instance != null)
+                {
+                    float tempoGain = 2f;
+                    if (!perkTempoBonusApplied)
+                    {
+                        if (_overdrivePerks != null) tempoGain += _overdrivePerks.GetTempoGainOnHit();
+                        if (_cadencePerks != null) tempoGain += _cadencePerks.GetTempoGainOnHit();
+                        perkTempoBonusApplied = true;
+                    }
+                    TempoManager.Instance.AddTempo(tempoGain);
+                }
+
+                bool killed = enemy != null && beforeHealth > 0f && enemy.CurrentHealth <= 0f;
+                _telemetry?.RecordHit(enemy, killed, multiplier, totalCounter, targetTotal);
+                if (_overdrivePerks != null) _overdrivePerks.NotifyEnemyHit(enemy, killed, multiplier, totalCounter);
+                if (_cadencePerks != null) _cadencePerks.NotifyEnemyHit(enemy, killed, multiplier, totalCounter);
+                if (_cadencePerks != null) _cadencePerks.TryWaveBounce(enemy, targetTotal);
+
                 hitAny = true;
 
                 // --- Akışçı Perkleri ---
-                var enemy = col.GetComponent<EnemyBase>();
                 if (enemy != null && _dashPerks != null)
                 {
                     // İşaretleme Akışı: dash sonrası penceredeyse hedefi işaretle
@@ -470,10 +518,17 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         if (!hitAny) // Whiff → komboyu sıfırla
         {
+            _telemetry?.RecordAction(CombatActionType.Whiff, gameObject);
             comboIndex       = 0;
             comboWindowTimer = 0f;
             OnComboChanged?.Invoke(0, currentWeapon?.comboSteps?.Length ?? 0);
-            if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(-5f);
+            if (TempoManager.Instance != null)
+            {
+                float whiffPenalty = -5f;
+                if (_overdrivePerks != null) whiffPenalty = _overdrivePerks.ModifyWhiffTempoPenalty(whiffPenalty);
+                if (_cadencePerks != null) whiffPenalty = _cadencePerks.ModifyWhiffTempoPenalty(whiffPenalty);
+                TempoManager.Instance.AddTempo(whiffPenalty);
+            }
         }
     }
 
@@ -482,7 +537,13 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     /// </summary>
     private void Attack()
     {
-        nextAttackTime = Time.time + GetEffectiveAttackRate();
+        float effectiveCooldown = GetEffectiveAttackRate();
+        if (_overdrivePerks != null)
+            effectiveCooldown *= _overdrivePerks.GetAttackCooldownMultiplier();
+        if (_cadencePerks != null)
+            effectiveCooldown *= _cadencePerks.GetAttackCooldownMultiplier();
+
+        nextAttackTime = Time.time + effectiveCooldown;
         PerformHit(1f, 0f);
     }
 
@@ -507,10 +568,16 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             return; // Hasar alma
         }
 
+        if (_overdrivePerks != null)
+            amount *= _overdrivePerks.GetIncomingDamageMultiplier();
+        if (_cadencePerks != null)
+            amount *= _cadencePerks.GetIncomingDamageMultiplier();
+
         // Hasar alindi, i-frame baslat
         nextDamageTime = Time.time + 0.2f;
 
         currentHealth -= amount;
+        _telemetry?.RecordDamageTaken(amount);
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth); // UI Guncelle
 
@@ -575,6 +642,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     {
         if (TempoManager.Instance == null || TempoManager.Instance.CurrentTier != TempoManager.TempoTier.T3) return;
 
+        if (_cadencePerks != null)
+            _cadencePerks.NotifySkillAction();
+        _telemetry?.RecordAction(CombatActionType.Skill, gameObject);
+
         // Finisher aktif! Dev hasar ve geniş alan
         float finisherRange = currentWeapon != null ? currentWeapon.range * 2f : 3f;
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, finisherRange, enemyLayers);
@@ -588,9 +659,12 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 if (damageable != null)
                 {
                     float finisherDamage = currentWeapon != null ? currentWeapon.damage * 4f : 100f;
+                    var enemyBase = col.GetComponent<EnemyBase>();
+                    float beforeHealth = enemyBase != null ? enemyBase.CurrentHealth : 0f;
                     damageable.TakeDamage(finisherDamage);
 
-                    var enemyBase = col.GetComponent<EnemyBase>();
+                    bool killed = enemyBase != null && beforeHealth > 0f && enemyBase.CurrentHealth <= 0f;
+                    _telemetry?.RecordHit(enemyBase, killed, 4f, 0f, finisherDamage);
                     if (enemyBase != null) enemyBase.Stun(2.0f);
 
                     hitSomeone = true;

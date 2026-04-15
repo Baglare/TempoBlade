@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "COMMITMENT: Savunma yolunu se\xE7er, kar\u015F\u0131t eksen kilitlenir"
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 6
   isCommitmentNode: 1
   regionTag: 
   prerequisites:

@@ -17,6 +17,7 @@ MonoBehaviour:
   description: Geri gonderilen projectile daha hizli, daha guclu ve delici olur.
   icon: {fileID: 0}
   tier: 2
+  requiredTreeRank: 8
   isCommitmentNode: 0
   regionTag: 
   prerequisites:

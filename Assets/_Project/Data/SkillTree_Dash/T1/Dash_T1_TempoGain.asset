@@ -17,6 +17,7 @@ MonoBehaviour:
   description: "D\xFC\u015Fmana yak\u0131n biten dash'ler tempo kazand\u0131r\u0131r."
   icon: {fileID: 0}
   tier: 1
+  requiredTreeRank: 4
   isCommitmentNode: 0
   regionTag: 
   prerequisites: []

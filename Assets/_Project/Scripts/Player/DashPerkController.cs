@@ -12,6 +12,7 @@ public class DashPerkController : MonoBehaviour
     private PlayerController playerController;
     private PlayerCombat playerCombat;
     private ParrySystem parrySystem;
+    private CombatTelemetryHub telemetry;
     private float externalDodgeWindowMultiplier = 1f;
     private float externalTempoGainMultiplier = 1f;
 
@@ -315,6 +316,7 @@ public class DashPerkController : MonoBehaviour
         playerController = GetComponent<PlayerController>();
         playerCombat = GetComponent<PlayerCombat>();
         parrySystem = GetComponent<ParrySystem>();
+        telemetry = CombatTelemetryHub.EnsureFor(gameObject);
     }
 
     private void OnEnable()
@@ -620,6 +622,7 @@ public class DashPerkController : MonoBehaviour
         _successfulDodgeThisDash = true;
         if (isRanged) _dodgedProjectileCountThisDash++;
         else _dodgedMeleeCountThisDash++;
+        telemetry?.RecordDodgeThreat(isRanged, threatSource);
 
         if (!_isDodging)
             ActivateCounterWindowFromCurrentDash();

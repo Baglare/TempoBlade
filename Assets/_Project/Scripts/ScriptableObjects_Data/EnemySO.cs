@@ -16,6 +16,10 @@ public class EnemySO : ScriptableObject
     [Tooltip("Bu dusman oldugunde oyuncuya verilecek altin miktari.")]
     public int goldDrop = 5;
 
+    [Header("Progression")]
+    [Tooltip("Kapaliysa bu dusman XP/affinity sayaçlarinda kullanilmaz. Training dummy gibi hedefler icin kapat.")]
+    public bool countsForProgression = true;
+
     [Header("AI Behavior")]
     public float detectionRange = 8f;
     public float attackRange = 1.5f;

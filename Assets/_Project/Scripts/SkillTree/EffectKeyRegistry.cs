@@ -70,6 +70,54 @@ public static class EffectKeyRegistry
     public const string ParryRotatingCone     = "parryRotatingCone";
     public const string ParryPerfectCycle     = "parryPerfectCycle";
 
+    // ═══════════ Overdrive Perk Keys (T1) ═══════════
+    public const string OverdriveHeatBuildup       = "overdriveHeatBuildup";
+    public const string OverdriveThresholdBurst    = "overdriveThresholdBurst";
+    public const string OverdriveRedPressure       = "overdriveRedPressure";
+    public const string OverdriveOverflowImpulse   = "overdriveOverflowImpulse";
+    public const string OverdriveFinalPush         = "overdriveFinalPush";
+
+    // ═══════════ Overdrive Perk Keys (T2 Commitment) ═══════════
+    public const string OverdriveT2Commitment      = "overdriveT2Commitment";
+
+    // ═══════════ Overdrive Perk Keys (T2 Burst) ═══════════
+    public const string OverdriveShortCircuit      = "overdriveShortCircuit";
+    public const string OverdriveRedWindow         = "overdriveRedWindow";
+    public const string OverdriveThresholdEcho     = "overdriveThresholdEcho";
+    public const string OverdrivePressureBreak     = "overdrivePressureBreak";
+    public const string OverdriveFinalFlare        = "overdriveFinalFlare";
+
+    // ═══════════ Overdrive Perk Keys (T2 Predator) ═══════════
+    public const string OverdriveBloodScent        = "overdriveBloodScent";
+    public const string OverdriveChokingProximity  = "overdriveChokingProximity";
+    public const string OverdrivePredatorAngle     = "overdrivePredatorAngle";
+    public const string OverdrivePackBreaker       = "overdrivePackBreaker";
+    public const string OverdriveExecutePressure   = "overdriveExecutePressure";
+
+    // ═══════════ Cadence Perk Keys (T1) ═══════════
+    public const string CadenceSteadyPulse         = "cadenceSteadyPulse";
+    public const string CadenceTransitionRhythm    = "cadenceTransitionRhythm";
+    public const string CadenceSoftFall            = "cadenceSoftFall";
+    public const string CadenceMeasuredPower       = "cadenceMeasuredPower";
+    public const string CadenceRhythmShield        = "cadenceRhythmShield";
+
+    // ═══════════ Cadence Perk Keys (T2 Commitment) ═══════════
+    public const string CadenceT2Commitment        = "cadenceT2Commitment";
+
+    // ═══════════ Cadence Perk Keys (T2 Measured) ═══════════
+    public const string CadenceMeasureLine         = "cadenceMeasureLine";
+    public const string CadenceBalancePoint        = "cadenceBalancePoint";
+    public const string CadenceTimedAccent         = "cadenceTimedAccent";
+    public const string CadenceRecoveryReturn      = "cadenceRecoveryReturn";
+    public const string CadencePerfectMeasure      = "cadencePerfectMeasure";
+
+    // ═══════════ Cadence Perk Keys (T2 Flow) ═══════════
+    public const string CadenceFlowRing            = "cadenceFlowRing";
+    public const string CadenceSlidingContinuation = "cadenceSlidingContinuation";
+    public const string CadenceWaveBounce          = "cadenceWaveBounce";
+    public const string CadenceThresholdSurf       = "cadenceThresholdSurf";
+    public const string CadenceOverflowHarmony     = "cadenceOverflowHarmony";
+
     // ═══════════ Feature Keys ═══════════
     public const string DoubleJump    = "doubleJump";
     public const string WallSlide     = "wallSlide";
@@ -98,6 +146,18 @@ public static class EffectKeyRegistry
         ParryReverseFront, ParryOverdeflect, ParrySuppressiveTrace, ParryFracturedOrbit, ParryFeedback,
         // Parry T2 Mükemmeliyetçi
         ParryCloseExecute, ParryFineEdge, ParryHeavyRiposte, ParryRotatingCone, ParryPerfectCycle,
+        // Overdrive T1
+        OverdriveHeatBuildup, OverdriveThresholdBurst, OverdriveRedPressure, OverdriveOverflowImpulse, OverdriveFinalPush,
+        // Overdrive T2
+        OverdriveT2Commitment, OverdriveShortCircuit, OverdriveRedWindow, OverdriveThresholdEcho,
+        OverdrivePressureBreak, OverdriveFinalFlare, OverdriveBloodScent, OverdriveChokingProximity,
+        OverdrivePredatorAngle, OverdrivePackBreaker, OverdriveExecutePressure,
+        // Cadence T1
+        CadenceSteadyPulse, CadenceTransitionRhythm, CadenceSoftFall, CadenceMeasuredPower, CadenceRhythmShield,
+        // Cadence T2
+        CadenceT2Commitment, CadenceMeasureLine, CadenceBalancePoint, CadenceTimedAccent,
+        CadenceRecoveryReturn, CadencePerfectMeasure, CadenceFlowRing, CadenceSlidingContinuation,
+        CadenceWaveBounce, CadenceThresholdSurf, CadenceOverflowHarmony,
         // Feature
         DoubleJump, WallSlide
     };
