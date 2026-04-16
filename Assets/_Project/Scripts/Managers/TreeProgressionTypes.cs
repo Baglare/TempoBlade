@@ -52,6 +52,7 @@ public class TreeProgressionEntry
     public string axisId;
     public float xp;
     public int rank;
+    public int spentPerkPoints;
     public string chosenTier2Route = "";
 }
 
@@ -87,4 +88,3 @@ public class AxisAffinityWeights
     [Range(0f, 1f)] public float fifthWeight = 0.15f;
     [Range(0f, 1f)] public float penaltyWeight = 0.2f;
 }
-

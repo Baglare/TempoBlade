@@ -690,6 +690,7 @@ public class SkillTreePanelUI : MonoBehaviour
             descText.text = $"<color=#FF4444>On kosullar eksik.</color>";
         }
 
+        RefreshModeAndProgressText();
         RefreshAllSlots();
     }
 
@@ -724,7 +725,7 @@ public class SkillTreePanelUI : MonoBehaviour
             : "";
 
         string rankInfo = mgr != null && activeAxis != null
-            ? $"\nRank: {mgr.GetTreeRank(activeAxis)} / Gerekli: {mgr.GetRequiredRankForNode(node)}"
+            ? $"\nRank: {mgr.GetTreeRank(activeAxis)} / Gerekli: {mgr.GetRequiredRankForNode(node)} | Perk Puani: {mgr.GetAvailablePerkPoints(activeAxis)}/{mgr.GetTotalPerkPoints(activeAxis)}"
             : "";
 
         descText.text = $"<b>{node.displayName}</b> [{status}]\n{node.description}{rankInfo}{prereqInfo}{blockReason}";
@@ -804,7 +805,7 @@ public class SkillTreePanelUI : MonoBehaviour
         if (warningText != null)
             warningText.text = mgr.IsTesterMode
                 ? "[TESTER] Perk ac/kapat serbest; Focus ve yol kilitleri korunur."
-                : "[NORMAL] XP/rank/prerequisite kurallari aktif.";
+                : "[NORMAL] XP/rank/perk puani/prerequisite kurallari aktif.";
 
         if (progressText != null && activeAxis != null)
         {
@@ -812,9 +813,11 @@ public class SkillTreePanelUI : MonoBehaviour
             float xp = mgr.GetTreeXp(activeAxis);
             int nextRank = Mathf.Min(mgr.GetProgressionConfig().MaxRank, rank + 1);
             int nextXp = mgr.GetProgressionConfig().GetRequiredXpForRank(nextRank);
+            int availablePerkPoints = mgr.GetAvailablePerkPoints(activeAxis);
+            int spentPerkPoints = mgr.GetSpentPerkPoints(activeAxis);
             string route = mgr.GetChosenTier2Route(activeAxis);
             string routeText = string.IsNullOrEmpty(route) ? "" : $" | Route: {route}";
-            progressText.text = $"Rank {rank} | XP {xp:F0}/{nextXp}{routeText}";
+            progressText.text = $"Rank {rank} | XP {xp:F0}/{nextXp} | Perk {availablePerkPoints} | Spent {spentPerkPoints}{routeText}";
         }
     }
 

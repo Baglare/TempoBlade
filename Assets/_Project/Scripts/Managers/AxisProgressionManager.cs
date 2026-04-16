@@ -142,6 +142,7 @@ public class AxisProgressionManager : MonoBehaviour
                 {
                     xp = entry.xp,
                     rank = GetProgressionConfig().CalculateRank(entry.xp),
+                    spentPerkPoints = Mathf.Max(0, entry.spentPerkPoints),
                     chosenTier2Route = entry.chosenTier2Route ?? ""
                 };
             }
@@ -163,6 +164,7 @@ public class AxisProgressionManager : MonoBehaviour
 
         _interactionMode = SkillTreeInteractionMode.NormalProgression;
         LoadActiveSetFromBacking();
+        BackfillSpentPerkPointsFromUnlockedNodes();
         RecalculateAllAxisStates();
         RebuildPlayerBuild();
     }
@@ -212,6 +214,7 @@ public class AxisProgressionManager : MonoBehaviour
                 axisId = kv.Key,
                 xp = kv.Value.xp,
                 rank = kv.Value.rank,
+                spentPerkPoints = kv.Value.spentPerkPoints,
                 chosenTier2Route = kv.Value.chosenTier2Route
             });
         }
@@ -256,6 +259,9 @@ public class AxisProgressionManager : MonoBehaviour
         if (IsRankLocked(node))
             return NodeStatus.VisibleLocked;
 
+        if (IsPerkPointLocked(node))
+            return NodeStatus.VisibleLocked;
+
         // 7. Hepsi tamam
         return NodeStatus.Unlockable;
     }
@@ -270,8 +276,13 @@ public class AxisProgressionManager : MonoBehaviour
         if (node == null) return false;
         if (GetNodeStatus(node) != NodeStatus.Unlockable) return false;
 
+        ProgressionAxisSO axis = database != null ? database.GetAxisForNode(node) : null;
+        if (axis == null)
+            return false;
+
         // State'e ekle
         _unlockedNodeIds.Add(node.nodeId);
+        SpendPerkPoint(axis, node);
 
         // Commitment kontrolü
         if (node.isCommitmentNode)
@@ -289,6 +300,7 @@ public class AxisProgressionManager : MonoBehaviour
         // Events
         OnNodeUnlocked?.Invoke(node);
         OnNodeStatusChanged?.Invoke(node.nodeId, NodeStatus.Unlocked);
+        NotifyAxisPairStatuses(axis, node.nodeId);
 
         // Karşıt eksende kilitlenen node'lar için status changed eventi
         NotifyAffectedNodes(node);
@@ -669,6 +681,8 @@ public class AxisProgressionManager : MonoBehaviour
             return GetCommitmentBlockReason(node);
         if (IsTier2BlockedByMissingCommitment(node))
             return "Odak acilmadan Tier 2 yolu acilamaz.";
+        if (IsPathBlocked(node))
+            return TryGetExclusiveRouteRule(node.nodeId, out var rule) ? rule.reason : "";
         if (IsRankLocked(node))
         {
             var axis = database != null ? database.GetAxisForNode(node) : null;
@@ -676,7 +690,13 @@ public class AxisProgressionManager : MonoBehaviour
             int currentRank = axis != null ? GetTreeRank(axis) : 0;
             return $"Tree Rank {requiredRank} gerekli. Su an: Rank {currentRank}.";
         }
-        return TryGetExclusiveRouteRule(node.nodeId, out var rule) ? rule.reason : "";
+        if (IsPerkPointLocked(node))
+        {
+            var axis = database != null ? database.GetAxisForNode(node) : null;
+            int availablePoints = axis != null ? GetAvailablePerkPoints(axis) : 0;
+            return $"Perk puani yok. Kalan puan: {availablePoints}.";
+        }
+        return "";
     }
 
     private bool HasAnyUnlockedWithPrefix(string prefix)
@@ -759,6 +779,7 @@ public class AxisProgressionManager : MonoBehaviour
         _unlockedNodeIds.Remove(node.nodeId);
 
         var axis = database?.GetAxisForNode(node);
+        RefundPerkPoint(axis, node);
         RecalculateAxisState(axis);
 
         RebuildPlayerBuild();
@@ -820,6 +841,24 @@ public class AxisProgressionManager : MonoBehaviour
     public string GetChosenTier2Route(ProgressionAxisSO axis)
     {
         return axis != null ? GetTreeProgress(axis).chosenTier2Route : "";
+    }
+
+    public int GetTotalPerkPoints(ProgressionAxisSO axis)
+    {
+        return axis != null ? Mathf.Max(0, GetTreeProgress(axis).rank) : 0;
+    }
+
+    public int GetSpentPerkPoints(ProgressionAxisSO axis)
+    {
+        return axis != null ? Mathf.Max(0, GetTreeProgress(axis).spentPerkPoints) : 0;
+    }
+
+    public int GetAvailablePerkPoints(ProgressionAxisSO axis)
+    {
+        if (axis == null)
+            return 0;
+
+        return Mathf.Max(0, GetPerkPointBalance(axis));
     }
 
     public void AddTreeXp(ProgressionAxisSO axis, float amount)
@@ -900,6 +939,8 @@ public class AxisProgressionManager : MonoBehaviour
         if (progress.rank < oldRank)
             EnforceRankCapForAxis(axis);
 
+        progress.spentPerkPoints = CountSpentNodesForAxis(axis);
+
         OnTreeProgressChanged?.Invoke(axis, progress.rank, progress.xp);
         NotifyAxisStatuses(axis);
         NotifyAxisStatuses(database != null ? database.GetOpposingAxis(axis) : null);
@@ -919,17 +960,17 @@ public class AxisProgressionManager : MonoBehaviour
         if (node == null)
             return 0;
 
-        if (node.requiredTreeRank > 0)
-            return node.requiredTreeRank;
-
-        if (node.tier <= 1)
-            return Mathf.Clamp(GetTier1Index(node) + 1, 1, 5);
-
         if (node.isCommitmentNode)
             return 6;
 
+        if (node.tier <= 1)
+            return 1;
+
         if (node.tier == 2)
-            return Mathf.Clamp(7 + GetTier2RouteIndex(node), 7, 11);
+            return 7;
+
+        if (node.requiredTreeRank > 0)
+            return node.requiredTreeRank;
 
         return 12;
     }
@@ -1002,6 +1043,7 @@ public class AxisProgressionManager : MonoBehaviour
         }
 
         progress.rank = GetProgressionConfig().CalculateRank(progress.xp);
+        progress.spentPerkPoints = Mathf.Max(0, progress.spentPerkPoints);
         return progress;
     }
 
@@ -1015,6 +1057,15 @@ public class AxisProgressionManager : MonoBehaviour
             return false;
 
         return GetTreeRank(axis) < GetRequiredRankForNode(node);
+    }
+
+    private bool IsPerkPointLocked(SkillNodeSO node)
+    {
+        if (IsTesterMode || node == null || !ShouldConsumePerkPoint(node))
+            return false;
+
+        var axis = database != null ? database.GetAxisForNode(node) : null;
+        return axis == null || GetAvailablePerkPoints(axis) <= 0;
     }
 
     private bool IsTier2BlockedByMissingCommitment(SkillNodeSO node)
@@ -1060,6 +1111,15 @@ public class AxisProgressionManager : MonoBehaviour
         {
             if (_unlockedNodeIds.Contains(node.nodeId))
                 CascadeLock(node);
+        }
+
+        while (GetPerkPointBalance(axis) < 0)
+        {
+            SkillNodeSO extraNode = GetHighestPriorityNodeToRelock(axis);
+            if (extraNode == null)
+                break;
+
+            CascadeLock(extraNode);
         }
 
         TreeProgressionRuntime progress = GetTreeProgress(axis);
@@ -1128,50 +1188,101 @@ public class AxisProgressionManager : MonoBehaviour
         }
     }
 
-    private int GetTier1Index(SkillNodeSO node)
+    private void BackfillSpentPerkPointsFromUnlockedNodes()
     {
-        var axis = database != null ? database.GetAxisForNode(node) : null;
-        if (axis == null || axis.nodes == null)
-            return 0;
+        if (database == null || database.allAxes == null)
+            return;
 
-        int index = 0;
-        foreach (var candidate in axis.nodes)
+        foreach (var axis in database.allAxes)
         {
-            if (candidate == null || candidate.tier != 1)
+            if (axis == null)
                 continue;
 
-            if (candidate == node)
-                return index;
+            TreeProgressionRuntime progress = GetTreeProgress(axis);
+            if (progress.spentPerkPoints > 0)
+                continue;
 
-            index++;
+            progress.spentPerkPoints = CountSpentNodesForAxis(axis);
         }
-
-        return 0;
     }
 
-    private int GetTier2RouteIndex(SkillNodeSO node)
+    private int CountSpentNodesForAxis(ProgressionAxisSO axis)
     {
-        if (node == null || !TryGetExclusiveRouteRule(node.nodeId, out var rule))
-            return 0;
-
-        var axis = database != null ? database.GetAxisForNode(node) : null;
         if (axis == null || axis.nodes == null)
             return 0;
 
-        int index = 0;
-        foreach (var candidate in axis.nodes)
+        int count = 0;
+        foreach (var node in axis.nodes)
         {
-            if (candidate == null)
+            if (node == null || !_unlockedNodeIds.Contains(node.nodeId))
                 continue;
 
-            if (candidate == node)
-                return index;
-
-            if (candidate.nodeId.Contains(rule.ownPrefix))
-                index++;
+            if (ShouldConsumePerkPoint(node))
+                count++;
         }
 
-        return index;
+        return count;
+    }
+
+    private static bool ShouldConsumePerkPoint(SkillNodeSO node)
+    {
+        return node != null && !node.startsUnlocked;
+    }
+
+    private int GetPerkPointBalance(ProgressionAxisSO axis)
+    {
+        if (axis == null)
+            return 0;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        return progress.rank - progress.spentPerkPoints;
+    }
+
+    private void SpendPerkPoint(ProgressionAxisSO axis, SkillNodeSO node)
+    {
+        if (axis == null || IsTesterMode || !ShouldConsumePerkPoint(node))
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        progress.spentPerkPoints++;
+    }
+
+    private void RefundPerkPoint(ProgressionAxisSO axis, SkillNodeSO node)
+    {
+        if (axis == null || IsTesterMode || !ShouldConsumePerkPoint(node))
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        progress.spentPerkPoints = Mathf.Max(0, progress.spentPerkPoints - 1);
+    }
+
+    private SkillNodeSO GetHighestPriorityNodeToRelock(ProgressionAxisSO axis)
+    {
+        if (axis == null || axis.nodes == null)
+            return null;
+
+        SkillNodeSO bestNode = null;
+        int bestTier = int.MinValue;
+        int bestRequiredRank = int.MinValue;
+
+        foreach (var node in axis.nodes)
+        {
+            if (node == null || !_unlockedNodeIds.Contains(node.nodeId) || !ShouldConsumePerkPoint(node))
+                continue;
+
+            int requiredRank = GetRequiredRankForNode(node);
+            if (bestNode == null ||
+                node.tier > bestTier ||
+                (node.tier == bestTier && requiredRank > bestRequiredRank) ||
+                (node.tier == bestTier && requiredRank == bestRequiredRank && string.CompareOrdinal(node.nodeId, bestNode.nodeId) > 0))
+            {
+                bestNode = node;
+                bestTier = node.tier;
+                bestRequiredRank = requiredRank;
+            }
+        }
+
+        return bestNode;
     }
 
     // ═══════════ Debug Yardımcıları ═══════════
@@ -1259,6 +1370,7 @@ public class TreeProgressionRuntime
 {
     public float xp;
     public int rank;
+    public int spentPerkPoints;
     public string chosenTier2Route = "";
 }
 

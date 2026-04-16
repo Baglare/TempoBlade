@@ -226,8 +226,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             
             // Eğer Parry yapıyorsak koni açısını silaha göre değil Parry ayarlarına (örn 90 derece = 45*2) göre ez
             float overrideAngle = (_isParrying && _ps != null) ? _ps.parryArcHalfAngle * 2f : -1f;
-            float parryEdgeThickness = (_isParrying && _ps != null) ? _ps.deflectEdgeThickness : -1f;
-            bool showDeflectEdge = _isParrying && _ps != null && _ps.allowProjectileDeflect;
             bool isPerfectWindow = _isParrying && _ps != null && _ps.IsPerfectWindowActive;
             weaponArcVisual.UpdateVisuals(
                 transform.position,
@@ -235,8 +233,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 isSwinging,
                 _isParrying,
                 overrideAngle,
-                parryEdgeThickness,
-                showDeflectEdge,
+                -1f,
+                false,
                 isPerfectWindow);
         }
 

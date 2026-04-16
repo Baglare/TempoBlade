@@ -396,7 +396,11 @@ MonoBehaviour:
   arcColorIdle: {r: 1, g: 0.5, b: 0, a: 0.35}
   arcColorActive: {r: 1, g: 0.2, b: 0, a: 0.9}
   arcColorParry: {r: 0, g: 0.8, b: 1, a: 0.6}
+  arcColorPerfectParry: {r: 1, g: 0.9, b: 0.25, a: 0.95}
+  deflectEdgeColor: {r: 0.2, g: 0.95, b: 1, a: 0.85}
+  perfectDeflectEdgeColor: {r: 1, g: 1, b: 1, a: 1}
   lineWidth: 0.05
+  deflectEdgeWidthMultiplier: 0.7
   arcMaterial: {fileID: 0}
 --- !u!1 &3830720954143546012
 GameObject:
@@ -954,6 +958,7 @@ MonoBehaviour:
   rotateArcWhileActive: 0
   rotatingArcDegreesPerSecond: 1080
   rotatingArcDuration: 0.18
+  projectileParryMode: 1
 --- !u!114 &2833685781671096526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1219,7 +1224,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ParryPerkController
   baseReflectSpeedMultiplier: 1.5
   baseReflectDamageMultiplier: 1
-  reflectEdgeThickness: 0.05
+  reflectEdgeThickness: 1
   perfectWindowDuration: 0.08
   counterWindowDuration: 0.5
   counterBonusPerMelee: 0.15
@@ -1564,6 +1569,9 @@ MonoBehaviour:
   parryNormalColor: {r: 0.2, g: 0.95, b: 0.45, a: 1}
   perfectWindowColor: {r: 1, g: 0.82, b: 0.2, a: 1}
   perfectSuccessColor: {r: 1, g: 1, b: 1, a: 1}
+  counterNormalColor: {r: 1, g: 0.72, b: 0.15, a: 1}
+  counterUrgentColor: {r: 1, g: 0.25, b: 0.15, a: 1}
+  counterUrgentThreshold: 0.25
   perfectPulseScale: 1.15
   perfectSuccessFlashDuration: 0.12
 --- !u!1 &8503054484506776447

@@ -60,7 +60,6 @@ public class WeaponArcVisual : MonoBehaviour
 
     // ------------------------------------------------------------------ //
     private LineRenderer lr;
-    private LineRenderer deflectEdgeRenderer;
     private Vector2 lastDirection = Vector2.right;
     private Material runtimeMaterial;
     private float baseArcAngle; // Inspector'dan girilen orijinal acı
@@ -70,17 +69,15 @@ public class WeaponArcVisual : MonoBehaviour
     private void Awake()
     {
         baseArcAngle = arcAngle;
-        LineRenderer[] lineRenderers = GetComponents<LineRenderer>();
-        lr = lineRenderers.Length > 0 ? lineRenderers[0] : gameObject.AddComponent<LineRenderer>();
-        deflectEdgeRenderer = lineRenderers.Length > 1 ? lineRenderers[1] : gameObject.AddComponent<LineRenderer>();
+        lr = GetComponent<LineRenderer>();
+        if (lr == null)
+            lr = gameObject.AddComponent<LineRenderer>();
         InitLineRenderer();
     }
 
     private void InitLineRenderer()
     {
         ConfigureLineRenderer(lr, arcSegments + 1, 5);
-        ConfigureLineRenderer(deflectEdgeRenderer, arcSegments + 1, 6);
-        deflectEdgeRenderer.enabled = false;
     }
 
     private void ConfigureLineRenderer(LineRenderer target, int positions, int sortingOrder)
@@ -140,14 +137,7 @@ public class WeaponArcVisual : MonoBehaviour
         bool isVisible = isAttacking || isParrying;
         lr.enabled = isVisible;
         if (isVisible)
-        {
             DrawArc(origin, range, isAttacking, isParrying, isPerfectWindow);
-            DrawDeflectEdgeArc(origin, range, isParrying, showDeflectEdge, parryEdgeThickness, isPerfectWindow);
-        }
-        else if (deflectEdgeRenderer != null)
-        {
-            deflectEdgeRenderer.enabled = false;
-        }
         
         // Eğer parry yapılıyorsa silahı ileri fırlatma (PositionWeapon'ı atla), sadece saldırıda silahı konumlandır
         if (isAttacking)
@@ -167,8 +157,6 @@ public class WeaponArcVisual : MonoBehaviour
     public void SetVisible(bool visible)
     {
         lr.enabled = visible;
-        if (deflectEdgeRenderer != null && !visible)
-            deflectEdgeRenderer.enabled = false;
         if (weaponTransform != null)
             weaponTransform.gameObject.SetActive(visible);
     }
@@ -216,36 +204,4 @@ public class WeaponArcVisual : MonoBehaviour
         }
     }
 
-    private void DrawDeflectEdgeArc(Vector2 origin, float range, bool isParrying, bool showDeflectEdge, float parryEdgeThickness, bool isPerfectWindow)
-    {
-        if (deflectEdgeRenderer == null)
-            return;
-
-        bool canDraw = isParrying && showDeflectEdge && parryEdgeThickness > 0f;
-        deflectEdgeRenderer.enabled = canDraw;
-        if (!canDraw)
-            return;
-
-        float edgeRange = Mathf.Max(0.01f, range - parryEdgeThickness);
-        Color edgeColor = isPerfectWindow ? perfectDeflectEdgeColor : deflectEdgeColor;
-        deflectEdgeRenderer.startColor = edgeColor;
-        deflectEdgeRenderer.endColor = edgeColor;
-        float edgeWidth = Mathf.Max(0.01f, lineWidth * deflectEdgeWidthMultiplier);
-        deflectEdgeRenderer.startWidth = edgeWidth;
-        deflectEdgeRenderer.endWidth = edgeWidth;
-
-        float halfAngle = arcAngle * 0.5f;
-        float baseAngleDeg = Mathf.Atan2(lastDirection.y, lastDirection.x) * Mathf.Rad2Deg;
-
-        for (int i = 0; i <= arcSegments; i++)
-        {
-            float t = (float)i / arcSegments;
-            float rad = (baseAngleDeg - halfAngle + t * arcAngle) * Mathf.Deg2Rad;
-            deflectEdgeRenderer.SetPosition(i, new Vector3(
-                origin.x + Mathf.Cos(rad) * edgeRange,
-                origin.y + Mathf.Sin(rad) * edgeRange,
-                0f
-            ));
-        }
-    }
 }

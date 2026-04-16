@@ -42,6 +42,10 @@ public class ParrySystem : MonoBehaviour
     [HideInInspector] public float rotatingArcDegreesPerSecond = 1080f;
     [HideInInspector] public float rotatingArcDuration = 0.18f;
 
+    [Header("Projectile Parry Mode")]
+    [Tooltip("Cone: tum koni icindeki projectile'lar. EdgeLine: sadece en on cizgiye yakin projectile'lar.")]
+    public ProjectileParryMode projectileParryMode = ProjectileParryMode.Cone;
+
     public bool IsParryActive { get; private set; }
     public bool IsCounterWindowActive { get; private set; }
     public bool IsOnCooldown { get; private set; }
@@ -285,11 +289,25 @@ public class ParrySystem : MonoBehaviour
 
         float maxRange = GetDeflectRange();
         Vector2 toProjectile = projectileWorldPos - (Vector2)transform.position;
-        if (!IsWithinDeflectEdge(toProjectile, maxRange))
+        float distance = toProjectile.magnitude;
+        if (distance > maxRange)
             return false;
+
+        if (projectileParryMode == ProjectileParryMode.EdgeLine)
+        {
+            float thickness = Mathf.Max(0.01f, deflectEdgeThickness);
+            float minRange = Mathf.Max(0f, maxRange - thickness);
+            if (distance < minRange)
+                return false;
+        }
 
         Vector2 incomingDir = toProjectile.sqrMagnitude > 0.001f ? toProjectile.normalized : GetCurrentParryDirection();
         return IsDirectionParryable(incomingDir);
+    }
+
+    public void SetProjectileParryMode(ProjectileParryMode mode)
+    {
+        projectileParryMode = mode;
     }
 
     private void CloseParryWindow()
@@ -413,16 +431,15 @@ public class ParrySystem : MonoBehaviour
         return playerCombat != null ? playerCombat.GetEffectiveRange() + attackOffset : 2.5f;
     }
 
-    private bool IsWithinDeflectEdge(Vector2 toProjectile, float maxRange)
-    {
-        float distance = toProjectile.magnitude;
-        float minRange = Mathf.Max(0f, maxRange - Mathf.Max(0.01f, deflectEdgeThickness));
-        return distance >= minRange && distance <= maxRange;
-    }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(0f, 1f, 1f, 0.35f);
         Gizmos.DrawWireSphere(transform.position, 2.5f);
     }
+}
+
+public enum ProjectileParryMode
+{
+    Cone,
+    EdgeLine
 }
