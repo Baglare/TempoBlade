@@ -839,6 +839,37 @@ public class AxisProgressionManager : MonoBehaviour
         AutoSave();
     }
 
+    public void RemoveTreeXp(ProgressionAxisSO axis, float amount)
+    {
+        if (axis == null || amount <= 0f || IsTesterMode)
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        SetTreeXpInternal(axis, Mathf.Max(0f, progress.xp - amount));
+    }
+
+    public void RemoveTreeRank(ProgressionAxisSO axis, int rankSteps = 1)
+    {
+        if (axis == null || rankSteps <= 0 || IsTesterMode)
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        int targetRank = Mathf.Max(0, progress.rank - rankSteps);
+        float targetXp = targetRank > 0
+            ? GetProgressionConfig().GetRequiredXpForRank(targetRank)
+            : 0f;
+
+        SetTreeXpInternal(axis, targetXp);
+    }
+
+    public void ResetTreeXp(ProgressionAxisSO axis)
+    {
+        if (axis == null || IsTesterMode)
+            return;
+
+        SetTreeXpInternal(axis, 0f);
+    }
+
     public void DebugAddTreeRank(ProgressionAxisSO axis)
     {
         if (axis == null)
@@ -853,6 +884,26 @@ public class AxisProgressionManager : MonoBehaviour
         progress.rank = nextRank;
         OnTreeProgressChanged?.Invoke(axis, progress.rank, progress.xp);
         NotifyAxisStatuses(axis);
+        AutoSave();
+    }
+
+    private void SetTreeXpInternal(ProgressionAxisSO axis, float targetXp)
+    {
+        if (axis == null)
+            return;
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        int oldRank = progress.rank;
+        progress.xp = Mathf.Max(0f, targetXp);
+        progress.rank = GetProgressionConfig().CalculateRank(progress.xp);
+
+        if (progress.rank < oldRank)
+            EnforceRankCapForAxis(axis);
+
+        OnTreeProgressChanged?.Invoke(axis, progress.rank, progress.xp);
+        NotifyAxisStatuses(axis);
+        NotifyAxisStatuses(database != null ? database.GetOpposingAxis(axis) : null);
+        RebuildPlayerBuild();
         AutoSave();
     }
 
@@ -984,6 +1035,52 @@ public class AxisProgressionManager : MonoBehaviour
             return true;
 
         return axis != null && IsAxisCommitted(axis);
+    }
+
+    private void EnforceRankCapForAxis(ProgressionAxisSO axis)
+    {
+        if (axis == null || axis.nodes == null)
+            return;
+
+        List<SkillNodeSO> nodesToLock = new List<SkillNodeSO>();
+        int currentRank = GetTreeRank(axis);
+
+        foreach (var node in axis.nodes)
+        {
+            if (node == null || !_unlockedNodeIds.Contains(node.nodeId))
+                continue;
+
+            if (GetRequiredRankForNode(node) > currentRank)
+                nodesToLock.Add(node);
+        }
+
+        nodesToLock.Sort((left, right) => GetRequiredRankForNode(right).CompareTo(GetRequiredRankForNode(left)));
+
+        foreach (var node in nodesToLock)
+        {
+            if (_unlockedNodeIds.Contains(node.nodeId))
+                CascadeLock(node);
+        }
+
+        TreeProgressionRuntime progress = GetTreeProgress(axis);
+        if (string.IsNullOrEmpty(progress.chosenTier2Route))
+            return;
+
+        bool routeStillUnlocked = false;
+        foreach (var node in axis.nodes)
+        {
+            if (node == null || node.tier != 2 || node.isCommitmentNode)
+                continue;
+
+            if (_unlockedNodeIds.Contains(node.nodeId) && node.nodeId.Contains(progress.chosenTier2Route))
+            {
+                routeStillUnlocked = true;
+                break;
+            }
+        }
+
+        if (!routeStillUnlocked)
+            progress.chosenTier2Route = "";
     }
 
     private void HandleTier2RouteChoice(SkillNodeSO node)

@@ -269,6 +269,8 @@ public class SkillTreePanelUI : MonoBehaviour
         CreateAxisButton(panelRoot.transform, "OverdriveTab", "Overdrive", new Vector2(70f, -78f), () => SetActiveAxis(overdriveAxis));
         CreateAxisButton(panelRoot.transform, "CadenceTab", "Cadence", new Vector2(210f, -78f), () => SetActiveAxis(cadenceAxis));
         CreateUtilityButton(panelRoot.transform, "ModeToggle", "Mod Degistir", new Vector2(-390f, -78f), () => ToggleMode());
+        CreateUtilityButton(panelRoot.transform, "RankDownDebug", "Agac XP Azalt", new Vector2(390f, -118f), () => RemoveRankFromActiveAxis());
+        CreateUtilityButton(panelRoot.transform, "XpResetDebug", "Agac XP Sifirla", new Vector2(390f, -158f), () => ResetXpForActiveAxis());
         CreateUtilityButton(panelRoot.transform, "RankDebug", "Agaca Seviye Ekle", new Vector2(390f, -78f), () => AddRankToActiveAxis());
 
         modeText = CreateText(panelRoot.transform, "ModeText", "", 14, FontStyles.Bold, new Color(0.85f, 0.9f, 1f));
@@ -750,6 +752,40 @@ public class SkillTreePanelUI : MonoBehaviour
         }
 
         AxisProgressionManager.Instance.DebugAddTreeRank(activeAxis);
+        RefreshModeAndProgressText();
+        RefreshAllSlots();
+    }
+
+    private void RemoveRankFromActiveAxis()
+    {
+        if (AxisProgressionManager.Instance == null || activeAxis == null)
+            return;
+
+        if (AxisProgressionManager.Instance.IsTesterMode)
+        {
+            descText.text = "<color=#FFAA44>Tester modda XP/rank kullanilmaz.</color>";
+            return;
+        }
+
+        AxisProgressionManager.Instance.RemoveTreeRank(activeAxis, 1);
+        descText.text = "<color=#FF8844>Agac bir rank geri alindi. Rank'a bagli perkler otomatik kapatildi.</color>";
+        RefreshModeAndProgressText();
+        RefreshAllSlots();
+    }
+
+    private void ResetXpForActiveAxis()
+    {
+        if (AxisProgressionManager.Instance == null || activeAxis == null)
+            return;
+
+        if (AxisProgressionManager.Instance.IsTesterMode)
+        {
+            descText.text = "<color=#FFAA44>Tester modda XP/rank kullanilmaz.</color>";
+            return;
+        }
+
+        AxisProgressionManager.Instance.ResetTreeXp(activeAxis);
+        descText.text = "<color=#FF6666>Agac XP sifirlandi. Rank'a bagli tum perkler otomatik kapatildi.</color>";
         RefreshModeAndProgressText();
         RefreshAllSlots();
     }
