@@ -117,8 +117,8 @@ Transform:
   m_GameObject: {fileID: 5733184370942061880}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.5, y: 2, z: 1}
+  m_LocalPosition: {x: 0.0115, y: -0.0087, z: 0}
+  m_LocalScale: {x: 2.3336942, y: 1.965528, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6499819182057441416}
@@ -172,7 +172,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -3752293923377349578, guid: 90d6db7a18410af4584d7d5a025a7e5e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -213,9 +213,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 7590132318713390818}
   - {fileID: 6958540658657138790}
   - {fileID: 1920906841151749964}
-  - {fileID: 7590132318713390818}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &3936317903348299709
@@ -276,18 +276,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01ed5d8db6c3af84ab451f03f69c9dde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RewardDoor
+  direction: 1
+  entryPoint: {fileID: 0}
   currentState: 0
-  doorReward: 0
+  doorReward: {fileID: 0}
   doorRenderer: {fileID: 9152697316038028213}
   rewardIconRenderer: {fileID: 524954956842809463}
   lockIcon: {fileID: 8389875327548824356}
   lockedTint: {r: 0.3, g: 0.3, b: 0.3, a: 1}
   unlockedTint: {r: 1, g: 1, b: 1, a: 1}
-  healColor: {r: 0, g: 1, b: 0, a: 1}
-  maxHealthColor: {r: 1, g: 0.3, b: 0.3, a: 1}
-  damageColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  tempoColor: {r: 0, g: 1, b: 1, a: 1}
-  goldColor: {r: 1, g: 0.85, b: 0, a: 1}
+  defaultRewardColor: {r: 1, g: 1, b: 1, a: 1}
   unlockDuration: 0.4
   scalePunchAmount: 0.2
   triggerOnTouch: 1
@@ -317,8 +315,8 @@ Transform:
   m_GameObject: {fileID: 8389875327548824356}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.009, y: 0.031, z: 0}
+  m_LocalScale: {x: 1.1219032, y: 1.2837043, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6499819182057441416}
@@ -370,10 +368,10 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: -6635705816517622255, guid: 90d6db7a18410af4584d7d5a025a7e5e, type: 3}
+  m_Color: {r: 1, g: 0.90713394, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

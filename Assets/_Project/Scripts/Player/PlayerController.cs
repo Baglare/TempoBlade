@@ -44,7 +44,6 @@ public class PlayerController : MonoBehaviour
     private float baseDodgeCooldown;
     private float dashCommitmentDodgeCooldownMultiplier = 1f;
     private float parryCommitmentDodgeCooldownMultiplier = 1f;
-    private float lastPerfectParryPopupTime = -999f;
 
     // --- PERK SİSTEMİ EVENT'LERİ ---
     /// <summary>Dodge başladığında yön bilgisiyle tetiklenir. DashPerkController dinler.</summary>
@@ -83,6 +82,7 @@ public class PlayerController : MonoBehaviour
         playerCombat = GetComponent<PlayerCombat>();
         dashPerkController = GetComponent<DashPerkController>();
         CombatTelemetryHub.EnsureFor(gameObject);
+        CombatFeedbackDirector.EnsureFor(gameObject);
         baseDodgeCooldown = dodgeCooldown;
 
         // Otomatik Ayarlar
@@ -369,30 +369,6 @@ public class PlayerController : MonoBehaviour
 
         if (HitStopManager.Instance != null)
             HitStopManager.Instance.PlayHitStop();
-
-        if (DamagePopupManager.Instance != null)
-        {
-            if (data.isPerfect)
-            {
-                if (!data.isRanged)
-                {
-                    DamagePopupManager.Instance.CreateText(
-                        transform.position + Vector3.up * 1.5f,
-                        "PERFECT PARRY!",
-                        new Color(1f, 0.9f, 0.25f),
-                        6f);
-                    lastPerfectParryPopupTime = Time.unscaledTime;
-                }
-            }
-            else if (!data.isRanged && Time.unscaledTime - lastPerfectParryPopupTime > 0.05f)
-            {
-                DamagePopupManager.Instance.CreateText(
-                    transform.position + Vector3.up * 1.5f,
-                    "PARRY!",
-                    Color.yellow,
-                    6f);
-            }
-        }
             
         // --- T2/T3 Şok Dalgası (Shockwave) ---
         if (data.isPerfect && TempoManager.Instance != null)
@@ -430,9 +406,6 @@ public class PlayerController : MonoBehaviour
 
         if (TempoManager.Instance != null)
             TempoManager.Instance.AddTempo(-6f);
-            
-        if (DamagePopupManager.Instance != null)
-            DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "FAILED", new Color(1f, 0.5f, 0f), 5f); // Turuncu
     }
 
 

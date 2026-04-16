@@ -38,6 +38,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (GetComponent<TempoEnemyEffect>() == null)
             gameObject.AddComponent<TempoEnemyEffect>();
 
+        if (GetComponent<EnemyStateFeedback>() == null)
+            gameObject.AddComponent<EnemyStateFeedback>();
+
         stunSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (stunSpriteRenderer != null)
             stunOriginalColor = stunSpriteRenderer.color;

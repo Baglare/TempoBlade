@@ -52,6 +52,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     // ─────────────────────────────────────
 
     public event System.Action<float, float> OnHealthChanged;
+    public event System.Action<CounterFeedbackData> OnCounterFeedback;
 
     /// <summary>
     /// Mevcut silah upgrade seviyesi (SaveData'dan okunur).
@@ -226,7 +227,17 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             // Eğer Parry yapıyorsak koni açısını silaha göre değil Parry ayarlarına (örn 90 derece = 45*2) göre ez
             float overrideAngle = (_isParrying && _ps != null) ? _ps.parryArcHalfAngle * 2f : -1f;
             float parryEdgeThickness = (_isParrying && _ps != null) ? _ps.deflectEdgeThickness : -1f;
-            weaponArcVisual.UpdateVisuals(transform.position, aimDir, isSwinging, _isParrying, overrideAngle, parryEdgeThickness);
+            bool showDeflectEdge = _isParrying && _ps != null && _ps.allowProjectileDeflect;
+            bool isPerfectWindow = _isParrying && _ps != null && _ps.IsPerfectWindowActive;
+            weaponArcVisual.UpdateVisuals(
+                transform.position,
+                aimDir,
+                isSwinging,
+                _isParrying,
+                overrideAngle,
+                parryEdgeThickness,
+                showDeflectEdge,
+                isPerfectWindow);
         }
 
         // Kombo penceresi sayacı
@@ -489,22 +500,24 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             if (counterBonus > 0f && parrySystem != null)
             {
                 parrySystem.ConsumeCounter();
-                float displayMult = 1f + counterBonus;
-                DamagePopupManager.Instance?.CreateText(
-                    transform.position + Vector3.up * 2f,
-                    $"PARRY COUNTER! x{displayMult:F2}",
-                    new Color(1f, 0.85f, 0f), 7f);
+                OnCounterFeedback?.Invoke(new CounterFeedbackData
+                {
+                    source = CounterFeedbackSource.Parry,
+                    multiplier = 1f + counterBonus,
+                    worldPosition = transform.position
+                });
             }
 
             // Dash karşı saldırı bonusu tüket ve popup göster
             if (dashCounterBonus > 0f && _dashPerks != null)
             {
                 _dashPerks.ConsumeCounter();
-                float displayMult = 1f + dashCounterBonus;
-                DamagePopupManager.Instance?.CreateText(
-                    transform.position + Vector3.up * 2.5f,
-                    $"DASH COUNTER! x{displayMult:F2}",
-                    new Color(0f, 0.9f, 1f), 7f);
+                OnCounterFeedback?.Invoke(new CounterFeedbackData
+                {
+                    source = CounterFeedbackSource.Dash,
+                    multiplier = 1f + dashCounterBonus,
+                    worldPosition = transform.position
+                });
             }
 
             if (blindSpotBonus > 0f && _dashPerks != null)

@@ -8,6 +8,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class ParryPerkController : MonoBehaviour
 {
+    private static readonly Collider2D[] executeReadyScanBuffer = new Collider2D[32];
+
     private PlayerController playerController;
     private ParrySystem parrySystem;
     private DashPerkController dashPerkController;
@@ -112,6 +114,7 @@ public class ParryPerkController : MonoBehaviour
     private float _feedbackTimer;
 
     public bool CanDeflectProjectiles => _hasReflect;
+    public event System.Action<EnemyControlFeedbackData> OnEnemyControlFeedback;
 
     private void Awake()
     {
@@ -315,6 +318,44 @@ public class ParryPerkController : MonoBehaviour
         return context;
     }
 
+    public bool TryGetCloseExecuteReadyTarget(out GameObject target)
+    {
+        target = null;
+
+        if (!_hasCloseExecute || parrySystem == null || !parrySystem.IsParryActive || !parrySystem.allowProjectileDeflect)
+            return false;
+
+        float scanRadius = Mathf.Max(closeExecuteRange, parrySystem.CurrentDeflectRange);
+        int hitCount = Physics2D.OverlapCircleNonAlloc(transform.position, scanRadius, executeReadyScanBuffer);
+        float closestDistance = float.MaxValue;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = executeReadyScanBuffer[i];
+            if (hit == null || !hit.TryGetComponent<IDeflectable>(out var deflectable))
+                continue;
+
+            if (deflectable.ObjectOwner == gameObject || deflectable.IsDeflected)
+                continue;
+
+            if (!parrySystem.CanDeflectProjectileAt(hit.transform.position))
+                continue;
+
+            GameObject owner = deflectable.SourceOwner != null ? deflectable.SourceOwner : ResolveSourceOwner(hit.gameObject);
+            if (!IsCloseExecuteEligible(owner))
+                continue;
+
+            float distance = Vector2.Distance(transform.position, owner.transform.position);
+            if (distance >= closestDistance)
+                continue;
+
+            closestDistance = distance;
+            target = owner;
+        }
+
+        return target != null;
+    }
+
     private void HandleParryResolved(ParryEventData data)
     {
         if (_hasRhythmReturn)
@@ -366,16 +407,7 @@ public class ParryPerkController : MonoBehaviour
         if (source == null) return;
 
         GameObject owner = ResolveProjectileOwner(source);
-        if (owner == null) return;
-
-        if (Vector2.Distance(transform.position, owner.transform.position) > closeExecuteRange)
-            return;
-
-        if (owner.GetComponent<EnemyBoss>() != null)
-            return;
-
-        var reactive = owner.GetComponent<IParryReactive>();
-        if (reactive != null && !reactive.AllowParryExecute)
+        if (!IsCloseExecuteEligible(owner))
             return;
 
         var damageable = owner.GetComponent<IDamageable>();
@@ -392,8 +424,7 @@ public class ParryPerkController : MonoBehaviour
             damageable.TakeDamage(9999f);
         }
 
-        if (DamagePopupManager.Instance != null)
-            DamagePopupManager.Instance.CreateText(owner.transform.position + Vector3.up * 1.8f, "INFÂZ!", new Color(1f, 0.25f, 0.25f), 8f);
+        EmitEnemyControlFeedback(owner, EnemyControlFeedbackType.ExecuteTriggered, 0.35f, false);
     }
 
     private void ApplyEnemyReaction(GameObject source, float stunDuration, float bossInterruptDuration, bool breakGuard)
@@ -423,7 +454,11 @@ public class ParryPerkController : MonoBehaviour
                 duration = isBoss ? bossInterruptDuration : stunDuration,
                 instigator = gameObject
             });
-            ShowReactionFeedback(target.transform.position, breakGuard, isBoss);
+            EmitEnemyControlFeedback(
+                target,
+                breakGuard ? EnemyControlFeedbackType.GuardBreak : (isBoss ? EnemyControlFeedbackType.Stagger : EnemyControlFeedbackType.Stun),
+                isBoss ? bossInterruptDuration : stunDuration,
+                isBoss);
             return;
         }
 
@@ -431,22 +466,12 @@ public class ParryPerkController : MonoBehaviour
         if (enemyBase != null)
         {
             enemyBase.Stun(stunDuration);
-            ShowReactionFeedback(target.transform.position, breakGuard, false);
+            EmitEnemyControlFeedback(
+                target,
+                breakGuard ? EnemyControlFeedbackType.GuardBreak : EnemyControlFeedbackType.Stun,
+                stunDuration,
+                false);
         }
-    }
-
-    private void ShowReactionFeedback(Vector3 worldPos, bool breakGuard, bool isBoss)
-    {
-        if (DamagePopupManager.Instance == null)
-            return;
-
-        string text = breakGuard ? "GUARD BREAK!" : (isBoss ? "STAGGER!" : "STUN!");
-        Color color = breakGuard
-            ? new Color(1f, 0.5f, 0.15f)
-            : (isBoss ? new Color(1f, 0.75f, 0.2f) : new Color(0.45f, 0.9f, 1f));
-
-        DamagePopupManager.Instance.CreateText(worldPos + Vector3.up * 1.4f, text, color, 7f);
-        DamagePopupManager.Instance.CreateHitParticle(worldPos);
     }
 
     private GameObject ResolveProjectileOwner(GameObject source)
@@ -470,5 +495,38 @@ public class ParryPerkController : MonoBehaviour
             return deflectable.SourceOwner;
 
         return source;
+    }
+
+    private bool IsCloseExecuteEligible(GameObject owner)
+    {
+        if (owner == null)
+            return false;
+
+        if (Vector2.Distance(transform.position, owner.transform.position) > closeExecuteRange)
+            return false;
+
+        if (owner.GetComponent<EnemyBoss>() != null)
+            return false;
+
+        var reactive = owner.GetComponent<IParryReactive>();
+        if (reactive != null && !reactive.AllowParryExecute)
+            return false;
+
+        return owner.GetComponent<IDamageable>() != null;
+    }
+
+    private void EmitEnemyControlFeedback(GameObject target, EnemyControlFeedbackType type, float duration, bool isBoss)
+    {
+        if (target == null)
+            return;
+
+        OnEnemyControlFeedback?.Invoke(new EnemyControlFeedbackData
+        {
+            target = target,
+            type = type,
+            duration = duration,
+            isBoss = isBoss,
+            worldPosition = target.transform.position
+        });
     }
 }

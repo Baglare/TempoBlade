@@ -46,6 +46,7 @@ public class ParrySystem : MonoBehaviour
     public bool IsCounterWindowActive { get; private set; }
     public bool IsOnCooldown { get; private set; }
     public bool IsPerfectWindowActive => enablePerfectParry && IsParryActive && parryElapsed <= currentPerfectWindow;
+    public float CurrentDeflectRange => GetDeflectRange();
 
     private float timer;
     private float initialWindowDuration;
@@ -187,16 +188,7 @@ public class ParrySystem : MonoBehaviour
 
     public bool TryDeflect(Vector2 projectileWorldPos, GameObject sourceObject = null)
     {
-        if (!allowProjectileDeflect || !IsParryActive)
-            return false;
-
-        float maxRange = GetDeflectRange();
-        Vector2 toProjectile = projectileWorldPos - (Vector2)transform.position;
-        if (!IsWithinDeflectEdge(toProjectile, maxRange))
-            return false;
-
-        Vector2 incomingDir = toProjectile.sqrMagnitude > 0.001f ? toProjectile.normalized : GetCurrentParryDirection();
-        if (!IsDirectionParryable(incomingDir))
+        if (!CanDeflectProjectileAt(projectileWorldPos))
             return false;
 
         RegisterBlock(true, sourceObject);
@@ -286,6 +278,20 @@ public class ParrySystem : MonoBehaviour
         counterTimer = Mathf.Max(counterTimer, duration);
     }
 
+    public bool CanDeflectProjectileAt(Vector2 projectileWorldPos)
+    {
+        if (!allowProjectileDeflect || !IsParryActive)
+            return false;
+
+        float maxRange = GetDeflectRange();
+        Vector2 toProjectile = projectileWorldPos - (Vector2)transform.position;
+        if (!IsWithinDeflectEdge(toProjectile, maxRange))
+            return false;
+
+        Vector2 incomingDir = toProjectile.sqrMagnitude > 0.001f ? toProjectile.normalized : GetCurrentParryDirection();
+        return IsDirectionParryable(incomingDir);
+    }
+
     private void CloseParryWindow()
     {
         IsParryActive = false;
@@ -366,12 +372,7 @@ public class ParrySystem : MonoBehaviour
             if (projectile.ObjectOwner == gameObject || projectile.IsDeflected)
                 continue;
 
-            Vector2 toProjectile = (Vector2)hit.transform.position - (Vector2)transform.position;
-            if (!IsWithinDeflectEdge(toProjectile, maxRange))
-                continue;
-
-            Vector2 incomingDir = toProjectile.sqrMagnitude > 0.001f ? toProjectile.normalized : GetCurrentParryDirection();
-            if (!IsDirectionParryable(incomingDir))
+            if (!CanDeflectProjectileAt(hit.transform.position))
                 continue;
 
             RegisterBlock(true, hit.gameObject);
@@ -380,9 +381,6 @@ public class ParrySystem : MonoBehaviour
                 ? parryPerkController.BuildDeflectContext()
                 : DeflectContext.Default(gameObject);
             projectile.Deflect(context);
-
-            if (DamagePopupManager.Instance != null)
-                DamagePopupManager.Instance.CreateText(hit.transform.position + Vector3.up, "DEFLECT!", Color.cyan, 6f);
         }
     }
 

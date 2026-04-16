@@ -28,6 +28,9 @@ public class ParryIndicatorUI : MonoBehaviour
     public Color parryNormalColor = new Color(0.20f, 0.95f, 0.45f, 1f);
     public Color perfectWindowColor = new Color(1f, 0.82f, 0.2f, 1f);
     public Color perfectSuccessColor = Color.white;
+    public Color counterNormalColor = new Color(1f, 0.72f, 0.15f, 1f);
+    public Color counterUrgentColor = new Color(1f, 0.25f, 0.15f, 1f);
+    [Range(0f, 1f)] public float counterUrgentThreshold = 0.25f;
     public float perfectPulseScale = 1.15f;
     public float perfectSuccessFlashDuration = 0.12f;
 
@@ -37,9 +40,11 @@ public class ParryIndicatorUI : MonoBehaviour
     private Color     originalSpriteColor = Color.white;
     private Vector3   baseSelfScale;
     private Vector3   parrySliderBaseScale = Vector3.one;
+    private Vector3   counterSliderBaseScale = Vector3.one;
     private Vector2   currentParryDir;
     private Transform playerRoot;
     private Image     parryFillImage;
+    private Image     counterFillImage;
     private float     perfectSuccessFlashTimer;
 
 
@@ -79,6 +84,13 @@ public class ParryIndicatorUI : MonoBehaviour
             parrySliderBaseScale = parrySlider.transform.localScale;
             if (parrySlider.fillRect != null)
                 parryFillImage = parrySlider.fillRect.GetComponent<Image>();
+        }
+
+        if (counterSlider != null)
+        {
+            counterSliderBaseScale = counterSlider.transform.localScale;
+            if (counterSlider.fillRect != null)
+                counterFillImage = counterSlider.fillRect.GetComponent<Image>();
         }
 
         SetParrySliderVisible(false);
@@ -155,14 +167,17 @@ public class ParryIndicatorUI : MonoBehaviour
 
     private void UpdateCounterSlider(float normalized)
     {
-        if (counterSlider.gameObject.activeSelf)
+        if (counterSlider != null && counterSlider.gameObject.activeSelf)
             counterSlider.value = normalized;
+
+        ApplyCounterWindowVisuals(normalized);
     }
 
     private void ShowCounterSlider()
     {
         SetParrySliderVisible(false);
         SetCounterSliderVisible(true);
+        ApplyCounterWindowVisuals(1f);
         if (playerSprite != null)
             playerSprite.color = counterGlowColor;
     }
@@ -172,6 +187,12 @@ public class ParryIndicatorUI : MonoBehaviour
         SetCounterSliderVisible(false);
         if (playerSprite != null)
             playerSprite.color = originalSpriteColor;
+
+        if (counterFillImage != null)
+            counterFillImage.color = counterNormalColor;
+
+        if (counterSlider != null)
+            counterSlider.transform.localScale = counterSliderBaseScale;
     }
 
     private void HideParrySlider()
@@ -234,5 +255,17 @@ public class ParryIndicatorUI : MonoBehaviour
         parrySlider.transform.localScale = inPerfectWindow
             ? parrySliderBaseScale * perfectPulseScale
             : parrySliderBaseScale;
+    }
+
+    private void ApplyCounterWindowVisuals(float normalized)
+    {
+        if (counterSlider == null || counterFillImage == null)
+            return;
+
+        bool isUrgent = normalized <= counterUrgentThreshold;
+        counterFillImage.color = isUrgent ? counterUrgentColor : counterNormalColor;
+        counterSlider.transform.localScale = isUrgent
+            ? counterSliderBaseScale * 1.08f
+            : counterSliderBaseScale;
     }
 }

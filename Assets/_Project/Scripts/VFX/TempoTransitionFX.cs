@@ -18,6 +18,8 @@ public class TempoTransitionFX : MonoBehaviour
     [Header("Kamera Sarsıntısı")]
     [Tooltip("Sarsıntı süresi (saniye)")]
     public float shakeDuration = 0.15f;
+    [Tooltip("Ardışık tier geçişlerinde aynı anda birden fazla flash/shake spam'ini önler.")]
+    public float minTransitionInterval = 0.12f;
 
     private Transform camTransform;
     private Vector3 originalCamPos;
@@ -25,6 +27,7 @@ public class TempoTransitionFX : MonoBehaviour
     private Coroutine shakeCoroutine;
 
     private TempoManager.TempoTier lastTier;
+    private float lastTransitionTime = -999f;
 
     private void Start()
     {
@@ -57,6 +60,14 @@ public class TempoTransitionFX : MonoBehaviour
     private void OnTierChanged(TempoManager.TempoTier newTier)
     {
         if (visualConfig == null) return;
+
+        if (Time.unscaledTime - lastTransitionTime < minTransitionInterval)
+        {
+            lastTier = newTier;
+            return;
+        }
+
+        lastTransitionTime = Time.unscaledTime;
 
         var visual = visualConfig.GetVisual(newTier);
         bool isUpgrade = (int)newTier > (int)lastTier;
