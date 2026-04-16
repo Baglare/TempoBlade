@@ -40,35 +40,26 @@ public class UpgradeConfigSO : ScriptableObject
     [Tooltip("Maksimum yukseltme seviyesi")]
     public int tempoMaxLevel = 15;
 
-    [Header("Parry Penceresi (Parry Window)")]
-    [Tooltip("ParrySystem'daki baslangic pencere suresi (Inspector ile esit olmali)")]
-    public float baseParryWindow = 0.15f;
-    [Tooltip("Yukseltme basina parry pencere suresi artisi (saniye, orn: 0.02)")]
-    public float parryWindowPerLevel = 0.02f;
-    [Tooltip("Ilk yukseltmenin altin maliyeti")]
-    public int parryWindowBaseCost = 80;
-    [Tooltip("Her seviyede maliyete eklenen ekstra altin")]
-    public int parryWindowCostPerLevel = 40;
-    [Tooltip("Maksimum yukseltme seviyesi")]
-    public int parryWindowMaxLevel = 20;
-
-    [Header("Parry Yenilenme Suresi (Parry Recovery)")]
-    [Tooltip("ParrySystem'daki baslangic yenilenme suresi (Inspector ile esit olmali)")]
-    public float baseParryRecovery = 0.5f;
-    [Tooltip("Yukseltme basina parry recovery azalmasi (saniye, orn: 0.01)")]
-    public float parryRecoveryPerLevel = 0.01f;
-    [Tooltip("Ilk yukseltmenin altin maliyeti")]
-    public int parryRecoveryBaseCost = 60;
-    [Tooltip("Her seviyede maliyete eklenen ekstra altin")]
-    public int parryRecoveryCostPerLevel = 30;
-    [Tooltip("Maksimum yukseltme seviyesi")]
-    public int parryRecoveryMaxLevel = 10;
-
     // ===================== MALIYET HESAPLAMA =====================
 
     public int GetCost(int baseCost, int costPerLevel, int currentLevel)
     {
         return baseCost + (costPerLevel * currentLevel);
+    }
+
+    public float GetMaxHealth(int bonusLevel, float baseValue = 100f)
+    {
+        return baseValue + (Mathf.Max(0, bonusLevel) * healthPerLevel);
+    }
+
+    public float GetDamageMultiplier(int bonusLevel, float baseValue = 1f)
+    {
+        return baseValue + (Mathf.Max(0, bonusLevel) * damageMultiplierPerLevel);
+    }
+
+    public float GetTempoGainMultiplier(int bonusLevel, float baseValue = 1f)
+    {
+        return baseValue + (Mathf.Max(0, bonusLevel) * tempoGainPerLevel);
     }
 
     /// <summary>

@@ -126,11 +126,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         SaveData data = SaveManager.Instance.data;
 
-        // Bonus can
-        maxHealth = 100f + (data.bonusMaxHealth * upgradeConfig.healthPerLevel);
-
-        // Bonus hasar carpani
-        damageMultiplier = 1.0f + (data.bonusDamageMultiplier * upgradeConfig.damageMultiplierPerLevel);
+        maxHealth = upgradeConfig.GetMaxHealth(data.bonusMaxHealth);
+        damageMultiplier = upgradeConfig.GetDamageMultiplier(data.bonusDamageMultiplier);
     }
 
     /// <summary>

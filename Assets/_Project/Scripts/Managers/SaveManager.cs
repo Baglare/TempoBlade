@@ -130,8 +130,6 @@ public class SaveData
     public int bonusMaxHealth = 0;
     public int bonusDamageMultiplier = 0;
     public int bonusTempoGain = 0;
-    public int bonusParryWindow = 0;
-    public int bonusParryRecovery = 0;
 
     // Acilmis silahlar
     public List<string> unlockedWeapons = new List<string> { "Starting Weapon" };

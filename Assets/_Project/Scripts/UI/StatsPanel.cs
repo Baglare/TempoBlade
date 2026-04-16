@@ -188,21 +188,6 @@ public class StatsPanel : MonoBehaviour
                 stats += $"\n  <size=80%>{LvBar(lv, max)}  <color=#aaaaaa>Sv.{lv}/{max}</color></size>";
         }
 
-        // --- PARRY ---
-        if (saveData != null && hasConfig)
-        {
-            float parryWindow   = upgradeConfig.baseParryWindow + saveData.bonusParryWindow   * upgradeConfig.parryWindowPerLevel;
-            float parryRecovery = Mathf.Max(0.01f, upgradeConfig.baseParryRecovery - saveData.bonusParryRecovery * upgradeConfig.parryRecoveryPerLevel);
-
-            stats += "\nParry Penceresi: " + parryWindow.ToString("F3") + "s";
-            stats += $"\n  <size=80%>{LvBar(saveData.bonusParryWindow, upgradeConfig.parryWindowMaxLevel)}"
-                   + $"  <color=#aaaaaa>Sv.{saveData.bonusParryWindow}/{upgradeConfig.parryWindowMaxLevel}</color></size>";
-
-            stats += "\nParry Yenilenme: " + parryRecovery.ToString("F3") + "s";
-            stats += $"\n  <size=80%>{LvBar(saveData.bonusParryRecovery, upgradeConfig.parryRecoveryMaxLevel)}"
-                   + $"  <color=#aaaaaa>Sv.{saveData.bonusParryRecovery}/{upgradeConfig.parryRecoveryMaxLevel}</color></size>";
-        }
-
         allStatsText.text = stats;
     }
 

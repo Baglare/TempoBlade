@@ -6,15 +6,15 @@ public class RunManager : MonoBehaviour
 
     [Header("Run State")]
     public int roomsCleared = 0;
-    
+
     [Tooltip("The reward the player chose from the previous room. Will be granted when this room is cleared.")]
     public RewardDefinitionSO pendingReward;
 
-    [Tooltip("Oyuncunun son geçtiği kapının yönü (RewardDoor.DoorDirection int). -1 = ilk oda/belirtilmemiş")]
+    [Tooltip("Oyuncunun son gectigi kapinin yonu (RewardDoor.DoorDirection int). -1 = ilk oda/belirtilmemis")]
     [HideInInspector] public int lastDoorDirection = -1;
 
     [Header("Room Progression")]
-    [Tooltip("Odalar bu listedeki sıraya göre oynanır. Son oda temizlendiğinde oyun biter.")]
+    [Tooltip("Odalar bu listedeki siraya gore oynanir. Son oda temizlendiginde oyun biter.")]
     public System.Collections.Generic.List<RoomSO> roomSequence;
 
     public RoomSO GetNextRoom()
@@ -58,17 +58,16 @@ public class RunManager : MonoBehaviour
             savedCurrentHealth = player.currentHealth;
             savedDamageMultiplier = player.damageMultiplier;
         }
+
         if (tempoMgr != null)
-        {
             savedTempo = tempoMgr.tempo;
-        }
-        
-        // Save çalışıyorsa, bu artık kesinlikle "Yeni Run" değildir.
-        // Odadan odaya geçerken canın sıfırlanmaması (Bug C) için bunu false yapıyoruz.
+
+        // Save calisiyorsa, bu artik kesinlikle "Yeni Run" degildir.
+        // Odadan odaya gecerken canin sifirlanmamasi icin bunu false yapiyoruz.
         isNewRun = false;
     }
 
-    // Oyuncu ölüp oyunu baştan başlattığında (Retry) verileri sıfırlamak için
+    // Oyuncu olup oyunu bastan baslattiginda (Retry) verileri sifirlamak icin
     public void ResetRunData()
     {
         isNewRun = true;
@@ -78,7 +77,7 @@ public class RunManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Mevcut odanin RoomSO verisini dondurur (Gold kapi odulu icin goldReward degerine erismek amaciyla).
+    /// Mevcut odanin RoomSO verisini dondurur.
     /// </summary>
     public RoomSO GetCurrentRoomData()
     {
@@ -90,58 +89,43 @@ public class RunManager : MonoBehaviour
     // Yeni sahne yuklendiginde baslangic degerlerini set etmek icin cagrilir
     public void LoadPlayerState(PlayerCombat player, TempoManager tempoMgr)
     {
-        
-        // Eğer bu yeni bir run ise (örn. yeni oyuna başlanmış veya öldükten sonra retry atılmışsa)
-        // Hardcoded 100f vermek yerine, oyuncunun Unity Inspector'ında ayarlı kendi default değerlerini alıp hafızaya kaydeder.
+        UpgradeConfigSO upgradeConfig = player != null ? player.upgradeConfig : null;
+
+        // Yeni run baslangicinda kalici meta bonuslar tek kaynak olan UpgradeConfigSO'dan okunur.
         if (isNewRun)
         {
             if (player != null)
             {
-                // Oyuncunun Inspector'daki default degerlerini al
-                savedMaxHealth = player.maxHealth;
-                savedDamageMultiplier = player.damageMultiplier;
-
-                // Hub'daki kalici yukseltmeleri uygula (SaveData'dan)
                 if (SaveManager.Instance != null)
                 {
                     SaveData saveData = SaveManager.Instance.data;
-                    savedMaxHealth += saveData.bonusMaxHealth * 10f;                    // Her seviye +10 can
-                    savedDamageMultiplier += saveData.bonusDamageMultiplier * 0.1f;     // Her seviye +%10 hasar
-
-                    // Parry yukseltmelerini uygula (UpgradeConfigSO'daki base değerler üzerinden)
-                    ParrySystem parry = player.GetComponent<ParrySystem>();
-                    if (parry != null)
-                    {
-                        // UpgradeConfigSO'yu bul
-                        var shopUI = FindFirstObjectByType<ShopUI>();
-                        UpgradeConfigSO upgradeConfig = shopUI != null ? shopUI.upgradeConfig : null;
-                        
-                        if (upgradeConfig != null)
-                        {
-                            parry.parryWindow = upgradeConfig.baseParryWindow + saveData.bonusParryWindow * upgradeConfig.parryWindowPerLevel;
-                            parry.parryRecovery = Mathf.Max(0.01f, upgradeConfig.baseParryRecovery - saveData.bonusParryRecovery * upgradeConfig.parryRecoveryPerLevel);
-                        }
-                        else
-                        {
-                            // Fallback: configSO bulunamazsa Inspector değerine ekle
-                            parry.parryWindow += saveData.bonusParryWindow * 0.02f;
-                            parry.parryRecovery = Mathf.Max(0.01f, parry.parryRecovery - saveData.bonusParryRecovery * 0.01f);
-                        }
-                    }
+                    savedMaxHealth = upgradeConfig != null
+                        ? upgradeConfig.GetMaxHealth(saveData.bonusMaxHealth)
+                        : player.maxHealth;
+                    savedDamageMultiplier = upgradeConfig != null
+                        ? upgradeConfig.GetDamageMultiplier(saveData.bonusDamageMultiplier)
+                        : player.damageMultiplier;
+                }
+                else
+                {
+                    savedMaxHealth = player.maxHealth;
+                    savedDamageMultiplier = player.damageMultiplier;
                 }
 
-                savedCurrentHealth = savedMaxHealth; // Yeni runda can full
+                savedCurrentHealth = savedMaxHealth;
             }
+
             if (tempoMgr != null)
             {
                 savedTempo = 0f;
 
-                // Hub'daki kalici tempo yukseltmesini uygula
-                if (SaveManager.Instance != null)
+                if (SaveManager.Instance != null && upgradeConfig != null)
                 {
-                    tempoMgr.tempoGainMultiplier = 1f + (SaveManager.Instance.data.bonusTempoGain * 0.1f);
+                    SaveData saveData = SaveManager.Instance.data;
+                    tempoMgr.tempoGainMultiplier = upgradeConfig.GetTempoGainMultiplier(saveData.bonusTempoGain);
                 }
             }
+
             isNewRun = false;
         }
 
@@ -152,6 +136,7 @@ public class RunManager : MonoBehaviour
             player.damageMultiplier = savedDamageMultiplier;
             player.UpdateHealthUI();
         }
+
         if (tempoMgr != null)
         {
             tempoMgr.tempo = savedTempo;
@@ -159,34 +144,31 @@ public class RunManager : MonoBehaviour
         }
     }
 
-    // Oyuncu bir portaldan gectiginde cagirilir (RoomExitTrigger icinden)
+    // Oyuncu bir portaldan gectiginde cagrilir (RoomExitTrigger icinden)
     public void SetNextRewardContext(RewardDefinitionSO chosenReward)
     {
         pendingReward = chosenReward;
     }
 
-    // Oda temizlendiginde cagirilir (RoomManager icinden)
+    // Oda temizlendiginde cagrilir (RoomManager icinden)
     public void GrantPendingReward()
     {
-        roomsCleared++; // Odayi her turlu bitirdik, sayaci artir
-        
-        if (pendingReward == null) return;
+        roomsCleared++;
 
-        // TODO: Ileride PlayerStats veya kalici bir veriye islenecek
+        if (pendingReward == null)
+            return;
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             var pCombat = player.GetComponent<PlayerCombat>();
             if (pCombat != null)
             {
-                // Artık tek satır! Hangi ödül olduğunu umursamıyoruz, kendi mantığını çalıştırıyor.
                 pendingReward.GrantReward(pCombat);
-                
-                // UI guncellemesi
-                pCombat.UpdateHealthUI(); 
+                pCombat.UpdateHealthUI();
             }
         }
 
-        pendingReward = null; // Odul verildi, sifirla
+        pendingReward = null;
     }
 }

@@ -21,15 +21,11 @@ public class ShopUI : MonoBehaviour
     public Button upgradeHealthButton;
     public Button upgradeDamageButton;
     public Button upgradeTempoButton;
-    public Button upgradeParryWindowButton;
-    public Button upgradeParryRecoveryButton;
 
     [Header("Upgrade Info Texts")]
     public TextMeshProUGUI healthInfoText;
     public TextMeshProUGUI damageInfoText;
     public TextMeshProUGUI tempoInfoText;
-    public TextMeshProUGUI parryWindowInfoText;
-    public TextMeshProUGUI parryRecoveryInfoText;
 
     [Header("Weapon Shop - Liste (Sol)")]
     [Tooltip("Satisa sunulacak silahlar (WeaponSO listesi)")]
@@ -98,8 +94,6 @@ public class ShopUI : MonoBehaviour
         const float baseMaxHealth     = 100f;
         const float baseDamageMultiplier = 1.0f;
         const float baseTempoGain     = 1.0f;
-        float baseParryWindow   = upgradeConfig.baseParryWindow;
-        float baseParryRecovery = upgradeConfig.baseParryRecovery;
 
         // Can
         RefreshUpgradeSlot(
@@ -108,8 +102,8 @@ public class ShopUI : MonoBehaviour
             label:      "Can",
             currentLevel: data.bonusMaxHealth,
             maxLevel:   upgradeConfig.healthMaxLevel,
-            currentVal: baseMaxHealth + data.bonusMaxHealth * upgradeConfig.healthPerLevel,
-            nextVal:    baseMaxHealth + (data.bonusMaxHealth + 1) * upgradeConfig.healthPerLevel,
+            currentVal: upgradeConfig.GetMaxHealth(data.bonusMaxHealth, baseMaxHealth),
+            nextVal:    upgradeConfig.GetMaxHealth(data.bonusMaxHealth + 1, baseMaxHealth),
             valFormat:  "F0",
             prefix: "", suffix: "",
             cost: upgradeConfig.GetCost(upgradeConfig.healthBaseCost, upgradeConfig.healthCostPerLevel, data.bonusMaxHealth)
@@ -122,8 +116,8 @@ public class ShopUI : MonoBehaviour
             label:      "Hasar Çarpanı",
             currentLevel: data.bonusDamageMultiplier,
             maxLevel:   upgradeConfig.damageMaxLevel,
-            currentVal: baseDamageMultiplier + data.bonusDamageMultiplier * upgradeConfig.damageMultiplierPerLevel,
-            nextVal:    baseDamageMultiplier + (data.bonusDamageMultiplier + 1) * upgradeConfig.damageMultiplierPerLevel,
+            currentVal: upgradeConfig.GetDamageMultiplier(data.bonusDamageMultiplier, baseDamageMultiplier),
+            nextVal:    upgradeConfig.GetDamageMultiplier(data.bonusDamageMultiplier + 1, baseDamageMultiplier),
             valFormat:  "F2",
             prefix: "x", suffix: "",
             cost: upgradeConfig.GetCost(upgradeConfig.damageBaseCost, upgradeConfig.damageCostPerLevel, data.bonusDamageMultiplier)
@@ -136,41 +130,11 @@ public class ShopUI : MonoBehaviour
             label:      "Tempo Kazanımı",
             currentLevel: data.bonusTempoGain,
             maxLevel:   upgradeConfig.tempoMaxLevel,
-            currentVal: baseTempoGain + data.bonusTempoGain * upgradeConfig.tempoGainPerLevel,
-            nextVal:    baseTempoGain + (data.bonusTempoGain + 1) * upgradeConfig.tempoGainPerLevel,
+            currentVal: upgradeConfig.GetTempoGainMultiplier(data.bonusTempoGain, baseTempoGain),
+            nextVal:    upgradeConfig.GetTempoGainMultiplier(data.bonusTempoGain + 1, baseTempoGain),
             valFormat:  "F2",
             prefix: "x", suffix: "",
             cost: upgradeConfig.GetCost(upgradeConfig.tempoBaseCost, upgradeConfig.tempoCostPerLevel, data.bonusTempoGain)
-        );
-
-        // Parry Penceresi
-        RefreshUpgradeSlot(
-            infoText:   parryWindowInfoText,
-            button:     upgradeParryWindowButton,
-            label:      "Parry Penceresi",
-            currentLevel: data.bonusParryWindow,
-            maxLevel:   upgradeConfig.parryWindowMaxLevel,
-            currentVal: baseParryWindow + data.bonusParryWindow * upgradeConfig.parryWindowPerLevel,
-            nextVal:    baseParryWindow + (data.bonusParryWindow + 1) * upgradeConfig.parryWindowPerLevel,
-            valFormat:  "F3",
-            prefix: "", suffix: "s",
-            cost: upgradeConfig.GetCost(upgradeConfig.parryWindowBaseCost, upgradeConfig.parryWindowCostPerLevel, data.bonusParryWindow)
-        );
-
-        // Parry Yenilenme
-        float prCurrent = Mathf.Max(0.01f, baseParryRecovery - data.bonusParryRecovery * upgradeConfig.parryRecoveryPerLevel);
-        float prNext    = Mathf.Max(0.01f, baseParryRecovery - (data.bonusParryRecovery + 1) * upgradeConfig.parryRecoveryPerLevel);
-        RefreshUpgradeSlot(
-            infoText:   parryRecoveryInfoText,
-            button:     upgradeParryRecoveryButton,
-            label:      "P.Yenilenme",
-            currentLevel: data.bonusParryRecovery,
-            maxLevel:   upgradeConfig.parryRecoveryMaxLevel,
-            currentVal: prCurrent,
-            nextVal:    prNext,
-            valFormat:  "F3",
-            prefix: "", suffix: "s",
-            cost: upgradeConfig.GetCost(upgradeConfig.parryRecoveryBaseCost, upgradeConfig.parryRecoveryCostPerLevel, data.bonusParryRecovery)
         );
 
         // Silah listesini guncelle
@@ -260,32 +224,6 @@ public class ShopUI : MonoBehaviour
         if (SaveManager.Instance.SpendGold(cost))
         {
             SaveManager.Instance.data.bonusTempoGain++;
-            SaveManager.Instance.Save();
-            RefreshUI();
-        }
-    }
-
-    public void UpgradeParryWindow()
-    {
-        if (upgradeConfig == null || SaveManager.Instance == null) return;
-        if (SaveManager.Instance.data.bonusParryWindow >= upgradeConfig.parryWindowMaxLevel) return;
-        int cost = upgradeConfig.GetCost(upgradeConfig.parryWindowBaseCost, upgradeConfig.parryWindowCostPerLevel, SaveManager.Instance.data.bonusParryWindow);
-        if (SaveManager.Instance.SpendGold(cost))
-        {
-            SaveManager.Instance.data.bonusParryWindow++;
-            SaveManager.Instance.Save();
-            RefreshUI();
-        }
-    }
-
-    public void UpgradeParryRecovery()
-    {
-        if (upgradeConfig == null || SaveManager.Instance == null) return;
-        if (SaveManager.Instance.data.bonusParryRecovery >= upgradeConfig.parryRecoveryMaxLevel) return;
-        int cost = upgradeConfig.GetCost(upgradeConfig.parryRecoveryBaseCost, upgradeConfig.parryRecoveryCostPerLevel, SaveManager.Instance.data.bonusParryRecovery);
-        if (SaveManager.Instance.SpendGold(cost))
-        {
-            SaveManager.Instance.data.bonusParryRecovery++;
             SaveManager.Instance.Save();
             RefreshUI();
         }
