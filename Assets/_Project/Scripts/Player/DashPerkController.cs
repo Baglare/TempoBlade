@@ -839,6 +839,7 @@ public class DashPerkController : MonoBehaviour
         {
             _flowMarkedTargets[target] = Time.time + flowMarkDuration;
             target.SetPerkMarker(true, Color.cyan);
+            AudioManager.Play(AudioEventId.MechanicFlowMark, gameObject, target.transform.position);
 
             // Kara Delik eşik kontrolü
             if (_hasBlackHole && _flowMarkedTargets.Count >= blackHoleMarkThreshold && _blackHoleCooldownTimer <= 0f)
@@ -919,6 +920,7 @@ public class DashPerkController : MonoBehaviour
         if (_isBlackHoleActive) return;
 
         Vector2 center = lastMarked.transform.position;
+        AudioManager.Play(AudioEventId.MechanicBlackHoleStart, gameObject, center);
         StartCoroutine(BlackHoleRoutine(center));
     }
 
@@ -926,6 +928,7 @@ public class DashPerkController : MonoBehaviour
     {
         _isBlackHoleActive = true;
         _blackHoleCooldownTimer = blackHoleCooldown;
+        AudioManager.Play(AudioEventId.MechanicBlackHoleLoop, gameObject, center);
 
         float elapsed = 0f;
         while (elapsed < blackHolePullDuration)
@@ -950,6 +953,7 @@ public class DashPerkController : MonoBehaviour
         }
 
         _isBlackHoleActive = false;
+        AudioManager.Play(AudioEventId.MechanicBlackHoleEnd, gameObject, center);
 
         // Patlama penceresi aç
         if (_hasBurst)
@@ -999,6 +1003,7 @@ public class DashPerkController : MonoBehaviour
         if (!_isBurstWindowActive || mainTarget == null) return false;
 
         _isBurstWindowActive = false;
+        AudioManager.Play(AudioEventId.MechanicBurst, gameObject, mainTarget.transform.position);
 
         // Ana hedef hasarı
         float mainDmg = baseDamage * burstMainMultiplier;

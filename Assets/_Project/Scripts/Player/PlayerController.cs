@@ -258,6 +258,7 @@ public class PlayerController : MonoBehaviour
         // NOT: Tempo T2/T3 hız bonusu kaldırıldı — skill tree bonusları ile değiştirilecek.
         
         rb.linearVelocity = dodgeDir * currentDodgeSpeed;
+        AudioManager.Play(AudioEventId.PlayerDash, gameObject);
         
         OnDodgeStarted?.Invoke(dir);
     }

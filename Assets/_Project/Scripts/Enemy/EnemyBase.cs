@@ -49,6 +49,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public virtual void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
+        AudioManager.Play(AudioEventId.EnemyHurt, gameObject);
 
 
         // Hasar Yazisi (Visual Feedback)
@@ -77,6 +78,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public virtual void Stun(float duration)
     {
         if (duration <= 0f) return;
+        AudioManager.Play(AudioEventId.EnemyStun, gameObject);
 
         float requestedEnd = Time.time + duration;
         if (isStunned && requestedEnd <= stunEndTime)
@@ -129,6 +131,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected virtual void Die()
     {
+        AudioManager.Play(AudioEventId.EnemyDeath, gameObject);
         if (RoomManager.Instance != null)
             RoomManager.Instance.OnEnemyDied(gameObject);
 

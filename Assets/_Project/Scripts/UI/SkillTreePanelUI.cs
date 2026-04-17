@@ -675,6 +675,7 @@ public class SkillTreePanelUI : MonoBehaviour
 
         if (result == 1)
         {
+            AudioManager.Play(AudioEventId.UIUnlock, gameObject);
             descText.text = $"<color=#26D98A>{node.displayName} acildi.</color>";
         }
         else if (result == 0)
@@ -683,10 +684,12 @@ public class SkillTreePanelUI : MonoBehaviour
         }
         else if (result == -2)
         {
+            AudioManager.Play(AudioEventId.UIFail, gameObject);
             descText.text = $"<color=#FF4444>{manager.GetBlockReason(node)}</color>";
         }
         else
         {
+            AudioManager.Play(AudioEventId.UIFail, gameObject);
             descText.text = $"<color=#FF4444>On kosullar eksik.</color>";
         }
 

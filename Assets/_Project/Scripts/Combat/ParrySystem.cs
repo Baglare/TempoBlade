@@ -142,6 +142,7 @@ public class ParrySystem : MonoBehaviour
         currentMaxParryWindow = (maxParryWindow * externalWindowMultiplier * normalWindowMultiplier) / Mathf.Max(0.01f, tempoSpeed);
         currentPerfectWindow = enablePerfectParry ? perfectWindowDuration / Mathf.Max(0.01f, tempoSpeed) : 0f;
 
+        AudioManager.Play(AudioEventId.PlayerParryStart, gameObject);
         OnParryStarted?.Invoke(parryDirection);
         OnWindowNormalized?.Invoke(1f);
     }
@@ -330,6 +331,7 @@ public class ParrySystem : MonoBehaviour
         }
         else if (blockCount == 0)
         {
+            AudioManager.Play(AudioEventId.PlayerParryFail, gameObject);
             OnParryFail?.Invoke();
         }
     }
@@ -361,6 +363,13 @@ public class ParrySystem : MonoBehaviour
 
         bool isPerfect = enablePerfectParry && parryElapsed <= currentPerfectWindow;
         Vector2 resolvedDirection = GetCurrentParryDirection();
+
+        if (isRanged)
+            AudioManager.Play(AudioEventId.PlayerDeflect, gameObject, transform.position);
+        else if (isPerfect)
+            AudioManager.Play(AudioEventId.PlayerPerfectParry, gameObject, transform.position);
+        else
+            AudioManager.Play(AudioEventId.PlayerParry, gameObject, transform.position);
 
         OnParrySuccess?.Invoke(isRanged);
         OnParryResolved?.Invoke(new ParryEventData

@@ -270,6 +270,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         ParrySystem ps = GetComponent<ParrySystem>();
         if (ps != null && ps.IsParryActive) return;
 
+        AudioManager.Play(AudioEventId.PlayerAttack, gameObject);
+
         if (_cadencePerks != null)
             _cadencePerks.NotifyAttackAction();
         _telemetry?.RecordAction(CombatActionType.Attack, gameObject);
@@ -498,6 +500,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             if (counterBonus > 0f && parrySystem != null)
             {
                 parrySystem.ConsumeCounter();
+                AudioManager.Play(AudioEventId.PlayerCounter, gameObject);
                 OnCounterFeedback?.Invoke(new CounterFeedbackData
                 {
                     source = CounterFeedbackSource.Parry,
@@ -510,6 +513,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             if (dashCounterBonus > 0f && _dashPerks != null)
             {
                 _dashPerks.ConsumeCounter();
+                AudioManager.Play(AudioEventId.PlayerCounter, gameObject);
                 OnCounterFeedback?.Invoke(new CounterFeedbackData
                 {
                     source = CounterFeedbackSource.Dash,
@@ -526,6 +530,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         if (!hitAny) // Whiff → komboyu sıfırla
         {
+            AudioManager.Play(AudioEventId.PlayerWhiff, gameObject);
             _telemetry?.RecordAction(CombatActionType.Whiff, gameObject);
             comboIndex       = 0;
             comboWindowTimer = 0f;
@@ -586,6 +591,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         currentHealth -= amount;
         _telemetry?.RecordDamageTaken(amount);
+        AudioManager.Play(AudioEventId.PlayerDamageTaken, gameObject);
 
         OnHealthChanged?.Invoke(currentHealth, maxHealth); // UI Guncelle
 
@@ -628,6 +634,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         currentHealth = Mathf.Min(currentHealth + amount, maxHealth);
         UpdateHealthUI();
+        AudioManager.Play(AudioEventId.PlayerHeal, gameObject);
 
         if (DamagePopupManager.Instance != null && amount >= 1f)
         {
@@ -649,6 +656,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private void ExecuteFinisher()
     {
         if (TempoManager.Instance == null || TempoManager.Instance.CurrentTier != TempoManager.TempoTier.T3) return;
+
+        AudioManager.Play(AudioEventId.PlayerFinisher, gameObject);
 
         if (_cadencePerks != null)
             _cadencePerks.NotifySkillAction();
@@ -708,6 +717,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     void Die()
     {
+        AudioManager.Play(AudioEventId.PlayerDeath, gameObject);
         if (GameManager.Instance != null)
             GameManager.Instance.SetState(GameManager.GameState.GameOver);
     }

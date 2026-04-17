@@ -48,6 +48,7 @@ public class Projectile : MonoBehaviour, IDeflectable
             sourceOwner = owner;
 
         ApplyVelocity(direction.normalized * speed);
+        AudioManager.Play(AudioEventId.ProjectileLaunch, gameObject);
     }
 
     public void Deflect(DeflectContext context)
@@ -72,6 +73,7 @@ public class Projectile : MonoBehaviour, IDeflectable
         float finalSpeed = speed * Mathf.Max(0.05f, context.speedMultiplier);
         speed = finalSpeed;
         ApplyVelocity(newDirection * finalSpeed);
+        AudioManager.Play(AudioEventId.ProjectileDeflect, gameObject);
 
         remainingLife = Mathf.Max(remainingLife, lifeTime + 2f);
         hitTargets.Clear();
@@ -123,6 +125,7 @@ public class Projectile : MonoBehaviour, IDeflectable
             return;
 
         damageable.TakeDamage(damage);
+        AudioManager.Play(AudioEventId.ProjectileHit, gameObject, other.transform.position);
 
         if (hasBeenDeflected && isHittingEnemy)
         {

@@ -317,6 +317,7 @@ public class EnemyBoss : EnemyBase, IParryReactive
     {
         currentState = BossState.BulletHell;
         FacePlayer();
+        AudioManager.Play(AudioEventId.EnemyBossBulletBurst, gameObject);
         
         if (sr != null) sr.color = Color.cyan;
         yield return new WaitForSeconds(0.5f);
@@ -397,6 +398,7 @@ public class EnemyBoss : EnemyBase, IParryReactive
             // Faz 2'ye gectiginde kaza kursununa gitmemesi icin canini tam %50'ye sabitliyoruz.
             // Yoksa oyuncunun asiri guclu bir kombosu Boss'u 1 HP'ye dusurur ve 2. faz baslar baslamaz olur.
             currentHealth = maxHealth * phase2HealthThreshold; 
+            AudioManager.Play(AudioEventId.EnemyBossPhaseTransition, gameObject);
             
             StopAllCoroutines();
             rb.linearVelocity = Vector2.zero;
