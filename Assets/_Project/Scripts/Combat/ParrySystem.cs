@@ -407,6 +407,12 @@ public class ParrySystem : MonoBehaviour
             DeflectContext context = parryPerkController != null
                 ? parryPerkController.BuildDeflectContext()
                 : DeflectContext.Default(gameObject);
+            Vector2 surfaceNormal = ((Vector2)hit.transform.position - (Vector2)transform.position).normalized;
+            if (surfaceNormal.sqrMagnitude > 0.001f)
+            {
+                context.useSurfaceNormal = true;
+                context.deflectSurfaceNormal = surfaceNormal;
+            }
             projectile.Deflect(context);
         }
     }

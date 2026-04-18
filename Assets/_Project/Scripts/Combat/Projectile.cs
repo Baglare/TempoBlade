@@ -69,7 +69,7 @@ public class Projectile : MonoBehaviour, IDeflectable
 
         damage *= Mathf.Max(0f, context.damageMultiplier);
 
-        Vector2 newDirection = ResolveDeflectDirection();
+        Vector2 newDirection = ResolveDeflectDirection(context);
         float finalSpeed = speed * Mathf.Max(0.05f, context.speedMultiplier);
         speed = finalSpeed;
         ApplyVelocity(newDirection * finalSpeed);
@@ -107,7 +107,7 @@ public class Projectile : MonoBehaviour, IDeflectable
             ParrySystem parry = other.GetComponent<ParrySystem>();
             if (parry != null && parry.TryDeflect(transform.position, gameObject))
             {
-                Deflect(BuildDeflectContext(other.gameObject));
+                Deflect(BuildDeflectContext(other.gameObject, other.transform.position));
                 return;
             }
 
@@ -148,14 +148,36 @@ public class Projectile : MonoBehaviour, IDeflectable
         DestroyProjectile();
     }
 
-    private DeflectContext BuildDeflectContext(GameObject newOwner)
+    private DeflectContext BuildDeflectContext(GameObject newOwner, Vector3 deflectOrigin)
     {
         var parryPerks = newOwner.GetComponent<ParryPerkController>();
-        return parryPerks != null ? parryPerks.BuildDeflectContext() : DeflectContext.Default(newOwner);
+        DeflectContext context = parryPerks != null ? parryPerks.BuildDeflectContext() : DeflectContext.Default(newOwner);
+        Vector2 normal = ((Vector2)transform.position - (Vector2)deflectOrigin).normalized;
+        if (normal.sqrMagnitude > 0.001f)
+        {
+            context.useSurfaceNormal = true;
+            context.deflectSurfaceNormal = normal;
+        }
+
+        return context;
     }
 
-    private Vector2 ResolveDeflectDirection()
+    private Vector2 ResolveDeflectDirection(DeflectContext context)
     {
+        if (context.useSurfaceNormal)
+        {
+            Vector2 incoming = rb != null && rb.linearVelocity.sqrMagnitude > 0.001f
+                ? rb.linearVelocity.normalized
+                : Vector2.zero;
+            Vector2 surfaceNormal = context.deflectSurfaceNormal.normalized;
+            if (incoming.sqrMagnitude > 0.001f && surfaceNormal.sqrMagnitude > 0.001f)
+            {
+                Vector2 reflected = Vector2.Reflect(incoming, surfaceNormal).normalized;
+                if (reflected.sqrMagnitude > 0.001f)
+                    return reflected;
+            }
+        }
+
         if (sourceOwner != null)
             return ((Vector2)sourceOwner.transform.position - (Vector2)transform.position).normalized;
 

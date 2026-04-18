@@ -16,6 +16,8 @@ public struct DeflectContext
     public float splitDamageMultiplier;
     public float splitAngleSpread;
     public float splitSpeedMultiplier;
+    public bool useSurfaceNormal;
+    public Vector2 deflectSurfaceNormal;
 
     public static DeflectContext Default(GameObject owner)
     {
@@ -29,7 +31,9 @@ public struct DeflectContext
             splitCount = 0,
             splitDamageMultiplier = 0.5f,
             splitAngleSpread = 20f,
-            splitSpeedMultiplier = 1f
+            splitSpeedMultiplier = 1f,
+            useSurfaceNormal = false,
+            deflectSurfaceNormal = Vector2.up
         };
     }
 }
