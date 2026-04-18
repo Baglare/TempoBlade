@@ -876,7 +876,8 @@ public class SkillTreePanelUI : MonoBehaviour
         go.transform.SetParent(parent, false);
         var image = go.AddComponent<Image>();
         image.color = color;
-        go.AddComponent<RectTransform>();
+        if (go.GetComponent<RectTransform>() == null)
+            go.AddComponent<RectTransform>();
         return go;
     }
 
@@ -884,7 +885,8 @@ public class SkillTreePanelUI : MonoBehaviour
     {
         var go = new GameObject(name);
         go.transform.SetParent(parent, false);
-        go.AddComponent<RectTransform>();
+        if (go.GetComponent<RectTransform>() == null)
+            go.AddComponent<RectTransform>();
         var tmp = go.AddComponent<TextMeshProUGUI>();
         tmp.text = content;
         tmp.fontSize = fontSize;

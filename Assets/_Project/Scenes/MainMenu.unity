@@ -1750,7 +1750,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "WASD - Hareket Etme\nShift - Dash\nMause Sol T\u0131k - Vuru\u015F\nMause
     Sa\u011F T\u0131k - Parry(savu\u015Fturma)\nI - Statlar/Envanter\nSpace - Finisher
-    (3. Tempo seviyesinde)\nTAB - Skill A\u011Fac\u0131\nCTRL - Geri Dash"
+    (3. Tempo seviyesinde)\nTAB - Skill A\u011Fac\u0131\nCTRL - Geri Dash Perk"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

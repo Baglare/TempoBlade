@@ -30,6 +30,7 @@ public class AxisProgressionManager : MonoBehaviour
     [Header("Tree XP / Rank")]
     [Tooltip("Tree XP, affinity agirliklari, rank esikleri ve anti-cheese ayarlari.")]
     public TreeProgressionConfigSO progressionConfig;
+    [SerializeField] private bool enableDebugLogs = false;
 
     // ═══════════ Runtime State ═══════════
     private readonly HashSet<string> _unlockedNodeIds = new HashSet<string>();
