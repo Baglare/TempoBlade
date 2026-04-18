@@ -48,13 +48,13 @@ public static class AudioSetupMenu
             {
                 eventId = id,
                 clips = new AudioClip[0],
-                volume = 1f,
+                volume = GuessVolume(id),
                 pitch = 1f,
-                pitchRandomRange = 0.05f,
+                pitchRandomRange = GuessPitchRandomRange(id),
                 volumeRandomRange = 0f,
                 spatialBlend = GuessSpatialBlend(id),
                 minDistance = 1f,
-                maxDistance = 14f,
+                maxDistance = GuessMaxDistance(id),
                 cooldown = GuessCooldown(id),
                 loop = IsLoopEvent(id),
                 followTarget = IsLoopEvent(id)
@@ -68,11 +68,28 @@ public static class AudioSetupMenu
     {
         switch (id)
         {
+            case AudioEventId.PlayerDash:
+            case AudioEventId.PlayerParryStart:
+            case AudioEventId.PlayerParry:
+            case AudioEventId.PlayerPerfectParry:
+            case AudioEventId.PlayerDeflect:
+            case AudioEventId.PlayerParryFail:
+            case AudioEventId.PlayerCounter:
             case AudioEventId.UIUnlock:
             case AudioEventId.UIFail:
                 return 0f;
+            case AudioEventId.PlayerAttack:
+            case AudioEventId.PlayerHit:
+            case AudioEventId.PlayerWhiff:
+            case AudioEventId.PlayerDamageTaken:
+            case AudioEventId.PlayerDeath:
+            case AudioEventId.PlayerFinisher:
+            case AudioEventId.PlayerHeal:
+            case AudioEventId.MechanicFlowMark:
+            case AudioEventId.MechanicSnapback:
+                return 0.2f;
             default:
-                return 0.7f;
+                return 0.8f;
         }
     }
 
@@ -80,16 +97,90 @@ public static class AudioSetupMenu
     {
         switch (id)
         {
+            case AudioEventId.PlayerDash:
+                return 0.05f;
+            case AudioEventId.PlayerParryStart:
+            case AudioEventId.PlayerParry:
+            case AudioEventId.PlayerParryFail:
+            case AudioEventId.PlayerDeflect:
+                return 0.03f;
+            case AudioEventId.PlayerPerfectParry:
+                return 0.04f;
+            case AudioEventId.PlayerCounter:
+                return 0.04f;
             case AudioEventId.EnemyHurt:
                 return 0.05f;
             case AudioEventId.EnemyStun:
                 return 0.1f;
             case AudioEventId.ProjectileLaunch:
                 return 0.02f;
+            case AudioEventId.ProjectileDeflect:
+            case AudioEventId.ProjectileHit:
+                return 0.03f;
             case AudioEventId.PlayerHit:
                 return 0.03f;
             default:
                 return 0f;
+        }
+    }
+
+    private static float GuessVolume(AudioEventId id)
+    {
+        switch (id)
+        {
+            case AudioEventId.PlayerPerfectParry:
+            case AudioEventId.EnemyBossPhaseTransition:
+            case AudioEventId.MechanicBurst:
+                return 1f;
+            case AudioEventId.UIUnlock:
+            case AudioEventId.UIFail:
+                return 0.9f;
+            case AudioEventId.PlayerParryStart:
+            case AudioEventId.PlayerParry:
+            case AudioEventId.PlayerDeflect:
+            case AudioEventId.PlayerParryFail:
+                return 0.95f;
+            default:
+                return 1f;
+        }
+    }
+
+    private static float GuessPitchRandomRange(AudioEventId id)
+    {
+        switch (id)
+        {
+            case AudioEventId.PlayerPerfectParry:
+            case AudioEventId.UIUnlock:
+            case AudioEventId.UIFail:
+                return 0.03f;
+            case AudioEventId.MechanicBlackHoleLoop:
+                return 0.01f;
+            default:
+                return 0.05f;
+        }
+    }
+
+    private static float GuessMaxDistance(AudioEventId id)
+    {
+        switch (id)
+        {
+            case AudioEventId.PlayerDash:
+            case AudioEventId.PlayerParryStart:
+            case AudioEventId.PlayerParry:
+            case AudioEventId.PlayerPerfectParry:
+            case AudioEventId.PlayerDeflect:
+            case AudioEventId.PlayerParryFail:
+            case AudioEventId.PlayerCounter:
+            case AudioEventId.UIUnlock:
+            case AudioEventId.UIFail:
+                return 10f;
+            case AudioEventId.MechanicBlackHoleStart:
+            case AudioEventId.MechanicBlackHoleLoop:
+            case AudioEventId.MechanicBlackHoleEnd:
+            case AudioEventId.EnemyBossPhaseTransition:
+                return 18f;
+            default:
+                return 14f;
         }
     }
 

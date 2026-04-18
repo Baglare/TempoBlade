@@ -1,0 +1,418 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3f70fcadfaf30249851d760b38873db, type: 3}
+  m_Name: DefaultAudioCueCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::AudioCueCatalogSO
+  cues:
+  - eventId: 1
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 2
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 3
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 4
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.05
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 5
+    clips: []
+    volume: 0.95
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 6
+    clips: []
+    volume: 0.95
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 7
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.03
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.04
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 8
+    clips: []
+    volume: 0.95
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 9
+    clips: []
+    volume: 0.95
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 10
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 10
+    cooldown: 0.04
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 11
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 12
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 13
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 14
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 15
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0.05
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 16
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 17
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0.1
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 18
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 19
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 20
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 21
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0.02
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 22
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 23
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0.03
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 24
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 18
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 25
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.01
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 18
+    cooldown: 0
+    loop: 1
+    followTarget: 1
+    outputGroup: {fileID: 0}
+  - eventId: 26
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 18
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 27
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.8
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 28
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 29
+    clips: []
+    volume: 1
+    pitch: 1
+    pitchRandomRange: 0.05
+    volumeRandomRange: 0
+    spatialBlend: 0.2
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 30
+    clips: []
+    volume: 0.9
+    pitch: 1
+    pitchRandomRange: 0.03
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
+  - eventId: 31
+    clips: []
+    volume: 0.9
+    pitch: 1
+    pitchRandomRange: 0.03
+    volumeRandomRange: 0
+    spatialBlend: 0
+    minDistance: 1
+    maxDistance: 14
+    cooldown: 0
+    loop: 0
+    followTarget: 0
+    outputGroup: {fileID: 0}
