@@ -17,12 +17,22 @@ MonoBehaviour:
   waves:
   - waveDelay: 1
     enemyGroups:
-    - enemyType: {fileID: 11400000, guid: b3d2195d0c8f9c5499aedb71eb18116b, type: 2}
-      count: 0
+    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
+      count: 1
       spawnDelay: 0.1
-    - enemyType: {fileID: 11400000, guid: 8c1277e0cc1cac84db3081d2cb3f1c88, type: 2}
-      count: 2
+    - enemyType: {fileID: 11400000, guid: a24a2a7ba6c38874f9e0e75d74efe521, type: 2}
+      count: 1
+      spawnDelay: 0.1
+  - waveDelay: 1
+    enemyGroups:
+    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
+      count: 1
+      spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 7d520944afb8bdb499e273685b9e46d6, type: 2}
+      count: 1
       spawnDelay: 0.1
   isBossRoom: 0
+  encounterType: 0
+  difficulty: 1
   goldReward: 0
   possibleWeaponDrop: {fileID: 11400000, guid: b3ee56d4fe9b9e3439e42c99ae2954da, type: 2}

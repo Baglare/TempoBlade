@@ -63,7 +63,10 @@ public class EnemyMelee : EnemyBase
         }
         else if (dist > enemyData.attackRange) // SO'dan gelen veriyi kullan
         {
-            transform.position = Vector2.MoveTowards(transform.position, player.position, enemyData.moveSpeed * Time.deltaTime);
+            transform.position = Vector2.MoveTowards(
+                transform.position,
+                player.position,
+                enemyData.moveSpeed * GetSupportMoveSpeedMultiplier() * Time.deltaTime);
             
             // Yone gore donme (Sprite Renderer Flip)
             Vector3 direction = player.position - transform.position;
@@ -103,7 +106,7 @@ public class EnemyMelee : EnemyBase
             if (tier == TempoManager.TempoTier.T2) windupTime = 0.6f; // Panik: daha gec saldirir
             if (tier == TempoManager.TempoTier.T3) windupTime = 0.8f;
         }
-        yield return new WaitForSeconds(windupTime); // Dinamik Windup suresi
+        yield return new WaitForSeconds(windupTime / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier())); // Dinamik Windup suresi
 
         // Attack
         if (sr != null) sr.color = Color.red;
@@ -114,7 +117,7 @@ public class EnemyMelee : EnemyBase
         if (hitboxCollider != null) hitboxCollider.enabled = false;
         if (sr != null) sr.color = Color.white;
 
-        yield return new WaitForSeconds(enemyData.attackCooldown);
+        yield return new WaitForSeconds(enemyData.attackCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier()));
         isAttacking = false;
     }
 

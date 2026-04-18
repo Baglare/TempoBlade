@@ -38,6 +38,8 @@ public class TempoManager : MonoBehaviour
     public float decayPerSecond = 6f; // Decay başladıktan sonraki saniyelik düşüş hızı
     private float overdriveDecayMultiplier = 1f;
     private float cadenceDecayMultiplier = 1f;
+    private float supportZoneGainMultiplier = 1f;
+    private float supportZoneDecayMultiplier = 1f;
     private float overdriveDamagePenaltyMultiplier = 1f;
     private float cadenceDamagePenaltyMultiplier = 1f;
     
@@ -73,6 +75,12 @@ public class TempoManager : MonoBehaviour
         cadenceDamagePenaltyMultiplier = Mathf.Max(0f, damagePenaltyMultiplier);
     }
 
+    public void SetSupportZoneTempoMultipliers(float gainMultiplier, float decayMultiplier)
+    {
+        supportZoneGainMultiplier = Mathf.Max(0.05f, gainMultiplier);
+        supportZoneDecayMultiplier = Mathf.Max(0.05f, decayMultiplier);
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -104,7 +112,7 @@ public class TempoManager : MonoBehaviour
             decayTimer = GetDecayDelayForTier(CurrentTier);
         }
 
-        float actualAmount = amount > 0 ? amount * tempoGainMultiplier : amount; // Sadece kazanclari carp
+        float actualAmount = amount > 0 ? amount * tempoGainMultiplier * supportZoneGainMultiplier : amount; // Sadece kazanclari carp
         float prevTempo = tempo;
         tempo = Mathf.Clamp(tempo + actualAmount, 0f, maxTempo);
 
@@ -254,6 +262,6 @@ public class TempoManager : MonoBehaviour
         }
 
         if (tempo > 0f)
-            AddTempo(-decayPerSecond * overdriveDecayMultiplier * cadenceDecayMultiplier * Time.deltaTime);
+            AddTempo(-decayPerSecond * overdriveDecayMultiplier * cadenceDecayMultiplier * supportZoneDecayMultiplier * Time.deltaTime);
     }
 }

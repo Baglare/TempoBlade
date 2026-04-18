@@ -110,7 +110,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
 
     private void MoveTowards(Vector2 target)
     {
-        float speed = enemyData != null ? enemyData.moveSpeed : 3f;
+        float speed = (enemyData != null ? enemyData.moveSpeed : 3f) * GetSupportMoveSpeedMultiplier();
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
 
@@ -168,7 +168,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
             }
         }
 
-        nextFireTime = Time.time + fireRate;
+        nextFireTime = Time.time + fireRate / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
         isAttacking = false;
     }
 

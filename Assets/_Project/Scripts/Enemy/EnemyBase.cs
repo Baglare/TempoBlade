@@ -11,8 +11,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected bool isStunned;
     protected SpriteRenderer stunSpriteRenderer;
     protected Color stunOriginalColor = Color.white;
+    protected EnemySupportBuffReceiver supportBuffReceiver;
     private Coroutine stunRoutine;
     private float stunEndTime;
+    private bool suppressDeathRewards;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
@@ -41,6 +43,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (GetComponent<EnemyStateFeedback>() == null)
             gameObject.AddComponent<EnemyStateFeedback>();
 
+        if (GetComponent<EnemySupportBuffReceiver>() == null)
+            gameObject.AddComponent<EnemySupportBuffReceiver>();
+
+        supportBuffReceiver = GetComponent<EnemySupportBuffReceiver>();
+
         stunSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (stunSpriteRenderer != null)
             stunOriginalColor = stunSpriteRenderer.color;
@@ -48,6 +55,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     public virtual void TakeDamage(float damageAmount)
     {
+        if (supportBuffReceiver != null)
+            damageAmount = supportBuffReceiver.ModifyIncomingDamage(damageAmount);
+
+        if (damageAmount <= 0f)
+            return;
+
         currentHealth -= damageAmount;
         AudioManager.Play(AudioEventId.EnemyHurt, gameObject);
 
@@ -78,6 +91,17 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public virtual void Stun(float duration)
     {
         if (duration <= 0f) return;
+
+        if (supportBuffReceiver != null)
+        {
+            if (supportBuffReceiver.TryNegateIncomingStun(duration))
+                return;
+
+            duration = supportBuffReceiver.ModifyIncomingStunDuration(duration);
+            if (duration <= 0f)
+                return;
+        }
+
         AudioManager.Play(AudioEventId.EnemyStun, gameObject);
 
         float requestedEnd = Time.time + duration;
@@ -132,11 +156,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected virtual void Die()
     {
         AudioManager.Play(AudioEventId.EnemyDeath, gameObject);
-        if (RoomManager.Instance != null)
+        if (!suppressDeathRewards && RoomManager.Instance != null)
             RoomManager.Instance.OnEnemyDied(gameObject);
 
         // --- ALTIN DÜŞÜR ---
-        if (enemyData != null && enemyData.goldDrop > 0 && EconomyManager.Instance != null)
+        if (!suppressDeathRewards && enemyData != null && enemyData.goldDrop > 0 && EconomyManager.Instance != null)
         {
             EconomyManager.Instance.AddRunGold(enemyData.goldDrop);
         }
@@ -203,5 +227,25 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             float t = (i / (float)perkMarkerLine.positionCount) * Mathf.PI * 2f;
             perkMarkerLine.SetPosition(i, new Vector3(Mathf.Cos(t) * radius, Mathf.Sin(t) * radius, 0f));
         }
+    }
+
+    public void SetSuppressDeathRewards(bool suppress)
+    {
+        suppressDeathRewards = suppress;
+    }
+
+    public float GetSupportMoveSpeedMultiplier()
+    {
+        return supportBuffReceiver != null ? supportBuffReceiver.MoveSpeedMultiplier : 1f;
+    }
+
+    public float GetSupportAttackSpeedMultiplier()
+    {
+        return supportBuffReceiver != null ? supportBuffReceiver.AttackSpeedMultiplier : 1f;
+    }
+
+    public EnemySupportBuffReceiver GetSupportBuffReceiver()
+    {
+        return supportBuffReceiver;
     }
 }

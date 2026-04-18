@@ -129,7 +129,10 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
     private void MoveTowardsPlayer()
     {
-        transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, moveSpeed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(
+            transform.position,
+            playerTransform.position,
+            moveSpeed * GetSupportMoveSpeedMultiplier() * Time.deltaTime);
     }
 
     private IEnumerator AttackRoutine()
@@ -148,7 +151,8 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (sr != null) sr.color = Color.red; 
 
         // Tempo'ya gore agresiflesme (Windup kisalir)
-        float currentWindup = attackWindup;
+        float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        float currentWindup = attackWindup / attackSpeedMultiplier;
         if (TempoManager.Instance != null)
         {
             var tier = TempoManager.Instance.CurrentTier;
@@ -194,7 +198,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
         // 3. Recovery (Vulnerable period)
         float recoveryTime = 0.8f;
-        float currentCooldown = attackCooldown;
+        float currentCooldown = attackCooldown / attackSpeedMultiplier;
         if (TempoManager.Instance != null)
         {
             var tier = TempoManager.Instance.CurrentTier;

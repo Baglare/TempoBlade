@@ -235,6 +235,8 @@ public class EnemyWarden : EnemyBase, IParryReactive
     {
         currentState = WardenState.Guarding;
         FaceTowardsPlayer();
+        float moveSpeedMultiplier = GetSupportMoveSpeedMultiplier();
+        float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         if (Time.time >= nextRepathTime)
         {
@@ -262,7 +264,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
             if (isMoving)
             {
                 Vector2 dir = (cachedGuardPoint - (Vector2)transform.position).normalized;
-                rb.linearVelocity = dir * guardMoveSpeed;
+                rb.linearVelocity = dir * guardMoveSpeed * moveSpeedMultiplier;
             }
             else
             {
@@ -276,6 +278,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     private void UpdateBerserk()
     {
         FaceTowardsPlayer();
+        float moveSpeedMultiplier = GetSupportMoveSpeedMultiplier();
 
         if (!permanentBerserk && Time.time >= berserkEndTime)
         {
@@ -291,7 +294,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
             permanentBerserk = true;
         }
 
-        if (!isExecutingAction && Time.time >= lastBerserkChargeTime + berserkChargeCooldown)
+        if (!isExecutingAction && Time.time >= lastBerserkChargeTime + (berserkChargeCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier())))
         {
             StartAction(BerserkChargeRoutine());
             return;
@@ -300,7 +303,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (rb != null)
         {
             Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-            rb.linearVelocity = dir * berserkMoveSpeed;
+            rb.linearVelocity = dir * berserkMoveSpeed * moveSpeedMultiplier;
         }
 
         UpdateAnimator(true);
@@ -311,6 +314,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         isExecutingAction = true;
         currentState = WardenState.RepositionDash;
         lastRepositionDashTime = Time.time;
+        float moveSpeedMultiplier = GetSupportMoveSpeedMultiplier();
 
         if (animator != null)
             animator.SetTrigger(AnimRepositionDash);
@@ -327,7 +331,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
                 break;
 
             if (rb != null)
-                rb.linearVelocity = toPoint.normalized * repositionDashSpeed;
+                rb.linearVelocity = toPoint.normalized * repositionDashSpeed * moveSpeedMultiplier;
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -345,6 +349,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         isExecutingAction = true;
         currentState = WardenState.ClosePunish;
         lastClosePunishTime = Time.time;
+        float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
@@ -352,7 +357,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (animator != null)
             animator.SetTrigger(AnimClosePunish);
 
-        yield return new WaitForSeconds(closePunishWindup);
+        yield return new WaitForSeconds(closePunishWindup / attackSpeedMultiplier);
 
         if (!isDead && !isStunned && playerTransform != null)
         {
@@ -365,7 +370,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
                 ParrySystem parry = playerTransform.GetComponent<ParrySystem>();
                 if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
                 {
-                    yield return new WaitForSeconds(closePunishRecovery);
+                    yield return new WaitForSeconds(closePunishRecovery / attackSpeedMultiplier);
                     isExecutingAction = false;
                     currentState = WardenState.Guarding;
                     yield break;
@@ -385,7 +390,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
             }
         }
 
-        yield return new WaitForSeconds(closePunishRecovery);
+        yield return new WaitForSeconds(closePunishRecovery / attackSpeedMultiplier);
 
         isExecutingAction = false;
         currentState = WardenState.Guarding;
@@ -548,7 +553,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
     private bool CanStartClosePunish()
     {
-        if (Time.time < lastClosePunishTime + closePunishCooldown)
+        if (Time.time < lastClosePunishTime + (closePunishCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier())))
             return false;
 
         return Vector2.Distance(transform.position, playerTransform.position) <= closePunishRange;

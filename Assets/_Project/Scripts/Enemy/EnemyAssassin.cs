@@ -66,7 +66,7 @@ public class EnemyAssassin : EnemyBase
         if (isDead || isStunned || playerTransform == null) return;
 
         float dist  = Vector2.Distance(transform.position, playerTransform.position);
-        float speed = enemyData != null ? enemyData.moveSpeed : 3f;
+        float speed = (enemyData != null ? enemyData.moveSpeed : 3f) * GetSupportMoveSpeedMultiplier();
 
         RefreshVisibility();
 
@@ -126,7 +126,7 @@ public class EnemyAssassin : EnemyBase
     {
         // 1. Kısa süre görünür ol (uyarı penceresi)
         SetAlpha(1f);
-        yield return new WaitForSeconds(preAttackVisibleTime);
+        yield return new WaitForSeconds(preAttackVisibleTime / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier()));
 
         state = State.Attacking;
 
@@ -167,7 +167,7 @@ public class EnemyAssassin : EnemyBase
         // 4. Görünmez ol + çekil
         SetAlpha(invisibleAlpha);
         state = State.Retreating;
-        nextAttackTime = Time.time + attackCooldown;
+        nextAttackTime = Time.time + attackCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         yield return new WaitForSeconds(retreatDuration);
 

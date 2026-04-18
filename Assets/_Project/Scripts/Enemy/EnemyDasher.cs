@@ -64,7 +64,7 @@ public class EnemyDasher : EnemyBase
         if (state == State.DashEvading) return; // coroutine yönetir
 
         float dist  = Vector2.Distance(transform.position, playerTransform.position);
-        float speed = enemyData != null ? enemyData.moveSpeed : 7f;
+        float speed = (enemyData != null ? enemyData.moveSpeed : 7f) * GetSupportMoveSpeedMultiplier();
 
         FacePlayer();
 
@@ -98,7 +98,7 @@ public class EnemyDasher : EnemyBase
 
     private IEnumerator FireRoutine()
     {
-        nextFireTime = Time.time + fireRate;
+        nextFireTime = Time.time + fireRate / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         if (projectilePrefab == null || firePoint == null || playerTransform == null)
             yield break;
