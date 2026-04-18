@@ -20,8 +20,18 @@ public class EnemySO : ScriptableObject
     [Tooltip("Kapaliysa bu dusman XP/affinity sayaçlarinda kullanilmaz. Training dummy gibi hedefler icin kapat.")]
     public bool countsForProgression = true;
 
+    [Header("Warden")]
+    [Tooltip("Warden bu dusmani koruma adayi olarak ne kadar oncelikli gorsun?")]
+    public WardenProtectPriority wardenProtectPriority = WardenProtectPriority.None;
+
     [Header("AI Behavior")]
     public float detectionRange = 8f;
     public float attackRange = 1.5f;
     public float attackCooldown = 2f;
+}
+
+public enum WardenProtectPriority
+{
+    None,
+    RangedSupport
 }

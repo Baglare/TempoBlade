@@ -18,6 +18,8 @@ MonoBehaviour:
   damage: 65
   moveSpeed: 5.5
   goldDrop: 7
+  countsForProgression: 1
+  wardenProtectPriority: 1
   detectionRange: 8
   attackRange: 1.5
   attackCooldown: 2

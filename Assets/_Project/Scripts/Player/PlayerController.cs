@@ -44,6 +44,9 @@ public class PlayerController : MonoBehaviour
     private float baseDodgeCooldown;
     private float dashCommitmentDodgeCooldownMultiplier = 1f;
     private float parryCommitmentDodgeCooldownMultiplier = 1f;
+    private float externalStaggerTimer;
+    private Vector2 externalStaggerVelocity;
+    private const float ExternalStaggerDecayPerSecond = 18f;
 
     // --- PERK SİSTEMİ EVENT'LERİ ---
     /// <summary>Dodge başladığında yön bilgisiyle tetiklenir. DashPerkController dinler.</summary>
@@ -68,6 +71,7 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
 
     public PlayerState currentState { get; private set; } = PlayerState.Idle;
+    public bool IsExternallyStaggered => externalStaggerTimer > 0f;
 
     [Header("Tempo Debug (Sadece Test Icin)")]
     [Tooltip("Tempoyu istediginiz degere getirmek icin degeri ayarlayip alttaki butonu isaretleyin.")]
@@ -157,6 +161,12 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        if (IsExternallyStaggered)
+        {
+            UpdateExternalStagger();
+            return;
+        }
+
         if (currentState == PlayerState.Dodging)
         {
             UpdateDodge();
@@ -212,6 +222,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!value.isPressed) return;
         if (playerCombat == null) return;
+        if (IsExternallyStaggered) return;
         
         // Örn: GameManager durduysa falan buradan kesebiliriz (ileride)
         playerCombat.TryAttack();
@@ -220,6 +231,7 @@ public class PlayerController : MonoBehaviour
     public void OnDodge(InputValue value)
     {
         if (!value.isPressed) return;
+        if (IsExternallyStaggered) return;
         if (currentState == PlayerState.Dodging) return;
         if (dodgeCooldownTimer > 0f) return;
 
@@ -231,6 +243,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!value.isPressed) return;
         if (parrySystem == null) return;
+        if (IsExternallyStaggered) return;
 
         // Parry yonunu fare pozisyonundan hesapla
         Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(
@@ -356,6 +369,36 @@ public class PlayerController : MonoBehaviour
             }
             activeTrails.Clear();
         }
+    }
+
+    private void UpdateExternalStagger()
+    {
+        externalStaggerTimer -= Time.fixedDeltaTime;
+        rb.linearVelocity = externalStaggerVelocity;
+        externalStaggerVelocity = Vector2.MoveTowards(
+            externalStaggerVelocity,
+            Vector2.zero,
+            ExternalStaggerDecayPerSecond * Time.fixedDeltaTime);
+
+        if (externalStaggerTimer > 0f)
+            return;
+
+        externalStaggerTimer = 0f;
+        externalStaggerVelocity = Vector2.zero;
+        rb.linearVelocity = Vector2.zero;
+        currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
+    }
+
+    public void ApplyExternalStagger(float duration, Vector2 knockbackVelocity)
+    {
+        if (duration <= 0f && knockbackVelocity.sqrMagnitude <= 0.0001f)
+            return;
+
+        externalStaggerTimer = Mathf.Max(externalStaggerTimer, duration);
+        externalStaggerVelocity = knockbackVelocity;
+        IsInvulnerable = false;
+        currentState = PlayerState.Idle;
+        rb.linearVelocity = knockbackVelocity;
     }
 
     // --- PARRY FEEDBACK ---
