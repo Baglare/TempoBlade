@@ -108,7 +108,7 @@ public static class EnemySupportUtility
     {
         if (enemy is EnemyBoss)
             return 100f;
-        if (enemy is EnemyCaster || enemy is EnemyResonator)
+        if (enemy is EnemyCaster || enemy is EnemyResonator || enemy is EnemyDeadeye)
             return 80f;
         if (enemy is EnemyDuelist || enemy is EnemyAssassin)
             return 60f;

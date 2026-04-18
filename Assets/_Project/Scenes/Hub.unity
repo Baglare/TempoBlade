@@ -165,6 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AxisProgressionManager
   database: {fileID: 11400000, guid: e181b6bd1782eb042a3bb7ac8ec4063d, type: 2}
   progressionConfig: {fileID: 11400000, guid: 959ef33ef985b884bbb25c196595790e, type: 2}
+  enableDebugLogs: 0
 --- !u!1 &20746385
 GameObject:
   m_ObjectHideFlags: 0

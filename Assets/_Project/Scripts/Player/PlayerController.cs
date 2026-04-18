@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     private float parryCommitmentDodgeCooldownMultiplier = 1f;
     private float externalStaggerTimer;
     private Vector2 externalStaggerVelocity;
+    private float movementLockTimer;
     private const float ExternalStaggerDecayPerSecond = 18f;
 
     // --- PERK SİSTEMİ EVENT'LERİ ---
@@ -72,6 +73,7 @@ public class PlayerController : MonoBehaviour
 
     public PlayerState currentState { get; private set; } = PlayerState.Idle;
     public bool IsExternallyStaggered => externalStaggerTimer > 0f;
+    public bool IsMovementLocked => movementLockTimer > 0f;
 
     [Header("Tempo Debug (Sadece Test Icin)")]
     [Tooltip("Tempoyu istediginiz degere getirmek icin degeri ayarlayip alttaki butonu isaretleyin.")]
@@ -114,6 +116,9 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (movementLockTimer > 0f)
+            movementLockTimer = Mathf.Max(0f, movementLockTimer - Time.deltaTime);
+
         if (dashPerkController != null && Keyboard.current != null)
         {
             if (Keyboard.current.leftCtrlKey.wasPressedThisFrame ||
@@ -164,6 +169,14 @@ public class PlayerController : MonoBehaviour
         if (IsExternallyStaggered)
         {
             UpdateExternalStagger();
+            return;
+        }
+
+        if (IsMovementLocked)
+        {
+            rb.linearVelocity = Vector2.zero;
+            if (currentState == PlayerState.Moving || currentState == PlayerState.Dodging || currentState == PlayerState.DashStriking)
+                currentState = PlayerState.Idle;
             return;
         }
 
@@ -232,6 +245,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!value.isPressed) return;
         if (IsExternallyStaggered) return;
+        if (IsMovementLocked) return;
         if (currentState == PlayerState.Dodging) return;
         if (dodgeCooldownTimer > 0f) return;
 
@@ -399,6 +413,22 @@ public class PlayerController : MonoBehaviour
         IsInvulnerable = false;
         currentState = PlayerState.Idle;
         rb.linearVelocity = knockbackVelocity;
+    }
+
+    public void ApplyMovementLock(float duration, bool cancelDash = true)
+    {
+        if (duration <= 0f)
+            return;
+
+        movementLockTimer = Mathf.Max(movementLockTimer, duration);
+        if (!cancelDash)
+            return;
+
+        IsInvulnerable = false;
+        externalDashTimer = 0f;
+        dodgeTimer = 0f;
+        rb.linearVelocity = Vector2.zero;
+        currentState = PlayerState.Idle;
     }
 
     // --- PARRY FEEDBACK ---

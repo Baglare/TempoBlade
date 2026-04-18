@@ -53,8 +53,9 @@ MonoBehaviour:
     followTarget: 0
     outputGroup: {fileID: 0}
   - eventId: 4
-    clips: []
-    volume: 1
+    clips:
+    - {fileID: 8300000, guid: 37b5e773317b5bc4bbcec3f62cd04119, type: 3}
+    volume: 0.372
     pitch: 1
     pitchRandomRange: 0.05
     volumeRandomRange: 0
@@ -79,7 +80,8 @@ MonoBehaviour:
     followTarget: 0
     outputGroup: {fileID: 0}
   - eventId: 6
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: d892fc36e9dd995469c404a2d87f21a9, type: 3}
     volume: 0.95
     pitch: 1
     pitchRandomRange: 0.05
@@ -92,7 +94,8 @@ MonoBehaviour:
     followTarget: 0
     outputGroup: {fileID: 0}
   - eventId: 7
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 5095ac4219994db4686eb7f5e1c99c2b, type: 3}
     volume: 1
     pitch: 1
     pitchRandomRange: 0.03
@@ -105,7 +108,8 @@ MonoBehaviour:
     followTarget: 0
     outputGroup: {fileID: 0}
   - eventId: 8
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 5095ac4219994db4686eb7f5e1c99c2b, type: 3}
     volume: 0.95
     pitch: 1
     pitchRandomRange: 0.05
@@ -287,7 +291,8 @@ MonoBehaviour:
     followTarget: 0
     outputGroup: {fileID: 0}
   - eventId: 22
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: 5095ac4219994db4686eb7f5e1c99c2b, type: 3}
     volume: 1
     pitch: 1
     pitchRandomRange: 0.05

@@ -127,6 +127,13 @@ public class Projectile : MonoBehaviour, IDeflectable
         damageable.TakeDamage(damage);
         AudioManager.Play(AudioEventId.ProjectileHit, gameObject, other.transform.position);
 
+        if (other.CompareTag("Player") && !hasBeenDeflected)
+        {
+            ProjectilePlayerMovementLockEffect movementLockEffect = GetComponent<ProjectilePlayerMovementLockEffect>();
+            if (movementLockEffect != null)
+                movementLockEffect.Apply(other.gameObject);
+        }
+
         if (hasBeenDeflected && isHittingEnemy)
         {
             EnemyBase enemy = other.GetComponent<EnemyBase>();
