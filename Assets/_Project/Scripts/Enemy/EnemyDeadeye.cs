@@ -3,6 +3,19 @@ using UnityEngine;
 
 public class EnemyDeadeye : EnemyBase
 {
+    [System.Serializable]
+    public class DeadeyeTempoConfig
+    {
+        public TempoTierFloatValue lockAimDurationMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.88f, t2 = 0.88f, t3 = 0.72f };
+        public TempoTierFloatValue movementRefreshMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.82f, t2 = 0.72f, t3 = 0.68f };
+        public TempoTierFloatValue repositionSampleMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 1.5f, t3 = 1.8f };
+        public float t3ShotDamageMultiplier = 1.25f;
+        public float t3ProjectileSpeedMultiplier = 1.2f;
+        public float t3RecoveryDuration = 0.55f;
+        public Color t3TelegraphColor = new Color(1f, 0.3f, 0.12f, 1f);
+        public float t3TelegraphWidthMultiplier = 1.4f;
+    }
+
     [Header("Shot")]
     public GameObject projectilePrefab;
     public Transform firePoint;
@@ -28,6 +41,9 @@ public class EnemyDeadeye : EnemyBase
     public float movementTolerance = 0.2f;
     public int repositionSampleCount = 10;
     public LayerMask lineOfSightMask = Physics2D.DefaultRaycastLayers;
+
+    [Header("Tempo")]
+    public DeadeyeTempoConfig tempoConfig = new DeadeyeTempoConfig();
 
     [Header("Animation")]
     [SerializeField] private float deathAnimDuration = 0.7f;
@@ -60,9 +76,15 @@ public class EnemyDeadeye : EnemyBase
         aimTelegraph = GetComponent<EnemyAimTelegraph>();
         if (aimTelegraph == null)
             aimTelegraph = gameObject.AddComponent<EnemyAimTelegraph>();
-        aimTelegraph.Configure(lockAimColor, telegraphStartWidth, telegraphEndWidth);
 
         desiredMoveTarget = transform.position;
+        RefreshTelegraphStyle();
+    }
+
+    protected override void OnTempoTierChanged(TempoManager.TempoTier tier)
+    {
+        base.OnTempoTierChanged(tier);
+        RefreshTelegraphStyle();
     }
 
     private void Update()
@@ -142,10 +164,11 @@ public class EnemyDeadeye : EnemyBase
 
     private void UpdateMovement(bool hasLineOfSight, float distanceToPlayer)
     {
+        float refreshInterval = movementRefreshInterval * tempoConfig.movementRefreshMultiplier.Evaluate(CurrentTempoTier);
         if (Time.time >= nextMoveRefreshTime)
         {
             desiredMoveTarget = ChooseMovementTarget(hasLineOfSight, distanceToPlayer);
-            nextMoveRefreshTime = Time.time + movementRefreshInterval;
+            nextMoveRefreshTime = Time.time + Mathf.Max(0.08f, refreshInterval);
         }
 
         Vector2 toTarget = desiredMoveTarget - (Vector2)transform.position;
@@ -185,7 +208,7 @@ public class EnemyDeadeye : EnemyBase
 
         Vector2 best = self;
         float bestScore = float.MinValue;
-        int samples = Mathf.Max(4, repositionSampleCount);
+        int samples = Mathf.Max(4, Mathf.RoundToInt(repositionSampleCount * tempoConfig.repositionSampleMultiplier.Evaluate(CurrentTempoTier)));
         for (int i = 0; i < samples; i++)
         {
             float angle = (360f / samples) * i;
@@ -197,6 +220,9 @@ public class EnemyDeadeye : EnemyBase
                 score += 100f;
             score -= Vector2.Distance(self, candidate) * 0.35f;
             score -= Mathf.Abs(Vector2.Distance(candidate, player) - preferredRange) * 2f;
+
+            if (CurrentTempoTier >= TempoManager.TempoTier.T2)
+                score += Mathf.Max(0f, Vector2.Dot((candidate - player).normalized, (self - player).normalized)) * 4f;
 
             if (score > bestScore)
             {
@@ -218,8 +244,9 @@ public class EnemyDeadeye : EnemyBase
             spriteRenderer.color = lockAimColor;
 
         float timer = 0f;
+        float duration = lockAimDuration * tempoConfig.lockAimDurationMultiplier.Evaluate(CurrentTempoTier);
         Vector2 finalDirection = Vector2.right;
-        while (timer < lockAimDuration)
+        while (timer < duration)
         {
             if (playerTransform != null)
             {
@@ -245,6 +272,9 @@ public class EnemyDeadeye : EnemyBase
             animator.SetTrigger("Attack");
 
         FireProjectile(projectilePrefab, finalDirection, false);
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+            yield return new WaitForSeconds(tempoConfig.t3RecoveryDuration);
 
         nextShotTime = Time.time + shotCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
         isActing = false;
@@ -295,7 +325,15 @@ public class EnemyDeadeye : EnemyBase
         projectile.damage = enemyData != null ? enemyData.damage : projectile.damage;
 
         if (isControlShot)
+        {
             projectile.lifeTime = Mathf.Min(projectile.lifeTime, controlShotLifeTimeOverride);
+        }
+        else if (CurrentTempoTier == TempoManager.TempoTier.T3)
+        {
+            projectile.damage *= tempoConfig.t3ShotDamageMultiplier;
+            projectile.speed *= tempoConfig.t3ProjectileSpeedMultiplier;
+            projObj.transform.localScale *= 1.1f;
+        }
 
         projectile.Launch(direction);
     }
@@ -306,5 +344,23 @@ public class EnemyDeadeye : EnemyBase
             return;
 
         spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+    }
+
+    private void RefreshTelegraphStyle()
+    {
+        if (aimTelegraph == null)
+            return;
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+        {
+            aimTelegraph.Configure(
+                tempoConfig.t3TelegraphColor,
+                telegraphStartWidth * tempoConfig.t3TelegraphWidthMultiplier,
+                telegraphEndWidth * tempoConfig.t3TelegraphWidthMultiplier,
+                120);
+            return;
+        }
+
+        aimTelegraph.Configure(lockAimColor, telegraphStartWidth, telegraphEndWidth, 120);
     }
 }

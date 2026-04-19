@@ -3,6 +3,22 @@ using UnityEngine;
 
 public class EnemyWardenLinker : EnemyBase
 {
+    [System.Serializable]
+    public class LinkerTempoConfig
+    {
+        public TempoTierFloatValue guardianLinkWindupMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.88f, t2 = 0.88f, t3 = 0.8f };
+        public TempoTierFloatValue summonCooldownMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 0.9f, t3 = 0.85f };
+        public TempoTierFloatValue shieldStepMoveMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 1.12f, t3 = 1.18f };
+        public float t2GuardianDamageMultiplier = 0.92f;
+        public float t2GuardianStaggerMultiplier = 0.9f;
+        public float t3GuardianDamageMultiplier = 0.82f;
+        public float t3GuardianStaggerMultiplier = 0.82f;
+        public float t3HeavyHitHealthFraction = 0.15f;
+        public float t3EchoDamageFraction = 0.35f;
+        public float t3HeavyStunThreshold = 0.65f;
+        public float t3EchoStaggerDuration = 0.32f;
+    }
+
     [Header("Guardian Link")]
     public float guardianSearchRadius = 12f;
     public float guardianLinkCooldown = 6f;
@@ -30,6 +46,9 @@ public class EnemyWardenLinker : EnemyBase
     public float retreatDistance = 2.5f;
     public float maxDistanceFromGuardTarget = 1.75f;
 
+    [Header("Tempo")]
+    public LinkerTempoConfig tempoConfig = new LinkerTempoConfig();
+
     [Header("Animation")]
     [SerializeField] private float deathAnimDuration = 0.6f;
 
@@ -48,6 +67,8 @@ public class EnemyWardenLinker : EnemyBase
     private Vector2 currentInterceptPoint;
     private bool isDead;
     private bool isCasting;
+    private bool suppressEchoCallbacks;
+    private EnemyBase subscribedLinkedTarget;
 
     protected override void Start()
     {
@@ -157,14 +178,31 @@ public class EnemyWardenLinker : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = guardianLinkColor;
 
-        yield return new WaitForSeconds(guardianLinkWindup);
+        float windup = guardianLinkWindup * tempoConfig.guardianLinkWindupMultiplier.Evaluate(CurrentTempoTier);
+        yield return new WaitForSeconds(Mathf.Max(0.05f, windup));
 
+        UnsubscribeFromLinkedTarget();
         linkedTarget = target;
+        SubscribeToLinkedTarget(linkedTarget);
         linkEndTime = Time.time + guardianLinkDuration;
+
+        float damageMultiplier = guardianDamageReductionMultiplier;
+        float staggerMultiplier = guardianStaggerDurationMultiplier;
+        if (CurrentTempoTier >= TempoManager.TempoTier.T2)
+        {
+            damageMultiplier *= tempoConfig.t2GuardianDamageMultiplier;
+            staggerMultiplier *= tempoConfig.t2GuardianStaggerMultiplier;
+        }
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+        {
+            damageMultiplier *= tempoConfig.t3GuardianDamageMultiplier;
+            staggerMultiplier *= tempoConfig.t3GuardianStaggerMultiplier;
+        }
+
         linkedTarget.GetSupportBuffReceiver()?.ApplyGuardianLink(
             guardianLinkDuration,
-            guardianDamageReductionMultiplier,
-            guardianStaggerDurationMultiplier,
+            damageMultiplier,
+            staggerMultiplier,
             guardianIgnoreNextHeavyStagger);
         linkVisual.SetTarget(linkedTarget.transform);
 
@@ -207,7 +245,8 @@ public class EnemyWardenLinker : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;
 
-        nextWardenCallTime = Time.time + wardenCallCooldown;
+        float summonCooldown = wardenCallCooldown * tempoConfig.summonCooldownMultiplier.Evaluate(CurrentTempoTier);
+        nextWardenCallTime = Time.time + Mathf.Max(1f, summonCooldown);
         isCasting = false;
     }
 
@@ -224,8 +263,9 @@ public class EnemyWardenLinker : EnemyBase
 
         if (rb != null)
         {
+            float stepSpeed = shieldStepMoveSpeed * tempoConfig.shieldStepMoveMultiplier.Evaluate(CurrentTempoTier);
             rb.linearVelocity = isMoving
-                ? toPoint.normalized * shieldStepMoveSpeed * GetSupportMoveSpeedMultiplier()
+                ? toPoint.normalized * stepSpeed * GetSupportMoveSpeedMultiplier()
                 : Vector2.zero;
         }
 
@@ -275,9 +315,70 @@ public class EnemyWardenLinker : EnemyBase
 
     private void ClearLink()
     {
+        UnsubscribeFromLinkedTarget();
         linkedTarget = null;
         linkEndTime = 0f;
         if (linkVisual != null)
             linkVisual.SetTarget(null);
+    }
+
+    private void SubscribeToLinkedTarget(EnemyBase target)
+    {
+        if (target == null)
+            return;
+
+        subscribedLinkedTarget = target;
+        subscribedLinkedTarget.OnDamageTaken += HandleLinkedTargetDamageTaken;
+        subscribedLinkedTarget.OnStunned += HandleLinkedTargetStunned;
+    }
+
+    private void UnsubscribeFromLinkedTarget()
+    {
+        if (subscribedLinkedTarget == null)
+            return;
+
+        subscribedLinkedTarget.OnDamageTaken -= HandleLinkedTargetDamageTaken;
+        subscribedLinkedTarget.OnStunned -= HandleLinkedTargetStunned;
+        subscribedLinkedTarget = null;
+    }
+
+    private void HandleLinkedTargetDamageTaken(float amount)
+    {
+        if (CurrentTempoTier != TempoManager.TempoTier.T3 || linkedTarget == null || suppressEchoCallbacks)
+            return;
+
+        float heavyThreshold = linkedTarget.MaxHealth * tempoConfig.t3HeavyHitHealthFraction;
+        if (amount < heavyThreshold)
+            return;
+
+        ApplyEcho(amount * tempoConfig.t3EchoDamageFraction, true);
+    }
+
+    private void HandleLinkedTargetStunned(float duration)
+    {
+        if (CurrentTempoTier != TempoManager.TempoTier.T3 || suppressEchoCallbacks)
+            return;
+
+        if (duration < tempoConfig.t3HeavyStunThreshold)
+            return;
+
+        ApplyEcho(0f, true);
+    }
+
+    private void ApplyEcho(float damageAmount, bool applyStagger)
+    {
+        suppressEchoCallbacks = true;
+        try
+        {
+            if (damageAmount > 0f)
+                base.TakeDamage(damageAmount);
+
+            if (applyStagger)
+                base.Stun(tempoConfig.t3EchoStaggerDuration);
+        }
+        finally
+        {
+            suppressEchoCallbacks = false;
+        }
     }
 }

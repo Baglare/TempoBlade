@@ -3,6 +3,17 @@ using UnityEngine;
 
 public class EnemyWarden : EnemyBase, IParryReactive
 {
+    [System.Serializable]
+    public class WardenTempoConfig
+    {
+        public TempoTierFloatValue frontDamageMultiplier = new TempoTierFloatValue { t0 = 0f, t1 = 0.05f, t2 = 0.1f, t3 = 0.2f };
+        public TempoTierFloatValue sideDamageMultiplier = new TempoTierFloatValue { t0 = 0.5f, t1 = 0.55f, t2 = 0.65f, t3 = 0.78f };
+        public TempoTierFloatValue shieldTurnSpeedMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.88f, t2 = 0.72f, t3 = 0.58f };
+        public TempoTierFloatValue repositionCooldownMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 1.15f, t3 = 1.2f };
+        public TempoTierFloatValue punishRecoveryMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 1.15f, t3 = 1.22f };
+        public TempoTierFloatValue heavyVulnerabilityMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1.05f, t2 = 1.15f, t3 = 1.45f };
+    }
+
     private enum WardenState
     {
         SeekingProtectTarget,
@@ -41,7 +52,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
     [Header("Shield")]
     public float shieldFrontHalfAngle = 60f;
-    [Range(0f, 1f)] public float reducedSideDamageMultiplier = 0.45f;
+    public float shieldTurnSpeed = 14f;
     public float shieldHitPlayerStaggerDuration = 0.2f;
     public float shieldHitTempoSteal = 8f;
     public float shieldHitKnockback = 7f;
@@ -70,6 +81,9 @@ public class EnemyWarden : EnemyBase, IParryReactive
     public float collisionDamage = 14f;
     public float collisionDamageInterval = 0.45f;
 
+    [Header("Tempo")]
+    public WardenTempoConfig tempoConfig = new WardenTempoConfig();
+
     [Header("Animation")]
     [SerializeField] private float deathAnimDuration = 0.7f;
 
@@ -97,6 +111,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     private bool isExecutingAction;
     private bool isBerserkCharging;
     private float guardBrokenUntilTime;
+    private Vector2 currentShieldForward = Vector2.right;
 
     public bool AllowParryExecute => true;
 
@@ -116,6 +131,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        currentShieldForward = GetDesiredShieldForward();
 
         TryAcquireProtectTarget();
         if (protectTarget == null && CountOtherLivingEnemies() <= 0)
@@ -126,10 +142,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
     private void Update()
     {
-        if (isDead || currentState == WardenState.Dead)
-            return;
-
-        if (playerTransform == null)
+        if (isDead || currentState == WardenState.Dead || playerTransform == null)
             return;
 
         if (isStunned)
@@ -140,6 +153,9 @@ public class EnemyWarden : EnemyBase, IParryReactive
             UpdateAnimator(false);
             return;
         }
+
+        if (currentState != WardenState.Berserk)
+            UpdateShieldFacing();
 
         if (currentState == WardenState.Berserk)
         {
@@ -173,11 +189,14 @@ public class EnemyWarden : EnemyBase, IParryReactive
             if (hitZone == HitAngleZone.Front)
             {
                 ApplyShieldFrontPunish();
-                return;
+                amount *= tempoConfig.frontDamageMultiplier.Evaluate(CurrentTempoTier);
+                if (amount <= 0.001f)
+                    return;
             }
-
-            if (hitZone == HitAngleZone.Side)
-                amount *= Mathf.Clamp01(reducedSideDamageMultiplier);
+            else if (hitZone == HitAngleZone.Side)
+            {
+                amount *= tempoConfig.sideDamageMultiplier.Evaluate(CurrentTempoTier);
+            }
         }
 
         if (animator != null)
@@ -195,7 +214,11 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
-        base.Stun(duration);
+        float finalDuration = duration;
+        if (duration >= 0.45f)
+            finalDuration *= tempoConfig.heavyVulnerabilityMultiplier.Evaluate(CurrentTempoTier);
+
+        base.Stun(finalDuration);
     }
 
     public void OnParryReaction(ParryReactionContext context)
@@ -205,13 +228,14 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         CancelActiveAction();
 
+        float reactionDuration = Mathf.Max(0.05f, context.duration) * tempoConfig.heavyVulnerabilityMultiplier.Evaluate(CurrentTempoTier);
         if (context.breakGuard)
-            guardBrokenUntilTime = Time.time + Mathf.Max(0.05f, context.duration);
+            guardBrokenUntilTime = Time.time + reactionDuration;
 
         if (animator != null)
             animator.SetTrigger(AnimHurt);
 
-        base.Stun(Mathf.Max(0.05f, context.duration));
+        base.Stun(reactionDuration);
     }
 
     protected override void OnDeathAnimationStart()
@@ -236,7 +260,6 @@ public class EnemyWarden : EnemyBase, IParryReactive
         currentState = WardenState.Guarding;
         FaceTowardsPlayer();
         float moveSpeedMultiplier = GetSupportMoveSpeedMultiplier();
-        float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         if (Time.time >= nextRepathTime)
         {
@@ -370,7 +393,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
                 ParrySystem parry = playerTransform.GetComponent<ParrySystem>();
                 if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
                 {
-                    yield return new WaitForSeconds(closePunishRecovery / attackSpeedMultiplier);
+                    yield return new WaitForSeconds(closePunishRecovery * tempoConfig.punishRecoveryMultiplier.Evaluate(CurrentTempoTier) / attackSpeedMultiplier);
                     isExecutingAction = false;
                     currentState = WardenState.Guarding;
                     yield break;
@@ -390,8 +413,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
             }
         }
 
-        yield return new WaitForSeconds(closePunishRecovery / attackSpeedMultiplier);
-
+        yield return new WaitForSeconds(closePunishRecovery * tempoConfig.punishRecoveryMultiplier.Evaluate(CurrentTempoTier) / attackSpeedMultiplier);
         isExecutingAction = false;
         currentState = WardenState.Guarding;
     }
@@ -545,7 +567,8 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (protectTarget == null)
             return false;
 
-        if (Time.time < lastRepositionDashTime + repositionDashCooldown)
+        float cooldown = repositionDashCooldown * tempoConfig.repositionCooldownMultiplier.Evaluate(CurrentTempoTier);
+        if (Time.time < lastRepositionDashTime + cooldown)
             return false;
 
         return Vector2.Distance(transform.position, cachedGuardPoint) >= dashTriggerDistance;
@@ -571,9 +594,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
             return HitAngleZone.Front;
 
         Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-        Vector2 forward = GetShieldForward();
-        float angle = Vector2.Angle(forward, toPlayer);
-
+        float angle = Vector2.Angle(currentShieldForward, toPlayer);
         if (angle <= shieldFrontHalfAngle)
             return HitAngleZone.Front;
 
@@ -583,16 +604,26 @@ public class EnemyWarden : EnemyBase, IParryReactive
         return HitAngleZone.Side;
     }
 
-    private Vector2 GetShieldForward()
+    private Vector2 GetDesiredShieldForward()
     {
-        if (playerTransform != null)
-        {
-            Vector2 toPlayer = (Vector2)playerTransform.position - (Vector2)transform.position;
-            if (toPlayer.sqrMagnitude > 0.001f)
-                return toPlayer.normalized;
-        }
+        if (playerTransform == null)
+            return transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
 
-        return transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+        Vector2 toPlayer = (Vector2)playerTransform.position - (Vector2)transform.position;
+        if (toPlayer.sqrMagnitude <= 0.001f)
+            return currentShieldForward.sqrMagnitude > 0.001f ? currentShieldForward : Vector2.right;
+
+        return toPlayer.normalized;
+    }
+
+    private void UpdateShieldFacing()
+    {
+        Vector2 desiredForward = GetDesiredShieldForward();
+        float turnMultiplier = tempoConfig.shieldTurnSpeedMultiplier.Evaluate(CurrentTempoTier);
+        float lerpFactor = Mathf.Clamp01(shieldTurnSpeed * turnMultiplier * Time.deltaTime);
+        currentShieldForward = Vector2.Lerp(currentShieldForward, desiredForward, lerpFactor).normalized;
+        if (currentShieldForward.sqrMagnitude <= 0.001f)
+            currentShieldForward = desiredForward;
     }
 
     private void ApplyShieldFrontPunish()
@@ -666,7 +697,6 @@ public class EnemyWarden : EnemyBase, IParryReactive
             return;
 
         lastCollisionDamageTime = Time.time;
-
         if (playerCombat != null)
             playerCombat.TakeDamage(collisionDamage);
     }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour, IDamageable
@@ -15,10 +16,26 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     private Coroutine stunRoutine;
     private float stunEndTime;
     private bool suppressDeathRewards;
+    private bool tempoSubscribed;
+    protected TempoManager.TempoTier currentTempoTier = TempoManager.TempoTier.T0;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
     public float HealthPercent => MaxHealth > 0f ? currentHealth / MaxHealth : 0f;
+    public TempoManager.TempoTier CurrentTempoTier => currentTempoTier;
+
+    public event Action<float> OnDamageTaken;
+    public event Action<float> OnStunned;
+
+    protected virtual void OnEnable()
+    {
+        SubscribeTempo();
+    }
+
+    protected virtual void OnDisable()
+    {
+        UnsubscribeTempo();
+    }
 
     protected virtual void Start()
     {
@@ -51,6 +68,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         stunSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (stunSpriteRenderer != null)
             stunOriginalColor = stunSpriteRenderer.color;
+
+        currentTempoTier = TempoManager.Instance != null ? TempoManager.Instance.CurrentTier : TempoManager.TempoTier.T0;
+        OnTempoTierChanged(currentTempoTier);
+        SubscribeTempo();
     }
 
     public virtual void TakeDamage(float damageAmount)
@@ -62,6 +83,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             return;
 
         currentHealth -= damageAmount;
+        OnDamageTaken?.Invoke(damageAmount);
         AudioManager.Play(AudioEventId.EnemyHurt, gameObject);
 
 
@@ -69,7 +91,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (DamagePopupManager.Instance != null)
         {
              // Hafif varyasyonlu pozisyon (ustuste binmesin diye)
-             Vector3 randomOffset = new Vector3(Random.Range(-0.3f, 0.3f), 0.5f, 0);
+             Vector3 randomOffset = new Vector3(UnityEngine.Random.Range(-0.3f, 0.3f), 0.5f, 0);
              DamagePopupManager.Instance.Create(transform.position + randomOffset, (int)damageAmount, false);
              
              // Vurus Efekti (Hit Particle)
@@ -103,6 +125,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         }
 
         AudioManager.Play(AudioEventId.EnemyStun, gameObject);
+        OnStunned?.Invoke(duration);
 
         float requestedEnd = Time.time + duration;
         if (isStunned && requestedEnd <= stunEndTime)
@@ -232,6 +255,32 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public void SetSuppressDeathRewards(bool suppress)
     {
         suppressDeathRewards = suppress;
+    }
+
+    protected virtual void OnTempoTierChanged(TempoManager.TempoTier tier) { }
+
+    private void SubscribeTempo()
+    {
+        if (tempoSubscribed || TempoManager.Instance == null)
+            return;
+
+        TempoManager.Instance.OnTierChanged += HandleTempoTierChanged;
+        tempoSubscribed = true;
+    }
+
+    private void UnsubscribeTempo()
+    {
+        if (!tempoSubscribed || TempoManager.Instance == null)
+            return;
+
+        TempoManager.Instance.OnTierChanged -= HandleTempoTierChanged;
+        tempoSubscribed = false;
+    }
+
+    private void HandleTempoTierChanged(TempoManager.TempoTier tier)
+    {
+        currentTempoTier = tier;
+        OnTempoTierChanged(tier);
     }
 
     public float GetSupportMoveSpeedMultiplier()

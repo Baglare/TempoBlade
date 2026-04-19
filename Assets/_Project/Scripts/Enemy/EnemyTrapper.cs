@@ -1,60 +1,121 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
-/// Haritada sürekli hızlıca rastgele noktalara hareket eden ve arkasında mayın (TrapArea) bırakan düşman.
-/// Limitli sayıda tuzak bırakır, böylece harita tıkılmaz.
-/// Oda temizlendiğinde bıraktığı tüm tuzaklar otomatik yok olur.
+/// Haritada hizlica rastgele noktalara hereket eden ve tuzak birakan dusman.
+/// Tempo arttikca tuzak yerlestirmesi daha akilli hale gelir.
 /// </summary>
 public class EnemyTrapper : EnemyBase
 {
+    [System.Serializable]
+    public class TrapperTempoConfig
+    {
+        public TempoTierFloatValue trapSpawnIntervalMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.9f, t2 = 0.9f, t3 = 0.8f };
+        public float t1CentralBiasDistance = 1.75f;
+        public int t2PlacementSamples = 10;
+        public float t2ForwardBias = 4f;
+        public float t3SelfRootDuration = 0.3f;
+        public TrapRuntimeSettings t3TrapOverrides = new TrapRuntimeSettings
+        {
+            activationDelayMultiplier = 0.7f,
+            speedMultiplierScale = 0.85f,
+            slowDurationMultiplier = 1.15f,
+            poisonDamageMultiplier = 1.2f,
+            indicatorWidthMultiplier = 1.45f,
+            indicatorColor = new Color(1f, 0.45f, 0.1f, 0.85f)
+        };
+    }
+
     [Header("Trapper - Random Roam")]
-    public float moveSpeedModifier = 5f;     // Hızlı gezecek
-    public float roamRadius = 10f;           // Gezme yarıçapı
+    public float moveSpeedModifier = 5f;
+    public float roamRadius = 10f;
     private Vector2 targetRoamPos;
-    
+
     [Header("Trap Spawn")]
-    public GameObject trapPrefab;            
-    public float trapSpawnInterval = 8f;     // Bırakma süresi (örn 8sn)
-    public int maxTraps = 5;                 // Haritada aynı anda maksimum olabilecek tuzak sayısı
-    [Tooltip("Mayın çakışma engeli: Yakındaki mayına bu mesafeden daha yakına kuramazsın")]
+    public GameObject trapPrefab;
+    public float trapSpawnInterval = 8f;
+    public int maxTraps = 5;
+    [Tooltip("Mayin cakisma engeli: Yakin mayina bu mesafeden daha yakina kuramazsin")]
     public float minTrapDistance = 2f;
 
+    [Header("Tempo")]
+    public TrapperTempoConfig tempoConfig = new TrapperTempoConfig();
+
     private float nextTrapTime;
-    private bool isDead = false;
-    private List<TrapArea> activeTraps = new List<TrapArea>();
-    
-    // Sıkışma Algılama
-    private float stuckTimer = 0f;
+    private bool isDead;
+    private bool isPlacingTrap;
+    private readonly List<TrapArea> activeTraps = new List<TrapArea>();
+
+    private float stuckTimer;
     private Vector2 lastPosition;
-    
-    // Animasyon Baglantilari
+
+    private Transform playerTransform;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
     protected override void Start()
     {
         base.Start();
-        
+
+        playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         PickNewRoamPosition();
         lastPosition = transform.position;
-        
-        // İlk tuzak kısa bir sure sonra
         nextTrapTime = Time.time + 2f;
         deathDelay = 1.0f;
     }
 
     private void Update()
     {
-        if (isDead || isStunned) return;
+        if (isDead || isStunned)
+            return;
 
+        if (!isPlacingTrap)
+            UpdateMovement();
+
+        activeTraps.RemoveAll(t => t == null);
+        if (!isPlacingTrap && Time.time >= nextTrapTime)
+        {
+            if (activeTraps.Count < maxTraps)
+                StartCoroutine(SpawnTrapRoutine());
+
+            float nextInterval = trapSpawnInterval * tempoConfig.trapSpawnIntervalMultiplier.Evaluate(CurrentTempoTier);
+            nextTrapTime = Time.time + Mathf.Max(0.5f, nextInterval);
+        }
+    }
+
+    public override void TakeDamage(float amount)
+    {
+        if (isDead)
+            return;
+
+        base.TakeDamage(amount);
+        if (!isDead && animator != null)
+            animator.SetTrigger("TakeHit");
+    }
+
+    protected override void OnDeathAnimationStart()
+    {
+        isDead = true;
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
+
+        if (animator != null)
+            animator.SetTrigger("Die");
+    }
+
+    private void UpdateMovement()
+    {
         float speed = enemyData != null ? enemyData.moveSpeed : moveSpeedModifier;
-
-        // Rastgele Noktaya Hareket (Oyuncuyu takmayan Random Roam)
         float dist = Vector2.Distance(transform.position, targetRoamPos);
         if (dist < 0.5f)
         {
@@ -62,17 +123,15 @@ public class EnemyTrapper : EnemyBase
         }
         else
         {
-            // Basit, sağlam hareket (transform.MoveTowards) — Rigidbody2D fizik sorunlarından kaçınılır 
             transform.position = Vector2.MoveTowards(transform.position, targetRoamPos, speed * Time.deltaTime);
-            
+
             if (spriteRenderer != null)
                 spriteRenderer.flipX = targetRoamPos.x < transform.position.x;
-                
+
             if (animator != null)
                 animator.SetBool("IsMoving", true);
         }
 
-        // --- Sıkışma Algılama ---
         float movedDist = Vector2.Distance(transform.position, lastPosition);
         if (movedDist < 0.02f)
         {
@@ -87,20 +146,39 @@ public class EnemyTrapper : EnemyBase
         {
             stuckTimer = 0f;
         }
+
         lastPosition = transform.position;
+    }
 
-        // Listede yokedilmis (patlamis) mayınlar varsa temizle
-        activeTraps.RemoveAll(t => t == null);
-
-        // Tuzak Limitine Ulaşmadıysa ve Zamanı Geldiyse Tuzak Kur
-        if (Time.time >= nextTrapTime)
+    private IEnumerator SpawnTrapRoutine()
+    {
+        Vector2 spawnPosition = ChooseTrapSpawnPosition();
+        if (IsTrapTooCloseToExisting(spawnPosition))
         {
-            if (activeTraps.Count < maxTraps)
-            {
-                TrySpawnTrap();
-            }
-            nextTrapTime = Time.time + trapSpawnInterval;
+            nextTrapTime = Time.time + 1f;
+            yield break;
         }
+
+        isPlacingTrap = true;
+        if (animator != null)
+            animator.SetTrigger("Attack");
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+            yield return new WaitForSeconds(tempoConfig.t3SelfRootDuration);
+
+        GameObject spawned = Instantiate(trapPrefab, spawnPosition, Quaternion.identity);
+        TrapArea trap = spawned.GetComponent<TrapArea>();
+        if (trap != null)
+        {
+            if (CurrentTempoTier == TempoManager.TempoTier.T3)
+                trap.ApplyRuntimeSettings(tempoConfig.t3TrapOverrides);
+
+            activeTraps.Add(trap);
+        }
+
+        isPlacingTrap = false;
     }
 
     private void PickNewRoamPosition()
@@ -114,16 +192,15 @@ public class EnemyTrapper : EnemyBase
             float randomDist = Random.Range(2f, roamRadius);
             Vector2 candidate = (Vector2)transform.position + randomDir * randomDist;
 
-            // Raycast ile yolda engel var mı kontrol et
-            // Kendi collider'ımızı görmezden gelmek için kendimizi geçici olarak kapatıyoruz
             bool wasEnabled = myCol != null && myCol.enabled;
-            if (myCol != null) myCol.enabled = false;
+            if (myCol != null)
+                myCol.enabled = false;
 
             RaycastHit2D hit = Physics2D.Raycast(transform.position, randomDir, randomDist);
 
-            if (myCol != null) myCol.enabled = wasEnabled;
+            if (myCol != null)
+                myCol.enabled = wasEnabled;
 
-            // Çarptığı şey yoksa veya trigger ise (mayın gibi) → güvenli
             if (hit.collider == null || hit.collider.isTrigger)
             {
                 targetRoamPos = candidate;
@@ -131,81 +208,56 @@ public class EnemyTrapper : EnemyBase
             }
         }
 
-        // Hiçbir yere gidemiyorsa tersine dönmeyi dene
         targetRoamPos = (Vector2)transform.position + Random.insideUnitCircle.normalized * 2f;
     }
 
-    /// <summary>
-    /// Mayın spawn etmeden önce yakınlarda başka mayın olup olmadığını kontrol eder.
-    /// Eğer çok yakında mayın varsa, spawn süresini 1 saniye erteleyerek geri çekilir.
-    /// </summary>
-    private void TrySpawnTrap()
+    private Vector2 ChooseTrapSpawnPosition()
     {
-        if (trapPrefab == null) return;
+        if (playerTransform == null)
+            return transform.position;
 
-        // Yakınlarda başka mayın var mı kontrol et (iç içe geçmeyi engelle)
-        foreach (var trap in activeTraps)
+        if (CurrentTempoTier == TempoManager.TempoTier.T0)
+            return transform.position;
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T1)
         {
-            if (trap == null) continue;
-            float distToTrap = Vector2.Distance(transform.position, trap.transform.position);
-            if (distToTrap < minTrapDistance)
-            {
-                // Çok yakında mayın var, 1 saniye ertele
-                nextTrapTime = Time.time + 1f;
-                return;
-            }
+            Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+            if (toPlayer.sqrMagnitude <= 0.001f)
+                return transform.position;
+
+            return (Vector2)transform.position + toPlayer * tempoConfig.t1CentralBiasDistance;
         }
 
-        // Güvenli, mayını bırak
-        if (animator != null) animator.SetTrigger("Attack"); 
-
-        GameObject spawned = Instantiate(trapPrefab, transform.position, Quaternion.identity);
-        TrapArea t = spawned.GetComponent<TrapArea>();
-        if (t != null)
-        {
-            activeTraps.Add(t);
-        }
+        return EnemySupportUtility.FindBestTrapPlacement(
+            transform,
+            playerTransform,
+            tempoConfig.t1CentralBiasDistance,
+            tempoConfig.t2PlacementSamples,
+            tempoConfig.t2ForwardBias);
     }
 
-    /// <summary>
-    /// Tüm aktif tuzakları yok eder. Oda temizlendiğinde çağrılır.
-    /// </summary>
+    private bool IsTrapTooCloseToExisting(Vector2 spawnPosition)
+    {
+        foreach (TrapArea trap in activeTraps)
+        {
+            if (trap == null)
+                continue;
+
+            if (Vector2.Distance(spawnPosition, trap.transform.position) < minTrapDistance)
+                return true;
+        }
+
+        return false;
+    }
+
     public void DestroyAllTraps()
     {
-        foreach (var trap in activeTraps)
+        foreach (TrapArea trap in activeTraps)
         {
             if (trap != null)
-            {
                 Destroy(trap.gameObject);
-            }
         }
+
         activeTraps.Clear();
-    }
-
-    public override void TakeDamage(float amount)
-    {
-        if (isDead) return;
-        base.TakeDamage(amount);
-
-        if (!isDead && animator != null)
-            animator.SetTrigger("TakeHit");
-    }
-
-    /// <summary>
-    /// Ölüm — artık ölüm mayını bırakmıyor, sadece temiz bir ölüm.
-    /// Tüm aktif tuzakları da yok eder (oda temizlenmesine katkıda bulunur).
-    /// </summary>
-    protected override void OnDeathAnimationStart()
-    {
-        isDead = true;
-        
-        var rb = GetComponent<Rigidbody2D>();
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
-
-        if (animator != null) animator.SetTrigger("Die");
-        // Tuzaklar sahada kalır, sadece oda temizlendiğinde (RoomManager) yok olur
     }
 }

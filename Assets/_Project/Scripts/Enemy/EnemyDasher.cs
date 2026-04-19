@@ -1,48 +1,52 @@
 using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Hızlı uzak mesafeli düşman.
-///
-/// – EnemyCaster'dan farklı olarak hareket ederken de ateş edebilir.
-/// – Yüksek hareket hızı, sürekli kiting (strafe + geri çekilme).
-/// – Hasar alınca belirli bir olasılıkla "perfect dash" yapar:
-///   dashDuration boyunca hasar almaz (i-frame) ve geriye fırlar.
-///
-/// Animator parametreleri: IsMoving (bool), Attack (trigger), Die (trigger).
-/// </summary>
 public class EnemyDasher : EnemyBase
 {
+    [System.Serializable]
+    public class DasherTempoConfig
+    {
+        public TempoTierFloatValue reactiveDodgeChanceMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.9f, t2 = 0.7f, t3 = 0.5f };
+        public TempoTierFloatValue proactiveDashCooldownMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.85f, t2 = 0.72f, t3 = 0.6f };
+        public TempoTierFloatValue aggressionRangeMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 0.88f, t3 = 0.82f };
+        public float t2FeintChance = 0.4f;
+        public float t3DoubleDashChance = 0.35f;
+        public float t3PunishWindowDuration = 0.9f;
+        public float proactiveDashBaseCooldown = 2.6f;
+        public float feintTowardBias = 0.35f;
+    }
+
     [Header("Dasher Settings")]
     public GameObject projectilePrefab;
-    public Transform  firePoint;
-    [Tooltip("İdeal kiting mesafesi")]
+    public Transform firePoint;
     public float preferredRange = 7f;
-    [Tooltip("Bu mesafeden yakınsa geri kaç")]
-    public float minRange       = 4f;
-    public float fireRate       = 1.2f;
+    public float minRange = 4f;
+    public float fireRate = 1.2f;
 
-    [Header("Perfect Dash (i-frame kaçınma)")]
-    [Range(0f, 1f)]
-    [Tooltip("Hasar alınca perfect dash tetiklenme olasılığı")]
-    public float dodgeChance    = 0.45f;
-    public float dodgeSpeed     = 18f;   // Daha yüksek hız
-    public float dodgeDuration  = 0.28f; // Biraz daha uzun i-frame ve fırlama süresi
+    [Header("Perfect Dash (i-frame kaÃ§Ä±nma)")]
+    [Range(0f, 1f)] public float dodgeChance = 0.45f;
+    public float dodgeSpeed = 18f;
+    public float dodgeDuration = 0.28f;
 
-    [Header("Animasyon")]
+    [Header("Tempo")]
+    public DasherTempoConfig tempoConfig = new DasherTempoConfig();
+
+    [Header("Animation")]
     [SerializeField] private float deathAnimDuration = 0.8f;
 
-    private enum State { Kiting, DashEvading }
+    private enum State { Kiting, DashEvading, PunishWindow }
     private State state = State.Kiting;
 
-    private Animator       animator;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private Transform      playerTransform;
-    private Rigidbody2D    rb;
+    private Transform playerTransform;
+    private Rigidbody2D rb;
 
     private float nextFireTime;
-    private bool  isDead;
-    private bool  isEvading; // i-frame aktif mi
+    private float nextProactiveDashTime;
+    private float punishWindowEndTime;
+    private bool isDead;
+    private bool isEvading;
 
     protected override void Start()
     {
@@ -52,49 +56,58 @@ public class EnemyDasher : EnemyBase
         rb = GetComponent<Rigidbody2D>();
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
+        if (player != null)
+            playerTransform = player.transform;
 
-        animator       = GetComponentInChildren<Animator>();
+        animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void Update()
     {
-        if (isDead || isStunned || playerTransform == null) return;
-        if (state == State.DashEvading) return; // coroutine yönetir
+        if (isDead || isStunned || playerTransform == null)
+            return;
+        if (state == State.DashEvading)
+            return;
 
-        float dist  = Vector2.Distance(transform.position, playerTransform.position);
+        if (state == State.PunishWindow && Time.time >= punishWindowEndTime)
+            state = State.Kiting;
+
+        float dist = Vector2.Distance(transform.position, playerTransform.position);
         float speed = (enemyData != null ? enemyData.moveSpeed : 7f) * GetSupportMoveSpeedMultiplier();
+        if (state == State.PunishWindow)
+            speed *= 0.55f;
 
         FacePlayer();
-
+        float aggressiveMinRange = minRange * tempoConfig.aggressionRangeMultiplier.Evaluate(CurrentTempoTier);
         Vector2 awayDir = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
 
-        if (dist < minRange)
+        if (CanStartProactiveDash(dist))
         {
-            // Çok yakın → direkt kaç
+            StartCoroutine(CombatDashRoutine(dist));
+            return;
+        }
+
+        if (dist < aggressiveMinRange)
+        {
             MoveBy(awayDir * speed);
         }
         else if (dist > preferredRange * 1.3f)
         {
-            // Çok uzak → biraz yaklaş
             MoveBy(-awayDir * speed * 0.5f);
         }
         else
         {
-            // İdeal mesafe → strafe (yana hareket)
             Vector2 strafe = new Vector2(-awayDir.y, awayDir.x);
             MoveBy(strafe * speed * 0.75f);
         }
 
-        if (animator != null) animator.SetBool("IsMoving", true);
+        if (animator != null)
+            animator.SetBool("IsMoving", true);
 
-        // Hareket ederken ateş et
         if (Time.time >= nextFireTime)
             StartCoroutine(FireRoutine());
     }
-
-    // ─────────────────────────────── ATEŞ ───────────────────────────────────
 
     private IEnumerator FireRoutine()
     {
@@ -103,68 +116,102 @@ public class EnemyDasher : EnemyBase
         if (projectilePrefab == null || firePoint == null || playerTransform == null)
             yield break;
 
-        if (animator != null) animator.SetTrigger("Attack");
+        if (animator != null)
+            animator.SetTrigger("Attack");
 
-        Vector2 aimDir = ((Vector2)playerTransform.position -
-                          (Vector2)firePoint.position).normalized;
-
+        Vector2 aimDir = ((Vector2)playerTransform.position - (Vector2)firePoint.position).normalized;
         GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-        Projectile proj    = projObj.GetComponent<Projectile>();
+        Projectile proj = projObj.GetComponent<Projectile>();
         if (proj != null)
         {
-            proj.owner  = gameObject;
+            proj.owner = gameObject;
             proj.damage = enemyData != null ? enemyData.damage : proj.damage;
             proj.Launch(aimDir);
         }
     }
 
-    // ──────────────────────────── PERFECT DASH ──────────────────────────────
+    private IEnumerator CombatDashRoutine(float distanceToPlayer)
+    {
+        isEvading = true;
+        state = State.DashEvading;
+        float cooldown = tempoConfig.proactiveDashBaseCooldown * tempoConfig.proactiveDashCooldownMultiplier.Evaluate(CurrentTempoTier);
+        nextProactiveDashTime = Time.time + cooldown;
+
+        Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+        Vector2 lateral = new Vector2(-toPlayer.y, toPlayer.x) * (Random.value < 0.5f ? -1f : 1f);
+        Vector2 dashDir = lateral;
+
+        if (CurrentTempoTier >= TempoManager.TempoTier.T2)
+        {
+            bool feint = Random.value < tempoConfig.t2FeintChance;
+            dashDir = (lateral + (feint ? toPlayer * tempoConfig.feintTowardBias : toPlayer * 0.18f)).normalized;
+        }
+
+        if (spriteRenderer != null)
+            spriteRenderer.color = new Color(0.4f, 0.8f, 1f);
+
+        yield return DashInDirection(dashDir);
+
+        bool shouldPunish = distanceToPlayer > preferredRange * 1.15f;
+        if (CurrentTempoTier == TempoManager.TempoTier.T3 && Random.value < tempoConfig.t3DoubleDashChance)
+        {
+            Vector2 secondDir = (new Vector2(-dashDir.y, dashDir.x) + toPlayer * 0.22f).normalized;
+            yield return DashInDirection(secondDir);
+            shouldPunish = true;
+        }
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
+
+        isEvading = false;
+        if (CurrentTempoTier == TempoManager.TempoTier.T3 && shouldPunish)
+            EnterPunishWindow();
+        else
+            state = State.Kiting;
+    }
 
     private IEnumerator DashEvade()
     {
         isEvading = true;
-        state     = State.DashEvading;
+        state = State.DashEvading;
 
-        // Oyuncudan uzak tarafa fırla
         Vector2 dodgeDir = playerTransform != null
             ? ((Vector2)transform.position - (Vector2)playerTransform.position).normalized
             : Random.insideUnitCircle.normalized;
 
-        // Renk tonu ile "perfect dodge" görsel ipucu
-        if (spriteRenderer != null) spriteRenderer.color = new Color(0.4f, 0.8f, 1f);
+        if (spriteRenderer != null)
+            spriteRenderer.color = new Color(0.4f, 0.8f, 1f);
 
-        float timer = 0f;
-        while (timer < dodgeDuration)
-        {
-            if (rb != null) rb.linearVelocity = dodgeDir * dodgeSpeed;
-            timer += Time.deltaTime;
-            yield return null;
-        }
+        yield return DashInDirection(dodgeDir);
 
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-        if (spriteRenderer != null) spriteRenderer.color = Color.white;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
 
         isEvading = false;
-        state     = State.Kiting;
+        state = State.Kiting;
     }
-
-    // ─────────────────────────── HASAR & ÖLÜM ───────────────────────────────
 
     public override void TakeDamage(float amount)
     {
-        if (isDead)     return;
-        if (isEvading)  return; // i-frame: hasar atlatıldı
+        if (isDead || isEvading)
+            return;
 
-        // Perfect Dash olasılığı
-        if (state != State.DashEvading && Random.value < dodgeChance)
+        float reactiveChance = dodgeChance * tempoConfig.reactiveDodgeChanceMultiplier.Evaluate(CurrentTempoTier);
+        if (state != State.DashEvading && Random.value < reactiveChance)
         {
             StartCoroutine(DashEvade());
-
-            // "EVADE!" popup
             if (DamagePopupManager.Instance != null)
+            {
                 DamagePopupManager.Instance.CreateText(
                     transform.position + Vector3.up * 1.2f,
-                    "EVADE!", new Color(0.4f, 0.9f, 1f), 5f);
+                    "EVADE!",
+                    new Color(0.4f, 0.9f, 1f),
+                    5f);
+            }
             return;
         }
 
@@ -173,34 +220,68 @@ public class EnemyDasher : EnemyBase
 
     public override void Stun(float duration)
     {
-        // Dash i-frame'i iptal et (parry / parry shockwave etkisi)
         if (isEvading)
         {
             StopAllCoroutines();
             isEvading = false;
-            state     = State.Kiting;
-            if (rb != null) rb.linearVelocity = Vector2.zero;
-            if (spriteRenderer != null) spriteRenderer.color = Color.white;
+            state = State.Kiting;
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+            if (spriteRenderer != null)
+                spriteRenderer.color = Color.white;
         }
+
         base.Stun(duration);
     }
 
     protected override void OnDeathAnimationStart()
     {
-        isDead    = true;
+        isDead = true;
         isEvading = false;
         StopAllCoroutines();
 
-        if (animator != null) animator.SetTrigger("Die");
-        if (spriteRenderer != null) spriteRenderer.color = Color.white;
+        if (animator != null)
+            animator.SetTrigger("Die");
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
 
-        if (rb  != null) rb.linearVelocity = Vector2.zero;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
 
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
     }
 
-    // ─────────────────────────────── YARDIMCI ───────────────────────────────
+    private bool CanStartProactiveDash(float distanceToPlayer)
+    {
+        if (CurrentTempoTier == TempoManager.TempoTier.T0)
+            return false;
+        if (state == State.PunishWindow)
+            return false;
+        if (Time.time < nextProactiveDashTime)
+            return false;
+
+        return distanceToPlayer <= preferredRange * 1.15f && distanceToPlayer >= minRange * 0.75f;
+    }
+
+    private IEnumerator DashInDirection(Vector2 direction)
+    {
+        float timer = 0f;
+        while (timer < dodgeDuration)
+        {
+            if (rb != null)
+                rb.linearVelocity = direction * dodgeSpeed;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private void EnterPunishWindow()
+    {
+        punishWindowEndTime = Time.time + tempoConfig.t3PunishWindowDuration;
+        state = State.PunishWindow;
+    }
 
     private void MoveBy(Vector2 velocity)
     {
@@ -212,11 +293,10 @@ public class EnemyDasher : EnemyBase
 
     private void FacePlayer()
     {
-        if (spriteRenderer == null || playerTransform == null) return;
+        if (spriteRenderer == null || playerTransform == null)
+            return;
         spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
     }
-
-    // ─────────────────────────────── GIZMOS ─────────────────────────────────
 
     private void OnDrawGizmosSelected()
     {

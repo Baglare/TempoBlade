@@ -8,6 +8,7 @@ public class CombatTelemetryHub : MonoBehaviour
     private const int MaxActionHistory = 12;
 
     private readonly List<CombatActionType> recentActions = new List<CombatActionType>(MaxActionHistory);
+    private readonly List<CombatTelemetryEvent> recentEvents = new List<CombatTelemetryEvent>(MaxActionHistory);
 
     private PlayerController playerController;
     private PlayerCombat playerCombat;
@@ -137,6 +138,11 @@ public class CombatTelemetryHub : MonoBehaviour
     public IReadOnlyList<CombatActionType> GetRecentActions()
     {
         return recentActions;
+    }
+
+    public IReadOnlyList<CombatTelemetryEvent> GetRecentEvents()
+    {
+        return recentEvents;
     }
 
     public void RecordAction(CombatActionType actionType, GameObject source = null, EnemyBase target = null, float value = 0f)
@@ -392,6 +398,10 @@ public class CombatTelemetryHub : MonoBehaviour
 
     private void Emit(CombatTelemetryEvent telemetryEvent)
     {
+        if (recentEvents.Count >= MaxActionHistory)
+            recentEvents.RemoveAt(0);
+
+        recentEvents.Add(telemetryEvent);
         OnCombatEvent?.Invoke(telemetryEvent);
     }
 

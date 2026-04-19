@@ -1,8 +1,26 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 public class EnemyDuelist : EnemyBase, IParryReactive
 {
+    [System.Serializable]
+    public class DuelistTempoConfig
+    {
+        public TempoTierFloatValue moveSpeedMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1.06f, t2 = 1.08f, t3 = 1.12f };
+        public TempoTierFloatValue attackCooldownMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.92f, t2 = 0.82f, t3 = 0.76f };
+        public TempoTierFloatValue attackWindupMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.95f, t2 = 0.82f, t3 = 0.7f };
+        public TempoTierFloatValue blockAngleBonus = new TempoTierFloatValue { t0 = 0f, t1 = 8f, t2 = 12f, t3 = 16f };
+        public float t2ReadWindowDuration = 1f;
+        public float t2ReadAttackWindow = 1.2f;
+        public int t2ReadAttackCount = 3;
+        public float t2ReadAttackCooldownMultiplier = 0.82f;
+        public float t2ReadAttackWindupMultiplier = 0.75f;
+        public float t3DuelStanceDuration = 2.6f;
+        public float t3DuelStanceCooldown = 5.5f;
+        public float t3DuelStanceMoveMultiplier = 1.12f;
+        public float t3PerfectParryVulnerabilityMultiplier = 1.5f;
+    }
+
     private static readonly int AnimIsMoving = Animator.StringToHash("IsMoving");
     private static readonly int AnimIsGuarding = Animator.StringToHash("IsGuarding");
     private static readonly int AnimAttack = Animator.StringToHash("Attack");
@@ -13,21 +31,24 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     public float moveSpeed = 2f;
     public float attackRange = 1.5f;
     public float attackCooldown = 3f;
-    
+
     [Header("Block Settings")]
     [Tooltip("Blocking angle (degrees). 180 means full frontal block.")]
-    public float blockAngle = 140f; 
+    public float blockAngle = 140f;
     [SerializeField] private bool isGuarding = false;
 
     [Header("Combat")]
     public float damage = 15f;
-    public float attackWindup = 0.6f; // Telegraph duration
+    public float attackWindup = 0.6f;
     public Transform attackPoint;
     public float attackRadius = 1f;
 
     [Header("Arc Visual")]
-    [Tooltip("WeaponArcVisual component'i. Enemy altındaki child'a eklenir.")]
+    [Tooltip("WeaponArcVisual component'i. Enemy altindaki child'a eklenir.")]
     public WeaponArcVisual weaponArcVisual;
+
+    [Header("Tempo")]
+    public DuelistTempoConfig tempoConfig = new DuelistTempoConfig();
 
     [Header("Animation")]
     [SerializeField] private float deathAnimDuration = 0.5f;
@@ -45,6 +66,10 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     private bool isDead;
     private bool guardBroken;
     private Coroutine guardBreakRoutine;
+    private float baseBlockAngle;
+    private float readWindowEndTime;
+    private float duelStanceEndTime;
+    private float nextDuelStanceTime;
 
     public bool AllowParryExecute => true;
 
@@ -52,25 +77,33 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     {
         base.Start();
         deathDelay = deathAnimDuration;
-        // Find player
+
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
+        if (player != null)
+            playerTransform = player.transform;
+
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        
-        // Start with guard up
         isGuarding = true;
         guardBroken = false;
 
         if (weaponArcVisual != null)
             weaponArcVisual.range = attackRadius;
+
+        ApplyTempoTuning(CurrentTempoTier);
+    }
+
+    protected override void OnTempoTierChanged(TempoManager.TempoTier tier)
+    {
+        base.OnTempoTierChanged(tier);
+        ApplyTempoTuning(tier);
     }
 
     private void Update()
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
-        // Kılıç/yay görselini her frame güncelle
         if (weaponArcVisual != null && playerTransform != null)
         {
             Vector2 dirToPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
@@ -78,35 +111,28 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         }
 
         bool isMoving = false;
-
         if (isStunned || playerTransform == null)
         {
             UpdateAnimatorState(false);
             return;
         }
 
-        // Face Player
         FacePlayer();
-        
-        // Renk degisimi ile durum goster (Gecici Visual Feedback)
         UpdateVisuals();
         SyncAttackPointToSprite();
+        UpdateReadAndStanceState();
 
-        if (isAttacking) return;
+        if (isAttacking)
+            return;
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
-
         if (dist <= attackRange)
         {
-            // Stop and Attack if ready
             if (Time.time >= nextAttackTime && !guardBroken)
-            {
                 StartCoroutine(AttackRoutine());
-            }
         }
         else
         {
-            // Approach slowly with guard
             MoveTowardsPlayer();
             isMoving = true;
         }
@@ -116,149 +142,210 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
     private void FacePlayer()
     {
-        // Yon degisimini sadece saldirmiyorken yap (Dark Souls tarzi commitment)
-        // AttackRoutine icinde isAttacking=true oldugu surece burasi calismaz.
-        // Boylece saldiri basladigi an yon kilitlenir.
-        if (isAttacking) return;
+        if (isAttacking || playerTransform == null)
+            return;
 
         if (playerTransform.position.x > transform.position.x)
-            transform.localScale = new Vector3(1, 1, 1);
+            transform.localScale = new Vector3(1f, 1f, 1f);
         else
-            transform.localScale = new Vector3(-1, 1, 1);
+            transform.localScale = new Vector3(-1f, 1f, 1f);
     }
 
     private void MoveTowardsPlayer()
     {
+        float moveMultiplier = tempoConfig.moveSpeedMultiplier.Evaluate(CurrentTempoTier);
+        if (IsDuelStanceActive)
+            moveMultiplier *= tempoConfig.t3DuelStanceMoveMultiplier;
+
         transform.position = Vector2.MoveTowards(
             transform.position,
             playerTransform.position,
-            moveSpeed * GetSupportMoveSpeedMultiplier() * Time.deltaTime);
+            moveSpeed * moveMultiplier * GetSupportMoveSpeedMultiplier() * Time.deltaTime);
     }
 
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
-        isGuarding = false; // Drop guard to attack!
+        isGuarding = false;
         UpdateAnimatorState(false);
-        if (animator != null) animator.SetTrigger(AnimAttack);
+        if (animator != null)
+            animator.SetTrigger(AnimAttack);
 
-        // 1. Telegraph (Hazirlik)
         SpriteRenderer sr = GetComponentInChildren<SpriteRenderer>();
-        Color originalColor = Color.white; 
-        if (sr != null) originalColor = sr.color;
-        
-        // Danger visual (Kirmizi yanip sonme)
-        if (sr != null) sr.color = Color.red; 
+        Color originalColor = sr != null ? sr.color : Color.white;
+        if (sr != null)
+            sr.color = Color.red;
 
-        // Tempo'ya gore agresiflesme (Windup kisalir)
         float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
-        float currentWindup = attackWindup / attackSpeedMultiplier;
-        if (TempoManager.Instance != null)
-        {
-            var tier = TempoManager.Instance.CurrentTier;
-            if (tier == TempoManager.TempoTier.T2) currentWindup *= 0.75f; // %25 Daha hizli vurur
-            if (tier == TempoManager.TempoTier.T3) currentWindup *= 0.6f;  // %40 Daha hizli vurur!
-        }
+        float currentWindup = attackWindup *
+                              tempoConfig.attackWindupMultiplier.Evaluate(CurrentTempoTier) /
+                              attackSpeedMultiplier;
+        if (IsReadWindowActive)
+            currentWindup *= tempoConfig.t2ReadAttackWindupMultiplier;
+        if (IsDuelStanceActive)
+            currentWindup *= 0.9f;
 
         yield return new WaitForSeconds(currentWindup);
 
-        // 2. Strike
-        // Check hit
-        if (attackPoint != null)
-        {
-            Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius);
-            foreach(var hit in hits)
-            {
-                if (!hit.CompareTag("Player")) continue;
+        if (!isDead && !isStunned)
+            ResolveAttackHit();
 
-                // Yonlu parry kontrolu (saldiri noktasindan geliyormus gibi degerlendir)
-                ParrySystem parry = hit.GetComponent<ParrySystem>();
-                Vector2 strikeOrigin = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
-                if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
-                {
-                    continue;
-                }
+        if (sr != null)
+            sr.color = originalColor;
 
-                IDamageable damageable = hit.GetComponent<IDamageable>();
-                var playerController = hit.GetComponent<PlayerController>();
-                if (playerController != null && playerController.IsInvulnerable)
-                {
-                    hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
-                    continue;
-                }
-
-                if (damageable != null)
-                {
-                    damageable.TakeDamage(damage);
-                }
-            }
-        }
-
-        if (sr != null) sr.color = originalColor;
-
-        // 3. Recovery (Vulnerable period)
         float recoveryTime = 0.8f;
-        float currentCooldown = attackCooldown / attackSpeedMultiplier;
-        if (TempoManager.Instance != null)
-        {
-            var tier = TempoManager.Instance.CurrentTier;
-            if (tier == TempoManager.TempoTier.T2) 
-            {
-                recoveryTime = 0.6f;
-                currentCooldown *= 0.8f; // Bekleme suresi kisalir
-            }
-            if (tier == TempoManager.TempoTier.T3) 
-            {
-                recoveryTime = 0.4f;
-                currentCooldown *= 0.6f; // Durmak bilmez
-            }
-        }
+        if (IsReadWindowActive)
+            recoveryTime = 0.5f;
+        if (IsDuelStanceActive)
+            recoveryTime = 0.45f;
 
         yield return new WaitForSeconds(recoveryTime);
 
-        isGuarding = !guardBroken; // Raise guard again
+        isGuarding = !guardBroken;
         isAttacking = false;
+
+        float currentCooldown = attackCooldown *
+                                tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier) /
+                                attackSpeedMultiplier;
+        if (IsReadWindowActive)
+            currentCooldown *= tempoConfig.t2ReadAttackCooldownMultiplier;
+        if (IsDuelStanceActive)
+            currentCooldown *= 0.85f;
+
         nextAttackTime = Time.time + currentCooldown;
         UpdateAnimatorState(false);
     }
 
     public override void TakeDamage(float amount)
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
-        // Blok Kontrolu
         if (isGuarding && !guardBroken && playerTransform != null)
         {
-            // Basit x yonu kontrolu (Cunku sadece saga/sola donuyoruz)
-            float facingDir = transform.localScale.x; // 1 (Right) or -1 (Left)
-            
-            // Oyuncunun yonu (bana gore nerede?)
-            float dirToPlayerX = Mathf.Sign(playerTransform.position.x - transform.position.x);
-
-            // Eger oyuncu onumdeyse BLOKLA
-            if (Mathf.Approximately(facingDir, dirToPlayerX))
+            Vector2 facing = transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+            Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+            if (Vector2.Angle(facing, toPlayer) <= blockAngle * 0.5f)
             {
-                // Block Effect
-                 if (DamagePopupManager.Instance != null)
-                     DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "BLOCK!", Color.cyan, 5f);
-                
+                if (DamagePopupManager.Instance != null)
+                    DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "BLOCK!", Color.cyan, 5f);
 
-                
-                // Belki bir ses veya spark efekti?
-                // Geri tepme (Knockback) eklenebilir
-                return; // Hasari iptal et
+                if (CurrentTempoTier >= TempoManager.TempoTier.T1)
+                    readWindowEndTime = Mathf.Max(readWindowEndTime, Time.time + 0.5f);
+
+                return;
             }
         }
 
-        // Blok degilse veya arkadan vurduysa hasar ye
-        if (animator != null) animator.SetTrigger(AnimHurt);
+        if (animator != null)
+            animator.SetTrigger(AnimHurt);
+
         base.TakeDamage(amount);
     }
-    
+
+    public override void Stun(float duration)
+    {
+        float finalDuration = duration;
+        if (CurrentTempoTier == TempoManager.TempoTier.T3 && duration >= 0.45f)
+            finalDuration *= tempoConfig.t3PerfectParryVulnerabilityMultiplier;
+
+        base.Stun(finalDuration);
+        isAttacking = false;
+        isGuarding = false;
+    }
+
+    public void OnParryReaction(ParryReactionContext context)
+    {
+        if (isDead)
+            return;
+
+        StopAllCoroutines();
+        isAttacking = false;
+        isGuarding = false;
+
+        if (animator != null)
+            animator.SetTrigger(AnimHurt);
+
+        float reactionDuration = Mathf.Max(0.05f, context.duration);
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+            reactionDuration *= tempoConfig.t3PerfectParryVulnerabilityMultiplier;
+
+        if (context.breakGuard)
+        {
+            if (guardBreakRoutine != null)
+                StopCoroutine(guardBreakRoutine);
+
+            guardBreakRoutine = StartCoroutine(GuardBreakRoutine(reactionDuration));
+            return;
+        }
+
+        base.Stun(reactionDuration);
+        StartCoroutine(RestoreGuardAfterDelay(reactionDuration));
+    }
+
+    private void ResolveAttackHit()
+    {
+        if (attackPoint == null)
+            return;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius);
+        foreach (Collider2D hit in hits)
+        {
+            if (!hit.CompareTag("Player"))
+                continue;
+
+            ParrySystem parry = hit.GetComponent<ParrySystem>();
+            Vector2 strikeOrigin = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
+            if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
+                continue;
+
+            IDamageable damageable = hit.GetComponent<IDamageable>();
+            PlayerController controller = hit.GetComponent<PlayerController>();
+            if (controller != null && controller.IsInvulnerable)
+            {
+                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                continue;
+            }
+
+            damageable?.TakeDamage(damage);
+        }
+    }
+
+    private void UpdateReadAndStanceState()
+    {
+        if (CurrentTempoTier >= TempoManager.TempoTier.T2 &&
+            EnemySupportUtility.IsPlayerRepeatingBasicAttacks(tempoConfig.t2ReadAttackWindow, tempoConfig.t2ReadAttackCount))
+        {
+            readWindowEndTime = Mathf.Max(readWindowEndTime, Time.time + tempoConfig.t2ReadWindowDuration);
+        }
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3 &&
+            !IsDuelStanceActive &&
+            Time.time >= nextDuelStanceTime &&
+            playerTransform != null &&
+            Vector2.Distance(transform.position, playerTransform.position) <= attackRange + 0.6f)
+        {
+            duelStanceEndTime = Time.time + tempoConfig.t3DuelStanceDuration;
+            nextDuelStanceTime = Time.time + tempoConfig.t3DuelStanceCooldown;
+        }
+    }
+
+    private void ApplyTempoTuning(TempoManager.TempoTier tier)
+    {
+        if (baseBlockAngle <= 0f)
+            baseBlockAngle = blockAngle;
+
+        blockAngle = baseBlockAngle + tempoConfig.blockAngleBonus.Evaluate(tier);
+    }
+
+    private bool IsReadWindowActive => Time.time < readWindowEndTime;
+    private bool IsDuelStanceActive => Time.time < duelStanceEndTime;
+
     private void UpdateVisuals()
     {
         SpriteRenderer sr = spriteRenderer != null ? spriteRenderer : GetComponentInChildren<SpriteRenderer>();
-        if (sr == null) return;
+        if (sr == null)
+            return;
 
         if (animator != null)
         {
@@ -267,20 +354,11 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             return;
         }
 
-        if (isAttacking) 
-        {
-            // AttackRoutine handles color override (Red)
-        }
-        else if (isGuarding)
-        {
-            sr.color = Color.blue; // Mavi = Defans (Kalkan)
-        }
-        else
-        {
-            // sr.color = Color.white; // Normal
-            // Not: HitFlash karisabilir, o yuzden surekli set etmemek lazim.
-            // Simdilik sadece Guard durumunu mavi yapiyoruz.
-        }
+        if (isAttacking)
+            return;
+
+        if (isGuarding)
+            sr.color = Color.blue;
     }
 
     private void SyncAttackPointToSprite()
@@ -303,46 +381,22 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (animator != null)
             animator.SetTrigger(AnimDie);
 
-        var rb = GetComponent<Rigidbody2D>();
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
-        var col = GetComponent<Collider2D>();
+        Collider2D col = GetComponent<Collider2D>();
         if (col != null)
             col.enabled = false;
     }
 
     private void UpdateAnimatorState(bool isMoving)
     {
-        if (animator == null) return;
+        if (animator == null)
+            return;
 
         animator.SetBool(AnimIsMoving, isMoving);
         animator.SetBool(AnimIsGuarding, isGuarding && !guardBroken && !isAttacking && !isDead && !isStunned);
-    }
-
-    public void OnParryReaction(ParryReactionContext context)
-    {
-        if (isDead)
-            return;
-
-        StopAllCoroutines();
-        isAttacking = false;
-        isGuarding = false;
-
-        if (animator != null)
-            animator.SetTrigger(AnimHurt);
-
-        if (context.breakGuard)
-        {
-            if (guardBreakRoutine != null)
-                StopCoroutine(guardBreakRoutine);
-
-            guardBreakRoutine = StartCoroutine(GuardBreakRoutine(Mathf.Max(0.05f, context.duration)));
-            return;
-        }
-
-        base.Stun(Mathf.Max(0.05f, context.duration));
-        StartCoroutine(RestoreGuardAfterDelay(Mathf.Max(0.05f, context.duration)));
     }
 
     private IEnumerator GuardBreakRoutine(float duration)

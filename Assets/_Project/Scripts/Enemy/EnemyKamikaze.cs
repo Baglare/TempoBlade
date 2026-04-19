@@ -1,24 +1,34 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
 
 /// <summary>
-/// İntihar bombacısı düşman.
-/// Oyuncuyu fark edince koşar; patlama menziline girince görsel telegraph başlar (0.8 s).
-/// Oyuncu bu sürede:
-///   – Perfect Parry (parry penceresi aktifken) → patlama iptal, kamikaze ölür.
-///   – Dodge i-frame (IsInvulnerable) → hasar atlatılır.
-/// Animator parametreleri: IsMoving (bool), Die (trigger).
+/// Intihar bombacisi dusman.
+/// Oyuncuyu fark edince kosar; patlama menziline girince telegraph baslar.
+/// Perfect parry patlamayi iptal eder. Dodge i-frame ile hasar atlatilabilir.
 /// </summary>
 public class EnemyKamikaze : EnemyBase
 {
+    [System.Serializable]
+    public class KamikazeTempoConfig
+    {
+        public TempoTierFloatValue rushSpeedMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1.12f, t2 = 1.12f, t3 = 1.25f };
+        public TempoTierFloatValue telegraphDurationMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 0.85f, t3 = 0.75f };
+        public float t2SqueezeOffsetDistance = 1.1f;
+        public float t3IncomingDamageMultiplier = 1.25f;
+        public float t3ChainReactionRadius = 3.25f;
+    }
+
     [Header("Kamikaze Settings")]
-    public float detectionRange   = 10f;  // Oyuncuyu görme menzili
-    public float explosionRange   = 1.4f; // Bu mesafede telegraph başlar (daha yakından patlar)
-    public float explosionRadius  = 2.5f; // Patlama AoE yarıçapı
-    public float explosionDamage  = 30f;
-    public float rushSpeed        = 7.5f; // Biraz daha hızlı koşsun
-    [Tooltip("Telegraph süresi (saniye). Oyuncunun parry/dodge yapabileceği pencere.")]
+    public float detectionRange = 10f;
+    public float explosionRange = 1.4f;
+    public float explosionRadius = 2.5f;
+    public float explosionDamage = 30f;
+    public float rushSpeed = 7.5f;
+    [Tooltip("Telegraph suresi (saniye). Oyuncunun parry/dodge yapabilecegi pencere.")]
     public float telegraphDuration = 0.45f;
+
+    [Header("Tempo")]
+    public KamikazeTempoConfig tempoConfig = new KamikazeTempoConfig();
 
     [Header("Animasyon")]
     [SerializeField] private float deathAnimDuration = 0.5f;
@@ -31,11 +41,10 @@ public class EnemyKamikaze : EnemyBase
     private Animator animator;
     private Vector3 originalScale;
 
-    // Gezinme
     private Vector2 wanderTarget;
     private float wanderTimer;
-
     private bool isDead;
+    private bool chainPrimed;
     private GameObject indicatorObj;
 
     protected override void Start()
@@ -44,21 +53,22 @@ public class EnemyKamikaze : EnemyBase
         deathDelay = deathAnimDuration;
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
+        if (player != null)
+            playerTransform = player.transform;
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        animator       = GetComponentInChildren<Animator>();
-        originalScale  = transform.localScale;
+        animator = GetComponentInChildren<Animator>();
+        originalScale = transform.localScale;
 
         SetNewWanderTarget();
     }
 
     private void Update()
     {
-        if (isDead || isStunned || playerTransform == null) return;
+        if (isDead || isStunned || playerTransform == null)
+            return;
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
-
         switch (state)
         {
             case State.Wandering:
@@ -68,15 +78,17 @@ public class EnemyKamikaze : EnemyBase
                 break;
 
             case State.Chasing:
-                // Oyuncu çok uzaklaştıysa gezer moda dön
                 if (dist > detectionRange * 1.4f)
                 {
                     state = State.Wandering;
                     break;
                 }
-                MoveTowards(playerTransform.position, rushSpeed);
-                FaceTarget(playerTransform.position);
-                if (animator != null) animator.SetBool("IsMoving", true);
+
+                Vector2 chaseTarget = GetChaseTargetPosition();
+                MoveTowards(chaseTarget, rushSpeed * tempoConfig.rushSpeedMultiplier.Evaluate(CurrentTempoTier));
+                FaceTarget(chaseTarget);
+                if (animator != null)
+                    animator.SetBool("IsMoving", true);
 
                 if (dist <= explosionRange)
                 {
@@ -84,12 +96,41 @@ public class EnemyKamikaze : EnemyBase
                     StartCoroutine(TelegraphAndExplode());
                 }
                 break;
-
-            // Telegraphing coroutine tarafından yönetilir
         }
     }
 
-    // ─────────────────────────────── HAREKET ───────────────────────────────
+    public override void TakeDamage(float amount)
+    {
+        if (isDead)
+            return;
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+            amount *= tempoConfig.t3IncomingDamageMultiplier;
+
+        base.TakeDamage(amount);
+    }
+
+    protected override void OnDeathAnimationStart()
+    {
+        isDead = true;
+        StopAllCoroutines();
+
+        if (indicatorObj != null)
+            Destroy(indicatorObj);
+
+        transform.localScale = originalScale;
+
+        if (animator != null)
+            animator.SetTrigger("Die");
+
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
+    }
 
     private void DoWander()
     {
@@ -100,13 +141,14 @@ public class EnemyKamikaze : EnemyBase
         float speed = enemyData != null ? enemyData.moveSpeed : 2f;
         MoveTowards(wanderTarget, speed);
 
-        if (animator != null) animator.SetBool("IsMoving", true);
+        if (animator != null)
+            animator.SetBool("IsMoving", true);
     }
 
     private void SetNewWanderTarget()
     {
         wanderTarget = (Vector2)transform.position + Random.insideUnitCircle.normalized * 4f;
-        wanderTimer  = Random.Range(2f, 4f);
+        wanderTimer = Random.Range(2f, 4f);
     }
 
     private void MoveTowards(Vector2 target, float speed)
@@ -116,21 +158,54 @@ public class EnemyKamikaze : EnemyBase
 
     private void FaceTarget(Vector2 target)
     {
-        if (spriteRenderer == null) return;
+        if (spriteRenderer == null)
+            return;
+
         spriteRenderer.flipX = target.x < transform.position.x;
     }
 
-    // ─────────────────────────── TELEGRAPH & PATLAMA ────────────────────────
+    private Vector2 GetChaseTargetPosition()
+    {
+        Vector2 playerPosition = playerTransform.position;
+        if (CurrentTempoTier < TempoManager.TempoTier.T2)
+            return playerPosition;
+
+        EnemyBase[] allEnemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        for (int i = 0; i < allEnemies.Length; i++)
+        {
+            EnemyBase enemy = allEnemies[i];
+            if (enemy == null || enemy == this || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
+                continue;
+
+            if (Vector2.Distance(transform.position, enemy.transform.position) > 2.5f)
+                continue;
+
+            Vector2 toPlayer = (playerPosition - (Vector2)transform.position).normalized;
+            if (toPlayer.sqrMagnitude <= 0.001f)
+                return playerPosition;
+
+            Vector2 perpendicular = new Vector2(-toPlayer.y, toPlayer.x);
+            float side = Mathf.Sign(Vector2.Dot(perpendicular, (Vector2)enemy.transform.position - playerPosition));
+            if (Mathf.Approximately(side, 0f))
+                side = Random.value < 0.5f ? -1f : 1f;
+
+            return playerPosition + perpendicular * side * tempoConfig.t2SqueezeOffsetDistance;
+        }
+
+        return playerPosition;
+    }
 
     private IEnumerator TelegraphAndExplode()
     {
-        // Dur
-        var rb = GetComponent<Rigidbody2D>();
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-        if (animator != null) animator.SetBool("IsMoving", false);
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        if (animator != null)
+            animator.SetBool("IsMoving", false);
 
-        // Görsel İndikatör (Tehlike Alanı) oluştur
-        if (indicatorObj != null) Destroy(indicatorObj);
+        if (indicatorObj != null)
+            Destroy(indicatorObj);
+
         indicatorObj = new GameObject("Kamikaze_AoE_Indicator");
         indicatorObj.transform.position = transform.position;
         LineRenderer aoeIndicator = indicatorObj.AddComponent<LineRenderer>();
@@ -138,32 +213,30 @@ public class EnemyKamikaze : EnemyBase
         aoeIndicator.endWidth = 0.08f;
         aoeIndicator.positionCount = 41;
         aoeIndicator.useWorldSpace = false;
-        
-        // Standart material ataması
         aoeIndicator.material = new Material(Shader.Find("Sprites/Default"));
         aoeIndicator.startColor = new Color(1f, 0f, 0f, 0f);
         aoeIndicator.endColor = new Color(1f, 0f, 0f, 0f);
-        
+
         float angle = 0f;
         for (int i = 0; i <= 40; i++)
         {
             float x = Mathf.Sin(Mathf.Deg2Rad * angle) * explosionRadius;
             float y = Mathf.Cos(Mathf.Deg2Rad * angle) * explosionRadius;
-            aoeIndicator.SetPosition(i, new Vector3(x, y, 0));
-            angle += (360f / 40);
+            aoeIndicator.SetPosition(i, new Vector3(x, y, 0f));
+            angle += 360f / 40f;
         }
 
-        // Renk + büyüme animasyonu (sarı→kırmızı, %150 büyüme)
+        float actualTelegraphDuration = telegraphDuration * tempoConfig.telegraphDurationMultiplier.Evaluate(CurrentTempoTier);
+        actualTelegraphDuration = Mathf.Max(0.08f, actualTelegraphDuration);
+
         float timer = 0f;
-        while (timer < telegraphDuration)
+        while (timer < actualTelegraphDuration)
         {
-            float t = timer / telegraphDuration;
+            float t = timer / actualTelegraphDuration;
             if (spriteRenderer != null)
-                spriteRenderer.color = Color.Lerp(Color.yellow, Color.red,
-                                           Mathf.PingPong(timer * 6f, 1f));
+                spriteRenderer.color = Color.Lerp(Color.yellow, Color.red, Mathf.PingPong(timer * 6f, 1f));
             transform.localScale = Vector3.Lerp(originalScale, originalScale * 1.5f, t);
-            
-            // Indicator'ı yavasca belirginlestir
+
             if (aoeIndicator != null)
             {
                 aoeIndicator.startColor = new Color(1f, 0.1f, 0.1f, Mathf.Lerp(0.1f, 0.6f, t));
@@ -174,33 +247,34 @@ public class EnemyKamikaze : EnemyBase
             yield return null;
         }
 
-        if (indicatorObj != null) Destroy(indicatorObj);
+        if (indicatorObj != null)
+            Destroy(indicatorObj);
+
         Explode();
     }
 
     private void Explode()
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
-        // 1. Parry kontrolü
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         ParrySystem parry = playerObj != null ? playerObj.GetComponent<ParrySystem>() : null;
         if (parry != null && parry.TryParry(gameObject))
         {
-            // Perfect Parry: patlama iptal, kamikaze ölür
+            TriggerNearbyUnstableCores();
             Die();
             return;
         }
 
-        // 2. Dodge i-frame kontrolü
         PlayerController pc = playerObj != null ? playerObj.GetComponent<PlayerController>() : null;
         bool playerInvulnerable = pc != null && pc.IsInvulnerable;
 
-        // 3. AoE hasar
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-        foreach (var hit in hits)
+        foreach (Collider2D hit in hits)
         {
-            if (!hit.CompareTag("Player")) continue;
+            if (!hit.CompareTag("Player"))
+                continue;
 
             if (playerInvulnerable)
             {
@@ -211,36 +285,35 @@ public class EnemyKamikaze : EnemyBase
             hit.GetComponent<IDamageable>()?.TakeDamage(explosionDamage);
         }
 
+        TriggerNearbyUnstableCores();
         Die();
     }
 
-    // ─────────────────────────── HASAR & ÖLÜM ───────────────────────────────
-
-    public override void TakeDamage(float amount)
+    private void TriggerNearbyUnstableCores()
     {
-        if (isDead) return;
-        base.TakeDamage(amount);
+        if (CurrentTempoTier != TempoManager.TempoTier.T3)
+            return;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, tempoConfig.t3ChainReactionRadius);
+        foreach (Collider2D hit in hits)
+        {
+            EnemyKamikaze other = hit.GetComponent<EnemyKamikaze>();
+            if (other == null || other == this)
+                continue;
+
+            other.PrimeFromChain();
+        }
     }
 
-    protected override void OnDeathAnimationStart()
+    private void PrimeFromChain()
     {
-        isDead = true;
-        StopAllCoroutines();
+        if (isDead || state == State.Telegraphing || chainPrimed)
+            return;
 
-        if (indicatorObj != null) Destroy(indicatorObj);
-
-        transform.localScale = originalScale; // Boyutu sıfırla
-
-        if (animator != null) animator.SetTrigger("Die");
-
-        var rb  = GetComponent<Rigidbody2D>();
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        chainPrimed = true;
+        state = State.Telegraphing;
+        StartCoroutine(TelegraphAndExplode());
     }
-
-    // ─────────────────────────────── GIZMOS ─────────────────────────────────
 
     private void OnDrawGizmosSelected()
     {

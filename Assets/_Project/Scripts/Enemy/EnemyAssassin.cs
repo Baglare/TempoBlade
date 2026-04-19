@@ -1,37 +1,38 @@
 using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// Görünmez suikastçı düşman.
-///
-/// Davranış:
-///   – Oyuncu menzilde değil → görünmez rastgele gezinir.
-///   – Oyuncu tespit menziline girdi → görünmez takip eder.
-///   – Saldırıdan 0.15 s önce görünür olur, saldırır, yeniden görünmez olur, çekilir.
-///
-/// Özel kural: Arenada sadece suikastçılar kaldıysa VEYA toplam
-///   düşman sayısı ≤ 3 ise, tüm suikastçılar yarı saydam (0.3 alpha) görünür.
-///
-/// Animator parametreleri: IsMoving (bool), Die (trigger).
-/// </summary>
 public class EnemyAssassin : EnemyBase
 {
+    [System.Serializable]
+    public class AssassinTempoConfig
+    {
+        public TempoTierFloatValue preAttackVisibleMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 0.9f, t2 = 0.78f, t3 = 0.78f };
+        public TempoTierFloatValue attackCooldownMultiplier = new TempoTierFloatValue { t0 = 1f, t1 = 1f, t2 = 0.9f, t3 = 0.9f };
+        public TempoTierFloatValue orbitDistance = new TempoTierFloatValue { t0 = 0f, t1 = 0.8f, t2 = 1.25f, t3 = 1.45f };
+        public TempoTierFloatValue orbitRefreshInterval = new TempoTierFloatValue { t0 = 99f, t1 = 0.7f, t2 = 0.4f, t3 = 0.3f };
+        public float t3DoubleRepositionChance = 0.35f;
+        public float t3PunishWindowDuration = 1.1f;
+        public float t3PunishSpeedMultiplier = 0.55f;
+        public float shortRepositionDistance = 1f;
+        public float shortRepositionDuration = 0.08f;
+    }
+
     [Header("Assassin Settings")]
-    public float detectionRange  = 8f;
-    public float attackRange     = 1.4f;
-    public float attackDamage    = 20f;
-    public float attackCooldown  = 2.5f;
+    public float detectionRange = 8f;
+    public float attackRange = 1.4f;
+    public float attackDamage = 20f;
+    public float attackCooldown = 2.5f;
     public float retreatDuration = 1.6f;
 
-    [Header("Görünürlük")]
-    [Tooltip("Normal gezinme/takip sırasında alpha değeri (0 = tam görünmez)")]
-    public float invisibleAlpha   = 0f;
-    [Tooltip("Yarı görünür durumlarda alpha (sadece suikastçılar/son 3 mob)")]
+    [Header("Visibility")]
+    public float invisibleAlpha = 0f;
     public float semiVisibleAlpha = 0.3f;
-    [Tooltip("Saldırı öncesinde görünür kalınan süre (saniye)")]
     public float preAttackVisibleTime = 0.15f;
 
-    [Header("Animasyon")]
+    [Header("Tempo")]
+    public AssassinTempoConfig tempoConfig = new AssassinTempoConfig();
+
+    [Header("Animation")]
     [SerializeField] private float deathAnimDuration = 0.5f;
 
     private enum State { RoamingInvisible, TrackingInvisible, PreAttack, Attacking, Retreating }
@@ -40,11 +41,13 @@ public class EnemyAssassin : EnemyBase
     private Transform playerTransform;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-
     private Vector2 wanderTarget;
-    private float   wanderTimer;
-    private float   nextAttackTime;
-    private bool    isDead;
+    private float wanderTimer;
+    private float nextAttackTime;
+    private bool isDead;
+    private float punishWindowEndTime;
+    private int orbitSide = 1;
+    private float nextOrbitRefreshTime;
 
     protected override void Start()
     {
@@ -52,10 +55,11 @@ public class EnemyAssassin : EnemyBase
         deathDelay = deathAnimDuration;
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) playerTransform = player.transform;
+        if (player != null)
+            playerTransform = player.transform;
 
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        animator       = GetComponentInChildren<Animator>();
+        animator = GetComponentInChildren<Animator>();
 
         SetAlpha(invisibleAlpha);
         SetNewWanderTarget();
@@ -63,36 +67,38 @@ public class EnemyAssassin : EnemyBase
 
     private void Update()
     {
-        if (isDead || isStunned || playerTransform == null) return;
+        if (isDead || isStunned || playerTransform == null)
+            return;
 
-        float dist  = Vector2.Distance(transform.position, playerTransform.position);
+        float dist = Vector2.Distance(transform.position, playerTransform.position);
         float speed = (enemyData != null ? enemyData.moveSpeed : 3f) * GetSupportMoveSpeedMultiplier();
+        if (IsPunishWindowActive())
+            speed *= tempoConfig.t3PunishSpeedMultiplier;
 
         RefreshVisibility();
 
         if (animator != null)
-            animator.SetBool("IsMoving", state == State.RoamingInvisible ||
-                                          state == State.TrackingInvisible ||
-                                          state == State.Retreating);
+        {
+            bool moving = state == State.RoamingInvisible || state == State.TrackingInvisible || state == State.Retreating;
+            animator.SetBool("IsMoving", moving);
+        }
 
         switch (state)
         {
             case State.RoamingInvisible:
                 DoWander(speed);
-                if (dist <= detectionRange) state = State.TrackingInvisible;
+                if (dist <= detectionRange)
+                    state = State.TrackingInvisible;
                 break;
 
             case State.TrackingInvisible:
                 FaceTarget(playerTransform.position);
-
-                // Oyuncu kaçtıysa tekrar gez
                 if (dist > detectionRange * 1.2f)
                 {
                     state = State.RoamingInvisible;
                     break;
                 }
 
-                // Uygun mesafeyse saldırıya hazırlan
                 if (dist <= attackRange * 2.5f && Time.time >= nextAttackTime)
                 {
                     state = State.PreAttack;
@@ -100,61 +106,64 @@ public class EnemyAssassin : EnemyBase
                 }
                 else
                 {
-                    // Takip et
-                    transform.position = Vector2.MoveTowards(
-                        transform.position, playerTransform.position, speed * Time.deltaTime);
+                    Vector2 trackingTarget = GetTrackingTarget();
+                    transform.position = Vector2.MoveTowards(transform.position, trackingTarget, speed * Time.deltaTime);
                 }
                 break;
 
             case State.Retreating:
-                // Oyuncudan uzaklaş
-                Vector2 away = ((Vector2)transform.position -
-                                (Vector2)playerTransform.position).normalized;
+                Vector2 away = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
                 transform.position = Vector2.MoveTowards(
                     transform.position,
                     (Vector2)transform.position + away,
                     speed * 1.2f * Time.deltaTime);
                 break;
-
-            // PreAttack / Attacking → coroutine yönetir
         }
     }
 
-    // ─────────────────────────── SALDIRI DIZISI ─────────────────────────────
-
     private IEnumerator AttackSequence()
     {
-        // 1. Kısa süre görünür ol (uyarı penceresi)
+        float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        float visibleTime = preAttackVisibleTime * tempoConfig.preAttackVisibleMultiplier.Evaluate(CurrentTempoTier);
+
         SetAlpha(1f);
-        yield return new WaitForSeconds(preAttackVisibleTime / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier()));
+        yield return new WaitForSeconds(visibleTime / attackSpeedMultiplier);
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3 && Random.value < tempoConfig.t3DoubleRepositionChance)
+        {
+            yield return ShortReposition(orbitSide);
+            yield return ShortReposition(-orbitSide);
+        }
 
         state = State.Attacking;
-
-        // 2. Hızlı lunge (oyuncuya fırlat)
         if (playerTransform != null)
         {
             float lungeTime = 0.12f;
-            float elapsed   = 0f;
+            float elapsed = 0f;
             while (elapsed < lungeTime)
             {
-                transform.position = Vector2.MoveTowards(
-                    transform.position, playerTransform.position, 22f * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, playerTransform.position, 22f * Time.deltaTime);
                 elapsed += Time.deltaTime;
                 yield return null;
             }
         }
 
-        // 3. Hasar ver (yonlu parry kontrolu)
+        bool hitPlayer = false;
+        bool parried = false;
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRange);
         foreach (var hit in hits)
         {
-            if (!hit.CompareTag("Player")) continue;
+            if (!hit.CompareTag("Player"))
+                continue;
 
             ParrySystem parry = hit.GetComponent<ParrySystem>();
             if (parry != null && parry.TryBlockMelee(transform.position, gameObject))
-                continue; // Parry basarili — suikastci geri cekiliyor
+            {
+                parried = true;
+                continue;
+            }
 
-            var playerController = hit.GetComponent<PlayerController>();
+            PlayerController playerController = hit.GetComponent<PlayerController>();
             if (playerController != null && playerController.IsInvulnerable)
             {
                 hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
@@ -162,61 +171,83 @@ public class EnemyAssassin : EnemyBase
             }
 
             hit.GetComponent<IDamageable>()?.TakeDamage(attackDamage);
+            hitPlayer = true;
         }
 
-        // 4. Görünmez ol + çekil
         SetAlpha(invisibleAlpha);
         state = State.Retreating;
-        nextAttackTime = Time.time + attackCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        nextAttackTime = Time.time + attackCooldown * tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier) / attackSpeedMultiplier;
+
+        if (CurrentTempoTier == TempoManager.TempoTier.T3 && (parried || !hitPlayer))
+            EnterPunishWindow();
 
         yield return new WaitForSeconds(retreatDuration);
-
-        // Hâlâ hayattaysak takip moduna dön
-        if (!isDead) state = State.TrackingInvisible;
+        if (!isDead)
+            state = State.TrackingInvisible;
     }
 
-    // ──────────────────────────── GÖRÜNÜRLÜK ────────────────────────────────
+    private IEnumerator ShortReposition(int sideSign)
+    {
+        if (playerTransform == null)
+            yield break;
 
-    /// <summary>
-    /// Her frame görünürlüğü günceller.
-    /// Saldırı sekansı sırasında (coroutine kontrolünde) müdahale etmez.
-    /// </summary>
+        Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+        Vector2 lateral = new Vector2(-toPlayer.y, toPlayer.x) * Mathf.Sign(sideSign);
+        Vector2 start = transform.position;
+        Vector2 end = start + lateral * tempoConfig.shortRepositionDistance;
+        float elapsed = 0f;
+        while (elapsed < tempoConfig.shortRepositionDuration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector2.Lerp(start, end, elapsed / tempoConfig.shortRepositionDuration);
+            yield return null;
+        }
+    }
+
     private void RefreshVisibility()
     {
-        if (state == State.PreAttack || state == State.Attacking) return;
+        if (state == State.PreAttack || state == State.Attacking)
+            return;
+
+        if (IsPunishWindowActive())
+        {
+            SetAlpha(1f);
+            return;
+        }
 
         float targetAlpha = ShouldBeRevealed() ? semiVisibleAlpha : invisibleAlpha;
         SetAlpha(targetAlpha);
     }
 
-    /// <summary>
-    /// Sahnede yalnızca suikastçılar kaldıysa VEYA toplam düşman sayısı ≤ 3 ise true döner.
-    /// </summary>
     private bool ShouldBeRevealed()
     {
-        if (RoomManager.Instance == null) return false;
+        if (RoomManager.Instance == null)
+            return false;
 
         var enemies = RoomManager.Instance.activeEnemies;
-        if (enemies.Count == 0)  return false;
-        if (enemies.Count <= 3)  return true;
+        if (enemies.Count == 0)
+            return false;
+        if (enemies.Count <= 3)
+            return true;
 
-        foreach (var e in enemies)
+        foreach (var enemy in enemies)
         {
-            if (e != null && e.GetComponent<EnemyAssassin>() == null)
+            if (enemy != null && enemy.GetComponent<EnemyAssassin>() == null)
                 return false;
         }
-        return true; // Hepsi suikastçı
+
+        return true;
     }
 
     private void SetAlpha(float alpha)
     {
-        if (spriteRenderer == null) return;
+        if (spriteRenderer == null)
+            return;
+
         Color c = spriteRenderer.color;
         c.a = alpha;
         spriteRenderer.color = c;
     }
-
-    // ─────────────────────────────── HAREKET ────────────────────────────────
 
     private void DoWander(float speed)
     {
@@ -230,22 +261,48 @@ public class EnemyAssassin : EnemyBase
     private void SetNewWanderTarget()
     {
         wanderTarget = (Vector2)transform.position + Random.insideUnitCircle.normalized * 4f;
-        wanderTimer  = Random.Range(2f, 4f);
+        wanderTimer = Random.Range(2f, 4f);
     }
 
     private void FaceTarget(Vector2 target)
     {
-        if (spriteRenderer == null) return;
+        if (spriteRenderer == null)
+            return;
+
         spriteRenderer.flipX = target.x < transform.position.x;
     }
 
-    // ─────────────────────────── HASAR & ÖLÜM ───────────────────────────────
+    private Vector2 GetTrackingTarget()
+    {
+        if (CurrentTempoTier == TempoManager.TempoTier.T0 || playerTransform == null)
+            return playerTransform.position;
+
+        if (Time.time >= nextOrbitRefreshTime)
+        {
+            nextOrbitRefreshTime = Time.time + tempoConfig.orbitRefreshInterval.Evaluate(CurrentTempoTier);
+            orbitSide = Random.value < 0.5f ? -1 : 1;
+        }
+
+        Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+        Vector2 lateral = new Vector2(-toPlayer.y, toPlayer.x) * orbitSide;
+        return (Vector2)playerTransform.position + lateral * tempoConfig.orbitDistance.Evaluate(CurrentTempoTier);
+    }
+
+    private void EnterPunishWindow()
+    {
+        punishWindowEndTime = Time.time + tempoConfig.t3PunishWindowDuration;
+    }
+
+    private bool IsPunishWindowActive()
+    {
+        return Time.time < punishWindowEndTime;
+    }
 
     public override void TakeDamage(float amount)
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
-        // Vurulunca ani görünür olma (küçük bilgi sızıntısı)
         if (spriteRenderer != null)
         {
             Color c = spriteRenderer.color;
@@ -259,11 +316,12 @@ public class EnemyAssassin : EnemyBase
     public override void Stun(float duration)
     {
         base.Stun(duration);
-        // Stun olunca saldırı korumasını iptal et
         if (state == State.PreAttack || state == State.Attacking)
         {
             StopAllCoroutines();
             state = State.TrackingInvisible;
+            if (CurrentTempoTier == TempoManager.TempoTier.T3)
+                EnterPunishWindow();
         }
     }
 
@@ -271,20 +329,19 @@ public class EnemyAssassin : EnemyBase
     {
         isDead = true;
         StopAllCoroutines();
-
-        // Ölünce tam görünür ol
         SetAlpha(1f);
 
-        if (animator != null) animator.SetTrigger("Die");
+        if (animator != null)
+            animator.SetTrigger("Die");
 
-        var rb  = GetComponent<Rigidbody2D>();
-        if (rb  != null) rb.linearVelocity = Vector2.zero;
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
 
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.enabled = false;
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
     }
-
-    // ─────────────────────────────── GIZMOS ─────────────────────────────────
 
     private void OnDrawGizmosSelected()
     {
