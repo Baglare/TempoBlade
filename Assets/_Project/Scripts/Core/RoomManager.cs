@@ -57,14 +57,19 @@ public class RoomManager : MonoBehaviour
 
     public void StartRoom()
     {
+        StopAllCoroutines();
+        StartCoroutine(StartRoomRoutine());
+    }
+
+    private IEnumerator StartRoomRoutine()
+    {
         if (currentRoomData == null)
         {
             Debug.LogError("RoomManager: Current Room Data is MISSING!");
-            return;
+            yield break;
         }
 
         // --- RESET STATE FOR NEW ROOM ---
-        StopAllCoroutines();
         activeEnemies.Clear();
 
         // Sahnede önceden yerleştirilmiş düşmanları temizle
@@ -110,8 +115,18 @@ public class RoomManager : MonoBehaviour
         isRoomActive = true;
         currentWaveIndex = 0;
 
+        EncounterAffinityManager affinityManager = EncounterAffinityManager.EnsureInstance();
+        EncounterBreakdownUI breakdownUi = EncounterBreakdownUI.EnsureInstance();
+        if (affinityManager.HasPendingBreakdown())
+        {
+            bool waitingForBreakdown = true;
+            breakdownUi.Show(affinityManager.ConsumePendingBreakdown(), () => waitingForBreakdown = false);
+            while (waitingForBreakdown)
+                yield return null;
+        }
+
         GameObject telemetryPlayer = GameObject.FindGameObjectWithTag("Player");
-        EncounterAffinityManager.EnsureInstance().StartEncounter(currentRoomData, telemetryPlayer);
+        affinityManager.StartEncounter(currentRoomData, telemetryPlayer);
         
         // Eğer odanın wave tanımı yoksa direkt odayı tamamla (Örn: Boş Boss odası test için)
         if (currentRoomData.waves == null || currentRoomData.waves.Count == 0 || currentRoomLayout == null)

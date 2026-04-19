@@ -214,17 +214,52 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDuelist
   enemyData: {fileID: 11400000, guid: 8c1277e0cc1cac84db3081d2cb3f1c88, type: 2}
+  stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   moveSpeed: 2
   attackRange: 1.5
-  attackCooldown: 3
-  blockAngle: 140
+  attackCooldown: 2.7
+  blockAngle: 125
   isGuarding: 0
-  damage: 15
+  damage: 16
   attackWindup: 0.6
   attackPoint: {fileID: 6021523436090824746}
   attackRadius: 1
   weaponArcVisual: {fileID: 0}
+  tempoConfig:
+    moveSpeedMultiplier:
+      t0: 1
+      t1: 1.06
+      t2: 1.08
+      t3: 1.12
+    attackCooldownMultiplier:
+      t0: 1
+      t1: 0.92
+      t2: 0.82
+      t3: 0.76
+    attackWindupMultiplier:
+      t0: 1
+      t1: 0.95
+      t2: 0.82
+      t3: 0.7
+    blockAngleBonus:
+      t0: 0
+      t1: 8
+      t2: 12
+      t3: 16
+    t2ReadWindowDuration: 1
+    t2ReadAttackWindow: 1.2
+    t2ReadAttackCount: 2
+    t2ReadAttackCooldownMultiplier: 0.82
+    t2ReadAttackWindupMultiplier: 0.75
+    t3DuelStanceDuration: 2.1
+    t3DuelStanceCooldown: 5.5
+    t3DuelStanceMoveMultiplier: 1.12
+    t3PerfectParryVulnerabilityMultiplier: 1.5
+  deathAnimDuration: 0.5
+  autoAlignAttackPoint: 1
+  attackPointFrontPadding: 0.08
+  attackPointHeightOffset: 0
 --- !u!114 &4965604696588243548
 MonoBehaviour:
   m_ObjectHideFlags: 0

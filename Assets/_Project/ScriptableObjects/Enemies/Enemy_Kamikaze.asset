@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Kamikaze Enemy
   prefab: {fileID: 1626837106156574651, guid: 6fbe536d942fc9c409a9c2a4398d3175, type: 3}
-  maxHealth: 200
+  maxHealth: 70
   damage: 10
   moveSpeed: 5
   goldDrop: 0
+  countsForProgression: 1
+  wardenProtectPriority: 0
   detectionRange: 8
   attackRange: 1.5
   attackCooldown: 2

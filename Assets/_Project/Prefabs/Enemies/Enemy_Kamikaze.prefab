@@ -122,13 +122,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyKamikaze
   enemyData: {fileID: 11400000, guid: 8108b8c762843574cbe210f033a7ed72, type: 2}
+  stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   detectionRange: 10
   explosionRange: 1.8
-  explosionRadius: 4.5
-  explosionDamage: 35
+  explosionRadius: 3.2
+  explosionDamage: 28
   rushSpeed: 7.5
-  telegraphDuration: 0.45
+  telegraphDuration: 0.6
+  tempoConfig:
+    rushSpeedMultiplier:
+      t0: 1
+      t1: 1.12
+      t2: 1.12
+      t3: 1.25
+    telegraphDurationMultiplier:
+      t0: 1
+      t1: 1
+      t2: 0.85
+      t3: 0.75
+    t2SqueezeOffsetDistance: 1.1
+    t3IncomingDamageMultiplier: 1.25
+    t3ChainReactionRadius: 2.4
   deathAnimDuration: 0.5
 --- !u!114 &4935434359058384201
 MonoBehaviour:

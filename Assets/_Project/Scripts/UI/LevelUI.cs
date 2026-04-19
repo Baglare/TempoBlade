@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 public class LevelUI : MonoBehaviour
 {
     public TextMeshProUGUI levelText;
+    private bool hasHiddenLevelText;
 
     private void OnEnable()
     {
@@ -19,7 +20,7 @@ public class LevelUI : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        UpdateLevelText();
+        HideLevelText();
     }
 
     private void Start()
@@ -33,25 +34,12 @@ public class LevelUI : MonoBehaviour
                 levelText = GetComponentInChildren<TextMeshProUGUI>();
             }
         }
-        UpdateLevelText();
+        HideLevelText();
     }
 
     private void UpdateLevelText()
     {
-        if (LevelManager.Instance == null)
-        {
-
-            StartCoroutine(WaitForLevelManager());
-            return;
-        }
-
-        if (levelText == null)
-        {
-
-             return;
-        }
-
-        levelText.text = "LEVEL " + LevelManager.Instance.currentLevelIndex;
+        HideLevelText();
     }
 
     private System.Collections.IEnumerator WaitForLevelManager()
@@ -60,6 +48,29 @@ public class LevelUI : MonoBehaviour
         {
             yield return null;
         }
-        UpdateLevelText();
+        HideLevelText();
+    }
+
+    private void HideLevelText()
+    {
+        if (hasHiddenLevelText)
+            return;
+
+        if (levelText == null)
+        {
+            levelText = GetComponent<TextMeshProUGUI>();
+            if (levelText == null)
+                levelText = GetComponentInChildren<TextMeshProUGUI>(true);
+        }
+
+        if (levelText != null)
+        {
+            levelText.text = string.Empty;
+            levelText.enabled = false;
+            hasHiddenLevelText = true;
+        }
+
+        if (gameObject.activeSelf)
+            gameObject.SetActive(false);
     }
 }

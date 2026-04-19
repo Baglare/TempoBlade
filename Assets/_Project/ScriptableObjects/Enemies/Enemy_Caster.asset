@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Caster Enemy
   prefab: {fileID: 7309550567315125130, guid: 2b6e77148d61cbc4b8b1dba18f91b185, type: 3}
-  maxHealth: 120
-  damage: 65
+  maxHealth: 95
+  damage: 22
   moveSpeed: 5.5
   goldDrop: 7
   countsForProgression: 1

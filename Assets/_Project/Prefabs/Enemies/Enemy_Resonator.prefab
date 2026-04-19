@@ -188,24 +188,45 @@ MonoBehaviour:
   repositionMoveSpeed: 5
   anchorRefreshInterval: 0.35
   rallyPulseRadius: 4.5
-  rallyPulseCooldown: 6
+  rallyPulseCooldown: 6.5
   rallyPulseWindup: 0.45
   rallyBuffDuration: 4
-  rallyMoveSpeedMultiplier: 1.22
-  rallyAttackSpeedMultiplier: 1.18
+  rallyMoveSpeedMultiplier: 1.15
+  rallyAttackSpeedMultiplier: 1.12
   rallyIgnoreNextLightStagger: 1
   rallyPulseColor: {r: 0.2, g: 1, b: 1, a: 0.95}
   tempoStaticCooldown: 7.5
   tempoStaticWindup: 0.35
   tempoStaticDuration: 4
   tempoStaticRadius: 2.6
-  tempoStaticGainMultiplier: 0.72
-  tempoStaticDecayMultiplier: 1.35
+  tempoStaticGainMultiplier: 0.82
+  tempoStaticDecayMultiplier: 1.2
   tempoStaticColor: {r: 0.3, g: 0.95, b: 1, a: 0.85}
   soundBurstRange: 1.8
   soundBurstCooldown: 3
-  soundBurstDamage: 6
+  soundBurstDamage: 5
   soundBurstKnockback: 9
   soundBurstStagger: 0.22
   soundBurstColor: {r: 1, g: 0.55, b: 0.2, a: 0.9}
+  tempoConfig:
+    rallyCooldownMultiplier:
+      t0: 1
+      t1: 0.9
+      t2: 0.9
+      t3: 0.8
+    anchorRefreshMultiplier:
+      t0: 1
+      t1: 1
+      t2: 0.82
+      t3: 0.72
+    t2TempoStaticLeadTime: 0.4
+    t2RallyRadiusMultiplier: 1.1
+    t2RallyDurationMultiplier: 1.1
+    t3RallyMoveMultiplier: 1.12
+    t3RallyAttackMultiplier: 1.08
+    t3TempoStaticRadiusMultiplier: 1.12
+    t3TempoStaticGainMultiplier: 0.88
+    t3TempoStaticDecayMultiplier: 1.12
+    t3IncomingStunMultiplier: 1.2
+    t3InterruptCooldownPenalty: 0.8
   deathAnimDuration: 0.6

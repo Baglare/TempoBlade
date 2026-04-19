@@ -15,56 +15,73 @@ public class SkillTreePanelUI : MonoBehaviour
     public ProgressionAxisSO overdriveAxis;
     public ProgressionAxisSO cadenceAxis;
 
-    [Header("Colors")]
-    public Color lockedColor = new Color(0.30f, 0.30f, 0.35f, 1f);
-    public Color unlockedColor = new Color(0.15f, 0.85f, 0.55f, 1f);
-    public Color commitmentColor = new Color(1f, 0.65f, 0.15f, 1f);
-    public Color dashT1Color = new Color(0.4f, 0.75f, 1f, 1f);
-    public Color hunterColor = new Color(0.9f, 0.35f, 0.2f, 1f);
-    public Color flowColor = new Color(0.3f, 0.55f, 1f, 1f);
-    public Color parryT1Color = new Color(1f, 0.55f, 0.2f, 1f);
-    public Color ballisticColor = new Color(1f, 0.78f, 0.28f, 1f);
-    public Color perfectionistColor = new Color(1f, 0.32f, 0.32f, 1f);
-    public Color overdriveT1Color = new Color(1f, 0.24f, 0.16f, 1f);
-    public Color burstColor = new Color(1f, 0.45f, 0.08f, 1f);
-    public Color predatorColor = new Color(0.95f, 0.08f, 0.08f, 1f);
-    public Color cadenceT1Color = new Color(0.35f, 0.95f, 0.78f, 1f);
-    public Color measuredCadenceColor = new Color(0.30f, 0.75f, 1f, 1f);
-    public Color flowCadenceColor = new Color(0.55f, 0.95f, 0.45f, 1f);
-    public Color panelBg = new Color(0.08f, 0.08f, 0.12f, 0.96f);
-    public Color nodeBg = new Color(0.15f, 0.15f, 0.20f, 1f);
-    public Color lineColor = new Color(0.4f, 0.4f, 0.5f, 0.6f);
-    public Color lineUnlockedColor = new Color(0.15f, 0.85f, 0.55f, 0.8f);
+    [Header("Theme")]
+    public Color overlayColor = new Color(0.03f, 0.04f, 0.07f, 0.92f);
+    public Color panelColor = new Color(0.08f, 0.10f, 0.15f, 0.98f);
+    public Color cardColor = new Color(0.11f, 0.14f, 0.20f, 0.98f);
+    public Color cardAltColor = new Color(0.09f, 0.12f, 0.17f, 0.98f);
+    public Color lockedColor = new Color(0.31f, 0.33f, 0.39f, 1f);
+    public Color unlockableColor = new Color(0.92f, 0.74f, 0.26f, 1f);
+    public Color unlockedColor = new Color(0.20f, 0.85f, 0.56f, 1f);
+    public Color selectedColor = new Color(0.35f, 0.72f, 1f, 1f);
+    public Color lineLockedColor = new Color(0.35f, 0.39f, 0.48f, 0.55f);
+    public Color lineUnlockedColor = new Color(0.20f, 0.80f, 0.58f, 0.85f);
+    public Color textPrimary = new Color(0.96f, 0.97f, 1f, 1f);
+    public Color textSecondary = new Color(0.74f, 0.80f, 0.90f, 1f);
 
     [Header("Layout")]
-    public float nodeWidth = 155f;
-    public float nodeHeight = 48f;
-    public float horizontalSpacing = 35f;
-    public float verticalSpacing = 62f;
-    public float lineWidth = 2.5f;
+    public Vector2 nodeSize = new Vector2(82f, 70f);
+    public float horizontalSpacing = 18f;
+    public float verticalSpacing = 6f;
+    public float lineWidth = 3f;
 
     private Canvas canvas;
     private GameObject panelRoot;
     private RectTransform nodeContainer;
     private RectTransform lineContainer;
-    private RectTransform tierLabelContainer;
     private TextMeshProUGUI titleText;
-    private TextMeshProUGUI descText;
-    private TextMeshProUGUI warningText;
     private TextMeshProUGUI modeText;
-    private TextMeshProUGUI progressText;
+    private TextMeshProUGUI axisStatsText;
+    private TextMeshProUGUI axisChoiceText;
+    private TextMeshProUGUI selectionTitleText;
+    private TextMeshProUGUI selectionStatusText;
+    private TextMeshProUGUI selectionDescriptionText;
+    private TextMeshProUGUI selectionMetaText;
+    private TextMeshProUGUI selectionRequirementText;
+    private TextMeshProUGUI treeSummaryText;
+    private Image selectionIconFrame;
+    private Image selectionIconImage;
+    private TextMeshProUGUI selectionIconFallback;
+    private Button unlockButton;
+    private TextMeshProUGUI unlockButtonLabel;
     private bool isOpen;
     private ProgressionAxisSO activeAxis;
+    private SkillNodeSO selectedNode;
 
     private readonly Dictionary<string, NodeSlot> slots = new Dictionary<string, NodeSlot>();
+    private readonly Dictionary<string, AxisButtonSlot> axisButtons = new Dictionary<string, AxisButtonSlot>();
     private readonly List<LineConnection> lines = new List<LineConnection>();
 
     private class NodeSlot
     {
         public SkillNodeSO node;
-        public Image background;
+        public RectTransform rect;
         public Image border;
-        public TextMeshProUGUI status;
+        public Image fill;
+        public Image iconImage;
+        public TextMeshProUGUI iconFallback;
+        public TextMeshProUGUI nameText;
+        public TextMeshProUGUI statusText;
+        public Image selectionFrame;
+        public Button button;
+    }
+
+    private class AxisButtonSlot
+    {
+        public ProgressionAxisSO axis;
+        public Image background;
+        public TextMeshProUGUI title;
+        public TextMeshProUGUI subtitle;
     }
 
     private class LineConnection
@@ -194,16 +211,17 @@ public class SkillTreePanelUI : MonoBehaviour
 
     public void TogglePanel()
     {
-        if (isOpen) ClosePanel();
-        else OpenPanel();
+        if (isOpen)
+            ClosePanel();
+        else
+            OpenPanel();
     }
 
     private void OpenPanel()
     {
         isOpen = true;
         panelRoot.SetActive(true);
-        RefreshModeAndProgressText();
-        RefreshAllSlots();
+        RefreshAll();
         Time.timeScale = 0f;
     }
 
@@ -212,148 +230,300 @@ public class SkillTreePanelUI : MonoBehaviour
         isOpen = false;
         panelRoot.SetActive(false);
         Time.timeScale = 1f;
-        if (descText != null)
-            descText.text = "";
     }
 
     private void BuildShell()
     {
-        var canvasGO = new GameObject("SkillTreeCanvas");
-        canvasGO.transform.SetParent(transform);
-        canvas = canvasGO.AddComponent<Canvas>();
+        GameObject canvasGo = new GameObject("SkillTreeCanvas");
+        canvasGo.transform.SetParent(transform, false);
+        canvas = canvasGo.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvas.sortingOrder = 100;
-        canvasGO.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasGO.GetComponent<CanvasScaler>().referenceResolution = new Vector2(1920, 1080);
-        canvasGO.AddComponent<GraphicRaycaster>();
+        canvas.sortingOrder = 140;
+        CanvasScaler scaler = canvasGo.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        canvasGo.AddComponent<GraphicRaycaster>();
 
-        panelRoot = CreatePanel(canvasGO.transform, "SkillTreePanel", panelBg);
-        var panelRect = panelRoot.GetComponent<RectTransform>();
-        panelRect.anchorMin = Vector2.zero;
-        panelRect.anchorMax = Vector2.one;
-        panelRect.offsetMin = new Vector2(30, 20);
-        panelRect.offsetMax = new Vector2(-30, -20);
+        panelRoot = CreatePanel(canvasGo.transform, "SkillTreeRoot", overlayColor);
+        RectTransform rootRect = panelRoot.GetComponent<RectTransform>();
+        rootRect.anchorMin = Vector2.zero;
+        rootRect.anchorMax = Vector2.one;
+        rootRect.offsetMin = Vector2.zero;
+        rootRect.offsetMax = Vector2.zero;
 
-        titleText = CreateText(panelRoot.transform, "Title", "SKILL TREE", 28, FontStyles.Bold, new Color(0.9f, 0.9f, 0.95f));
-        var titleRect = titleText.rectTransform;
-        titleRect.anchorMin = new Vector2(0.5f, 1f);
-        titleRect.anchorMax = new Vector2(0.5f, 1f);
-        titleRect.pivot = new Vector2(0.5f, 1f);
-        titleRect.anchoredPosition = new Vector2(0, -10);
-        titleRect.sizeDelta = new Vector2(700, 36);
-        titleText.alignment = TextAlignmentOptions.Center;
+        GameObject panel = CreatePanel(panelRoot.transform, "MainPanel", panelColor);
+        RectTransform panelRect = panel.GetComponent<RectTransform>();
+        panelRect.anchorMin = new Vector2(0.02f, 0.03f);
+        panelRect.anchorMax = new Vector2(0.98f, 0.97f);
+        panelRect.offsetMin = Vector2.zero;
+        panelRect.offsetMax = Vector2.zero;
 
-        warningText = CreateText(panelRoot.transform, "Warning", "", 14, FontStyles.Italic, new Color(1f, 0.8f, 0.3f, 0.7f));
-        var warningRect = warningText.rectTransform;
-        warningRect.anchorMin = new Vector2(0.5f, 1f);
-        warningRect.anchorMax = new Vector2(0.5f, 1f);
-        warningRect.pivot = new Vector2(0.5f, 1f);
-        warningRect.anchoredPosition = new Vector2(0, -42);
-        warningRect.sizeDelta = new Vector2(500, 22);
-        warningText.alignment = TextAlignmentOptions.Center;
+        titleText = CreateText(panel.transform, "Title", "SKILL TREE", 32, FontStyles.Bold, textPrimary);
+        RectTransform titleRect = titleText.rectTransform;
+        titleRect.anchorMin = new Vector2(0.03f, 1f);
+        titleRect.anchorMax = new Vector2(0.4f, 1f);
+        titleRect.pivot = new Vector2(0f, 1f);
+        titleRect.anchoredPosition = new Vector2(0f, -18f);
+        titleRect.sizeDelta = new Vector2(0f, 38f);
 
-        var closeBtnGO = CreatePanel(panelRoot.transform, "CloseBtn", new Color(0.8f, 0.2f, 0.2f, 0.9f));
-        var closeBtnRect = closeBtnGO.GetComponent<RectTransform>();
-        closeBtnRect.anchorMin = new Vector2(1f, 1f);
-        closeBtnRect.anchorMax = new Vector2(1f, 1f);
-        closeBtnRect.pivot = new Vector2(1f, 1f);
-        closeBtnRect.anchoredPosition = new Vector2(-10, -10);
-        closeBtnRect.sizeDelta = new Vector2(40, 40);
-        closeBtnGO.AddComponent<Button>().onClick.AddListener(ClosePanel);
-        var closeLabel = CreateText(closeBtnGO.transform, "CloseLabel", "X", 22, FontStyles.Bold, Color.white);
-        Stretch(closeLabel.rectTransform);
-        closeLabel.alignment = TextAlignmentOptions.Center;
+        Button closeButton = CreateButton(panel.transform, "CloseButton", "X", new Vector2(42f, 42f), new Color(0.75f, 0.18f, 0.18f, 0.96f), ClosePanel);
+        RectTransform closeRect = closeButton.GetComponent<RectTransform>();
+        closeRect.anchorMin = new Vector2(1f, 1f);
+        closeRect.anchorMax = new Vector2(1f, 1f);
+        closeRect.pivot = new Vector2(1f, 1f);
+        closeRect.anchoredPosition = new Vector2(-16f, -16f);
 
-        CreateAxisButton(panelRoot.transform, "DashTab", "Dash", new Vector2(-210f, -78f), () => SetActiveAxis(dashAxis));
-        CreateAxisButton(panelRoot.transform, "ParryTab", "Parry", new Vector2(-70f, -78f), () => SetActiveAxis(parryAxis));
-        CreateAxisButton(panelRoot.transform, "OverdriveTab", "Overdrive", new Vector2(70f, -78f), () => SetActiveAxis(overdriveAxis));
-        CreateAxisButton(panelRoot.transform, "CadenceTab", "Cadence", new Vector2(210f, -78f), () => SetActiveAxis(cadenceAxis));
-        CreateUtilityButton(panelRoot.transform, "ModeToggle", "Mod Degistir", new Vector2(-390f, -78f), () => ToggleMode());
-        CreateUtilityButton(panelRoot.transform, "RankDownDebug", "Agac XP Azalt", new Vector2(390f, -118f), () => RemoveRankFromActiveAxis());
-        CreateUtilityButton(panelRoot.transform, "XpResetDebug", "Agac XP Sifirla", new Vector2(390f, -158f), () => ResetXpForActiveAxis());
-        CreateUtilityButton(panelRoot.transform, "RankDebug", "Agaca Seviye Ekle", new Vector2(390f, -78f), () => AddRankToActiveAxis());
+        RectTransform leftSidebar = CreateSection(panel.transform, "LeftSidebar", new Vector2(0.02f, 0.08f), new Vector2(0.23f, 0.90f), cardAltColor);
+        RectTransform centerPanel = CreateSection(panel.transform, "CenterPanel", new Vector2(0.25f, 0.08f), new Vector2(0.73f, 0.90f), cardColor);
+        RectTransform rightPanel = CreateSection(panel.transform, "RightPanel", new Vector2(0.75f, 0.08f), new Vector2(0.98f, 0.90f), cardAltColor);
 
-        modeText = CreateText(panelRoot.transform, "ModeText", "", 14, FontStyles.Bold, new Color(0.85f, 0.9f, 1f));
-        var modeRect = modeText.rectTransform;
-        modeRect.anchorMin = new Vector2(0f, 1f);
-        modeRect.anchorMax = new Vector2(0f, 1f);
-        modeRect.pivot = new Vector2(0f, 1f);
-        modeRect.anchoredPosition = new Vector2(18, -18);
-        modeRect.sizeDelta = new Vector2(420, 24);
-        modeText.alignment = TextAlignmentOptions.Left;
+        BuildLeftSidebar(leftSidebar);
+        BuildCenterPanel(centerPanel);
+        BuildRightPanel(rightPanel);
+    }
 
-        progressText = CreateText(panelRoot.transform, "ProgressText", "", 14, FontStyles.Normal, new Color(0.75f, 0.82f, 0.9f));
-        var progressRect = progressText.rectTransform;
-        progressRect.anchorMin = new Vector2(1f, 1f);
-        progressRect.anchorMax = new Vector2(1f, 1f);
-        progressRect.pivot = new Vector2(1f, 1f);
-        progressRect.anchoredPosition = new Vector2(-60, -58);
-        progressRect.sizeDelta = new Vector2(520, 24);
-        progressText.alignment = TextAlignmentOptions.Right;
+    private void BuildLeftSidebar(RectTransform parent)
+    {
+        axisChoiceText = CreateText(parent, "AxisChoiceTitle", "AGAC SECIMI", 18, FontStyles.Bold, textPrimary);
+        RectTransform axisChoiceRect = axisChoiceText.rectTransform;
+        axisChoiceRect.anchorMin = new Vector2(0f, 1f);
+        axisChoiceRect.anchorMax = new Vector2(1f, 1f);
+        axisChoiceRect.pivot = new Vector2(0.5f, 1f);
+        axisChoiceRect.anchoredPosition = new Vector2(0f, -18f);
+        axisChoiceRect.offsetMin = new Vector2(18f, 0f);
+        axisChoiceRect.offsetMax = new Vector2(-18f, 0f);
+        axisChoiceRect.sizeDelta = new Vector2(0f, 24f);
 
-        var nodeContainerGO = new GameObject("NodeContainer");
-        nodeContainerGO.transform.SetParent(panelRoot.transform, false);
-        nodeContainer = nodeContainerGO.AddComponent<RectTransform>();
-        nodeContainer.anchorMin = new Vector2(0.5f, 0.5f);
-        nodeContainer.anchorMax = new Vector2(0.5f, 0.5f);
-        nodeContainer.pivot = new Vector2(0.5f, 0.5f);
-        nodeContainer.anchoredPosition = new Vector2(0, -15);
-        nodeContainer.sizeDelta = new Vector2(1000, 620);
+        GameObject axisList = new GameObject("AxisList");
+        axisList.transform.SetParent(parent, false);
+        RectTransform axisListRect = axisList.AddComponent<RectTransform>();
+        axisListRect.anchorMin = new Vector2(0f, 0.62f);
+        axisListRect.anchorMax = new Vector2(1f, 0.94f);
+        axisListRect.offsetMin = new Vector2(18f, 0f);
+        axisListRect.offsetMax = new Vector2(-18f, 0f);
+        VerticalLayoutGroup axisLayout = axisList.AddComponent<VerticalLayoutGroup>();
+        axisLayout.spacing = 12f;
+        axisLayout.childControlWidth = true;
+        axisLayout.childControlHeight = true;
+        axisLayout.childForceExpandWidth = true;
+        axisLayout.childForceExpandHeight = false;
+        axisLayout.padding = new RectOffset(0, 0, 0, 0);
 
-        var lineContainerGO = new GameObject("LineContainer");
-        lineContainerGO.transform.SetParent(nodeContainer, false);
-        lineContainer = lineContainerGO.AddComponent<RectTransform>();
+        foreach (ProgressionAxisSO axis in GetConfiguredAxes())
+        {
+            GameObject buttonGo = CreatePanel(axisList.transform, $"{axis.axisId}_Button", new Color(0.16f, 0.19f, 0.27f, 1f));
+            RectTransform rect = buttonGo.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0f, 1f);
+            rect.anchorMax = new Vector2(1f, 1f);
+            rect.sizeDelta = new Vector2(0f, 72f);
+            LayoutElement buttonLayout = buttonGo.AddComponent<LayoutElement>();
+            buttonLayout.preferredHeight = 72f;
+
+            Button button = buttonGo.AddComponent<Button>();
+            ProgressionAxisSO capturedAxis = axis;
+            button.onClick.AddListener(() => SetActiveAxis(capturedAxis));
+
+            TextMeshProUGUI title = CreateText(buttonGo.transform, "Title", axis.displayName.ToUpperInvariant(), 18, FontStyles.Bold, textPrimary);
+            RectTransform titleRect = title.rectTransform;
+            titleRect.anchorMin = new Vector2(0f, 0.5f);
+            titleRect.anchorMax = new Vector2(1f, 1f);
+            titleRect.offsetMin = new Vector2(14f, -2f);
+            titleRect.offsetMax = new Vector2(-14f, -6f);
+
+            TextMeshProUGUI subtitle = CreateText(buttonGo.transform, "Subtitle", "", 12, FontStyles.Normal, textSecondary);
+            RectTransform subtitleRect = subtitle.rectTransform;
+            subtitleRect.anchorMin = new Vector2(0f, 0f);
+            subtitleRect.anchorMax = new Vector2(1f, 0.5f);
+            subtitleRect.offsetMin = new Vector2(14f, 6f);
+            subtitleRect.offsetMax = new Vector2(-14f, -2f);
+
+            axisButtons[axis.axisId] = new AxisButtonSlot
+            {
+                axis = axis,
+                background = buttonGo.GetComponent<Image>(),
+                title = title,
+                subtitle = subtitle
+            };
+        }
+
+        axisStatsText = CreateText(parent, "AxisStats", "", 14, FontStyles.Normal, textSecondary);
+        RectTransform statsRect = axisStatsText.rectTransform;
+        statsRect.anchorMin = new Vector2(0f, 0.38f);
+        statsRect.anchorMax = new Vector2(1f, 0.60f);
+        statsRect.offsetMin = new Vector2(18f, 0f);
+        statsRect.offsetMax = new Vector2(-18f, 0f);
+        axisStatsText.alignment = TextAlignmentOptions.TopLeft;
+
+        modeText = CreateText(parent, "ModeText", "", 14, FontStyles.Bold, new Color(0.91f, 0.94f, 0.99f));
+        RectTransform modeRect = modeText.rectTransform;
+        modeRect.anchorMin = new Vector2(0f, 0.32f);
+        modeRect.anchorMax = new Vector2(1f, 0.37f);
+        modeRect.offsetMin = new Vector2(18f, 0f);
+        modeRect.offsetMax = new Vector2(-18f, 0f);
+
+        treeSummaryText = CreateText(parent, "TreeSummary", "", 13, FontStyles.Normal, textSecondary);
+        RectTransform summaryRect = treeSummaryText.rectTransform;
+        summaryRect.anchorMin = new Vector2(0f, 0.22f);
+        summaryRect.anchorMax = new Vector2(1f, 0.32f);
+        summaryRect.offsetMin = new Vector2(18f, 0f);
+        summaryRect.offsetMax = new Vector2(-18f, 0f);
+        treeSummaryText.alignment = TextAlignmentOptions.TopLeft;
+
+        GameObject utilityList = new GameObject("UtilityList");
+        utilityList.transform.SetParent(parent, false);
+        RectTransform utilityListRect = utilityList.AddComponent<RectTransform>();
+        utilityListRect.anchorMin = new Vector2(0f, 0.02f);
+        utilityListRect.anchorMax = new Vector2(1f, 0.18f);
+        utilityListRect.offsetMin = new Vector2(18f, 0f);
+        utilityListRect.offsetMax = new Vector2(-18f, 0f);
+        VerticalLayoutGroup utilityLayout = utilityList.AddComponent<VerticalLayoutGroup>();
+        utilityLayout.spacing = 10f;
+        utilityLayout.childControlWidth = true;
+        utilityLayout.childControlHeight = true;
+        utilityLayout.childForceExpandWidth = true;
+        utilityLayout.childForceExpandHeight = false;
+
+        CreateUtilityButton(utilityList.transform, "ModeToggle", "MOD DEGISTIR", ToggleMode);
+        CreateUtilityButton(utilityList.transform, "RankUp", "AGACA SEVIYE EKLE", AddRankToActiveAxis);
+        CreateUtilityButton(utilityList.transform, "RankDown", "AGAC XP AZALT", RemoveRankFromActiveAxis);
+        CreateUtilityButton(utilityList.transform, "ResetXp", "AGAC XP SIFIRLA", ResetXpForActiveAxis);
+    }
+
+    private void BuildCenterPanel(RectTransform parent)
+    {
+        TextMeshProUGUI centerTitle = CreateText(parent, "CenterTitle", "PERK HARITASI", 20, FontStyles.Bold, textPrimary);
+        RectTransform centerTitleRect = centerTitle.rectTransform;
+        centerTitleRect.anchorMin = new Vector2(0f, 1f);
+        centerTitleRect.anchorMax = new Vector2(1f, 1f);
+        centerTitleRect.offsetMin = new Vector2(20f, 0f);
+        centerTitleRect.offsetMax = new Vector2(-20f, 0f);
+        centerTitleRect.anchoredPosition = new Vector2(0f, -18f);
+        centerTitleRect.sizeDelta = new Vector2(0f, 26f);
+
+        TextMeshProUGUI hintText = CreateText(parent, "HintText", "Bir perk kutusuna tikla. Sag panelden ac/kapat.", 13, FontStyles.Italic, textSecondary);
+        RectTransform hintRect = hintText.rectTransform;
+        hintRect.anchorMin = new Vector2(0f, 1f);
+        hintRect.anchorMax = new Vector2(1f, 1f);
+        hintRect.offsetMin = new Vector2(20f, 0f);
+        hintRect.offsetMax = new Vector2(-20f, 0f);
+        hintRect.anchoredPosition = new Vector2(0f, -46f);
+        hintRect.sizeDelta = new Vector2(0f, 18f);
+
+        GameObject mapArea = CreatePanel(parent, "MapArea", new Color(0.07f, 0.09f, 0.13f, 0.92f));
+        RectTransform mapRect = mapArea.GetComponent<RectTransform>();
+        mapRect.anchorMin = new Vector2(0.02f, 0.03f);
+        mapRect.anchorMax = new Vector2(0.98f, 0.94f);
+        mapRect.offsetMin = Vector2.zero;
+        mapRect.offsetMax = Vector2.zero;
+
+        GameObject lineRoot = new GameObject("LineContainer");
+        lineRoot.transform.SetParent(mapArea.transform, false);
+        lineContainer = lineRoot.AddComponent<RectTransform>();
         Stretch(lineContainer);
 
-        var tierContainerGO = new GameObject("TierLabelContainer");
-        tierContainerGO.transform.SetParent(nodeContainer, false);
-        tierLabelContainer = tierContainerGO.AddComponent<RectTransform>();
-        Stretch(tierLabelContainer);
-
-        descText = CreateText(panelRoot.transform, "Description", "", 14, FontStyles.Normal, new Color(0.8f, 0.8f, 0.85f));
-        var descRect = descText.rectTransform;
-        descRect.anchorMin = new Vector2(0f, 0f);
-        descRect.anchorMax = new Vector2(1f, 0f);
-        descRect.pivot = new Vector2(0.5f, 0f);
-        descRect.anchoredPosition = new Vector2(0, 8);
-        descRect.sizeDelta = new Vector2(-90, 48);
-        descText.alignment = TextAlignmentOptions.Center;
+        GameObject nodeRoot = new GameObject("NodeContainer");
+        nodeRoot.transform.SetParent(mapArea.transform, false);
+        nodeContainer = nodeRoot.AddComponent<RectTransform>();
+        Stretch(nodeContainer);
     }
 
-    private void CreateAxisButton(Transform parent, string name, string label, Vector2 anchoredPosition, UnityEngine.Events.UnityAction onClick)
+    private void BuildRightPanel(RectTransform parent)
     {
-        var buttonGO = CreatePanel(parent, name, new Color(0.18f, 0.18f, 0.24f, 0.95f));
-        var rect = buttonGO.GetComponent<RectTransform>();
-        rect.anchorMin = new Vector2(0.5f, 1f);
-        rect.anchorMax = new Vector2(0.5f, 1f);
-        rect.pivot = new Vector2(0.5f, 1f);
-        rect.anchoredPosition = anchoredPosition;
-        rect.sizeDelta = new Vector2(120, 34);
+        TextMeshProUGUI infoTitle = CreateText(parent, "InfoTitle", "PERK BILGISI", 20, FontStyles.Bold, textPrimary);
+        RectTransform infoTitleRect = infoTitle.rectTransform;
+        infoTitleRect.anchorMin = new Vector2(0f, 1f);
+        infoTitleRect.anchorMax = new Vector2(1f, 1f);
+        infoTitleRect.offsetMin = new Vector2(18f, 0f);
+        infoTitleRect.offsetMax = new Vector2(-18f, 0f);
+        infoTitleRect.anchoredPosition = new Vector2(0f, -18f);
+        infoTitleRect.sizeDelta = new Vector2(0f, 26f);
 
-        var button = buttonGO.AddComponent<Button>();
-        button.onClick.AddListener(onClick);
+        GameObject iconFrame = CreatePanel(parent, "SelectedIconFrame", new Color(0.19f, 0.22f, 0.31f, 1f));
+        RectTransform iconFrameRect = iconFrame.GetComponent<RectTransform>();
+        iconFrameRect.anchorMin = new Vector2(0f, 1f);
+        iconFrameRect.anchorMax = new Vector2(0f, 1f);
+        iconFrameRect.pivot = new Vector2(0f, 1f);
+        iconFrameRect.anchoredPosition = new Vector2(18f, -56f);
+        iconFrameRect.sizeDelta = new Vector2(92f, 92f);
+        selectionIconFrame = iconFrame.GetComponent<Image>();
 
-        var text = CreateText(buttonGO.transform, "Label", label, 16, FontStyles.Bold, Color.white);
-        Stretch(text.rectTransform);
-        text.alignment = TextAlignmentOptions.Center;
+        GameObject iconImageGo = new GameObject("IconImage");
+        iconImageGo.transform.SetParent(iconFrame.transform, false);
+        selectionIconImage = iconImageGo.AddComponent<Image>();
+        RectTransform iconImageRect = selectionIconImage.rectTransform;
+        iconImageRect.anchorMin = new Vector2(0.1f, 0.1f);
+        iconImageRect.anchorMax = new Vector2(0.9f, 0.9f);
+        iconImageRect.offsetMin = Vector2.zero;
+        iconImageRect.offsetMax = Vector2.zero;
+        selectionIconImage.preserveAspect = true;
+
+        selectionIconFallback = CreateText(iconFrame.transform, "IconFallback", "--", 30, FontStyles.Bold, textPrimary);
+        Stretch(selectionIconFallback.rectTransform);
+        selectionIconFallback.alignment = TextAlignmentOptions.Center;
+
+        selectionTitleText = CreateText(parent, "SelectionTitle", "PERK SEC", 23, FontStyles.Bold, textPrimary);
+        RectTransform selectionTitleRect = selectionTitleText.rectTransform;
+        selectionTitleRect.anchorMin = new Vector2(0f, 1f);
+        selectionTitleRect.anchorMax = new Vector2(1f, 1f);
+        selectionTitleRect.offsetMin = new Vector2(124f, 0f);
+        selectionTitleRect.offsetMax = new Vector2(-18f, 0f);
+        selectionTitleRect.anchoredPosition = new Vector2(0f, -60f);
+        selectionTitleRect.sizeDelta = new Vector2(0f, 28f);
+
+        selectionStatusText = CreateText(parent, "SelectionStatus", "", 14, FontStyles.Bold, textSecondary);
+        RectTransform selectionStatusRect = selectionStatusText.rectTransform;
+        selectionStatusRect.anchorMin = new Vector2(0f, 1f);
+        selectionStatusRect.anchorMax = new Vector2(1f, 1f);
+        selectionStatusRect.offsetMin = new Vector2(124f, 0f);
+        selectionStatusRect.offsetMax = new Vector2(-18f, 0f);
+        selectionStatusRect.anchoredPosition = new Vector2(0f, -92f);
+        selectionStatusRect.sizeDelta = new Vector2(0f, 20f);
+
+        selectionMetaText = CreateText(parent, "SelectionMeta", "", 14, FontStyles.Normal, textSecondary);
+        RectTransform selectionMetaRect = selectionMetaText.rectTransform;
+        selectionMetaRect.anchorMin = new Vector2(0f, 1f);
+        selectionMetaRect.anchorMax = new Vector2(1f, 1f);
+        selectionMetaRect.offsetMin = new Vector2(18f, 0f);
+        selectionMetaRect.offsetMax = new Vector2(-18f, 0f);
+        selectionMetaRect.anchoredPosition = new Vector2(0f, -164f);
+        selectionMetaRect.sizeDelta = new Vector2(0f, 70f);
+        selectionMetaText.alignment = TextAlignmentOptions.TopLeft;
+
+        selectionDescriptionText = CreateText(parent, "SelectionDescription", "", 15, FontStyles.Normal, textPrimary);
+        RectTransform selectionDescriptionRect = selectionDescriptionText.rectTransform;
+        selectionDescriptionRect.anchorMin = new Vector2(0f, 0.38f);
+        selectionDescriptionRect.anchorMax = new Vector2(1f, 0.74f);
+        selectionDescriptionRect.offsetMin = new Vector2(18f, 0f);
+        selectionDescriptionRect.offsetMax = new Vector2(-18f, 0f);
+        selectionDescriptionText.alignment = TextAlignmentOptions.TopLeft;
+
+        selectionRequirementText = CreateText(parent, "SelectionRequirements", "", 14, FontStyles.Normal, textSecondary);
+        RectTransform selectionRequirementRect = selectionRequirementText.rectTransform;
+        selectionRequirementRect.anchorMin = new Vector2(0f, 0.18f);
+        selectionRequirementRect.anchorMax = new Vector2(1f, 0.36f);
+        selectionRequirementRect.offsetMin = new Vector2(18f, 0f);
+        selectionRequirementRect.offsetMax = new Vector2(-18f, 0f);
+        selectionRequirementText.alignment = TextAlignmentOptions.TopLeft;
+
+        unlockButton = CreateButton(parent, "UnlockButton", "PERK AC", new Vector2(0f, 0f), new Color(0.20f, 0.60f, 0.34f, 0.98f), HandleSelectedNodeAction);
+        RectTransform unlockRect = unlockButton.GetComponent<RectTransform>();
+        unlockRect.anchorMin = new Vector2(0f, 0f);
+        unlockRect.anchorMax = new Vector2(1f, 0f);
+        unlockRect.offsetMin = new Vector2(18f, 18f);
+        unlockRect.offsetMax = new Vector2(-18f, 18f);
+        unlockRect.sizeDelta = new Vector2(0f, 52f);
+        unlockButtonLabel = unlockButton.GetComponentInChildren<TextMeshProUGUI>();
     }
 
-    private void CreateUtilityButton(Transform parent, string name, string label, Vector2 anchoredPosition, UnityEngine.Events.UnityAction onClick)
+    private RectTransform CreateSection(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Color color)
     {
-        var buttonGO = CreatePanel(parent, name, new Color(0.22f, 0.20f, 0.16f, 0.95f));
-        var rect = buttonGO.GetComponent<RectTransform>();
-        rect.anchorMin = new Vector2(0.5f, 1f);
-        rect.anchorMax = new Vector2(0.5f, 1f);
-        rect.pivot = new Vector2(0.5f, 1f);
-        rect.anchoredPosition = anchoredPosition;
-        rect.sizeDelta = new Vector2(155, 34);
-
-        var button = buttonGO.AddComponent<Button>();
-        button.onClick.AddListener(onClick);
-
-        var text = CreateText(buttonGO.transform, "Label", label, 13, FontStyles.Bold, Color.white);
-        Stretch(text.rectTransform);
-        text.alignment = TextAlignmentOptions.Center;
+        GameObject go = CreatePanel(parent, name, color);
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.anchorMin = anchorMin;
+        rect.anchorMax = anchorMax;
+        rect.offsetMin = Vector2.zero;
+        rect.offsetMax = Vector2.zero;
+        return rect;
     }
 
     private void SetActiveAxis(ProgressionAxisSO axis)
@@ -363,8 +533,10 @@ public class SkillTreePanelUI : MonoBehaviour
 
         activeAxis = axis;
         titleText.text = $"{axis.displayName.ToUpperInvariant()} SKILL TREE";
-        RefreshModeAndProgressText();
+        selectedNode = null;
         RebuildAxisView();
+        SelectNode(GetDefaultSelectedNode());
+        RefreshAll();
     }
 
     private ProgressionAxisSO GetFirstConfiguredAxis()
@@ -375,125 +547,132 @@ public class SkillTreePanelUI : MonoBehaviour
         return cadenceAxis;
     }
 
+    private List<ProgressionAxisSO> GetConfiguredAxes()
+    {
+        List<ProgressionAxisSO> axes = new List<ProgressionAxisSO>();
+        if (dashAxis != null) axes.Add(dashAxis);
+        if (parryAxis != null) axes.Add(parryAxis);
+        if (overdriveAxis != null) axes.Add(overdriveAxis);
+        if (cadenceAxis != null) axes.Add(cadenceAxis);
+        return axes;
+    }
+
     private void RebuildAxisView()
     {
         slots.Clear();
         lines.Clear();
-        ClearChildren(nodeContainer, preserve: new HashSet<string> { "LineContainer", "TierLabelContainer" });
+        ClearChildren(nodeContainer);
         ClearChildren(lineContainer);
-        ClearChildren(tierLabelContainer);
 
         if (activeAxis == null || activeAxis.nodes == null)
             return;
 
-        CreateTierLabels();
-
-        foreach (var node in activeAxis.nodes)
+        foreach (SkillNodeSO node in activeAxis.nodes)
         {
-            if (node == null)
-                continue;
-
-            BuildNodeSlot(node);
+            if (node != null)
+                BuildNodeSlot(node);
         }
 
-        foreach (var node in activeAxis.nodes)
+        foreach (SkillNodeSO node in activeAxis.nodes)
         {
             if (node == null || node.prerequisites == null)
                 continue;
 
-            foreach (var prereq in node.prerequisites)
+            foreach (SkillNodeSO prereq in node.prerequisites)
             {
                 if (prereq != null)
                     CreateLine(prereq.nodeId, node.nodeId);
             }
-        }
-
-        RefreshAllSlots();
-    }
-
-    private void CreateTierLabels()
-    {
-        string[] labels = { "TIER 1", "TIER 1", "TIER 1", "COMMITMENT", "TIER 2", "TIER 2", "TIER 2" };
-        Color tint = GetAxisBaseColor(activeAxis);
-
-        for (int row = 0; row < labels.Length; row++)
-        {
-            Vector2 pos = GridToLocal(new Vector2Int(-1, row));
-            var text = CreateText(tierLabelContainer, $"TierLabel_{row}", labels[row], 12, FontStyles.Bold, tint * 0.7f);
-            var rect = text.rectTransform;
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.anchoredPosition = pos;
-            rect.sizeDelta = new Vector2(110, 30);
-            text.alignment = TextAlignmentOptions.Right;
         }
     }
 
     private void BuildNodeSlot(SkillNodeSO node)
     {
         if (!GetCurrentGrid().TryGetValue(node.nodeId, out Vector2Int gridPos))
-        {
-            Debug.LogWarning($"[SkillTreePanelUI] Grid position tanimli degil: {node.nodeId}");
             return;
-        }
 
-        Vector2 localPos = GridToLocal(gridPos);
-        var slotGO = new GameObject($"Node_{node.nodeId}");
-        slotGO.transform.SetParent(nodeContainer, false);
+        GameObject slotGo = new GameObject($"Node_{node.nodeId}");
+        slotGo.transform.SetParent(nodeContainer, false);
 
-        var rect = slotGO.AddComponent<RectTransform>();
+        RectTransform rect = slotGo.AddComponent<RectTransform>();
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
         rect.pivot = new Vector2(0.5f, 0.5f);
-        rect.anchoredPosition = localPos;
-        rect.sizeDelta = new Vector2(nodeWidth, nodeHeight);
+        rect.anchoredPosition = GridToLocal(gridPos);
+        rect.sizeDelta = nodeSize;
 
-        var border = slotGO.AddComponent<Image>();
-        border.color = GetNodeTintColor(node);
+        Image border = slotGo.AddComponent<Image>();
+        border.color = GetNodeTintColor(node) * 0.45f;
 
-        var inner = CreatePanel(slotGO.transform, "Inner", nodeBg);
-        var innerRect = inner.GetComponent<RectTransform>();
-        innerRect.anchorMin = Vector2.zero;
-        innerRect.anchorMax = Vector2.one;
-        innerRect.offsetMin = new Vector2(2, 2);
-        innerRect.offsetMax = new Vector2(-2, -2);
-        var background = inner.GetComponent<Image>();
+        GameObject fillGo = CreatePanel(slotGo.transform, "Fill", new Color(0.09f, 0.11f, 0.16f, 1f));
+        RectTransform fillRect = fillGo.GetComponent<RectTransform>();
+        fillRect.anchorMin = new Vector2(0f, 0f);
+        fillRect.anchorMax = new Vector2(1f, 1f);
+        fillRect.offsetMin = new Vector2(3f, 3f);
+        fillRect.offsetMax = new Vector2(-3f, -3f);
+        Image fill = fillGo.GetComponent<Image>();
 
-        var nameText = CreateText(inner.transform, "Name", node.displayName, 12, FontStyles.Bold, Color.white);
+        GameObject selectionGo = CreatePanel(slotGo.transform, "Selection", new Color(0f, 0f, 0f, 0f));
+        RectTransform selectionRect = selectionGo.GetComponent<RectTransform>();
+        selectionRect.anchorMin = Vector2.zero;
+        selectionRect.anchorMax = Vector2.one;
+        selectionRect.offsetMin = Vector2.zero;
+        selectionRect.offsetMax = Vector2.zero;
+        Image selectionFrame = selectionGo.GetComponent<Image>();
+
+        GameObject iconFrame = CreatePanel(fillGo.transform, "IconFrame", new Color(0.15f, 0.18f, 0.25f, 1f));
+        RectTransform iconFrameRect = iconFrame.GetComponent<RectTransform>();
+        iconFrameRect.anchorMin = new Vector2(0.18f, 0.40f);
+        iconFrameRect.anchorMax = new Vector2(0.82f, 0.90f);
+        iconFrameRect.offsetMin = Vector2.zero;
+        iconFrameRect.offsetMax = Vector2.zero;
+
+        GameObject iconImageGo = new GameObject("IconImage");
+        iconImageGo.transform.SetParent(iconFrame.transform, false);
+        Image iconImage = iconImageGo.AddComponent<Image>();
+        RectTransform iconImageRect = iconImage.GetComponent<RectTransform>();
+        iconImageRect.anchorMin = new Vector2(0.1f, 0.1f);
+        iconImageRect.anchorMax = new Vector2(0.9f, 0.9f);
+        iconImageRect.offsetMin = Vector2.zero;
+        iconImageRect.offsetMax = Vector2.zero;
+        iconImage.preserveAspect = true;
+
+        TextMeshProUGUI iconFallback = CreateText(iconFrame.transform, "IconFallback", GetNodeBadgeText(node), 22, FontStyles.Bold, textPrimary);
+        Stretch(iconFallback.rectTransform);
+        iconFallback.alignment = TextAlignmentOptions.Center;
+
+        TextMeshProUGUI nameText = CreateText(fillGo.transform, "Name", node.displayName, 12, FontStyles.Bold, textPrimary);
+        RectTransform nameRect = nameText.rectTransform;
+        nameRect.anchorMin = new Vector2(0.08f, 0.18f);
+        nameRect.anchorMax = new Vector2(0.92f, 0.38f);
+        nameRect.offsetMin = Vector2.zero;
+        nameRect.offsetMax = Vector2.zero;
         nameText.alignment = TextAlignmentOptions.Center;
-        var nameRect = nameText.rectTransform;
-        nameRect.anchorMin = new Vector2(0f, 0.25f);
-        nameRect.anchorMax = new Vector2(1f, 1f);
-        nameRect.offsetMin = new Vector2(5, 0);
-        nameRect.offsetMax = new Vector2(-5, -4);
 
-        var statusText = CreateText(inner.transform, "Status", "LOCKED", 11, FontStyles.Normal, Color.gray);
+        TextMeshProUGUI statusText = CreateText(fillGo.transform, "Status", "", 11, FontStyles.Bold, textSecondary);
+        RectTransform statusRect = statusText.rectTransform;
+        statusRect.anchorMin = new Vector2(0.08f, 0.03f);
+        statusRect.anchorMax = new Vector2(0.92f, 0.15f);
+        statusRect.offsetMin = Vector2.zero;
+        statusRect.offsetMax = Vector2.zero;
         statusText.alignment = TextAlignmentOptions.Center;
-        var statusRect = statusText.rectTransform;
-        statusRect.anchorMin = new Vector2(0f, 0f);
-        statusRect.anchorMax = new Vector2(1f, 0.3f);
-        statusRect.offsetMin = new Vector2(5, 2);
-        statusRect.offsetMax = new Vector2(-5, 0);
 
-        var button = slotGO.AddComponent<Button>();
-        button.targetGraphic = border;
-        button.onClick.AddListener(() => OnNodeClicked(node));
-
-        var trigger = slotGO.AddComponent<UnityEngine.EventSystems.EventTrigger>();
-        var enter = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerEnter };
-        enter.callback.AddListener(_ => OnNodeHover(node));
-        trigger.triggers.Add(enter);
-        var exit = new UnityEngine.EventSystems.EventTrigger.Entry { eventID = UnityEngine.EventSystems.EventTriggerType.PointerExit };
-        exit.callback.AddListener(_ => descText.text = "");
-        trigger.triggers.Add(exit);
+        Button button = slotGo.AddComponent<Button>();
+        button.targetGraphic = fill;
+        button.onClick.AddListener(() => SelectNode(node));
 
         slots[node.nodeId] = new NodeSlot
         {
             node = node,
-            background = background,
+            rect = rect,
             border = border,
-            status = statusText
+            fill = fill,
+            iconImage = iconImage,
+            iconFallback = iconFallback,
+            nameText = nameText,
+            statusText = statusText,
+            selectionFrame = selectionFrame,
+            button = button
         };
     }
 
@@ -502,12 +681,11 @@ public class SkillTreePanelUI : MonoBehaviour
         if (!GetCurrentGrid().ContainsKey(fromId) || !GetCurrentGrid().ContainsKey(toId))
             return;
 
-        var lineGO = new GameObject($"Line_{fromId}_{toId}");
-        lineGO.transform.SetParent(lineContainer, false);
-        var rect = lineGO.AddComponent<RectTransform>();
-        var image = lineGO.AddComponent<Image>();
-        image.color = lineColor;
-
+        GameObject lineGo = new GameObject($"Line_{fromId}_{toId}");
+        lineGo.transform.SetParent(lineContainer, false);
+        RectTransform rect = lineGo.AddComponent<RectTransform>();
+        Image image = lineGo.AddComponent<Image>();
+        image.color = lineLockedColor;
         UpdateLinePosition(rect, fromId, toId);
         lines.Add(new LineConnection { rect = rect, image = image, fromId = fromId, toId = toId });
     }
@@ -530,15 +708,15 @@ public class SkillTreePanelUI : MonoBehaviour
 
     private Vector2 GridToLocal(Vector2Int grid)
     {
-        float totalCols = 5f;
-        float totalRows = 7f;
-        float cellW = nodeWidth + horizontalSpacing;
-        float cellH = nodeHeight + verticalSpacing;
-        float totalW = totalCols * cellW;
-        float totalH = totalRows * cellH;
+        const float totalCols = 5f;
+        const float totalRows = 7f;
+        float cellWidth = nodeSize.x + horizontalSpacing;
+        float cellHeight = nodeSize.y + verticalSpacing;
+        float totalWidth = totalCols * cellWidth;
+        float totalHeight = totalRows * cellHeight;
 
-        float x = grid.x * cellW - totalW * 0.5f + cellW * 0.5f;
-        float y = -grid.y * cellH + totalH * 0.5f - cellH * 0.5f;
+        float x = grid.x * cellWidth - totalWidth * 0.5f + cellWidth * 0.5f;
+        float y = -grid.y * cellHeight + totalHeight * 0.5f - cellHeight * 0.5f;
         return new Vector2(x, y);
     }
 
@@ -552,186 +730,435 @@ public class SkillTreePanelUI : MonoBehaviour
 
     private Color GetNodeTintColor(SkillNodeSO node)
     {
-        if (node.isCommitmentNode)
-            return commitmentColor;
+        if (activeAxis != null && activeAxis.axisColor.a > 0f)
+            return activeAxis.axisColor;
 
-        string id = node.nodeId;
-        if (activeAxis == parryAxis)
-        {
-            if (id.Contains("_t2b_")) return ballisticColor;
-            if (id.Contains("_t2p_")) return perfectionistColor;
-            return parryT1Color;
-        }
-
-        if (activeAxis == overdriveAxis)
-        {
-            if (id.Contains("_t2burst_")) return burstColor;
-            if (id.Contains("_t2pred_")) return predatorColor;
-            return overdriveT1Color;
-        }
-
-        if (activeAxis == cadenceAxis)
-        {
-            if (id.Contains("_t2measured_")) return measuredCadenceColor;
-            if (id.Contains("_t2flow_")) return flowCadenceColor;
-            return cadenceT1Color;
-        }
-
-        if (id.Contains("_t2h_")) return hunterColor;
-        if (id.Contains("_t2f_")) return flowColor;
-        return dashT1Color;
+        return node != null && node.isCommitmentNode
+            ? unlockableColor
+            : selectedColor;
     }
 
-    private Color GetAxisBaseColor(ProgressionAxisSO axis)
+    private SkillNodeSO GetDefaultSelectedNode()
     {
-        if (axis == parryAxis) return parryT1Color;
-        if (axis == overdriveAxis) return overdriveT1Color;
-        if (axis == cadenceAxis) return cadenceT1Color;
-        return dashT1Color;
+        if (selectedNode != null && activeAxis != null && ContainsNode(activeAxis, selectedNode))
+            return selectedNode;
+
+        if (activeAxis == null || activeAxis.nodes == null)
+            return null;
+
+        AxisProgressionManager manager = AxisProgressionManager.Instance;
+        foreach (SkillNodeSO node in activeAxis.nodes)
+        {
+            if (node == null)
+                continue;
+
+            if (manager != null && manager.GetNodeStatus(node) == NodeStatus.Unlocked)
+                return node;
+        }
+
+        foreach (SkillNodeSO node in activeAxis.nodes)
+        {
+            if (node == null)
+                continue;
+
+            if (manager != null && manager.GetNodeStatus(node) == NodeStatus.Unlockable)
+                return node;
+        }
+
+        foreach (SkillNodeSO node in activeAxis.nodes)
+        {
+            if (node != null)
+                return node;
+        }
+
+        return null;
+    }
+
+    private static bool ContainsNode(ProgressionAxisSO axis, SkillNodeSO node)
+    {
+        if (axis == null || axis.nodes == null || node == null)
+            return false;
+
+        foreach (SkillNodeSO axisNode in axis.nodes)
+        {
+            if (axisNode == node)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void SelectNode(SkillNodeSO node)
+    {
+        selectedNode = node;
+        RefreshSelection();
+        RefreshAllSlots();
+    }
+
+    private void HandleSelectedNodeAction()
+    {
+        if (selectedNode == null || AxisProgressionManager.Instance == null)
+            return;
+
+        AxisProgressionManager manager = AxisProgressionManager.Instance;
+        int result = manager.IsTesterMode
+            ? manager.SmartToggleNode(selectedNode)
+            : (manager.TryUnlockNode(selectedNode) ? 1 : -2);
+
+        if (result == 1)
+            AudioManager.Play(AudioEventId.UIUnlock, gameObject);
+        else if (result <= -1)
+            AudioManager.Play(AudioEventId.UIFail, gameObject);
+
+        RefreshAll();
+    }
+
+    private void RefreshAll()
+    {
+        RefreshAxisButtons();
+        RefreshStatsPanel();
+        RefreshAllSlots();
+        RefreshSelection();
+    }
+
+    private void RefreshAxisButtons()
+    {
+        AxisProgressionManager manager = AxisProgressionManager.Instance;
+        foreach (AxisButtonSlot button in axisButtons.Values)
+        {
+            bool isActive = button.axis == activeAxis;
+            Color accent = button.axis != null ? button.axis.axisColor : selectedColor;
+            if (accent.a <= 0f)
+                accent = selectedColor;
+
+            button.background.color = isActive
+                ? new Color(accent.r * 0.55f, accent.g * 0.55f, accent.b * 0.55f, 1f)
+                : new Color(0.16f, 0.19f, 0.27f, 1f);
+
+            int rank = manager != null ? manager.GetTreeRank(button.axis) : 0;
+            int points = manager != null ? manager.GetAvailablePerkPoints(button.axis) : 0;
+            button.subtitle.text = $"Rank {rank}  |  Perk {points}";
+        }
+    }
+
+    private void RefreshStatsPanel()
+    {
+        AxisProgressionManager manager = AxisProgressionManager.Instance;
+        if (manager == null || activeAxis == null)
+            return;
+
+        int rank = manager.GetTreeRank(activeAxis);
+        float xp = manager.GetTreeXp(activeAxis);
+        int nextRank = Mathf.Min(manager.GetProgressionConfig().MaxRank, rank + 1);
+        int nextRankXp = manager.GetProgressionConfig().GetRequiredXpForRank(nextRank);
+        int totalPerkPoints = manager.GetTotalPerkPoints(activeAxis);
+        int spentPerkPoints = manager.GetSpentPerkPoints(activeAxis);
+        int availablePerkPoints = manager.GetAvailablePerkPoints(activeAxis);
+        string route = manager.GetChosenTier2Route(activeAxis);
+        string focusState = manager.IsAxisCommitted(activeAxis) ? "Acik" : "Kapali";
+
+        axisStatsText.text =
+            $"<b>{activeAxis.displayName}</b>\n" +
+            $"Rank: {rank}\n" +
+            $"XP: {xp:F0}/{nextRankXp}\n" +
+            $"Perk Puanlari: {availablePerkPoints} kalan / {spentPerkPoints} harcanan / {totalPerkPoints} toplam\n" +
+            $"Odak: {focusState}\n" +
+            $"Secili Yol: {(string.IsNullOrEmpty(route) ? "Yok" : route)}";
+
+        modeText.text = manager.IsTesterMode
+            ? "MOD: TESTER"
+            : "MOD: NORMAL PROGRESSION";
+
+        treeSummaryText.text = manager.IsTesterMode
+            ? "Tester modda XP/rank engeli yok. Focus ve yol kilitleri korunur."
+            : "Normal modda rank, perk puani, prerequisite ve odak kilitleri aktif.";
     }
 
     private void RefreshAllSlots()
     {
-        foreach (var slot in slots.Values)
-            RefreshSlot(slot);
+        AxisProgressionManager manager = AxisProgressionManager.Instance;
+        foreach (NodeSlot slot in slots.Values)
+            RefreshSlot(slot, manager);
 
-        foreach (var line in lines)
+        foreach (LineConnection line in lines)
         {
-            bool fromUnlocked = AxisProgressionManager.Instance != null &&
-                slots.ContainsKey(line.fromId) &&
-                AxisProgressionManager.Instance.IsNodeUnlocked(slots[line.fromId].node);
-            bool toUnlocked = AxisProgressionManager.Instance != null &&
-                slots.ContainsKey(line.toId) &&
-                AxisProgressionManager.Instance.IsNodeUnlocked(slots[line.toId].node);
-            line.image.color = (fromUnlocked && toUnlocked) ? lineUnlockedColor : lineColor;
+            bool fromUnlocked = manager != null &&
+                                slots.TryGetValue(line.fromId, out NodeSlot fromSlot) &&
+                                manager.IsNodeUnlocked(fromSlot.node);
+            bool toUnlocked = manager != null &&
+                              slots.TryGetValue(line.toId, out NodeSlot toSlot) &&
+                              manager.IsNodeUnlocked(toSlot.node);
+            line.image.color = fromUnlocked && toUnlocked ? lineUnlockedColor : lineLockedColor;
         }
     }
 
-    private void RefreshSlot(NodeSlot slot)
+    private void RefreshSlot(NodeSlot slot, AxisProgressionManager manager)
     {
         if (slot == null || slot.node == null)
             return;
 
-        var mgr = AxisProgressionManager.Instance;
-        NodeStatus status = mgr != null ? mgr.GetNodeStatus(slot.node) : NodeStatus.Hidden;
+        NodeStatus status = manager != null ? manager.GetNodeStatus(slot.node) : NodeStatus.Hidden;
         Color tint = GetNodeTintColor(slot.node);
+        bool isSelected = selectedNode == slot.node;
 
-        if (status == NodeStatus.Unlocked)
+        slot.iconImage.enabled = slot.node.icon != null;
+        slot.iconImage.sprite = slot.node.icon;
+        slot.iconFallback.gameObject.SetActive(slot.node.icon == null);
+        slot.iconFallback.text = GetNodeBadgeText(slot.node);
+
+        slot.selectionFrame.color = isSelected ? selectedColor : new Color(0f, 0f, 0f, 0f);
+
+        switch (status)
         {
-            slot.background.color = new Color(tint.r * 0.3f, tint.g * 0.3f, tint.b * 0.3f, 1f);
-            slot.border.color = tint;
-            slot.status.text = "ACTIVE";
-            slot.status.color = unlockedColor;
+            case NodeStatus.Unlocked:
+                slot.fill.color = new Color(tint.r * 0.22f, tint.g * 0.22f, tint.b * 0.22f, 1f);
+                slot.border.color = isSelected ? selectedColor : unlockedColor;
+                slot.statusText.text = "ACTIVE";
+                slot.statusText.color = unlockedColor;
+                break;
+
+            case NodeStatus.Unlockable:
+                slot.fill.color = new Color(0.12f, 0.14f, 0.20f, 1f);
+                slot.border.color = isSelected ? selectedColor : unlockableColor;
+                slot.statusText.text = "UNLOCKABLE";
+                slot.statusText.color = unlockableColor;
+                break;
+
+            default:
+                slot.fill.color = new Color(0.08f, 0.10f, 0.14f, 1f);
+                slot.border.color = isSelected ? selectedColor : lockedColor;
+                slot.statusText.text = "LOCKED";
+                slot.statusText.color = lockedColor;
+                break;
         }
-        else if (status == NodeStatus.Unlockable)
-        {
-            slot.background.color = nodeBg;
-            slot.border.color = new Color(tint.r * 0.7f, tint.g * 0.7f, tint.b * 0.5f, 1f);
-            slot.status.text = "UNLOCKABLE";
-            slot.status.color = new Color(1f, 0.85f, 0.3f);
-        }
-        else
-        {
-            slot.background.color = new Color(0.10f, 0.10f, 0.13f, 1f);
-            slot.border.color = new Color(tint.r * 0.2f, tint.g * 0.2f, tint.b * 0.2f, 1f);
-            slot.status.text = "LOCKED";
-            slot.status.color = new Color(0.4f, 0.4f, 0.45f);
-        }
+
+        slot.button.interactable = status != NodeStatus.Hidden;
     }
 
-    private bool CheckPrereqs(SkillNodeSO node)
+    private void RefreshSelection()
     {
-        if (node.prerequisites == null || node.prerequisites.Length == 0)
-            return true;
-
-        var mgr = AxisProgressionManager.Instance;
-        if (mgr == null)
-            return false;
-
-        foreach (var prereq in node.prerequisites)
+        AxisProgressionManager manager = AxisProgressionManager.Instance;
+        if (selectedNode == null)
         {
-            if (prereq != null && !mgr.IsNodeUnlocked(prereq))
-                return false;
-        }
-
-        return true;
-    }
-
-    private void OnNodeClicked(SkillNodeSO node)
-    {
-        if (AxisProgressionManager.Instance == null)
-            return;
-
-        var manager = AxisProgressionManager.Instance;
-        bool testerMode = manager.IsTesterMode;
-        if (!testerMode && manager.IsNodeUnlocked(node))
-        {
-            descText.text = $"<color=#26D98A>{node.displayName} zaten acik.</color>";
-            RefreshAllSlots();
+            selectionTitleText.text = "PERK SEC";
+            selectionStatusText.text = "";
+            selectionMetaText.text = "Soldaki agaci sec, ortadaki perk kutusuna tikla.";
+            selectionDescriptionText.text = "";
+            selectionRequirementText.text = "";
+            selectionIconImage.enabled = false;
+            selectionIconFallback.text = "--";
+            unlockButton.interactable = false;
+            unlockButtonLabel.text = "PERK SEC";
             return;
         }
 
-        int result = testerMode ? manager.SmartToggleNode(node) : (manager.TryUnlockNode(node) ? 1 : -2);
+        NodeStatus status = manager != null ? manager.GetNodeStatus(selectedNode) : NodeStatus.Hidden;
+        selectionTitleText.text = selectedNode.displayName.ToUpperInvariant();
+        selectionStatusText.text = GetStatusText(status);
+        selectionStatusText.color = GetStatusColor(status);
+        selectionMetaText.text = BuildNodeMetaText(selectedNode, manager);
+        selectionDescriptionText.text = BuildNodeDescription(selectedNode);
+        selectionRequirementText.text = BuildRequirementText(selectedNode, manager);
+        selectionIconFrame.color = GetNodeTintColor(selectedNode);
+        selectionIconImage.enabled = selectedNode.icon != null;
+        selectionIconImage.sprite = selectedNode.icon;
+        selectionIconFallback.gameObject.SetActive(selectedNode.icon == null);
+        selectionIconFallback.text = GetNodeBadgeText(selectedNode);
 
-        if (result == 1)
+        bool canAct = false;
+        if (manager != null)
         {
-            AudioManager.Play(AudioEventId.UIUnlock, gameObject);
-            descText.text = $"<color=#26D98A>{node.displayName} acildi.</color>";
-        }
-        else if (result == 0)
-        {
-            descText.text = $"<color=#FF8844>{node.displayName} kapatildi.</color>";
-        }
-        else if (result == -2)
-        {
-            AudioManager.Play(AudioEventId.UIFail, gameObject);
-            descText.text = $"<color=#FF4444>{manager.GetBlockReason(node)}</color>";
-        }
-        else
-        {
-            AudioManager.Play(AudioEventId.UIFail, gameObject);
-            descText.text = $"<color=#FF4444>On kosullar eksik.</color>";
+            if (manager.IsTesterMode)
+                canAct = status != NodeStatus.Hidden;
+            else
+                canAct = status == NodeStatus.Unlockable;
         }
 
-        RefreshModeAndProgressText();
-        RefreshAllSlots();
+        unlockButton.interactable = canAct;
+        unlockButtonLabel.text = manager != null && manager.IsTesterMode
+            ? (manager.IsNodeUnlocked(selectedNode) ? "PERK KAPAT" : "PERK AC")
+            : "PERK AC";
     }
 
-    private void OnNodeHover(SkillNodeSO node)
+    private static string GetStatusText(NodeStatus status)
+    {
+        return status switch
+        {
+            NodeStatus.Unlocked => "ACTIVE",
+            NodeStatus.Unlockable => "UNLOCKABLE",
+            NodeStatus.VisibleLocked => "LOCKED",
+            _ => "HIDDEN"
+        };
+    }
+
+    private Color GetStatusColor(NodeStatus status)
+    {
+        return status switch
+        {
+            NodeStatus.Unlocked => unlockedColor,
+            NodeStatus.Unlockable => unlockableColor,
+            NodeStatus.VisibleLocked => lockedColor,
+            _ => textSecondary
+        };
+    }
+
+    private string BuildNodeMetaText(SkillNodeSO node, AxisProgressionManager manager)
+    {
+        ProgressionAxisSO ownerAxis = manager != null && manager.database != null
+            ? manager.database.GetAxisForNode(node)
+            : activeAxis;
+
+        int requiredRank = manager != null ? manager.GetRequiredRankForNode(node) : node.requiredTreeRank;
+        int currentRank = ownerAxis != null && manager != null ? manager.GetTreeRank(ownerAxis) : 0;
+        string tierLabel = node.isCommitmentNode ? "Focus / Commitment" : $"Tier {node.tier}";
+        string route = string.IsNullOrEmpty(node.regionTag) ? "Genel" : node.regionTag;
+
+        return
+            $"<b>{tierLabel}</b>\n" +
+            $"Agac: {(ownerAxis != null ? ownerAxis.displayName : "Bilinmiyor")}\n" +
+            $"Gerekli Rank: {requiredRank}  |  Mevcut Rank: {currentRank}\n" +
+            $"Bolge / Yol: {route}";
+    }
+
+    private string BuildNodeDescription(SkillNodeSO node)
+    {
+        string detailed = GetDetailedNodeDescription(node);
+        if (!string.IsNullOrEmpty(detailed))
+            return detailed;
+
+        if (!string.IsNullOrWhiteSpace(node.description))
+            return node.description;
+
+        if (node.isCommitmentNode)
+            return $"{node.displayName}, bu ekseni asil secim haline getirir. Bu odagi actiginda Tier 2 yolu bu agactan ilerler ve karsi odak kilitlenir.";
+
+        if (node.tier == 1)
+            return $"{node.displayName}, bu agacin temel oynanis kimligini acan bir Tier 1 perktir. Bagli oldugu prerequisite saglandiginda ve perk puanin yettiginde acilabilir.";
+
+        return $"{node.displayName}, bu agacin Tier 2 uzmanlik katmanina ait bir perktir. Odak acildiktan sonra prerequisite zinciri uzerinden ilerler.";
+    }
+
+    private string GetDetailedNodeDescription(SkillNodeSO node)
     {
         if (node == null)
-            return;
+            return "";
 
-        var mgr = AxisProgressionManager.Instance;
-        NodeStatus nodeStatus = mgr != null ? mgr.GetNodeStatus(node) : NodeStatus.Hidden;
-        bool unlocked = nodeStatus == NodeStatus.Unlocked;
-        string status = nodeStatus == NodeStatus.Unlocked
-            ? "<color=#26D98A>ACTIVE</color>"
-            : nodeStatus == NodeStatus.Unlockable
-                ? "<color=#FFD94A>UNLOCKABLE</color>"
-                : "<color=#666666>LOCKED</color>";
-
-        string prereqInfo = "";
-        if (!unlocked && node.prerequisites != null && node.prerequisites.Length > 0)
+        return node.nodeId switch
         {
-            prereqInfo = "\nRequired: ";
-            foreach (var prereq in node.prerequisites)
+            "dash_t1_ranged_dodge" => "Dash sirasinda projectile tehditlerini daha guvenli atlatmana odaklanir. Uzak saldiri cizgilerini daha rahat keser ve Dash ekseninin savunma omurgasini acar.",
+            "dash_t1_melee_dodge" => "Dash ile yakin dovus saldirilarini riske girip icinden gecmeyi odullendirir. Ozellikle on hatta oynarken aci kazanma ve punish icin temel giris perki olur.",
+            "dash_t1_tempo_gain" => "Dash ile dusman baskisina yakin girdiginde tempo uretimini destekler. Dash'i sadece kacis degil, ritim kuran aktif bir aksiyona cevirir.",
+            "dash_t1_counter" => "Basarili dodge sonrasinda karsi saldiri penceresi acarak Dash agacinin cezalandirma tarafini devreye alir. Sonraki isabet daha verimli hale gelir.",
+            "dash_t1_attack_speed" => "Dash sonrasi gelen hizli follow-up saldiriyi one cikarir. Dogru zamanlamayla saldiri akisini resetler ve baskiyi dusurmene izin vermez.",
+            "dash_t2_commitment" => "Dash odagini asil secimine cevirir. Bu node acildiginda Parry odagi ve o eksenin Tier 2 tarafi kilitlenir; Dash odakli build burada kesinlesir.",
+            "dash_t2h_hunt_mark" => "Hedefi av olarak isaretleme yolunu acar. Isaretli hedefe baski kurdukca bu yolun diger perkleri daha anlamli hale gelir.",
+            "dash_t2h_blind_spot" => "Isaretli hedefin yan ve arka acilarini daha degerli hale getirir. Dash ile aci alip guvenli punish oynamak isteyen stil icin tasarlanmistir.",
+            "dash_t2h_hunt_flow" => "Dash + attack akisini isaretlemeye baglar. Zinciri temiz tutarsan av odakli ritim daha stabil ve daha tehditkar ilerler.",
+            "dash_t2h_execute" => "Dogru aci ve dogru can esiginde hedefe bitirici baski kurar. Av yolunun odak hedefi eritme aracidir.",
+            "dash_t2h_hunt_cycle" => "Av odakli zinciri oda boyunca surdurmeyi odullendirir. Bir hedeften cikip digerine geciste build ritmini dusurmez.",
+            "dash_t2f_flow_mark" => "Flow yolunun merkez perki. Dash sonrasi saldiri ile hedefleri akis isareti altina alir ve sonraki sekme/perk etkileşimlerini acar.",
+            "dash_t2f_snapback" => "Akis isaretli hedefler uzerinde geri sicrama ve agresif yeniden konumlanma oyunu kurar. Hareketin kendisini hasar akisinin parcasi yapar.",
+            "dash_t2f_chain_bounce" => "Isaretlenmis hedefler arasinda sekmeli baski zinciri kurar. Kalabalik icinde dash yolunun akici tarafini buyutur.",
+            "dash_t2f_black_hole" => "Akis yolunda dusmanlari tek noktaya cekip sonraki baski araclarini hazirlar. Pozisyonu bozmaktan cok, combo penceresi acmak icin kullanilir.",
+            "dash_t2f_burst" => "Sekme ve toplama etkilerinin final patlama odagidir. Akis yolunun kontrollu kaosu burada en yuksek odulunu verir.",
+            "parry_t1_reflect" => "Projectile parry/deflect davranisini acan temel perk. Ranged tehditleri sadece engellemek yerine dusmana geri cevirmeni saglar.",
+            "parry_t1_perfect_timing" => "Parry penceresinin basina ayrik bir perfect katmani ekler. Dogru milisaniyeyi tuttugunda geri donusler daha sert olur.",
+            "parry_t1_counter_stance" => "Basarili parry sonrasinda karsi saldiri penceresi acar. Melee ve ranged parry degerleri burada tek bir punish penceresinde birikir.",
+            "parry_t1_perfect_break" => "Perfect melee parry ile dusmanin ritmini bozup agir bir karsilik vermeyi saglar. Moblari stun'a, bosslari ise kisa interrupt'a iter.",
+            "parry_t1_rhythm_return" => "Basarili parry sonrasinda recovery'nin bir kismini iade eder. Perfect parry ile bu geri donus daha da verimli olur ve ritim korunur.",
+            "parry_t2_commitment" => "Parry odagini asil secimine cevirir. Bu node acildiginda Dash odagi ve onun Tier 2 tarafi kilitlenir; savunma merkezli build burada netlesir.",
+            "parry_t2b_reverse_front" => "On kalkan acisini daraltirken arkaya ikinci bir parry yayi ekler. Birden fazla yonden gelen tehditte balistik yolun pozisyon oyununu baslatir.",
+            "parry_t2b_overdeflect" => "Geri gonderilen projectile'i hiz, hasar ve delme acisindan guclendirir. Deflect'i sadece savunma degil, aktif hasar araci haline getirir.",
+            "parry_t2b_suppressive_trace" => "Deflect edilen projectile'in vurdugu hedefte kisa sureli bozulma yaratir. Cast kesme, windup iptali ve baski kirma bu node'un asil isidir.",
+            "parry_t2b_fractured_orbit" => "Ana deflect sonrasinda zayif ikincil sekmeler uretir. Kalabalik ranged senaryolarda parry'nin alani kontrol etmesini saglar.",
+            "parry_t2b_feedback" => "Ardisik projectile parry'lerden stack toplayip sonraki deflect'leri daha tehditkar hale getirir. Balistik yolun kartopu perki budur.",
+            "parry_t2p_close_execute" => "Mermiyi cok yakindan perfect geri cevirdiginde ranged hedefi infaz etmeye calisir. Boss ve boss-benzeri hedeflerde ise infaz yerine sert baski etkisi verir.",
+            "parry_t2p_fine_edge" => "Perfect pencereyi buyuturken normal pencereyi inceltir. Bu yol, daha yuksek odul icin normal parry guvenligini bilerek azaltir.",
+            "parry_t2p_heavy_riposte" => "Perfect melee parry'leri daha agir punish'e donusturur. Guard kullanan dusmanlari da daha uzun sure acikta birakir.",
+            "parry_t2p_rotating_cone" => "Parry aktifken kisa bir koni sweep'ini tam tur dondurur. Dogru timing ile tek yone degil, etrafindaki tehditlere cevap verme aracidir.",
+            "parry_t2p_perfect_cycle" => "Perfect parry zinciri kurmayi odullendirir. Recovery'yi geri alir, counter penceresini tazeler ve riski dogrudan akisa cevirir.",
+            "overdrive_t1_heat_buildup" => "Ardisik baskida tempo uretimini kademeli buyutur. Zincir koparsa birikim de duser; bu yuzden surekli basinci sever.",
+            "overdrive_t1_threshold_burst" => "Yeni bir tempo esigi asildiginda sonraki vurusun agirligini arttirir. Esik gecislerini sayisal degil, hissedilir patlama anlarina cevirir.",
+            "overdrive_t1_red_pressure" => "Yuksek tempoda hasar ve stagger gucunu arttirirken seni daha kirilgan hale getirir. Risk-odul mantiginin temel T1 perki budur.",
+            "overdrive_t1_overflow_impulse" => "Maks tempoya yakin oynarken kucuk kesintilere karsi direnc kazandirir. Baskiyi kaybetmeden devam etmeyi kolaylastirir.",
+            "overdrive_t1_final_push" => "Kill, agir stun veya guard break sonrasinda bir sonraki darbeyi guclendirir. Momentumun momentumu besledigi yer burasidir.",
+            "overdrive_t2_commitment" => "Overdrive odagini asil secimine cevirir. Patlayici yuksek tempo oyunu bu noktadan sonra Cadence'in istikrarli yolunu dislar.",
+            "overdrive_t2burst_short_circuit" => "Yeni tempo esigine giris yaptiginda kisa sureli patlama penceresi acar. Burst yolunun kapisi budur.",
+            "overdrive_t2burst_red_window" => "Burst penceresi sirasinda hiz, hasar ve stagger gucu yukselir. Karsiliginda tempo daha cabuk akar gider.",
+            "overdrive_t2burst_threshold_echo" => "Burst sirasinda kill veya agir baski aldiginda pencereyi uzatir ya da ikinci minik patlama yaratir. Dogru cash-out akisini odullendirir.",
+            "overdrive_t2burst_pressure_break" => "Burst sirasindaki heavy ve counter saldirilarin guard/stagger etkisini belirgin buyutur. Tek hedef ustune baski kuran kisa ama sert bir perk.",
+            "overdrive_t2burst_final_flare" => "Pencere bitmeden onceki son darbe birikmis gucu tek bir vurus olarak nakde cevirir. Zamanlama dogruysa yolun en yuksek odulunu burada alirsin.",
+            "overdrive_t2pred_blood_scent" => "Surekli baski yedigin hedefi av durumuna tasir. Predator yolunun tek hedef odakli takibinin ilk adimidir.",
+            "overdrive_t2pred_choking_proximity" => "Av hedefin yakinindayken tempo kaybini azaltir ve baski araclarini daha verimli kullanmana yardim eder. Hedefin ustunden inmemeyi odullendirir.",
+            "overdrive_t2pred_predator_angle" => "Avin yan ve arka acilarindan gelen darbeleri daha yikici hale getirir. Pozisyon alan oyuncu burada daha buyuk kazanc alir.",
+            "overdrive_t2pred_pack_breaker" => "Av oldugunde baskinin tamamen dusmesini engeller ve uygun hedefe tasir. Tek hedef odakli zinciri oda icinde surdurur.",
+            "overdrive_t2pred_execute_pressure" => "Can esigi dusen ava karsi counter/heavy/ozel baski saldirilarini bitirici hale getirir. Boss'ta anlik oldurme degil, cok guclu bitiris baskisi uretir.",
+            "cadence_t1_steady_pulse" => "Tempo kaybini yumusatir ve ritmi daha kolay tasimani saglar. Cadence ekseninin temel omurgasi budur.",
+            "cadence_t1_transition_rhythm" => "Attack, dash, parry ve skill arasi temiz gecisleri odullendirir. Tek hareket spami yerine bilincli aksiyon akisini one cikarir.",
+            "cadence_t1_soft_fall" => "Tempo bir kademe dustugunde bonuslarin bir anda kopmasini engeller. Ritim bozulsa da oyuncuyu tamamen boslukta birakmaz.",
+            "cadence_t1_measured_power" => "Ayni tempo bandinda dengeli kaldikca kucuk ama stabil guc olusturur. Patlayici degil, kontrollu avantaj hissi verir.",
+            "cadence_t1_rhythm_shield" => "Kucuk hatalarin tempoyu daha az bozmasini saglar. Chip hasar, minik takilmalar ve ritim kirilmalari bu node ile daha az cezalandirir.",
+            "cadence_t2_commitment" => "Cadence odagini asil secimine cevirir. Stabil tempo oyunu bu noktadan sonra Overdrive'in patlayici tarafini kilitler.",
+            "cadence_t2measured_measure_line" => "Her tempo kademesinde stabil bir bolge tanimlar. O bolgede kaldiginda Cadence bonuslari daha tutarli calisir.",
+            "cadence_t2measured_balance_point" => "Stabil bolgede kaldikca precision, counter kalitesi ve kontrol etkileri yavas yavas birikir. Dusuk gurultulu ama yuksek verimli bir perk.",
+            "cadence_t2measured_timed_accent" => "Dogru ritim araliklariyla guclendirilmis vurgu darbeleri uretir. Ritimsiz spam yaptiginda bu odulu vermez.",
+            "cadence_t2measured_recovery_return" => "Ritim bozuldugunda yeniden dengeye donus suresini kisaltir. Hata sonrasi oyunu toparlamayi hedefler.",
+            "cadence_t2measured_perfect_measure" => "Uzun sure bozulmadan oynarsan periyodik olarak guclu ama kontrollu oduller verir. Measured yolun ustalik odagi budur.",
+            "cadence_t2flow_flow_ring" => "Farkli aksiyon tiplerini birbirine baglayarak Flow stack uretir. Flow yolunun temel akisini acar.",
+            "cadence_t2flow_sliding_continuation" => "Hedef degistirirken veya hareket halindeyken Flow stack'lerinin daha zor dusmesini saglar. Aksiyon zincirini tasimayi kolaylastirir.",
+            "cadence_t2flow_wave_bounce" => "Yuksek Flow durumunda saldirilara kucuk yanki/sekme etkileri ekler. Direkt burst degil, akisi odullendiren yan etkidir.",
+            "cadence_t2flow_threshold_surf" => "Tempo bir kademe dustugunde bonuslarin bir kismini asagi kademeye tasir. Ritmin cokusunu tamamen durdurmaz ama yumusatir.",
+            "cadence_t2flow_overflow_harmony" => "Yeterince uzun Flow zincirlerinde dash/parry/skill recovery iadesi ve hafif tempo geri beslemesi verir. Yolun dans gibi hisseden capstone perki budur.",
+            _ => ""
+        };
+    }
+
+    private string BuildRequirementText(SkillNodeSO node, AxisProgressionManager manager)
+    {
+        List<string> lines = new List<string>();
+
+        if (node.prerequisites != null && node.prerequisites.Length > 0)
+        {
+            List<string> prereqLabels = new List<string>();
+            foreach (SkillNodeSO prereq in node.prerequisites)
             {
-                if (prereq == null) continue;
-                bool prereqUnlocked = mgr != null && mgr.IsNodeUnlocked(prereq);
-                prereqInfo += prereqUnlocked ? $"<color=#26D98A>{prereq.displayName}</color> " : $"<color=#FF4444>{prereq.displayName}</color> ";
+                if (prereq == null)
+                    continue;
+
+                bool ok = manager != null && manager.IsNodeUnlocked(prereq);
+                prereqLabels.Add(ok
+                    ? $"<color=#4DDE8E>{prereq.displayName}</color>"
+                    : $"<color=#FF8B78>{prereq.displayName}</color>");
             }
+
+            if (prereqLabels.Count > 0)
+                lines.Add($"On Kosullar: {string.Join(", ", prereqLabels)}");
         }
 
-        string blockReason = (!unlocked && mgr != null && nodeStatus == NodeStatus.VisibleLocked)
-            ? $"\n<color=#FF6666>{mgr.GetBlockReason(node)}</color>"
-            : "";
+        if (manager != null)
+        {
+            string blockReason = manager.GetBlockReason(node);
+            if (!string.IsNullOrEmpty(blockReason))
+                lines.Add($"<color=#FF8B78>{blockReason}</color>");
+        }
 
-        string rankInfo = mgr != null && activeAxis != null
-            ? $"\nRank: {mgr.GetTreeRank(activeAxis)} / Gerekli: {mgr.GetRequiredRankForNode(node)} | Perk Puani: {mgr.GetAvailablePerkPoints(activeAxis)}/{mgr.GetTotalPerkPoints(activeAxis)}"
-            : "";
+        return lines.Count > 0
+            ? string.Join("\n", lines)
+            : "Bu perk icin ek engel yok.";
+    }
 
-        descText.text = $"<b>{node.displayName}</b> [{status}]\n{node.description}{rankInfo}{prereqInfo}{blockReason}";
+    private string GetNodeBadgeText(SkillNodeSO node)
+    {
+        if (node == null || string.IsNullOrWhiteSpace(node.displayName))
+            return "--";
+
+        string[] parts = node.displayName.Split(' ');
+        if (parts.Length == 1)
+            return parts[0].Length >= 2
+                ? parts[0].Substring(0, 2).ToUpperInvariant()
+                : parts[0].ToUpperInvariant();
+
+        return $"{char.ToUpperInvariant(parts[0][0])}{char.ToUpperInvariant(parts[1][0])}";
     }
 
     private void ToggleMode()
@@ -740,8 +1167,7 @@ public class SkillTreePanelUI : MonoBehaviour
             return;
 
         AxisProgressionManager.Instance.ToggleInteractionMode();
-        RefreshModeAndProgressText();
-        RefreshAllSlots();
+        RefreshAll();
     }
 
     private void AddRankToActiveAxis()
@@ -750,14 +1176,10 @@ public class SkillTreePanelUI : MonoBehaviour
             return;
 
         if (AxisProgressionManager.Instance.IsTesterMode)
-        {
-            descText.text = "<color=#FFAA44>Tester modda XP/rank kullanilmaz.</color>";
             return;
-        }
 
         AxisProgressionManager.Instance.DebugAddTreeRank(activeAxis);
-        RefreshModeAndProgressText();
-        RefreshAllSlots();
+        RefreshAll();
     }
 
     private void RemoveRankFromActiveAxis()
@@ -766,15 +1188,10 @@ public class SkillTreePanelUI : MonoBehaviour
             return;
 
         if (AxisProgressionManager.Instance.IsTesterMode)
-        {
-            descText.text = "<color=#FFAA44>Tester modda XP/rank kullanilmaz.</color>";
             return;
-        }
 
         AxisProgressionManager.Instance.RemoveTreeRank(activeAxis, 1);
-        descText.text = "<color=#FF8844>Agac bir rank geri alindi. Rank'a bagli perkler otomatik kapatildi.</color>";
-        RefreshModeAndProgressText();
-        RefreshAllSlots();
+        RefreshAll();
     }
 
     private void ResetXpForActiveAxis()
@@ -783,70 +1200,83 @@ public class SkillTreePanelUI : MonoBehaviour
             return;
 
         if (AxisProgressionManager.Instance.IsTesterMode)
-        {
-            descText.text = "<color=#FFAA44>Tester modda XP/rank kullanilmaz.</color>";
             return;
-        }
 
         AxisProgressionManager.Instance.ResetTreeXp(activeAxis);
-        descText.text = "<color=#FF6666>Agac XP sifirlandi. Rank'a bagli tum perkler otomatik kapatildi.</color>";
-        RefreshModeAndProgressText();
-        RefreshAllSlots();
-    }
-
-    private void RefreshModeAndProgressText()
-    {
-        var mgr = AxisProgressionManager.Instance;
-        if (mgr == null)
-            return;
-
-        if (modeText != null)
-            modeText.text = mgr.IsTesterMode
-                ? "MOD: TESTER (XP yok, debug unlock)"
-                : "MOD: NORMAL PROGRESSION";
-
-        if (warningText != null)
-            warningText.text = mgr.IsTesterMode
-                ? "[TESTER] Perk ac/kapat serbest; Focus ve yol kilitleri korunur."
-                : "[NORMAL] XP/rank/perk puani/prerequisite kurallari aktif.";
-
-        if (progressText != null && activeAxis != null)
-        {
-            int rank = mgr.GetTreeRank(activeAxis);
-            float xp = mgr.GetTreeXp(activeAxis);
-            int nextRank = Mathf.Min(mgr.GetProgressionConfig().MaxRank, rank + 1);
-            int nextXp = mgr.GetProgressionConfig().GetRequiredXpForRank(nextRank);
-            int availablePerkPoints = mgr.GetAvailablePerkPoints(activeAxis);
-            int spentPerkPoints = mgr.GetSpentPerkPoints(activeAxis);
-            string route = mgr.GetChosenTier2Route(activeAxis);
-            string routeText = string.IsNullOrEmpty(route) ? "" : $" | Route: {route}";
-            progressText.text = $"Rank {rank} | XP {xp:F0}/{nextXp} | Perk {availablePerkPoints} | Spent {spentPerkPoints}{routeText}";
-        }
+        RefreshAll();
     }
 
     private void HandleNodeStatusChanged(string nodeId, NodeStatus status)
     {
-        if (!isOpen || !slots.TryGetValue(nodeId, out var slot))
+        if (!isOpen)
             return;
 
-        RefreshSlot(slot);
-        RefreshAllSlots();
+        RefreshAll();
     }
 
     private void HandleTreeProgressChanged(ProgressionAxisSO axis, int rank, float xp)
     {
-        if (axis == activeAxis)
-            RefreshModeAndProgressText();
+        if (!isOpen)
+            return;
 
-        if (isOpen)
-            RefreshAllSlots();
+        RefreshAll();
     }
 
     private void HandleInteractionModeChanged(SkillTreeInteractionMode mode)
     {
-        RefreshModeAndProgressText();
-        if (isOpen)
-            RefreshAllSlots();
+        if (!isOpen)
+            return;
+
+        RefreshAll();
+    }
+
+    private Button CreateUtilityButton(Transform parent, string name, string label, UnityEngine.Events.UnityAction action)
+    {
+        Button button = CreateButton(parent, name, label, new Vector2(0f, 48f), new Color(0.24f, 0.28f, 0.36f, 1f), action);
+        LayoutElement layout = button.gameObject.AddComponent<LayoutElement>();
+        layout.preferredHeight = 48f;
+        return button;
+    }
+
+    private static Button CreateButton(Transform parent, string name, string label, Vector2 size, Color color, UnityEngine.Events.UnityAction onClick)
+    {
+        GameObject go = CreatePanel(parent, name, color);
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.sizeDelta = size;
+        Button button = go.AddComponent<Button>();
+        button.onClick.AddListener(onClick);
+
+        TextMeshProUGUI text = CreateText(go.transform, "Label", label, 14, FontStyles.Bold, Color.white);
+        Stretch(text.rectTransform);
+        text.alignment = TextAlignmentOptions.Center;
+        return button;
+    }
+
+    private static GameObject CreatePanel(Transform parent, string name, Color color)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        go.AddComponent<RectTransform>();
+        Image image = go.AddComponent<Image>();
+        image.color = color;
+        return go;
+    }
+
+    private static TextMeshProUGUI CreateText(Transform parent, string name, string content, float fontSize, FontStyles style, Color color)
+    {
+        GameObject go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+        go.AddComponent<RectTransform>();
+        TextMeshProUGUI tmp = go.AddComponent<TextMeshProUGUI>();
+        tmp.text = content;
+        tmp.fontSize = fontSize;
+        tmp.fontStyle = style;
+        tmp.color = color;
+        tmp.richText = true;
+        tmp.textWrappingMode = TextWrappingModes.Normal;
+        tmp.overflowMode = TextOverflowModes.Overflow;
+        tmp.raycastTarget = false;
+        return tmp;
     }
 
     private static void Stretch(RectTransform rect)
@@ -857,44 +1287,9 @@ public class SkillTreePanelUI : MonoBehaviour
         rect.offsetMax = Vector2.zero;
     }
 
-    private static void ClearChildren(RectTransform parent, HashSet<string> preserve = null)
+    private static void ClearChildren(RectTransform parent)
     {
         for (int i = parent.childCount - 1; i >= 0; i--)
-        {
-            Transform child = parent.GetChild(i);
-            if (preserve != null && preserve.Contains(child.name))
-                continue;
-
-            child.gameObject.SetActive(false);
-            Object.Destroy(child.gameObject);
-        }
-    }
-
-    private GameObject CreatePanel(Transform parent, string name, Color color)
-    {
-        var go = new GameObject(name);
-        go.transform.SetParent(parent, false);
-        var image = go.AddComponent<Image>();
-        image.color = color;
-        if (go.GetComponent<RectTransform>() == null)
-            go.AddComponent<RectTransform>();
-        return go;
-    }
-
-    private TextMeshProUGUI CreateText(Transform parent, string name, string content, float fontSize, FontStyles style, Color color)
-    {
-        var go = new GameObject(name);
-        go.transform.SetParent(parent, false);
-        if (go.GetComponent<RectTransform>() == null)
-            go.AddComponent<RectTransform>();
-        var tmp = go.AddComponent<TextMeshProUGUI>();
-        tmp.text = content;
-        tmp.fontSize = fontSize;
-        tmp.fontStyle = style;
-        tmp.color = color;
-        tmp.enableAutoSizing = false;
-        tmp.overflowMode = TextOverflowModes.Truncate;
-        tmp.richText = true;
-        return tmp;
+            UnityEngine.Object.Destroy(parent.GetChild(i).gameObject);
     }
 }

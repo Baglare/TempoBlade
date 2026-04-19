@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Assassin Enemy
   prefab: {fileID: 2947807308934404738, guid: 9640d971c3cc88741af395c7046a8156, type: 3}
-  maxHealth: 70
+  maxHealth: 60
   damage: 10
   moveSpeed: 3.5
   goldDrop: 17
+  countsForProgression: 1
+  wardenProtectPriority: 0
   detectionRange: 8
   attackRange: 1.5
   attackCooldown: 2

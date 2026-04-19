@@ -236,15 +236,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAssassin
   enemyData: {fileID: 11400000, guid: 47963fe3d209ea24d8b15818c3851931, type: 2}
+  stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   detectionRange: 8
   attackRange: 1.4
-  attackDamage: 25
-  attackCooldown: 2.5
+  attackDamage: 22
+  attackCooldown: 2.7
   retreatDuration: 2
   invisibleAlpha: 0
   semiVisibleAlpha: 0.3
   preAttackVisibleTime: 0.15
+  tempoConfig:
+    preAttackVisibleMultiplier:
+      t0: 1
+      t1: 0.9
+      t2: 0.78
+      t3: 0.78
+    attackCooldownMultiplier:
+      t0: 1
+      t1: 1
+      t2: 0.9
+      t3: 0.9
+    orbitDistance:
+      t0: 0
+      t1: 0.8
+      t2: 1.25
+      t3: 1.45
+    orbitRefreshInterval:
+      t0: 99
+      t1: 0.7
+      t2: 0.4
+      t3: 0.3
+    t3DoubleRepositionChance: 0.25
+    t3PunishWindowDuration: 1.2
+    t3PunishSpeedMultiplier: 0.55
+    shortRepositionDistance: 1
+    shortRepositionDuration: 0.08
   deathAnimDuration: 0.5
 --- !u!114 &6675325940108100394
 MonoBehaviour:

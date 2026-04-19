@@ -186,12 +186,12 @@ MonoBehaviour:
   guardianLinkCooldown: 6
   guardianLinkWindup: 0.45
   guardianLinkDuration: 4.5
-  guardianDamageReductionMultiplier: 0.72
-  guardianStaggerDurationMultiplier: 0.6
+  guardianDamageReductionMultiplier: 0.8
+  guardianStaggerDurationMultiplier: 0.75
   guardianIgnoreNextHeavyStagger: 1
   guardianLinkColor: {r: 0.25, g: 1, b: 0.55, a: 0.95}
   summonedWardenPrefab: {fileID: 8052643814893691856, guid: 5efbd8aed88f0944bb6209ad4548ceb7, type: 3}
-  wardenCallCooldown: 12
+  wardenCallCooldown: 10
   wardenCallWindup: 0.55
   summonedWardenDuration: 7.5
   summonedWardenAlpha: 0.72
@@ -202,4 +202,29 @@ MonoBehaviour:
   shieldStepRefreshInterval: 0.15
   shieldStepTolerance: 0.22
   retreatDistance: 2.5
+  maxDistanceFromGuardTarget: 1.75
+  tempoConfig:
+    guardianLinkWindupMultiplier:
+      t0: 1
+      t1: 0.88
+      t2: 0.88
+      t3: 0.8
+    summonCooldownMultiplier:
+      t0: 1
+      t1: 1
+      t2: 0.9
+      t3: 0.85
+    shieldStepMoveMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1.12
+      t3: 1.18
+    t2GuardianDamageMultiplier: 0.92
+    t2GuardianStaggerMultiplier: 0.9
+    t3GuardianDamageMultiplier: 0.88
+    t3GuardianStaggerMultiplier: 0.88
+    t3HeavyHitHealthFraction: 0.15
+    t3EchoDamageFraction: 0.22
+    t3HeavyStunThreshold: 0.65
+    t3EchoStaggerDuration: 0.32
   deathAnimDuration: 0.6

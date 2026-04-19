@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Dasher Enemy
   prefab: {fileID: 1378926000580939550, guid: 9f88cf6e49ee3e94aa106370f73ca4cd, type: 3}
-  maxHealth: 75
-  damage: 50
+  maxHealth: 70
+  damage: 15
   moveSpeed: 3.5
   goldDrop: 6
   countsForProgression: 1

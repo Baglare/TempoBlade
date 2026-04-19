@@ -220,26 +220,57 @@ MonoBehaviour:
   repathInterval: 0.12
   guardMoveSpeed: 2
   shieldFrontHalfAngle: 60
-  reducedSideDamageMultiplier: 0.45
+  shieldTurnSpeed: 14
   shieldHitPlayerStaggerDuration: 0.2
-  shieldHitTempoSteal: 8
+  shieldHitTempoSteal: 5
   shieldHitKnockback: 7
   dashTriggerDistance: 1.15
   repositionDashSpeed: 12
   repositionDashDuration: 0.2
-  repositionDashCooldown: 1.25
+  repositionDashCooldown: 1.5
   closePunishRange: 1.35
   closePunishWindup: 0.45
-  closePunishDamage: 18
+  closePunishDamage: 16
   closePunishStunDuration: 0.8
   closePunishCooldown: 2.4
   closePunishRecovery: 0.8
   attackPoint: {fileID: 5733407466607592406}
   closePunishRadius: 1
   berserkMoveSpeed: 4.5
-  berserkChargeSpeed: 13
+  berserkChargeSpeed: 10.5
   berserkChargeCooldown: 1.4
   berserkDuration: 5
-  collisionDamage: 14
+  collisionDamage: 11
   collisionDamageInterval: 0.45
+  tempoConfig:
+    frontDamageMultiplier:
+      t0: 0
+      t1: 0.05
+      t2: 0.1
+      t3: 0.2
+    sideDamageMultiplier:
+      t0: 0.5
+      t1: 0.55
+      t2: 0.65
+      t3: 0.78
+    shieldTurnSpeedMultiplier:
+      t0: 1
+      t1: 0.88
+      t2: 0.72
+      t3: 0.58
+    repositionCooldownMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1.15
+      t3: 1.2
+    punishRecoveryMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1.15
+      t3: 1.22
+    heavyVulnerabilityMultiplier:
+      t0: 1
+      t1: 1.05
+      t2: 1.15
+      t3: 1.45
   deathAnimDuration: 0.7

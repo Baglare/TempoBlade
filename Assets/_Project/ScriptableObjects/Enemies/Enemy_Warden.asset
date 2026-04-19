@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Warden Enemy
   prefab: {fileID: 8052643814893691856, guid: 5efbd8aed88f0944bb6209ad4548ceb7, type: 3}
-  maxHealth: 300
+  maxHealth: 130
   damage: 10
   moveSpeed: 3.5
   goldDrop: 5

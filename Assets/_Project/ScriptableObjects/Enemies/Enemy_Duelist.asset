@@ -14,10 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Duelist Enemy
   prefab: {fileID: 5966022111017827081, guid: 9290c5d5d1685624488f6fd8bd7537c6, type: 3}
-  maxHealth: 200
-  damage: 40
-  moveSpeed: 7
+  maxHealth: 145
+  damage: 18
+  moveSpeed: 4.5
   goldDrop: 15
+  countsForProgression: 1
+  wardenProtectPriority: 0
   detectionRange: 8
   attackRange: 1.5
   attackCooldown: 2

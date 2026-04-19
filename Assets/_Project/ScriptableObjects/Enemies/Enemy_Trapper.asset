@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Trapper Enemy
   prefab: {fileID: 1626837106156574651, guid: 86ef020e174328a4680e1929e705da92, type: 3}
-  maxHealth: 150
+  maxHealth: 100
   damage: 10
   moveSpeed: 3.5
   goldDrop: 3

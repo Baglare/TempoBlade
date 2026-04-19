@@ -123,15 +123,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDasher
   enemyData: {fileID: 11400000, guid: a44d1148312093d408c4687639824975, type: 2}
+  stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   projectilePrefab: {fileID: 1047795383070638735, guid: da8894fe800626d43bc590c86d7c6546, type: 3}
   firePoint: {fileID: 100229480457975496}
   preferredRange: 8
   minRange: 4
-  fireRate: 0.9
-  dodgeChance: 0.45
+  fireRate: 1.15
+  dodgeChance: 0.35
   dodgeSpeed: 18
   dodgeDuration: 0.28
+  tempoConfig:
+    reactiveDodgeChanceMultiplier:
+      t0: 1
+      t1: 0.9
+      t2: 0.7
+      t3: 0.5
+    proactiveDashCooldownMultiplier:
+      t0: 1
+      t1: 0.85
+      t2: 0.72
+      t3: 0.6
+    aggressionRangeMultiplier:
+      t0: 1
+      t1: 1
+      t2: 0.88
+      t3: 0.82
+    t2FeintChance: 0.28
+    t3DoubleDashChance: 0.22
+    t3PunishWindowDuration: 1.1
+    proactiveDashBaseCooldown: 3
+    feintTowardBias: 0.35
   deathAnimDuration: 0.8
 --- !u!114 &573822392830440432
 MonoBehaviour:

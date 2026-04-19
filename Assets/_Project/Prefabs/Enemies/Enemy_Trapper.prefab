@@ -122,13 +122,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTrapper
   enemyData: {fileID: 11400000, guid: 5e59ca274a8de6a42a5aadc5d15eb080, type: 2}
+  stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   moveSpeedModifier: 5
   roamRadius: 10
   trapPrefab: {fileID: 3156695708550749579, guid: f72c1ab2d587c604ead5b1ab358e5b76, type: 3}
-  trapSpawnInterval: 5
-  maxTraps: 5
-  bigTrapPrefab: {fileID: 3156695708550749579, guid: f72c1ab2d587c604ead5b1ab358e5b76, type: 3}
+  trapSpawnInterval: 8
+  maxTraps: 4
+  minTrapDistance: 2
+  tempoConfig:
+    trapSpawnIntervalMultiplier:
+      t0: 1
+      t1: 0.9
+      t2: 0.9
+      t3: 0.8
+    t1CentralBiasDistance: 1.75
+    t2PlacementSamples: 8
+    t2ForwardBias: 3
+    t3SelfRootDuration: 0.3
+    t3TrapOverrides:
+      activationDelayMultiplier: 0.7
+      speedMultiplierScale: 0.85
+      slowDurationMultiplier: 1.15
+      poisonDamageMultiplier: 1.2
+      indicatorWidthMultiplier: 1.45
+      indicatorColor: {r: 1, g: 0.45, b: 0.1, a: 0.85}
 --- !u!114 &4935434359058384201
 MonoBehaviour:
   m_ObjectHideFlags: 0

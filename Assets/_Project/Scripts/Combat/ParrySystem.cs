@@ -435,8 +435,14 @@ public class ParrySystem : MonoBehaviour
         if (!IsParryActive || !rotateArcWhileActive)
             return parryDirection;
 
-        float rotateTime = Mathf.Min(parryElapsed, rotatingArcDuration);
-        float degrees = rotateTime * rotatingArcDegreesPerSecond;
+        float activeWindowDuration = Mathf.Max(0.01f, initialWindowDuration);
+        float configuredSweepDuration = rotatingArcDuration > 0.001f
+            ? rotatingArcDuration
+            : activeWindowDuration;
+        float sweepDuration = Mathf.Max(0.01f, Mathf.Min(configuredSweepDuration, activeWindowDuration));
+        float normalized = Mathf.Clamp01(parryElapsed / sweepDuration);
+        float targetSweepDegrees = Mathf.Max(360f, rotatingArcDegreesPerSecond * sweepDuration);
+        float degrees = Mathf.Lerp(0f, targetSweepDegrees, normalized);
         return Quaternion.Euler(0f, 0f, degrees) * parryDirection;
     }
 

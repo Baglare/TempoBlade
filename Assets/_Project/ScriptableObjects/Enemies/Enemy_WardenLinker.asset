@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Warden Linker Enemy
   prefab: {fileID: 8052643814893691856, guid: e859ab3c6da23824ba87ff67c2f218c0, type: 3}
-  maxHealth: 100
+  maxHealth: 85
   damage: 10
   moveSpeed: 3.5
   goldDrop: 5

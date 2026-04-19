@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Resonator Enemy
   prefab: {fileID: 8052643814893691856, guid: 13b3fa266ddb37e48b4659385623c646, type: 3}
-  maxHealth: 100
+  maxHealth: 80
   damage: 10
   moveSpeed: 3.5
   goldDrop: 5

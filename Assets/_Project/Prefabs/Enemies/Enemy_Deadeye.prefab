@@ -219,15 +219,15 @@ MonoBehaviour:
   preferredRange: 10
   minimumRange: 5.5
   maximumRange: 14
-  shotCooldown: 3.1
-  lockAimDuration: 0.95
+  shotCooldown: 3.2
+  lockAimDuration: 1
   lockAimColor: {r: 1, g: 0.18, b: 0.18, a: 0.95}
   telegraphStartWidth: 0.04
   telegraphEndWidth: 0.12
   repositionTriggerRange: 3.2
   repositionDuration: 0.24
   repositionSpeed: 11
-  repositionCooldown: 3.75
+  repositionCooldown: 4
   controlShotPrefab: {fileID: 1047795383070638735, guid: 949eeba4294aa614ba6761324c4d74bb, type: 3}
   controlShotLifeTimeOverride: 0.9
   movementRefreshInterval: 0.3
@@ -236,4 +236,25 @@ MonoBehaviour:
   lineOfSightMask:
     serializedVersion: 2
     m_Bits: 243
+  tempoConfig:
+    lockAimDurationMultiplier:
+      t0: 1
+      t1: 0.88
+      t2: 0.88
+      t3: 0.72
+    movementRefreshMultiplier:
+      t0: 1
+      t1: 0.82
+      t2: 0.72
+      t3: 0.68
+    repositionSampleMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1.5
+      t3: 1.8
+    t3ShotDamageMultiplier: 1.15
+    t3ProjectileSpeedMultiplier: 1.2
+    t3RecoveryDuration: 0.55
+    t3TelegraphColor: {r: 1, g: 0.3, b: 0.12, a: 1}
+    t3TelegraphWidthMultiplier: 1.4
   deathAnimDuration: 0.7

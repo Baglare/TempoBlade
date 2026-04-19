@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySO
   enemyName: Deadeye Enemy
   prefab: {fileID: 7957397046271315228, guid: 5a3af859e5f53b046b8b54017206911c, type: 3}
-  maxHealth: 100
-  damage: 10
+  maxHealth: 85
+  damage: 22
   moveSpeed: 3.5
   goldDrop: 5
   countsForProgression: 1
-  wardenProtectPriority: 0
+  wardenProtectPriority: 1
   detectionRange: 8
   attackRange: 1.5
   attackCooldown: 2

@@ -16,6 +16,7 @@ public class EncounterAffinityManager : MonoBehaviour
     private bool thresholdHadPayoff;
     private float lastTempoDropTime = -999f;
     private TreeProgressionConfigSO fallbackConfig;
+    private EncounterBreakdownSnapshot pendingBreakdown;
 
     public static EncounterAffinityManager EnsureInstance()
     {
@@ -98,6 +99,18 @@ public class EncounterAffinityManager : MonoBehaviour
         return axisCounters.TryGetValue(axisId, out var counters) ? counters.lastAffinity : 0f;
     }
 
+    public bool HasPendingBreakdown()
+    {
+        return pendingBreakdown != null && pendingBreakdown.axisBreakdowns.Count > 0;
+    }
+
+    public EncounterBreakdownSnapshot ConsumePendingBreakdown()
+    {
+        EncounterBreakdownSnapshot snapshot = pendingBreakdown;
+        pendingBreakdown = null;
+        return snapshot;
+    }
+
     private void EndEncounterIfNeeded(bool awardXp)
     {
         if (!isSessionActive)
@@ -111,8 +124,11 @@ public class EncounterAffinityManager : MonoBehaviour
         foreach (var kv in axisCounters)
             kv.Value.lastAffinity = CalculateAffinity(kv.Key, kv.Value);
 
-        if (awardXp)
-            AwardEncounterXp();
+        Dictionary<string, float> xpAwards = awardXp
+            ? AwardEncounterXp()
+            : new Dictionary<string, float>();
+
+        pendingBreakdown = BuildBreakdownSnapshot(xpAwards);
 
         isSessionActive = false;
         telemetry = null;
@@ -297,17 +313,18 @@ public class EncounterAffinityManager : MonoBehaviour
             AddScore("axis_cadence", ScoreSlot.Fifth, dt * 0.35f, null, CombatActionType.None);
     }
 
-    private void AwardEncounterXp()
+    private Dictionary<string, float> AwardEncounterXp()
     {
+        Dictionary<string, float> xpAwards = new Dictionary<string, float>();
         var manager = AxisProgressionManager.Instance;
         if (manager == null || manager.database == null)
-            return;
+            return xpAwards;
         if (manager.IsTesterMode)
-            return;
+            return xpAwards;
 
         var database = manager.database;
         if (database.opposingPairs == null)
-            return;
+            return xpAwards;
 
         foreach (var pair in database.opposingPairs)
         {
@@ -324,7 +341,10 @@ public class EncounterAffinityManager : MonoBehaviour
 
             float xp = CalculateXp(target.axisId, affinity);
             manager.AddTreeXp(target, xp);
+            xpAwards[target.axisId] = xp;
         }
+
+        return xpAwards;
     }
 
     private ProgressionAxisSO ResolveXpTarget(ProgressionAxisSO axisA, ProgressionAxisSO axisB, AxisProgressionManager manager)
@@ -431,6 +451,92 @@ public class EncounterAffinityManager : MonoBehaviour
         state.lastTime = Time.time;
         repeatedEvents[key] = state;
         return multiplier;
+    }
+
+    private EncounterBreakdownSnapshot BuildBreakdownSnapshot(Dictionary<string, float> xpAwards)
+    {
+        EncounterBreakdownSnapshot snapshot = new EncounterBreakdownSnapshot
+        {
+            roomName = activeRoom != null ? activeRoom.roomName : "Encounter",
+            encounterType = activeRoom != null ? activeRoom.encounterType : EncounterType.Normal,
+            difficulty = activeRoom != null ? activeRoom.difficulty : DifficultyTier.Normal
+        };
+
+        if (activeRoom != null && activeRoom.isBossRoom && snapshot.encounterType == EncounterType.Normal)
+            snapshot.encounterType = EncounterType.Boss;
+
+        foreach (string axisId in new[] { "axis_dash", "axis_parry", "axis_overdrive", "axis_cadence" })
+        {
+            AxisEncounterCounters counters = axisCounters.TryGetValue(axisId, out var found)
+                ? found
+                : new AxisEncounterCounters();
+
+            snapshot.axisBreakdowns.Add(new AxisBreakdownSnapshot
+            {
+                axisId = axisId,
+                axisDisplayName = ResolveAxisDisplayName(axisId),
+                affinity = counters.lastAffinity,
+                xpAwarded = xpAwards.TryGetValue(axisId, out float xpAward) ? xpAward : 0f,
+                varietyBonus = CalculateVarietyBonus(axisId),
+                receivedXp = xpAwards.ContainsKey(axisId),
+                xpReason = BuildXpReason(axisId),
+                primary = counters.primary,
+                secondary = counters.secondary,
+                conversion = counters.conversion,
+                utility = counters.utility,
+                fifth = counters.fifth,
+                penalty = counters.penalty
+            });
+        }
+
+        return snapshot;
+    }
+
+    private string ResolveAxisDisplayName(string axisId)
+    {
+        if (AxisProgressionManager.Instance != null && AxisProgressionManager.Instance.database != null)
+        {
+            ProgressionAxisSO axis = AxisProgressionManager.Instance.database.GetAxisById(axisId);
+            if (axis != null && !string.IsNullOrEmpty(axis.displayName))
+                return axis.displayName;
+        }
+
+        return axisId switch
+        {
+            "axis_dash" => "Dash",
+            "axis_parry" => "Parry",
+            "axis_overdrive" => "Overdrive",
+            "axis_cadence" => "Cadence",
+            _ => axisId
+        };
+    }
+
+    private string BuildXpReason(string axisId)
+    {
+        var manager = AxisProgressionManager.Instance;
+        if (manager == null || manager.database == null)
+            return "";
+
+        ProgressionAxisSO axis = manager.database.GetAxisById(axisId);
+        if (axis == null)
+            return "";
+
+        ProgressionAxisSO opposingAxis = manager.database.GetOpposingAxis(axis);
+        if (opposingAxis == null)
+            return "";
+
+        if (manager.IsAxisCommitted(axis))
+            return $"{axis.displayName} focus secili oldugu icin XP bu agaca yazildi.";
+
+        if (manager.IsAxisCommitted(opposingAxis))
+            return $"{opposingAxis.displayName} focus secili oldugu icin bu agac XP almadi.";
+
+        float ownAffinity = GetLastAffinity(axis.axisId);
+        float opposingAffinity = GetLastAffinity(opposingAxis.axisId);
+        if (ownAffinity >= opposingAffinity)
+            return $"Ayni ciftte daha yuksek affinity uretti ({ownAffinity:P0} vs {opposingAffinity:P0}).";
+
+        return $"Ayni ciftte daha dusuk affinity uretti ({ownAffinity:P0} vs {opposingAffinity:P0}).";
     }
 
     private bool IsPassiveProgressionTarget(EnemyBase target)
