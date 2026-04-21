@@ -19,7 +19,7 @@ MonoBehaviour:
   eliteCueColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   eliteVfxPrefab: {fileID: 0}
   eliteAudioEvent: 0
-  eliteMechanicType: 0
+  eliteMechanicType: 8
   casterBurstOrb:
     burstOrbChance: 0.35
     impactRadius: 1.35
