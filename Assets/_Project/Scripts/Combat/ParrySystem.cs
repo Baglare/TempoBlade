@@ -419,15 +419,47 @@ public class ParrySystem : MonoBehaviour
 
     private bool IsDirectionParryable(Vector2 incomingDirection)
     {
-        Vector2 currentDir = GetCurrentParryDirection();
         float frontHalfAngle = useDualArc ? dualArcFrontHalfAngle : parryArcHalfAngle;
-        if (Vector2.Angle(incomingDirection, currentDir) <= frontHalfAngle)
-            return true;
+        if (rotateArcWhileActive && IsParryActive)
+        {
+            if (IsDirectionWithinRotatingSweep(incomingDirection, frontHalfAngle))
+                return true;
+        }
+        else
+        {
+            Vector2 currentDir = GetCurrentParryDirection();
+            if (Vector2.Angle(incomingDirection, currentDir) <= frontHalfAngle)
+                return true;
+        }
 
         if (!useDualArc || dualArcRearHalfAngle <= 0f)
             return false;
 
-        return Vector2.Angle(incomingDirection, -currentDir) <= dualArcRearHalfAngle;
+        if (rotateArcWhileActive && IsParryActive)
+            return IsDirectionWithinRotatingSweep(incomingDirection, dualArcRearHalfAngle, true);
+
+        return Vector2.Angle(incomingDirection, -GetCurrentParryDirection()) <= dualArcRearHalfAngle;
+    }
+
+    private bool IsDirectionWithinRotatingSweep(Vector2 incomingDirection, float halfAngle, bool useRearArc = false)
+    {
+        Vector2 baseDir = useRearArc ? -parryDirection : parryDirection;
+        Vector2 currentDir = useRearArc ? -GetCurrentParryDirection() : GetCurrentParryDirection();
+
+        float startAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+        float currentAngle = Mathf.Atan2(currentDir.y, currentDir.x) * Mathf.Rad2Deg;
+        float targetAngle = Mathf.Atan2(incomingDirection.y, incomingDirection.x) * Mathf.Rad2Deg;
+
+        float sweepDelta = Mathf.DeltaAngle(startAngle, currentAngle);
+        float targetDelta = Mathf.DeltaAngle(startAngle, targetAngle);
+
+        float minSweep = Mathf.Min(0f, sweepDelta) - halfAngle;
+        float maxSweep = Mathf.Max(0f, sweepDelta) + halfAngle;
+
+        if (targetDelta >= minSweep && targetDelta <= maxSweep)
+            return true;
+
+        return Mathf.Abs(Mathf.DeltaAngle(currentAngle, targetAngle)) <= halfAngle;
     }
 
     private Vector2 GetCurrentParryDirection()
