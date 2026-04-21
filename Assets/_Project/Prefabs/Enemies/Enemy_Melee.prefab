@@ -366,9 +366,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMelee
   enemyData: {fileID: 11400000, guid: 3f788deb4bb1a8741bc5cc8299315635, type: 2}
+  isElite: 0
+  eliteProfile: {fileID: 0}
+  stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   hitboxScript: {fileID: 3964378809690608483}
   hitboxCollider: {fileID: 3884782508806564833}
+  weaponArcVisual: {fileID: 0}
+  tempoConfig:
+    moveSpeedMultiplier:
+      t0: 1
+      t1: 1.08
+      t2: 1.08
+      t3: 1.12
+    attackCooldownMultiplier:
+      t0: 1
+      t1: 0.92
+      t2: 0.92
+      t3: 0.98
+    recoveryMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1
+      t3: 1.35
+    stunDurationMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1
+      t3: 1.35
+    swingArcMultiplier:
+      t0: 1
+      t1: 1
+      t2: 1
+      t3: 1.28
+    t2ComboHits: 2
+    t3MinComboHits: 2
+    t3MaxComboHits: 3
+    windupTime: 0.35
+    activeFrames: 0.18
+    comboStepGap: 0.12
 --- !u!114 &8988460415301037389
 MonoBehaviour:
   m_ObjectHideFlags: 0

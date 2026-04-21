@@ -112,6 +112,8 @@ public class ParryPerkController : MonoBehaviour
 
     private int _feedbackStacks;
     private float _feedbackTimer;
+    private float _baseParryOnlyEndTime;
+    private bool _lastBaseParryOnlyState;
 
     public bool CanDeflectProjectiles => _hasReflect;
     public event System.Action<EnemyControlFeedbackData> OnEnemyControlFeedback;
@@ -173,6 +175,13 @@ public class ParryPerkController : MonoBehaviour
 
         if (parrySystem != null)
             parrySystem.deflectEdgeThickness = reflectEdgeThickness;
+
+        bool baseParryOnly = IsBaseParryOnlyActive;
+        if (baseParryOnly != _lastBaseParryOnlyState)
+        {
+            _lastBaseParryOnlyState = baseParryOnly;
+            ApplyToParrySystem();
+        }
     }
 
     private void SubscribeToAxisManager()
@@ -218,27 +227,28 @@ public class ParryPerkController : MonoBehaviour
     private void ApplyToParrySystem()
     {
         if (parrySystem == null) return;
+        bool usePerks = !IsBaseParryOnlyActive;
 
-        parrySystem.allowProjectileDeflect = _hasReflect;
-        parrySystem.enablePerfectParry = _hasPerfectTiming;
-        parrySystem.enableCounterWindow = _hasCounterStance;
+        parrySystem.allowProjectileDeflect = usePerks && _hasReflect;
+        parrySystem.enablePerfectParry = usePerks && _hasPerfectTiming;
+        parrySystem.enableCounterWindow = usePerks && _hasCounterStance;
         parrySystem.counterWindowDuration = counterWindowDuration;
         parrySystem.deflectEdgeThickness = reflectEdgeThickness;
 
-        float counterMult = _hasCommitment ? commitmentCounterMultiplier : 1f;
-        parrySystem.counterBonusPerMelee = counterBonusPerMelee * counterMult;
-        parrySystem.counterBonusPerRanged = counterBonusPerRanged * counterMult;
+        float counterMult = usePerks && _hasCommitment ? commitmentCounterMultiplier : 1f;
+        parrySystem.counterBonusPerMelee = usePerks ? counterBonusPerMelee * counterMult : 0f;
+        parrySystem.counterBonusPerRanged = usePerks ? counterBonusPerRanged * counterMult : 0f;
 
         float normalWindowMult = 1f;
-        float perfectWindow = perfectWindowDuration;
+        float perfectWindow = usePerks ? perfectWindowDuration : 0f;
 
-        if (_hasFineEdge)
+        if (usePerks && _hasFineEdge)
         {
             normalWindowMult *= fineEdgeNormalWindowMultiplier;
             perfectWindow *= fineEdgePerfectWindowMultiplier;
         }
 
-        if (_hasCommitment)
+        if (usePerks && _hasCommitment)
         {
             parrySystem.SetParryCommitmentMultipliers(
                 commitmentParryTempoMultiplier,
@@ -254,7 +264,7 @@ public class ParryPerkController : MonoBehaviour
         parrySystem.normalWindowMultiplier = normalWindowMult;
         parrySystem.perfectWindowDuration = perfectWindow;
 
-        if (_hasReverseFront)
+        if (usePerks && _hasReverseFront)
         {
             parrySystem.useDualArc = true;
             parrySystem.dualArcFrontHalfAngle = reverseFrontHalfAngle;
@@ -267,7 +277,7 @@ public class ParryPerkController : MonoBehaviour
             parrySystem.dualArcRearHalfAngle = 0f;
         }
 
-        parrySystem.rotateArcWhileActive = _hasRotatingCone;
+        parrySystem.rotateArcWhileActive = usePerks && _hasRotatingCone;
         parrySystem.rotatingArcDegreesPerSecond = rotatingConeDegreesPerSecond;
         parrySystem.rotatingArcDuration = rotatingConeDuration;
     }
@@ -287,6 +297,8 @@ public class ParryPerkController : MonoBehaviour
     public DeflectContext BuildDeflectContext()
     {
         DeflectContext context = DeflectContext.Default(gameObject);
+        if (IsBaseParryOnlyActive)
+            return context;
 
         context.speedMultiplier = baseReflectSpeedMultiplier;
         context.damageMultiplier = baseReflectDamageMultiplier;
@@ -322,7 +334,7 @@ public class ParryPerkController : MonoBehaviour
     {
         target = null;
 
-        if (!_hasCloseExecute || parrySystem == null || !parrySystem.IsParryActive || !parrySystem.allowProjectileDeflect)
+        if (IsBaseParryOnlyActive || !_hasCloseExecute || parrySystem == null || !parrySystem.IsParryActive || !parrySystem.allowProjectileDeflect)
             return false;
 
         float scanRadius = Mathf.Max(closeExecuteRange, parrySystem.CurrentDeflectRange);
@@ -358,6 +370,9 @@ public class ParryPerkController : MonoBehaviour
 
     private void HandleParryResolved(ParryEventData data)
     {
+        if (IsBaseParryOnlyActive)
+            return;
+
         if (_hasRhythmReturn)
         {
             parrySystem.ReduceRecoveryCooldown(data.isPerfect ? perfectRecoveryRefund : successRecoveryRefund);
@@ -397,6 +412,9 @@ public class ParryPerkController : MonoBehaviour
 
     public void HandleProjectileHitReaction(GameObject hitTarget)
     {
+        if (IsBaseParryOnlyActive)
+            return;
+
         if (!_hasSuppressiveTrace || hitTarget == null) return;
 
         ApplyReactionToTarget(hitTarget, suppressDuration, suppressBossInterruptDuration, false, true);
@@ -528,5 +546,16 @@ public class ParryPerkController : MonoBehaviour
             isBoss = isBoss,
             worldPosition = target.transform.position
         });
+    }
+
+    public bool IsBaseParryOnlyActive => Time.time < _baseParryOnlyEndTime;
+
+    public void ForceBaseParryOnly(float duration)
+    {
+        if (duration <= 0f)
+            return;
+
+        _baseParryOnlyEndTime = Mathf.Max(_baseParryOnlyEndTime, Time.time + duration);
+        ApplyToParrySystem();
     }
 }

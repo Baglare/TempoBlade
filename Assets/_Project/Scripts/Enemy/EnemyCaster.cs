@@ -21,8 +21,11 @@ public class EnemyCaster : EnemyBase, IParryReactive
     public Transform firePoint;
     public float attackRange = 8f;
     public float retreatRange = 5f;
+    public float firePermissionRange = 9.5f;
     public float fireRate = 2f;
     public float castWindup = 0.35f;
+    public float tacticalSearchRadius = 3f;
+    public int tacticalSampleCount = 10;
 
     [Header("Tempo")]
     public CasterTempoConfig tempoConfig = new CasterTempoConfig();
@@ -34,6 +37,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
     private SpriteRenderer spriteRenderer;
     private Transform playerTransform;
     private Rigidbody2D playerRb;
+    private EnemyCastCircleTelegraph castCircleTelegraph;
     private float nextFireTime;
     private bool isCasting;
     private bool isDead;
@@ -56,6 +60,10 @@ public class EnemyCaster : EnemyBase, IParryReactive
 
         animator = GetComponentInChildren<Animator>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        castCircleTelegraph = GetComponent<EnemyCastCircleTelegraph>();
+        if (castCircleTelegraph == null)
+            castCircleTelegraph = gameObject.AddComponent<EnemyCastCircleTelegraph>();
+        castCircleTelegraph.Configure(new Color(0.95f, 0.2f, 1f, 0.9f), 0.42f, 0.05f, 1.4f, 42);
         deathDelay = deathAnimDuration;
     }
 
@@ -64,28 +72,47 @@ public class EnemyCaster : EnemyBase, IParryReactive
         if (isDead || isStunned || playerTransform == null)
             return;
 
+        Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
         float dist = Vector2.Distance(transform.position, playerTransform.position);
         FacePlayer();
 
         bool moving = false;
         if (!isCasting)
         {
-            if (dist > attackRange)
+            float maintainRange = Mathf.Max(retreatRange + 0.75f, (retreatRange + attackRange) * 0.5f);
+            RangedTacticalDecision decision = RangedTacticalMovementUtility.EvaluatePosition(
+                transform,
+                playerTransform,
+                origin,
+                maintainRange,
+                firePermissionRange,
+                tacticalSearchRadius,
+                tacticalSampleCount,
+                transform);
+
+            if (decision.canFireFromCurrent && Time.time >= nextFireTime)
             {
-                MoveTowards(playerTransform.position);
-                moving = true;
-            }
-            else if (dist < retreatRange)
-            {
-                Vector2 dir = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
-                MoveTowards((Vector2)transform.position + dir);
-                moving = true;
+                StopMovement();
+                attackRoutine = StartCoroutine(AttackRoutine());
             }
             else
             {
-                StopMovement();
-                if (Time.time >= nextFireTime)
-                    attackRoutine = StartCoroutine(AttackRoutine());
+                Vector2 moveTarget = decision.foundBetterPosition ? decision.moveTarget : (Vector2)transform.position;
+                if (dist < retreatRange && !decision.foundBetterPosition)
+                {
+                    Vector2 away = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
+                    moveTarget = (Vector2)transform.position + away * tacticalSearchRadius;
+                }
+
+                if ((moveTarget - (Vector2)transform.position).sqrMagnitude > 0.04f)
+                {
+                    MoveTowards(moveTarget);
+                    moving = true;
+                }
+                else
+                {
+                    StopMovement();
+                }
             }
         }
 
@@ -117,6 +144,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
     private IEnumerator AttackRoutine()
     {
         isCasting = true;
+        EmitCombatAction(EnemyCombatActionType.Cast);
         activeOverchargeCast = CurrentTempoTier == TempoManager.TempoTier.T3 && Random.value < tempoConfig.overchargeChance;
         activeEliteBurstCast = ShouldUseEliteBurstOrb();
 
@@ -130,7 +158,17 @@ public class EnemyCaster : EnemyBase, IParryReactive
 
         float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
         float windup = GetEffectiveCooldownDuration(castWindup * tempoConfig.castWindupMultiplier.Evaluate(CurrentTempoTier)) / attackSpeedMultiplier;
-        yield return new WaitForSeconds(windup);
+        float timer = 0f;
+        while (timer < windup)
+        {
+            timer += Time.deltaTime;
+            if (castCircleTelegraph != null)
+                castCircleTelegraph.SetProgress(Mathf.Clamp01(timer / Mathf.Max(0.01f, windup)));
+            yield return null;
+        }
+
+        if (castCircleTelegraph != null)
+            castCircleTelegraph.FlashComplete();
 
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;
@@ -164,6 +202,8 @@ public class EnemyCaster : EnemyBase, IParryReactive
         activeOverchargeCast = false;
         activeEliteBurstCast = false;
         isCasting = false;
+        if (castCircleTelegraph != null)
+            castCircleTelegraph.Hide();
         attackRoutine = null;
     }
 
@@ -241,6 +281,8 @@ public class EnemyCaster : EnemyBase, IParryReactive
 
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;
+        if (castCircleTelegraph != null)
+            castCircleTelegraph.Hide();
 
         float finalDuration = duration;
         if (activeOverchargeCast)

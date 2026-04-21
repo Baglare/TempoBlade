@@ -180,6 +180,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWardenLinker
   enemyData: {fileID: 11400000, guid: 7d520944afb8bdb499e273685b9e46d6, type: 2}
+  isElite: 0
+  eliteProfile: {fileID: 0}
   stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   guardianSearchRadius: 12
@@ -191,6 +193,7 @@ MonoBehaviour:
   guardianIgnoreNextHeavyStagger: 1
   guardianLinkColor: {r: 0.25, g: 1, b: 0.55, a: 0.95}
   summonedWardenPrefab: {fileID: 8052643814893691856, guid: 5efbd8aed88f0944bb6209ad4548ceb7, type: 3}
+  summonedEliteWardenProfile: {fileID: 0}
   wardenCallCooldown: 10
   wardenCallWindup: 0.55
   summonedWardenDuration: 7.5

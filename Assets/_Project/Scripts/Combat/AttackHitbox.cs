@@ -31,7 +31,7 @@ public class AttackHitbox : MonoBehaviour
 
         if (playerCombat != null)
         {
-             float dmg = (owner != null && owner.enemyData != null) ? owner.enemyData.damage : 10f;
+             float dmg = owner != null ? owner.GetEffectiveContactDamage(10f) : 10f;
              playerCombat.TakeDamage(dmg); 
         }
     }

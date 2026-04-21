@@ -46,6 +46,7 @@ public class EnemyKamikaze : EnemyBase
     private bool isDead;
     private bool chainPrimed;
     private GameObject indicatorObj;
+    private bool spawnedUnstableCore;
 
     protected override void Start()
     {
@@ -92,6 +93,7 @@ public class EnemyKamikaze : EnemyBase
 
                 if (dist <= explosionRange)
                 {
+                    EmitCombatAction(EnemyCombatActionType.Skill);
                     state = State.Telegraphing;
                     StartCoroutine(TelegraphAndExplode());
                 }
@@ -122,6 +124,8 @@ public class EnemyKamikaze : EnemyBase
 
         if (animator != null)
             animator.SetTrigger("Die");
+
+        TrySpawnUnstableCore();
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null)
@@ -313,6 +317,18 @@ public class EnemyKamikaze : EnemyBase
         chainPrimed = true;
         state = State.Telegraphing;
         StartCoroutine(TelegraphAndExplode());
+    }
+
+    private void TrySpawnUnstableCore()
+    {
+        if (spawnedUnstableCore || !HasEliteMechanic(EliteMechanicType.KamikazeUnstableCore) || ActiveEliteProfile == null)
+            return;
+
+        spawnedUnstableCore = true;
+        GameObject coreObject = new GameObject("UnstableCore");
+        coreObject.transform.position = transform.position;
+        UnstableCoreObject core = coreObject.AddComponent<UnstableCoreObject>();
+        core.Configure(ActiveEliteProfile.kamikazeUnstableCore, GetEffectiveDamage(explosionDamage));
     }
 
     private void OnDrawGizmosSelected()

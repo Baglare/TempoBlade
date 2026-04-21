@@ -43,9 +43,11 @@ public class EnemyTrapper : EnemyBase
     public TrapperTempoConfig tempoConfig = new TrapperTempoConfig();
 
     private float nextTrapTime;
+    private float nextTetherTime;
     private bool isDead;
     private bool isPlacingTrap;
     private readonly List<TrapArea> activeTraps = new List<TrapArea>();
+    private readonly List<TrapperTetherLink> activeTethers = new List<TrapperTetherLink>();
 
     private float stuckTimer;
     private Vector2 lastPosition;
@@ -85,6 +87,10 @@ public class EnemyTrapper : EnemyBase
             float nextInterval = GetEffectiveCooldownDuration(trapSpawnInterval * tempoConfig.trapSpawnIntervalMultiplier.Evaluate(CurrentTempoTier));
             nextTrapTime = Time.time + Mathf.Max(0.5f, nextInterval);
         }
+
+        activeTethers.RemoveAll(t => t == null);
+        if (HasEliteMechanic(EliteMechanicType.TrapperTetherTrap) && !isPlacingTrap && Time.time >= nextTetherTime)
+            StartCoroutine(CreateTetherRoutine());
     }
 
     public override void TakeDamage(float amount)
@@ -179,6 +185,61 @@ public class EnemyTrapper : EnemyBase
         }
 
         isPlacingTrap = false;
+    }
+
+    private IEnumerator CreateTetherRoutine()
+    {
+        EliteTrapperTetherSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.trapperTetherTrap : null;
+        if (settings == null || activeTraps.Count < 2)
+        {
+            nextTetherTime = Time.time + 1f;
+            yield break;
+        }
+
+        TrapArea trapA = null;
+        TrapArea trapB = null;
+        float bestDistance = float.MaxValue;
+        for (int i = 0; i < activeTraps.Count; i++)
+        {
+            TrapArea first = activeTraps[i];
+            if (first == null)
+                continue;
+
+            for (int j = i + 1; j < activeTraps.Count; j++)
+            {
+                TrapArea second = activeTraps[j];
+                if (second == null)
+                    continue;
+
+                float distance = Vector2.Distance(first.transform.position, second.transform.position);
+                if (distance > settings.tetherSearchRadius || distance >= bestDistance)
+                    continue;
+
+                bestDistance = distance;
+                trapA = first;
+                trapB = second;
+            }
+        }
+
+        if (trapA == null || trapB == null)
+        {
+            nextTetherTime = Time.time + 1f;
+            yield break;
+        }
+
+        isPlacingTrap = true;
+        if (animator != null)
+            animator.SetTrigger("Attack");
+        EmitCombatAction(EnemyCombatActionType.Skill);
+        yield return new WaitForSeconds(settings.linkWindup);
+
+        GameObject tetherObject = new GameObject("TrapperTetherLink");
+        TrapperTetherLink tether = tetherObject.AddComponent<TrapperTetherLink>();
+        tether.Configure(trapA, trapB, settings);
+        activeTethers.Add(tether);
+
+        isPlacingTrap = false;
+        nextTetherTime = Time.time + settings.tetherLifetime;
     }
 
     private void PickNewRoamPosition()

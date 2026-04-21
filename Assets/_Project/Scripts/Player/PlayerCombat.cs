@@ -37,6 +37,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private OverdrivePerkController _overdrivePerks;
     private CadencePerkController _cadencePerks;
     private CombatTelemetryHub _telemetry;
+    private float externalCounterBonus;
+    private CounterFeedbackSource externalCounterSource = CounterFeedbackSource.Dash;
 
     // ──────────── COMBO STATE ────────────
     private Vector2 currentAimDir = Vector2.right;
@@ -395,6 +397,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         // Kör nokta bonusu (Avcı T2)
         float blindSpotBonus = _dashPerks != null ? _dashPerks.GetBlindSpotCounterBonus() : 0f;
         totalCounter += blindSpotBonus;
+        totalCounter += externalCounterBonus;
 
         // Akışçı: Flow mark hasar bonusu
         float flowMarkBonus = _dashPerks != null ? _dashPerks.GetFlowMarkDamageBonus() : 0f;
@@ -525,6 +528,17 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             if (blindSpotBonus > 0f && _dashPerks != null)
             {
                 _dashPerks.ConsumeBlindSpotBonus();
+            }
+
+            if (externalCounterBonus > 0f)
+            {
+                OnCounterFeedback?.Invoke(new CounterFeedbackData
+                {
+                    source = externalCounterSource,
+                    multiplier = 1f + externalCounterBonus,
+                    worldPosition = transform.position
+                });
+                externalCounterBonus = 0f;
             }
         }
 
@@ -720,6 +734,15 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         AudioManager.Play(AudioEventId.PlayerDeath, gameObject);
         if (GameManager.Instance != null)
             GameManager.Instance.SetState(GameManager.GameState.GameOver);
+    }
+
+    public void GrantExternalCounterBonus(float bonus, CounterFeedbackSource source)
+    {
+        if (bonus <= 0f)
+            return;
+
+        externalCounterBonus = Mathf.Max(externalCounterBonus, bonus);
+        externalCounterSource = source;
     }
 
     private void OnDrawGizmosSelected()

@@ -212,6 +212,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDeadeye
   enemyData: {fileID: 11400000, guid: 82a441ac95618fe478ab503461ec2339, type: 2}
+  isElite: 0
+  eliteProfile: {fileID: 0}
   stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   projectilePrefab: {fileID: 1047795383070638735, guid: 949eeba4294aa614ba6761324c4d74bb, type: 3}
@@ -219,6 +221,7 @@ MonoBehaviour:
   preferredRange: 10
   minimumRange: 5.5
   maximumRange: 14
+  firePermissionRange: 12.5
   shotCooldown: 3.2
   lockAimDuration: 1
   lockAimColor: {r: 1, g: 0.18, b: 0.18, a: 0.95}
@@ -233,6 +236,7 @@ MonoBehaviour:
   movementRefreshInterval: 0.3
   movementTolerance: 0.2
   repositionSampleCount: 10
+  tacticalSearchRadius: 4
   lineOfSightMask:
     serializedVersion: 2
     m_Bits: 243

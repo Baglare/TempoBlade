@@ -33,6 +33,7 @@ public class EnemyMelee : EnemyBase
     private Transform player;
     private bool isAttacking;
     private float baseArcAngle;
+    private Vector2 eliteLockedDirection = Vector2.right;
 
     protected override void Start()
     {
@@ -109,6 +110,14 @@ public class EnemyMelee : EnemyBase
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
+        EmitCombatAction(EnemyCombatActionType.Attack);
+
+        if (HasEliteMechanic(EliteMechanicType.MeleeRendCombo) && ActiveEliteProfile != null)
+        {
+            yield return EliteRendComboRoutine();
+            isAttacking = false;
+            yield break;
+        }
 
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         Color originalColor = sr != null ? sr.color : Color.white;
@@ -119,6 +128,8 @@ public class EnemyMelee : EnemyBase
         {
             if (isStunned || player == null)
                 break;
+
+            EmitCombatAction(EnemyCombatActionType.Attack, i == comboHits - 1 ? 1.1f : 1f);
 
             if (sr != null)
                 sr.color = Color.yellow;
@@ -161,6 +172,86 @@ public class EnemyMelee : EnemyBase
         yield return new WaitForSeconds(cooldown / attackSpeedMultiplier);
 
         isAttacking = false;
+    }
+
+    private IEnumerator EliteRendComboRoutine()
+    {
+        EliteMeleeRendComboSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.meleeRendCombo : null;
+        if (settings == null || player == null)
+            yield break;
+
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        Color originalColor = sr != null ? sr.color : Color.white;
+        float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        eliteLockedDirection = ((Vector2)player.position - (Vector2)transform.position).normalized;
+        if (eliteLockedDirection.sqrMagnitude <= 0.001f)
+            eliteLockedDirection = transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+
+        yield return PerformEliteRendHit(settings.firstHitDamageMultiplier, settings.firstWindupRange, settings.hitStaggerDuration, settings.hitKnockback, 1f, originalColor, sr, attackSpeedMultiplier);
+        yield return new WaitForSeconds(Random.Range(settings.secondGapRange.x, settings.secondGapRange.y) + settings.reactionGap);
+        yield return PerformEliteRendHit(settings.secondHitDamageMultiplier, new Vector2(0.01f, 0.01f), settings.hitStaggerDuration, settings.hitKnockback, 1f, originalColor, sr, attackSpeedMultiplier);
+        yield return new WaitForSeconds(Random.Range(settings.thirdGapRange.x, settings.thirdGapRange.y) + settings.reactionGap);
+        yield return PerformEliteRendHit(settings.thirdHitDamageMultiplier, new Vector2(0.01f, 0.01f), settings.hitStaggerDuration * 1.15f, settings.hitKnockback * 1.2f, settings.heavyCleaveArcMultiplier, originalColor, sr, attackSpeedMultiplier);
+
+        if (sr != null)
+            sr.color = originalColor;
+
+        yield return new WaitForSeconds(GetEffectiveCooldownDuration(settings.recoveryDuration));
+    }
+
+    private IEnumerator PerformEliteRendHit(float damageMultiplier, Vector2 windupRange, float staggerDuration, float knockback, float arcMultiplier, Color originalColor, SpriteRenderer sr, float attackSpeedMultiplier)
+    {
+        if (sr != null)
+            sr.color = Color.Lerp(Color.yellow, Color.red, Mathf.Clamp01(damageMultiplier * 0.45f));
+
+        float windup = Random.Range(windupRange.x, windupRange.y) / attackSpeedMultiplier;
+        if (windup > 0.01f)
+            yield return new WaitForSeconds(windup);
+
+        ResolveEliteRendHit(damageMultiplier, staggerDuration, knockback);
+
+        if (weaponArcVisual != null)
+            weaponArcVisual.arcAngle = baseArcAngle * arcMultiplier * tempoConfig.swingArcMultiplier.Evaluate(CurrentTempoTier);
+
+        yield return new WaitForSeconds(0.08f + 0.02f);
+        if (weaponArcVisual != null)
+            weaponArcVisual.arcAngle = baseArcAngle * tempoConfig.swingArcMultiplier.Evaluate(CurrentTempoTier);
+
+        if (sr != null)
+            sr.color = originalColor;
+    }
+
+    private void ResolveEliteRendHit(float damageMultiplier, float staggerDuration, float knockback)
+    {
+        Vector2 strikeOrigin = (Vector2)transform.position + eliteLockedDirection * Mathf.Max(0.6f, enemyData.attackRange * 0.55f);
+        float strikeRadius = Mathf.Max(0.6f, enemyData.attackRange * 0.65f);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(strikeOrigin, strikeRadius);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hit = hits[i];
+            if (!hit.CompareTag("Player"))
+                continue;
+
+            ParrySystem parry = hit.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
+            {
+                Stun(0.45f);
+                return;
+            }
+
+            PlayerController playerController = hit.GetComponent<PlayerController>();
+            if (playerController != null && playerController.IsInvulnerable)
+            {
+                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                continue;
+            }
+
+            PlayerCombat playerCombat = hit.GetComponent<PlayerCombat>();
+            if (playerCombat != null)
+                playerCombat.TakeDamage(GetEffectiveDamageFromData(enemyData != null ? enemyData.damage : 10f) * damageMultiplier);
+
+            playerController?.ApplyExternalStagger(staggerDuration, eliteLockedDirection * knockback);
+        }
     }
 
     public override void Stun(float duration)

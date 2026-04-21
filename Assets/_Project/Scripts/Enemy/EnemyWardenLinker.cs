@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyWardenLinker : EnemyBase
@@ -31,6 +32,7 @@ public class EnemyWardenLinker : EnemyBase
 
     [Header("Warden Call")]
     public GameObject summonedWardenPrefab;
+    public EliteProfileSO summonedEliteWardenProfile;
     public float wardenCallCooldown = 12f;
     public float wardenCallWindup = 0.55f;
     public float summonedWardenDuration = 7.5f;
@@ -57,6 +59,8 @@ public class EnemyWardenLinker : EnemyBase
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private SupportLinkVisual linkVisual;
+    private readonly List<EnemyBase> activeLinks = new List<EnemyBase>();
+    private readonly List<SupportLinkVisual> extraLinkVisuals = new List<SupportLinkVisual>();
 
     private EnemyBase linkedTarget;
     private EnemyBase positioningTarget;
@@ -68,7 +72,9 @@ public class EnemyWardenLinker : EnemyBase
     private bool isDead;
     private bool isCasting;
     private bool suppressEchoCallbacks;
-    private EnemyBase subscribedLinkedTarget;
+    private readonly Dictionary<EnemyBase, System.Action<EnemyBase, float>> damageHandlers = new Dictionary<EnemyBase, System.Action<EnemyBase, float>>();
+    private readonly Dictionary<EnemyBase, System.Action<EnemyBase, float>> stunHandlers = new Dictionary<EnemyBase, System.Action<EnemyBase, float>>();
+    private float lastHeavyLinkHitTime = -999f;
 
     protected override void Start()
     {
@@ -93,10 +99,24 @@ public class EnemyWardenLinker : EnemyBase
             return;
 
         if (linkedTarget != null && (!linkedTarget.gameObject.activeInHierarchy || linkedTarget.CurrentHealth <= 0f))
+        {
+            ApplyDeathStaggerToLinkedTargets();
             ClearLink();
+        }
 
         if (linkedTarget != null && Time.time >= linkEndTime)
             ClearLink();
+
+        for (int i = 0; i < activeLinks.Count; i++)
+        {
+            EnemyBase activeLink = activeLinks[i];
+            if (activeLink == null || !activeLink.gameObject.activeInHierarchy || activeLink.CurrentHealth <= 0f)
+            {
+                ApplyDeathStaggerToLinkedTargets();
+                ClearLink();
+                break;
+            }
+        }
 
         if (positioningTarget != null && (!positioningTarget.gameObject.activeInHierarchy || positioningTarget.CurrentHealth <= 0f))
             positioningTarget = null;
@@ -125,6 +145,9 @@ public class EnemyWardenLinker : EnemyBase
             animator.SetTrigger("TakeHit");
 
         base.TakeDamage(amount);
+
+        if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) && ActiveEliteProfile != null && !suppressEchoCallbacks)
+            ChainDamageToOtherLinks(null, amount * ActiveEliteProfile.wardenLinkerMultipleLink.chainDamageFraction);
     }
 
     public override void Stun(float duration)
@@ -175,15 +198,20 @@ public class EnemyWardenLinker : EnemyBase
             yield break;
         }
 
+        List<EnemyBase> desiredTargets = BuildDesiredLinkSet(target);
+        int linkCount = Mathf.Max(1, desiredTargets.Count);
+
         if (spriteRenderer != null)
             spriteRenderer.color = guardianLinkColor;
+        EmitCombatAction(EnemyCombatActionType.Skill);
 
-        float windup = GetEffectiveCooldownDuration(guardianLinkWindup * tempoConfig.guardianLinkWindupMultiplier.Evaluate(CurrentTempoTier));
+        float windupMultiplier = 1f;
+        if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) && ActiveEliteProfile != null)
+            windupMultiplier += Mathf.Max(0, linkCount - 1) * ActiveEliteProfile.wardenLinkerMultipleLink.extraLinkWindupMultiplierPerLink;
+        float windup = GetEffectiveCooldownDuration(guardianLinkWindup * tempoConfig.guardianLinkWindupMultiplier.Evaluate(CurrentTempoTier) * windupMultiplier);
         yield return new WaitForSeconds(Mathf.Max(0.05f, windup));
 
-        UnsubscribeFromLinkedTarget();
-        linkedTarget = target;
-        SubscribeToLinkedTarget(linkedTarget);
+        ClearLink();
         linkEndTime = Time.time + guardianLinkDuration;
 
         float damageMultiplier = guardianDamageReductionMultiplier;
@@ -199,21 +227,47 @@ public class EnemyWardenLinker : EnemyBase
             staggerMultiplier *= tempoConfig.t3GuardianStaggerMultiplier;
         }
 
-        linkedTarget.GetSupportBuffReceiver()?.ApplyGuardianLink(
-            guardianLinkDuration,
-            damageMultiplier,
-            staggerMultiplier,
-            guardianIgnoreNextHeavyStagger);
-        linkVisual.SetTarget(linkedTarget.transform);
+        for (int i = 0; i < desiredTargets.Count; i++)
+        {
+            EnemyBase nextTarget = desiredTargets[i];
+            if (nextTarget == null)
+                continue;
+
+            float durationMultiplier = 1f;
+            if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) && ActiveEliteProfile != null)
+                durationMultiplier = Mathf.Max(0.35f, 1f - (i * ActiveEliteProfile.wardenLinkerMultipleLink.extraLinkDurationPenaltyPerLink));
+
+            nextTarget.GetSupportBuffReceiver()?.ApplyGuardianLink(
+                guardianLinkDuration * durationMultiplier,
+                damageMultiplier,
+                staggerMultiplier,
+                guardianIgnoreNextHeavyStagger);
+
+            activeLinks.Add(nextTarget);
+            SubscribeToLinkedTarget(nextTarget);
+            if (i == 0)
+            {
+                linkedTarget = nextTarget;
+                linkVisual.SetTarget(nextTarget.transform);
+            }
+            else
+            {
+                SupportLinkVisual extraVisual = GetOrCreateExtraLinkVisual(i - 1);
+                extraVisual.SetTarget(nextTarget.transform);
+            }
+        }
 
         SupportPulseVisualUtility.SpawnPulse(transform.position, 0.2f, 1.5f, 0.22f, guardianLinkColor);
-        if (DamagePopupManager.Instance != null)
+        if (DamagePopupManager.Instance != null && linkedTarget != null)
             DamagePopupManager.Instance.CreateText(linkedTarget.transform.position + Vector3.up * 1.6f, "LINKED", guardianLinkColor, 5.5f);
 
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;
 
-        nextLinkTime = Time.time + GetEffectiveCooldownDuration(guardianLinkCooldown);
+        float cooldownMultiplier = 1f;
+        if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) && ActiveEliteProfile != null)
+            cooldownMultiplier += Mathf.Max(0, linkCount - 1) * ActiveEliteProfile.wardenLinkerMultipleLink.extraLinkCooldownMultiplierPerLink;
+        nextLinkTime = Time.time + GetEffectiveCooldownDuration(guardianLinkCooldown * cooldownMultiplier);
         isCasting = false;
     }
 
@@ -222,6 +276,7 @@ public class EnemyWardenLinker : EnemyBase
         isCasting = true;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+        EmitCombatAction(EnemyCombatActionType.Summon);
 
         if (spriteRenderer != null)
             spriteRenderer.color = summonCueColor;
@@ -237,7 +292,10 @@ public class EnemyWardenLinker : EnemyBase
             summonPosition = linkedTarget.transform.position + (Vector3)(awayFromTarget * summonOffset);
         }
 
-        EnemySummonHelper.SummonTemporaryEnemy(summonedWardenPrefab, summonPosition, summonedWardenDuration, summonedWardenAlpha);
+        EliteProfileSO summonProfile = null;
+        if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink))
+            summonProfile = summonedEliteWardenProfile;
+        EnemySummonHelper.SummonTemporaryEnemy(summonedWardenPrefab, summonPosition, summonedWardenDuration, summonedWardenAlpha, summonProfile);
         SupportPulseVisualUtility.SpawnPulse(summonPosition, 0.2f, 1.1f, 0.25f, summonCueColor);
         if (DamagePopupManager.Instance != null)
             DamagePopupManager.Instance.CreateText(summonPosition + Vector3.up, "WARDEN!", summonCueColor, 6f);
@@ -246,6 +304,8 @@ public class EnemyWardenLinker : EnemyBase
             spriteRenderer.color = Color.white;
 
         float summonCooldown = wardenCallCooldown * tempoConfig.summonCooldownMultiplier.Evaluate(CurrentTempoTier);
+        if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) && ActiveEliteProfile != null)
+            summonCooldown *= ActiveEliteProfile.wardenLinkerMultipleLink.summonCooldownMultiplier;
         nextWardenCallTime = Time.time + Mathf.Max(1f, GetEffectiveCooldownDuration(summonCooldown));
         isCasting = false;
     }
@@ -297,6 +357,20 @@ public class EnemyWardenLinker : EnemyBase
                 float distFromTarget = Vector2.Distance(interceptPoint, targetPos);
                 if (distFromTarget > maxDistanceFromGuardTarget)
                     interceptPoint = targetPos + (interceptPoint - targetPos).normalized * maxDistanceFromGuardTarget;
+                if (!EnemyLineOfSightUtility.IsPointNavigable(interceptPoint, 0.28f, transform))
+                {
+                    RangedTacticalDecision decision = RangedTacticalMovementUtility.EvaluatePosition(
+                        transform,
+                        playerTransform,
+                        transform.position,
+                        maxDistanceFromGuardTarget + 0.8f,
+                        guardianSearchRadius,
+                        2f,
+                        8,
+                        transform);
+                    if (decision.foundBetterPosition)
+                        interceptPoint = decision.moveTarget;
+                }
                 return interceptPoint;
             }
 
@@ -315,11 +389,14 @@ public class EnemyWardenLinker : EnemyBase
 
     private void ClearLink()
     {
-        UnsubscribeFromLinkedTarget();
+        UnsubscribeAllLinkedTargets();
         linkedTarget = null;
         linkEndTime = 0f;
+        activeLinks.Clear();
         if (linkVisual != null)
             linkVisual.SetTarget(null);
+        for (int i = 0; i < extraLinkVisuals.Count; i++)
+            extraLinkVisuals[i]?.SetTarget(null);
     }
 
     private void SubscribeToLinkedTarget(EnemyBase target)
@@ -327,34 +404,53 @@ public class EnemyWardenLinker : EnemyBase
         if (target == null)
             return;
 
-        subscribedLinkedTarget = target;
-        subscribedLinkedTarget.OnDamageTaken += HandleLinkedTargetDamageTaken;
-        subscribedLinkedTarget.OnStunned += HandleLinkedTargetStunned;
+        if (damageHandlers.ContainsKey(target))
+            return;
+
+        System.Action<EnemyBase, float> damageHandler = (source, amount) => HandleLinkedTargetDamageTaken(source, amount);
+        System.Action<EnemyBase, float> stunHandler = (source, duration) => HandleLinkedTargetStunned(source, duration);
+        damageHandlers[target] = damageHandler;
+        stunHandlers[target] = stunHandler;
+        target.OnDamageTakenDetailed += damageHandler;
+        target.OnStunnedDetailed += stunHandler;
     }
 
-    private void UnsubscribeFromLinkedTarget()
+    private void UnsubscribeAllLinkedTargets()
     {
-        if (subscribedLinkedTarget == null)
-            return;
-
-        subscribedLinkedTarget.OnDamageTaken -= HandleLinkedTargetDamageTaken;
-        subscribedLinkedTarget.OnStunned -= HandleLinkedTargetStunned;
-        subscribedLinkedTarget = null;
+        foreach (var pair in damageHandlers)
+        {
+            if (pair.Key != null)
+                pair.Key.OnDamageTakenDetailed -= pair.Value;
+        }
+        foreach (var pair in stunHandlers)
+        {
+            if (pair.Key != null)
+                pair.Key.OnStunnedDetailed -= pair.Value;
+        }
+        damageHandlers.Clear();
+        stunHandlers.Clear();
     }
 
-    private void HandleLinkedTargetDamageTaken(float amount)
+    private void HandleLinkedTargetDamageTaken(EnemyBase source, float amount)
     {
-        if (CurrentTempoTier != TempoManager.TempoTier.T3 || linkedTarget == null || suppressEchoCallbacks)
+        if (source == null || suppressEchoCallbacks)
             return;
 
-        float heavyThreshold = linkedTarget.MaxHealth * tempoConfig.t3HeavyHitHealthFraction;
-        if (amount < heavyThreshold)
-            return;
+        if (CurrentTempoTier == TempoManager.TempoTier.T3)
+        {
+            float heavyThreshold = source.MaxHealth * tempoConfig.t3HeavyHitHealthFraction;
+            if (amount >= heavyThreshold)
+            {
+                lastHeavyLinkHitTime = Time.time;
+                ApplyEcho(amount * tempoConfig.t3EchoDamageFraction, true);
+            }
+        }
 
-        ApplyEcho(amount * tempoConfig.t3EchoDamageFraction, true);
+        if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) && ActiveEliteProfile != null)
+            ChainDamageToOtherLinks(source, amount * ActiveEliteProfile.wardenLinkerMultipleLink.chainDamageFraction);
     }
 
-    private void HandleLinkedTargetStunned(float duration)
+    private void HandleLinkedTargetStunned(EnemyBase source, float duration)
     {
         if (CurrentTempoTier != TempoManager.TempoTier.T3 || suppressEchoCallbacks)
             return;
@@ -379,6 +475,105 @@ public class EnemyWardenLinker : EnemyBase
         finally
         {
             suppressEchoCallbacks = false;
+        }
+    }
+
+    private List<EnemyBase> BuildDesiredLinkSet(EnemyBase primaryTarget)
+    {
+        List<EnemyBase> result = new List<EnemyBase>();
+        if (primaryTarget == null)
+            return result;
+
+        result.Add(primaryTarget);
+        if (!HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) || ActiveEliteProfile == null)
+            return result;
+
+        EliteWardenLinkerMultipleLinkSettings settings = ActiveEliteProfile.wardenLinkerMultipleLink;
+        List<EnemyBase> candidates = new List<EnemyBase>();
+        EnemyBase[] enemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            EnemyBase enemy = enemies[i];
+            if (enemy == null || enemy == this || enemy == primaryTarget || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
+                continue;
+            if (Vector2.Distance(primaryTarget.transform.position, enemy.transform.position) > settings.clusterRadius)
+                continue;
+            candidates.Add(enemy);
+        }
+
+        candidates.Sort((a, b) =>
+        {
+            float aScore = EnemySupportUtility.GetGuardianPriorityScore(a) - Vector2.Distance(transform.position, a.transform.position) * 0.08f;
+            float bScore = EnemySupportUtility.GetGuardianPriorityScore(b) - Vector2.Distance(transform.position, b.transform.position) * 0.08f;
+            return bScore.CompareTo(aScore);
+        });
+
+        int allowedLinks = 1;
+        if (candidates.Count >= 1)
+            allowedLinks = 2;
+        if (candidates.Count >= 2 && (CurrentTempoTier >= TempoManager.TempoTier.T2 || Time.time < lastHeavyLinkHitTime + settings.heavyHitWindow))
+            allowedLinks = 3;
+        if (candidates.Count >= 3 && CurrentTempoTier == TempoManager.TempoTier.T3)
+            allowedLinks = 1 + candidates.Count;
+
+        while (result.Count < allowedLinks && candidates.Count >= result.Count)
+        {
+            EnemyBase nextTarget = candidates[result.Count - 1];
+            if (nextTarget == null)
+                break;
+            result.Add(nextTarget);
+        }
+
+        return result;
+    }
+
+    private SupportLinkVisual GetOrCreateExtraLinkVisual(int index)
+    {
+        while (extraLinkVisuals.Count <= index)
+        {
+            GameObject child = new GameObject($"ExtraLink_{extraLinkVisuals.Count}");
+            child.transform.SetParent(transform, false);
+            SupportLinkVisual visual = child.AddComponent<SupportLinkVisual>();
+            extraLinkVisuals.Add(visual);
+        }
+
+        return extraLinkVisuals[index];
+    }
+
+    private void ChainDamageToOtherLinks(EnemyBase source, float damageAmount)
+    {
+        if (damageAmount <= 0f)
+            return;
+
+        suppressEchoCallbacks = true;
+        try
+        {
+            for (int i = 0; i < activeLinks.Count; i++)
+            {
+                EnemyBase target = activeLinks[i];
+                if (target == null || target == source)
+                    continue;
+                target.TakeDamage(damageAmount);
+            }
+        }
+        finally
+        {
+            suppressEchoCallbacks = false;
+        }
+    }
+
+    private void ApplyDeathStaggerToLinkedTargets()
+    {
+        if (!HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink) || ActiveEliteProfile == null)
+            return;
+
+        float staggerDuration = ActiveEliteProfile.wardenLinkerMultipleLink.deathStaggerDuration;
+        for (int i = 0; i < activeLinks.Count; i++)
+        {
+            EnemyBase target = activeLinks[i];
+            if (target == null || target == linkedTarget)
+                continue;
+            target.Stun(staggerDuration);
         }
     }
 }

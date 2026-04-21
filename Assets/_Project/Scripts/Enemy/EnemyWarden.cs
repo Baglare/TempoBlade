@@ -93,6 +93,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     private Animator animator;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private WardenLivingWall livingWall;
 
     private EnemyBase protectTarget;
     private WardenState currentState = WardenState.SeekingProtectTarget;
@@ -110,6 +111,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     private bool isDead;
     private bool isExecutingAction;
     private bool isBerserkCharging;
+    private float lastLivingWallTime = -999f;
     private float guardBrokenUntilTime;
     private Vector2 currentShieldForward = Vector2.right;
 
@@ -131,6 +133,9 @@ public class EnemyWarden : EnemyBase, IParryReactive
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        livingWall = GetComponent<WardenLivingWall>();
+        if (livingWall == null)
+            livingWall = gameObject.AddComponent<WardenLivingWall>();
         currentShieldForward = GetDesiredShieldForward();
 
         TryAcquireProtectTarget();
@@ -271,6 +276,8 @@ public class EnemyWarden : EnemyBase, IParryReactive
             return;
         }
 
+        TryUpdateLivingWall();
+
         if (!isExecutingAction && CanStartRepositionDash())
         {
             StartAction(RepositionDashRoutine());
@@ -278,7 +285,8 @@ public class EnemyWarden : EnemyBase, IParryReactive
         }
 
         float distance = Vector2.Distance(transform.position, cachedGuardPoint);
-        bool isMoving = distance > positionTolerance;
+        bool wallLocked = livingWall != null && livingWall.IsActive;
+        bool isMoving = !wallLocked && distance > positionTolerance;
 
         if (rb != null)
         {
@@ -460,6 +468,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     {
         protectTarget = null;
         currentState = WardenState.Berserk;
+        livingWall?.Deactivate();
         permanentBerserk = !temporary;
         berserkEndTime = temporary ? Time.time + berserkDuration : float.PositiveInfinity;
         guardBrokenUntilTime = 0f;
@@ -657,6 +666,28 @@ public class EnemyWarden : EnemyBase, IParryReactive
         animator.SetBool(AnimIsMoving, isMoving);
         animator.SetBool(AnimIsGuarding, CanUseShieldDefense() && currentState != WardenState.Berserk && !isExecutingAction);
         animator.SetBool(AnimBerserk, currentState == WardenState.Berserk);
+    }
+
+    private void TryUpdateLivingWall()
+    {
+        if (!HasEliteMechanic(EliteMechanicType.WardenLivingDefenceWall) || ActiveEliteProfile == null || protectTarget == null || livingWall == null)
+            return;
+
+        EliteWardenLivingWallSettings settings = ActiveEliteProfile.wardenLivingDefenceWall;
+        if (livingWall.IsActive)
+        {
+            float targetDistance = Vector2.Distance(transform.position, protectTarget.transform.position);
+            if (targetDistance > settings.maxProtectTargetDistance)
+                livingWall.Deactivate();
+            return;
+        }
+
+        if (Time.time < lastLivingWallTime + settings.wallCooldown)
+            return;
+
+        livingWall.Activate(currentShieldForward, settings);
+        lastLivingWallTime = Time.time;
+        EmitCombatAction(EnemyCombatActionType.Skill, 1.2f);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

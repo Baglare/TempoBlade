@@ -19,9 +19,9 @@ MonoBehaviour:
   eliteCueColor: {r: 1, g: 0.45, b: 0.1, a: 1}
   eliteVfxPrefab: {fileID: 0}
   eliteAudioEvent: 0
-  eliteMechanicType: 0
+  eliteMechanicType: 1
   casterBurstOrb:
-    burstOrbChance: 0.35
+    burstOrbChance: 1
     impactRadius: 1.35
     impactDamageMultiplier: 0.65
     fragmentCount: 4
@@ -32,3 +32,112 @@ MonoBehaviour:
     fragmentExplosionRadius: 0.7
     fragmentExplosionDamageMultiplier: 0.35
     burstCueColor: {r: 1, g: 0.58, b: 0.12, a: 1}
+  meleeRendCombo:
+    firstHitDamageMultiplier: 0.85
+    secondHitDamageMultiplier: 0.95
+    thirdHitDamageMultiplier: 1.6
+    firstWindupRange: {x: 0.22, y: 0.32}
+    secondGapRange: {x: 0.22, y: 0.38}
+    thirdGapRange: {x: 0.28, y: 0.42}
+    activeFrames: 0.16
+    recoveryDuration: 1.05
+    hitStaggerDuration: 0.16
+    hitKnockback: 6
+    reactionGap: 0.1
+    heavyCleaveArcMultiplier: 1.4
+  dasherFalseExit:
+    firstDashDistance: 3.1
+    firstDashDuration: 0.18
+    falseExitArcDegrees: 120
+    snapDashDuration: 0.14
+    snapDashSpeed: 20
+    snapHitDamageMultiplier: 1.2
+    snapHitStagger: 0.24
+    snapParryStun: 0.55
+    exposedDuration: 1.1
+    externalCounterBonus: 0.2
+    thirdDashDistance: 3.5
+    thirdDashDuration: 0.2
+    thirdDashSectorDegrees: 110
+  assassinShadowEcho:
+    entryDashDistance: 2.8
+    entryDashDuration: 0.14
+    offsetDistance: 2.4
+    halfBeatDelay: 0.22
+    strikeRadius: 1.25
+    strikeDamageMultiplier: 1.2
+    heavyParryStun: 1.6
+    echoColor: {r: 0.75, g: 0.4, b: 1, a: 0.65}
+    realBodyCueColor: {r: 1, g: 0.95, b: 0.5, a: 0.9}
+  trapperTetherTrap:
+    tetherSearchRadius: 6
+    tetherLifetime: 6
+    linkWindup: 0.45
+    miniBurstDamage: 9
+    miniBurstRadius: 1
+    slowMultiplier: 0.7
+    slowDuration: 1.3
+    touchCooldown: 0.4
+    tetherColor: {r: 1, g: 0.55, b: 0.15, a: 0.95}
+  duelistGuardDebt:
+    requiredGuardHits: 3
+    debtDecayDelay: 2.4
+    bashWindup: 0.28
+    bashRange: 1.55
+    bashDamageMultiplier: 0.55
+    bashMovementLockDuration: 0.45
+    bashBaseParryOnlyDuration: 0.55
+    cleaveWindup: 0.24
+    cleaveRange: 1.95
+    cleaveDamageMultiplier: 2.2
+    debtCooldown: 4.4
+    debtColor: {r: 1, g: 0.2, b: 0.18, a: 0.95}
+  deadeyeEchoLine:
+    lineDuration: 2.4
+    lineThickness: 0.28
+    refireLockAimDuration: 0.2
+    mobilityMultiplierWhileActive: 0.6
+    echoLineColor: {r: 1, g: 0.45, b: 0.12, a: 0.75}
+  kamikazeUnstableCore:
+    coreLifetime: 2.4
+    fullExplosionRadius: 3.2
+    fullExplosionDamageMultiplier: 1.35
+    brokenExplosionRadius: 2.1
+    brokenExplosionDamageMultiplier: 0.75
+    coreColor: {r: 1, g: 0.35, b: 0.15, a: 0.95}
+  wardenLivingDefenceWall:
+    wallDuration: 4.5
+    wallCooldown: 10
+    maxProtectTargetDistance: 3.8
+    wallWidth: 4.8
+    segmentThickness: 0.65
+    segmentHeight: 1.9
+    projectileGapWidth: 0.42
+    gapCount: 2
+    wallColor: {r: 0.35, g: 0.95, b: 1, a: 0.85}
+  resonatorCrescendo:
+    actionRadius: 10
+    meterPerAttack: 0.14
+    meterPerDash: 0.18
+    meterPerCast: 0.16
+    meterPerSkill: 0.22
+    meterPerSummon: 0.24
+    channelDuration: 0.8
+    interruptLoss: 0.45
+    pulseRadius: 5.4
+    pulseMoveMultiplier: 1.25
+    pulseAttackMultiplier: 1.22
+    pulseDuration: 3.2
+    playerRhythmShock: 5
+    meterColor: {r: 1, g: 0.35, b: 0.8, a: 0.95}
+  wardenLinkerMultipleLink:
+    clusterRadius: 5.5
+    heavyHitWindow: 4
+    heavyHitHealthFraction: 0.16
+    chainDamageFraction: 0.28
+    deathStaggerDuration: 0.45
+    extraLinkWindupMultiplierPerLink: 0.2
+    extraLinkCooldownMultiplierPerLink: 0.3
+    extraLinkDurationPenaltyPerLink: 0.1
+    summonCooldownMultiplier: 1.9
+    multiLinkColor: {r: 0.35, g: 1, b: 0.8, a: 0.95}

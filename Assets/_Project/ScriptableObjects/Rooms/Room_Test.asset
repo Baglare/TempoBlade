@@ -17,11 +17,13 @@ MonoBehaviour:
   waves:
   - waveDelay: 1
     enemyGroups:
-    - enemyType: {fileID: 11400000, guid: 82a441ac95618fe478ab503461ec2339, type: 2}
+    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
+      isElite: 1
+      eliteProfile: {fileID: 11400000, guid: 2bea6c28c03157042a6df39a5fe3cfc9, type: 2}
       count: 1
       spawnDelay: 0.1
   isBossRoom: 0
-  encounterType: 0
+  encounterType: 1
   difficulty: 1
   goldReward: 0
   possibleWeaponDrop: {fileID: 11400000, guid: b3ee56d4fe9b9e3439e42c99ae2954da, type: 2}

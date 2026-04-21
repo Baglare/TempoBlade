@@ -70,6 +70,9 @@ public class EnemyResonator : EnemyBase
     private Animator animator;
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private EnemyOverheadMeter overheadMeter;
+    private float crescendoMeter;
+    private bool isCrescendoChanneling;
 
     private float nextAnchorRefreshTime;
     private float nextRallyPulseTime;
@@ -96,14 +99,36 @@ public class EnemyResonator : EnemyBase
         animator = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        overheadMeter = GetComponent<EnemyOverheadMeter>();
+        if (overheadMeter == null)
+            overheadMeter = gameObject.AddComponent<EnemyOverheadMeter>();
+        RefreshEliteMeterVisibility();
 
         currentAnchor = transform.position;
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        EnemyBase.OnEnemyCombatAction += HandleEnemyCombatAction;
+    }
+
+    protected override void OnDisable()
+    {
+        EnemyBase.OnEnemyCombatAction -= HandleEnemyCombatAction;
+        base.OnDisable();
     }
 
     private void Update()
     {
         if (isDead || isStunned || playerTransform == null)
             return;
+
+        if (HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && !isCasting && !isCrescendoChanneling && crescendoMeter >= 1f)
+        {
+            StartCoroutine(CrescendoRoutine());
+            return;
+        }
 
         float anchorRefresh = anchorRefreshInterval * tempoConfig.anchorRefreshMultiplier.Evaluate(CurrentTempoTier);
         if (Time.time >= nextAnchorRefreshTime)
@@ -166,6 +191,15 @@ public class EnemyResonator : EnemyBase
             nextTempoStaticTime = Mathf.Max(nextTempoStaticTime, Time.time + tempoConfig.t3InterruptCooldownPenalty);
         }
 
+        if (HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && isCrescendoChanneling)
+        {
+            crescendoMeter = Mathf.Clamp01(crescendoMeter - ActiveEliteProfile.resonatorCrescendo.interruptLoss);
+            UpdateOverheadMeter();
+            isCrescendoChanneling = false;
+            StopAllCoroutines();
+            isCasting = false;
+        }
+
         base.Stun(finalDuration);
     }
 
@@ -195,6 +229,21 @@ public class EnemyResonator : EnemyBase
             targetPosition = (Vector2)transform.position + away * desiredSupportDistance;
         }
 
+        if (!EnemyLineOfSightUtility.IsPointNavigable(targetPosition, 0.3f, transform))
+        {
+            RangedTacticalDecision decision = RangedTacticalMovementUtility.EvaluatePosition(
+                transform,
+                playerTransform,
+                transform.position,
+                desiredSupportDistance + 1.2f,
+                supportSearchRadius,
+                2.5f,
+                8,
+                transform);
+            if (decision.foundBetterPosition)
+                targetPosition = decision.moveTarget;
+        }
+
         Vector2 toTarget = targetPosition - (Vector2)transform.position;
         bool isMoving = toTarget.magnitude > 0.2f;
         if (rb != null)
@@ -216,6 +265,7 @@ public class EnemyResonator : EnemyBase
         isCasting = true;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+        EmitCombatAction(EnemyCombatActionType.Skill);
 
         if (spriteRenderer != null)
             spriteRenderer.color = rallyPulseColor;
@@ -260,6 +310,7 @@ public class EnemyResonator : EnemyBase
         isCasting = true;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+        EmitCombatAction(EnemyCombatActionType.Cast);
 
         if (spriteRenderer != null)
             spriteRenderer.color = tempoStaticColor;
@@ -295,6 +346,7 @@ public class EnemyResonator : EnemyBase
         isCasting = true;
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
+        EmitCombatAction(EnemyCombatActionType.Skill);
 
         yield return new WaitForSeconds(0.12f);
 
@@ -354,5 +406,100 @@ public class EnemyResonator : EnemyBase
             return tempoStaticDecayMultiplier;
 
         return tempoStaticDecayMultiplier * tempoConfig.t3TempoStaticDecayMultiplier;
+    }
+
+    private void HandleEnemyCombatAction(EnemyCombatActionEvent combatEvent)
+    {
+        if (!HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) || combatEvent.source == null || combatEvent.source == this)
+            return;
+
+        EliteResonatorCrescendoSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.resonatorCrescendo : null;
+        if (settings == null)
+            return;
+
+        float distance = Vector2.Distance(transform.position, combatEvent.worldPosition);
+        if (distance > settings.actionRadius)
+            return;
+
+        float meterGain = 0f;
+        switch (combatEvent.actionType)
+        {
+            case EnemyCombatActionType.Attack: meterGain = settings.meterPerAttack; break;
+            case EnemyCombatActionType.Dash: meterGain = settings.meterPerDash; break;
+            case EnemyCombatActionType.Cast: meterGain = settings.meterPerCast; break;
+            case EnemyCombatActionType.Skill: meterGain = settings.meterPerSkill; break;
+            case EnemyCombatActionType.Summon: meterGain = settings.meterPerSummon; break;
+        }
+
+        if (meterGain <= 0f)
+            return;
+
+        crescendoMeter = Mathf.Clamp01(crescendoMeter + meterGain * Mathf.Max(0.2f, combatEvent.weight));
+        UpdateOverheadMeter();
+    }
+
+    private IEnumerator CrescendoRoutine()
+    {
+        EliteResonatorCrescendoSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.resonatorCrescendo : null;
+        if (settings == null)
+            yield break;
+
+        isCasting = true;
+        isCrescendoChanneling = true;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+        EmitCombatAction(EnemyCombatActionType.Skill, 1.5f);
+
+        float timer = 0f;
+        while (timer < settings.channelDuration)
+        {
+            timer += Time.deltaTime;
+            overheadMeter?.SetProgress(timer / Mathf.Max(0.01f, settings.channelDuration));
+            yield return null;
+        }
+
+        EnemySupportUtility.GatherNearbyAllies(transform, settings.pulseRadius, nearbyAllies, this);
+        for (int i = 0; i < nearbyAllies.Count; i++)
+        {
+            nearbyAllies[i]?.GetSupportBuffReceiver()?.ApplyRallyBuff(
+                settings.pulseDuration,
+                settings.pulseMoveMultiplier,
+                settings.pulseAttackMultiplier,
+                true);
+        }
+
+        if (TempoManager.Instance != null)
+            TempoManager.Instance.AddTempo(-settings.playerRhythmShock);
+
+        SupportPulseVisualUtility.SpawnPulse(transform.position, 0.3f, settings.pulseRadius, 0.35f, settings.meterColor);
+        isCrescendoChanneling = false;
+        isCasting = false;
+        crescendoMeter = 0f;
+        UpdateOverheadMeter();
+    }
+
+    private void RefreshEliteMeterVisibility()
+    {
+        if (overheadMeter == null)
+            return;
+
+        if (HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && ActiveEliteProfile != null)
+        {
+            overheadMeter.Configure(ActiveEliteProfile.resonatorCrescendo.meterColor, 0.95f, 0.08f);
+            overheadMeter.SetVisible(true);
+            UpdateOverheadMeter();
+            return;
+        }
+
+        overheadMeter.SetVisible(false);
+    }
+
+    private void UpdateOverheadMeter()
+    {
+        if (overheadMeter == null || !HasEliteMechanic(EliteMechanicType.ResonatorCrescendo))
+            return;
+
+        overheadMeter.SetVisible(true);
+        overheadMeter.SetProgress(crescendoMeter);
     }
 }

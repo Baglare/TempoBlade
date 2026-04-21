@@ -122,6 +122,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyTrapper
   enemyData: {fileID: 11400000, guid: 5e59ca274a8de6a42a5aadc5d15eb080, type: 2}
+  isElite: 0
+  eliteProfile: {fileID: 0}
   stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   moveSpeedModifier: 5

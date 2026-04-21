@@ -3,6 +3,8 @@ using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
+    public static event Action<EnemyCombatActionEvent> OnEnemyCombatAction;
+
     [Header("Base Settings")]
     public EnemySO enemyData;
     [Header("Elite Runtime")]
@@ -32,6 +34,18 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     public event Action<float> OnDamageTaken;
     public event Action<float> OnStunned;
+    public event Action<EnemyBase, float> OnDamageTakenDetailed;
+    public event Action<EnemyBase, float> OnStunnedDetailed;
+
+    protected virtual void Awake()
+    {
+        SyncEliteRuntimeFromSerializedProfile();
+    }
+
+    private void OnValidate()
+    {
+        SyncEliteRuntimeFromSerializedProfile();
+    }
 
     protected virtual void OnEnable()
     {
@@ -90,6 +104,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
         currentHealth -= damageAmount;
         OnDamageTaken?.Invoke(damageAmount);
+        OnDamageTakenDetailed?.Invoke(this, damageAmount);
         AudioManager.Play(AudioEventId.EnemyHurt, gameObject);
 
 
@@ -132,6 +147,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
         AudioManager.Play(AudioEventId.EnemyStun, gameObject);
         OnStunned?.Invoke(duration);
+        OnStunnedDetailed?.Invoke(this, duration);
 
         float requestedEnd = Time.time + duration;
         if (isStunned && requestedEnd <= stunEndTime)
@@ -318,6 +334,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         }
     }
 
+    public void ClearEliteProfile()
+    {
+        ApplyEliteProfile(null);
+    }
+
     protected bool HasEliteMechanic(EliteMechanicType mechanicType)
     {
         return IsElite && eliteProfile != null && eliteProfile.HasMechanic(mechanicType);
@@ -331,6 +352,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected float GetEffectiveDamage(float baseDamage)
     {
         return baseDamage * GetEliteDamageMultiplier();
+    }
+
+    public float GetEffectiveContactDamage(float fallbackDamage)
+    {
+        return GetEffectiveDamageFromData(fallbackDamage);
     }
 
     protected float GetEffectiveDamageFromData(float fallbackDamage)
@@ -399,5 +425,22 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         }
 
         SetPerkMarker(false, Color.clear);
+    }
+
+    protected void EmitCombatAction(EnemyCombatActionType actionType, float weight = 1f)
+    {
+        OnEnemyCombatAction?.Invoke(new EnemyCombatActionEvent
+        {
+            source = this,
+            actionType = actionType,
+            weight = Mathf.Max(0f, weight),
+            time = Time.time,
+            worldPosition = transform.position
+        });
+    }
+
+    private void SyncEliteRuntimeFromSerializedProfile()
+    {
+        isElite = eliteProfile != null;
     }
 }

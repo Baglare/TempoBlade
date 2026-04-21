@@ -193,8 +193,7 @@ public class RoomManager : MonoBehaviour
                     if (eb != null)
                     {
                         eb.enemyData = enemyGroup.enemyType; // Datayi inject et
-                        if (enemyGroup.isElite && enemyGroup.eliteProfile != null)
-                            eb.ApplyEliteProfile(enemyGroup.eliteProfile);
+                        ApplyEnemySpawnEliteMode(eb, enemyGroup);
                     }
                     activeEnemies.Add(enemy);
                 }
@@ -333,6 +332,40 @@ public class RoomManager : MonoBehaviour
         else
         {
             Debug.LogWarning("RoomManager: RoomLayout'ta RewardDoor atanmamış! Kapı açılamıyor.");
+        }
+    }
+
+    private void ApplyEnemySpawnEliteMode(EnemyBase enemyBase, EnemySpawn enemySpawn)
+    {
+        if (enemyBase == null || enemySpawn == null)
+            return;
+
+        switch (enemySpawn.eliteSpawnMode)
+        {
+            case EliteSpawnMode.UsePrefabDefault:
+                return;
+
+            case EliteSpawnMode.ForceElite:
+                if (enemySpawn.eliteProfile != null)
+                    enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
+                return;
+
+            case EliteSpawnMode.ChanceBased:
+                if (enemySpawn.ShouldSpawnElite())
+                {
+                    if (enemySpawn.eliteProfile != null)
+                        enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
+                }
+                else
+                {
+                    enemyBase.ClearEliteProfile();
+                }
+                return;
+
+            case EliteSpawnMode.NormalOnly:
+            default:
+                enemyBase.ClearEliteProfile();
+                return;
         }
     }
 }

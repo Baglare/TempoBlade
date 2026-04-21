@@ -45,6 +45,7 @@ public class EnemyDasher : EnemyBase
     private float nextFireTime;
     private float nextProactiveDashTime;
     private float punishWindowEndTime;
+    private float eliteDodgeSuppressedUntil;
     private bool isDead;
     private bool isEvading;
 
@@ -111,6 +112,7 @@ public class EnemyDasher : EnemyBase
 
     private IEnumerator FireRoutine()
     {
+        EmitCombatAction(EnemyCombatActionType.Attack);
         nextFireTime = Time.time + GetEffectiveCooldownDuration(fireRate) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         if (projectilePrefab == null || firePoint == null || playerTransform == null)
@@ -134,6 +136,17 @@ public class EnemyDasher : EnemyBase
     {
         isEvading = true;
         state = State.DashEvading;
+        EmitCombatAction(EnemyCombatActionType.Dash);
+
+        if (HasEliteMechanic(EliteMechanicType.DasherFalseExit) && ActiveEliteProfile != null)
+        {
+            yield return EliteFalseExitRoutine();
+            isEvading = false;
+            if (state != State.PunishWindow)
+                state = State.Kiting;
+            yield break;
+        }
+
         float cooldown = GetEffectiveCooldownDuration(tempoConfig.proactiveDashBaseCooldown * tempoConfig.proactiveDashCooldownMultiplier.Evaluate(CurrentTempoTier));
         nextProactiveDashTime = Time.time + cooldown;
 
@@ -200,7 +213,7 @@ public class EnemyDasher : EnemyBase
         if (isDead || isEvading)
             return;
 
-        float reactiveChance = dodgeChance * tempoConfig.reactiveDodgeChanceMultiplier.Evaluate(CurrentTempoTier);
+        float reactiveChance = Time.time < eliteDodgeSuppressedUntil ? 0f : dodgeChance * tempoConfig.reactiveDodgeChanceMultiplier.Evaluate(CurrentTempoTier);
         if (state != State.DashEvading && Random.value < reactiveChance)
         {
             StartCoroutine(DashEvade());
@@ -281,6 +294,103 @@ public class EnemyDasher : EnemyBase
     {
         punishWindowEndTime = Time.time + tempoConfig.t3PunishWindowDuration;
         state = State.PunishWindow;
+    }
+
+    private IEnumerator EliteFalseExitRoutine()
+    {
+        EliteDasherFalseExitSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.dasherFalseExit : null;
+        if (settings == null || playerTransform == null)
+            yield break;
+
+        float cooldown = GetEffectiveCooldownDuration(tempoConfig.proactiveDashBaseCooldown * tempoConfig.proactiveDashCooldownMultiplier.Evaluate(CurrentTempoTier));
+        nextProactiveDashTime = Time.time + cooldown;
+
+        Vector2 playerPos = playerTransform.position;
+        Vector2 selfPos = transform.position;
+        Vector2 fromPlayer = (selfPos - playerPos).normalized;
+        if (fromPlayer.sqrMagnitude <= 0.001f)
+            fromPlayer = Vector2.up;
+
+        float exitOffset = Random.value < 0.5f ? -settings.falseExitArcDegrees * 0.5f : settings.falseExitArcDegrees * 0.5f;
+        Vector2 exitDir = Quaternion.Euler(0f, 0f, exitOffset) * fromPlayer;
+        Vector2 exitPoint = playerPos + exitDir * settings.firstDashDistance;
+        yield return DashTowardPoint(exitPoint, settings.firstDashDuration);
+
+        yield return new WaitForSeconds(0.08f);
+
+        bool snapParried = false;
+        Vector2 snapTarget = playerTransform.position;
+        yield return DashTowardPoint(snapTarget, settings.snapDashDuration, settings.snapDashSpeed);
+        if (Vector2.Distance(transform.position, playerTransform.position) <= 1.25f)
+        {
+            ParrySystem parry = playerTransform.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryBlockMelee(transform.position, gameObject))
+            {
+                snapParried = true;
+                eliteDodgeSuppressedUntil = Time.time + settings.exposedDuration;
+                Stun(settings.snapParryStun);
+            }
+            else
+            {
+                PlayerController pc = playerTransform.GetComponent<PlayerController>();
+                if (pc == null || !pc.IsInvulnerable)
+                {
+                    playerTransform.GetComponent<PlayerCombat>()?.TakeDamage(GetEffectiveDamageFromData(10f) * settings.snapHitDamageMultiplier);
+                    pc?.ApplyExternalStagger(settings.snapHitStagger, ((Vector2)playerTransform.position - (Vector2)transform.position).normalized * 5f);
+                }
+            }
+        }
+
+        if (snapParried)
+            yield break;
+
+        Vector2 escapePoint;
+        if (!RangedTacticalMovementUtility.TryFindEscapePoint(transform, playerTransform.position, settings.thirdDashDistance, settings.thirdDashSectorDegrees, 8, transform, out escapePoint))
+            escapePoint = (Vector2)transform.position + ((Vector2)transform.position - (Vector2)playerTransform.position).normalized * settings.thirdDashDistance;
+
+        Vector2 escapeDirection = (escapePoint - (Vector2)transform.position).normalized;
+        FireProjectile(escapeDirection);
+        yield return DashTowardPoint(escapePoint, settings.thirdDashDuration);
+
+        if (Vector2.Distance(transform.position, playerTransform.position) > preferredRange * 0.85f)
+        {
+            eliteDodgeSuppressedUntil = Time.time + settings.exposedDuration;
+            PlayerCombat playerCombat = playerTransform.GetComponent<PlayerCombat>();
+            if (playerCombat != null)
+                playerCombat.GrantExternalCounterBonus(settings.externalCounterBonus, CounterFeedbackSource.Dash);
+        }
+    }
+
+    private IEnumerator DashTowardPoint(Vector2 target, float duration, float speedOverride = -1f)
+    {
+        float timer = 0f;
+        while (timer < duration)
+        {
+            Vector2 direction = (target - (Vector2)transform.position).normalized;
+            float speedValue = speedOverride > 0f ? speedOverride : dodgeSpeed;
+            if (rb != null)
+                rb.linearVelocity = direction * speedValue;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+    }
+
+    private void FireProjectile(Vector2 direction)
+    {
+        if (projectilePrefab == null || firePoint == null)
+            return;
+
+        GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        Projectile proj = projObj.GetComponent<Projectile>();
+        if (proj == null)
+            return;
+
+        proj.owner = gameObject;
+        proj.damage = GetEffectiveDamageFromData(proj.damage);
+        proj.Launch(direction);
     }
 
     private void MoveBy(Vector2 velocity)

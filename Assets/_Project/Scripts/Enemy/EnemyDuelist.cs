@@ -70,6 +70,10 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     private float readWindowEndTime;
     private float duelStanceEndTime;
     private float nextDuelStanceTime;
+    private int guardDebtCount;
+    private float guardDebtExpireTime;
+    private float nextGuardDebtTime;
+    private EnemyOverheadMeter overheadMeter;
 
     public bool AllowParryExecute => true;
 
@@ -86,6 +90,10 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         isGuarding = true;
         guardBroken = false;
+        overheadMeter = GetComponent<EnemyOverheadMeter>();
+        if (overheadMeter == null)
+            overheadMeter = gameObject.AddComponent<EnemyOverheadMeter>();
+        RefreshGuardDebtMeter();
 
         if (weaponArcVisual != null)
             weaponArcVisual.range = attackRadius;
@@ -128,7 +136,11 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         float dist = Vector2.Distance(transform.position, playerTransform.position);
         if (dist <= attackRange)
         {
-            if (Time.time >= nextAttackTime && !guardBroken)
+            if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) && guardDebtCount >= GetGuardDebtRequiredHits() && Time.time >= nextGuardDebtTime && !guardBroken)
+            {
+                StartCoroutine(GuardDebtRoutine());
+            }
+            else if (Time.time >= nextAttackTime && !guardBroken)
                 StartCoroutine(AttackRoutine());
         }
         else
@@ -167,6 +179,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     {
         isAttacking = true;
         isGuarding = false;
+        EmitCombatAction(EnemyCombatActionType.Attack);
         UpdateAnimatorState(false);
         if (animator != null)
             animator.SetTrigger(AnimAttack);
@@ -229,6 +242,13 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             {
                 if (DamagePopupManager.Instance != null)
                     DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "BLOCK!", Color.cyan, 5f);
+
+                if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt))
+                {
+                    guardDebtCount++;
+                    guardDebtExpireTime = Time.time + ActiveEliteProfile.duelistGuardDebt.debtDecayDelay;
+                    RefreshGuardDebtMeter();
+                }
 
                 if (CurrentTempoTier >= TempoManager.TempoTier.T1)
                     readWindowEndTime = Mathf.Max(readWindowEndTime, Time.time + 0.5f);
@@ -313,6 +333,12 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
     private void UpdateReadAndStanceState()
     {
+        if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) && guardDebtCount > 0 && Time.time >= guardDebtExpireTime)
+        {
+            guardDebtCount = 0;
+            RefreshGuardDebtMeter();
+        }
+
         if (CurrentTempoTier >= TempoManager.TempoTier.T2 &&
             EnemySupportUtility.IsPlayerRepeatingBasicAttacks(tempoConfig.t2ReadAttackWindow, tempoConfig.t2ReadAttackCount))
         {
@@ -426,5 +452,90 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
         }
+    }
+
+    private IEnumerator GuardDebtRoutine()
+    {
+        EliteDuelistGuardDebtSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.duelistGuardDebt : null;
+        if (settings == null)
+            yield break;
+
+        isAttacking = true;
+        isGuarding = false;
+        guardDebtCount = 0;
+        guardDebtExpireTime = 0f;
+        RefreshGuardDebtMeter();
+        EmitCombatAction(EnemyCombatActionType.Skill, 1.2f);
+
+        yield return new WaitForSeconds(settings.bashWindup);
+
+        if (playerTransform != null && Vector2.Distance(transform.position, playerTransform.position) <= settings.bashRange)
+        {
+            PlayerController controller = playerTransform.GetComponent<PlayerController>();
+            ParrySystem parry = playerTransform.GetComponent<ParrySystem>();
+            if (parry == null || !parry.TryBlockMelee(transform.position, gameObject))
+            {
+                playerTransform.GetComponent<PlayerCombat>()?.TakeDamage(GetEffectiveDamage(damage) * settings.bashDamageMultiplier);
+                controller?.ApplyMovementLock(settings.bashMovementLockDuration, true);
+                playerTransform.GetComponent<ParryPerkController>()?.ForceBaseParryOnly(settings.bashBaseParryOnlyDuration);
+            }
+        }
+
+        yield return new WaitForSeconds(settings.cleaveWindup);
+        ResolveGuardDebtCleave(settings);
+
+        nextGuardDebtTime = Time.time + settings.debtCooldown;
+        isAttacking = false;
+        isGuarding = true;
+    }
+
+    private void ResolveGuardDebtCleave(EliteDuelistGuardDebtSettings settings)
+    {
+        if (attackPoint == null)
+            return;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, settings.cleaveRange);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hit = hits[i];
+            if (!hit.CompareTag("Player"))
+                continue;
+
+            ParrySystem parry = hit.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryBlockMelee(attackPoint.position, gameObject))
+                continue;
+
+            PlayerController controller = hit.GetComponent<PlayerController>();
+            if (controller != null && controller.IsInvulnerable)
+            {
+                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                continue;
+            }
+
+            hit.GetComponent<IDamageable>()?.TakeDamage(GetEffectiveDamage(damage) * settings.cleaveDamageMultiplier);
+        }
+    }
+
+    private int GetGuardDebtRequiredHits()
+    {
+        return HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) && ActiveEliteProfile != null
+            ? Mathf.Max(1, ActiveEliteProfile.duelistGuardDebt.requiredGuardHits)
+            : 999;
+    }
+
+    private void RefreshGuardDebtMeter()
+    {
+        if (overheadMeter == null)
+            return;
+
+        if (!HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) || ActiveEliteProfile == null)
+        {
+            overheadMeter.SetVisible(false);
+            return;
+        }
+
+        overheadMeter.Configure(ActiveEliteProfile.duelistGuardDebt.debtColor, 0.9f, 0.08f);
+        overheadMeter.SetVisible(true);
+        overheadMeter.SetProgress(guardDebtCount / (float)GetGuardDebtRequiredHits());
     }
 }

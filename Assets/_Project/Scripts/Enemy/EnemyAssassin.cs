@@ -123,8 +123,15 @@ public class EnemyAssassin : EnemyBase
 
     private IEnumerator AttackSequence()
     {
+        if (HasEliteMechanic(EliteMechanicType.AssassinShadowEcho) && ActiveEliteProfile != null)
+        {
+            yield return EliteShadowEchoRoutine();
+            yield break;
+        }
+
         float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
         float visibleTime = preAttackVisibleTime * tempoConfig.preAttackVisibleMultiplier.Evaluate(CurrentTempoTier);
+        EmitCombatAction(EnemyCombatActionType.Attack);
 
         SetAlpha(1f);
         yield return new WaitForSeconds(visibleTime / attackSpeedMultiplier);
@@ -184,6 +191,94 @@ public class EnemyAssassin : EnemyBase
         yield return new WaitForSeconds(retreatDuration);
         if (!isDead)
             state = State.TrackingInvisible;
+    }
+
+    private IEnumerator EliteShadowEchoRoutine()
+    {
+        EliteAssassinShadowEchoSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.assassinShadowEcho : null;
+        if (settings == null || playerTransform == null)
+            yield break;
+
+        EmitCombatAction(EnemyCombatActionType.Dash);
+        SetAlpha(0f);
+
+        Vector2 playerPos = playerTransform.position;
+        Vector2[] offsets =
+        {
+            new Vector2(-1f, -1f),
+            new Vector2(-1f, 1f),
+            new Vector2(1f, -1f),
+            new Vector2(1f, 1f)
+        };
+
+        int firstIndex = Random.Range(0, offsets.Length);
+        int secondIndex = (firstIndex + Random.Range(1, offsets.Length)) % offsets.Length;
+        bool realFirst = Random.value < 0.5f;
+        Vector2 realPos = playerPos + offsets[firstIndex].normalized * settings.offsetDistance;
+        Vector2 echoPos = playerPos + offsets[secondIndex].normalized * settings.offsetDistance;
+        if (!realFirst)
+        {
+            Vector2 temp = realPos;
+            realPos = echoPos;
+            echoPos = temp;
+        }
+
+        yield return PerformEliteShadowStrike(realFirst ? realPos : echoPos, realFirst, settings);
+        yield return new WaitForSeconds(settings.halfBeatDelay);
+        yield return PerformEliteShadowStrike(realFirst ? echoPos : realPos, !realFirst, settings);
+
+        SetAlpha(invisibleAlpha);
+        state = State.Retreating;
+        nextAttackTime = Time.time + GetEffectiveCooldownDuration(attackCooldown * tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier));
+        yield return new WaitForSeconds(retreatDuration);
+        if (!isDead)
+            state = State.TrackingInvisible;
+    }
+
+    private IEnumerator PerformEliteShadowStrike(Vector2 strikePosition, bool realStrike, EliteAssassinShadowEchoSettings settings)
+    {
+        EmitCombatAction(EnemyCombatActionType.Attack);
+        if (realStrike)
+        {
+            transform.position = strikePosition;
+            SetAlpha(0.85f);
+            if (spriteRenderer != null)
+                spriteRenderer.color = settings.realBodyCueColor;
+        }
+        else
+        {
+            SupportPulseVisualUtility.SpawnPulse(strikePosition, 0.12f, 0.6f, 0.15f, settings.echoColor);
+        }
+
+        yield return new WaitForSeconds(0.08f);
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(strikePosition, settings.strikeRadius);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hit = hits[i];
+            if (!hit.CompareTag("Player"))
+                continue;
+
+            ParrySystem parry = hit.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryBlockMelee(strikePosition, gameObject))
+            {
+                if (realStrike)
+                    Stun(settings.heavyParryStun);
+                continue;
+            }
+
+            PlayerController controller = hit.GetComponent<PlayerController>();
+            if (controller != null && controller.IsInvulnerable)
+            {
+                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+                continue;
+            }
+
+            hit.GetComponent<IDamageable>()?.TakeDamage(GetEffectiveDamage(attackDamage) * settings.strikeDamageMultiplier);
+        }
+
+        if (realStrike && spriteRenderer != null)
+            spriteRenderer.color = Color.white;
     }
 
     private IEnumerator ShortReposition(int sideSign)

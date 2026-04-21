@@ -22,6 +22,7 @@ public class EnemyDeadeye : EnemyBase
     public float preferredRange = 10f;
     public float minimumRange = 5.5f;
     public float maximumRange = 14f;
+    public float firePermissionRange = 12.5f;
     public float shotCooldown = 3.1f;
     public float lockAimDuration = 0.95f;
     public Color lockAimColor = new Color(1f, 0.18f, 0.18f, 0.95f);
@@ -40,6 +41,7 @@ public class EnemyDeadeye : EnemyBase
     public float movementRefreshInterval = 0.3f;
     public float movementTolerance = 0.2f;
     public int repositionSampleCount = 10;
+    public float tacticalSearchRadius = 4f;
     public LayerMask lineOfSightMask = Physics2D.DefaultRaycastLayers;
 
     [Header("Tempo")]
@@ -53,6 +55,7 @@ public class EnemyDeadeye : EnemyBase
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private EnemyAimTelegraph aimTelegraph;
+    private DeadeyeEchoLine activeEchoLine;
 
     private float nextShotTime;
     private float nextRepositionTime;
@@ -60,6 +63,7 @@ public class EnemyDeadeye : EnemyBase
     private Vector2 desiredMoveTarget;
     private bool isDead;
     private bool isActing;
+    private bool suppressEchoLineForNextShot;
 
     protected override void Start()
     {
@@ -110,7 +114,7 @@ public class EnemyDeadeye : EnemyBase
             return;
         }
 
-        UpdateMovement(hasLineOfSight, distanceToPlayer);
+        UpdateMovement(hasLineOfSight, distanceToPlayer, origin);
     }
 
     public override void TakeDamage(float amount)
@@ -162,12 +166,21 @@ public class EnemyDeadeye : EnemyBase
             animator.SetTrigger("Die");
     }
 
-    private void UpdateMovement(bool hasLineOfSight, float distanceToPlayer)
+    private void UpdateMovement(bool hasLineOfSight, float distanceToPlayer, Vector2 firingOrigin)
     {
         float refreshInterval = movementRefreshInterval * tempoConfig.movementRefreshMultiplier.Evaluate(CurrentTempoTier);
         if (Time.time >= nextMoveRefreshTime)
         {
-            desiredMoveTarget = ChooseMovementTarget(hasLineOfSight, distanceToPlayer);
+            RangedTacticalDecision decision = RangedTacticalMovementUtility.EvaluatePosition(
+                transform,
+                playerTransform,
+                firingOrigin,
+                preferredRange,
+                firePermissionRange,
+                tacticalSearchRadius,
+                Mathf.RoundToInt(repositionSampleCount * tempoConfig.repositionSampleMultiplier.Evaluate(CurrentTempoTier)),
+                transform);
+            desiredMoveTarget = decision.foundBetterPosition ? decision.moveTarget : ChooseMovementTarget(hasLineOfSight, distanceToPlayer);
             nextMoveRefreshTime = Time.time + Mathf.Max(0.08f, refreshInterval);
         }
 
@@ -177,6 +190,8 @@ public class EnemyDeadeye : EnemyBase
         if (rb != null)
         {
             float speed = GetEffectiveMoveSpeedFromData(3f);
+            if (HasEliteMechanic(EliteMechanicType.DeadeyeEchoLine) && activeEchoLine != null && activeEchoLine.IsActive && ActiveEliteProfile != null)
+                speed *= ActiveEliteProfile.deadeyeEchoLine.mobilityMultiplierWhileActive;
             rb.linearVelocity = isMoving ? toTarget.normalized * speed : Vector2.zero;
         }
 
@@ -237,6 +252,7 @@ public class EnemyDeadeye : EnemyBase
     private IEnumerator LockAimRoutine()
     {
         isActing = true;
+        EmitCombatAction(EnemyCombatActionType.Attack);
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
@@ -283,10 +299,15 @@ public class EnemyDeadeye : EnemyBase
     private IEnumerator RepositionRoutine()
     {
         isActing = true;
+        EmitCombatAction(EnemyCombatActionType.Dash);
         if (aimTelegraph != null)
             aimTelegraph.Hide();
 
-        Vector2 away = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
+        Vector2 escapePoint;
+        if (!RangedTacticalMovementUtility.TryFindEscapePoint(transform, playerTransform.position, repositionTriggerRange + 1.8f, 140f, 8, transform, out escapePoint))
+            escapePoint = (Vector2)transform.position + (((Vector2)transform.position - (Vector2)playerTransform.position).normalized * (repositionTriggerRange + 1.5f));
+
+        Vector2 away = (escapePoint - (Vector2)transform.position).normalized;
         if (away.sqrMagnitude <= 0.001f)
             away = Vector2.right;
 
@@ -336,6 +357,11 @@ public class EnemyDeadeye : EnemyBase
         }
 
         projectile.Launch(direction);
+
+        if (!isControlShot && HasEliteMechanic(EliteMechanicType.DeadeyeEchoLine) && ActiveEliteProfile != null && !suppressEchoLineForNextShot)
+            SpawnEchoLine(direction);
+
+        suppressEchoLineForNextShot = false;
     }
 
     private void FacePlayer()
@@ -362,5 +388,47 @@ public class EnemyDeadeye : EnemyBase
         }
 
         aimTelegraph.Configure(lockAimColor, telegraphStartWidth, telegraphEndWidth, 120);
+    }
+
+    private void SpawnEchoLine(Vector2 direction)
+    {
+        EliteDeadeyeEchoLineSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.deadeyeEchoLine : null;
+        if (settings == null || activeEchoLine != null && activeEchoLine.IsActive || firePoint == null)
+            return;
+
+        GameObject lineObject = new GameObject("DeadeyeEchoLine");
+        activeEchoLine = lineObject.AddComponent<DeadeyeEchoLine>();
+        Vector2 start = firePoint.position;
+        Vector2 end = start + direction.normalized * maximumRange;
+        activeEchoLine.Configure(start, end, settings.lineDuration, settings.lineThickness, settings.echoLineColor, OnEchoLineTriggered);
+    }
+
+    private void OnEchoLineTriggered()
+    {
+        if (isDead || isStunned || playerTransform == null || !HasEliteMechanic(EliteMechanicType.DeadeyeEchoLine) || ActiveEliteProfile == null)
+            return;
+
+        if (!isActing)
+            StartCoroutine(EchoRefireRoutine());
+    }
+
+    private IEnumerator EchoRefireRoutine()
+    {
+        isActing = true;
+        suppressEchoLineForNextShot = true;
+        Vector2 aimDirection = ((Vector2)playerTransform.position - (Vector2)(firePoint != null ? firePoint.position : transform.position)).normalized;
+        float duration = ActiveEliteProfile.deadeyeEchoLine.refireLockAimDuration;
+        float timer = 0f;
+        while (timer < duration)
+        {
+            if (playerTransform != null && firePoint != null)
+                aimDirection = ((Vector2)playerTransform.position - (Vector2)firePoint.position).normalized;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        FireProjectile(projectilePrefab, aimDirection, false);
+        nextShotTime = Time.time + GetEffectiveCooldownDuration(shotCooldown) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        isActing = false;
     }
 }
