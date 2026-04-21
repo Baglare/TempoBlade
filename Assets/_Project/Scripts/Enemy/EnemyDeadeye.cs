@@ -176,7 +176,7 @@ public class EnemyDeadeye : EnemyBase
 
         if (rb != null)
         {
-            float speed = (enemyData != null ? enemyData.moveSpeed : 3f) * GetSupportMoveSpeedMultiplier();
+            float speed = GetEffectiveMoveSpeedFromData(3f);
             rb.linearVelocity = isMoving ? toTarget.normalized * speed : Vector2.zero;
         }
 
@@ -244,7 +244,7 @@ public class EnemyDeadeye : EnemyBase
             spriteRenderer.color = lockAimColor;
 
         float timer = 0f;
-        float duration = lockAimDuration * tempoConfig.lockAimDurationMultiplier.Evaluate(CurrentTempoTier);
+        float duration = GetEffectiveCooldownDuration(lockAimDuration * tempoConfig.lockAimDurationMultiplier.Evaluate(CurrentTempoTier));
         Vector2 finalDirection = Vector2.right;
         while (timer < duration)
         {
@@ -276,7 +276,7 @@ public class EnemyDeadeye : EnemyBase
         if (CurrentTempoTier == TempoManager.TempoTier.T3)
             yield return new WaitForSeconds(tempoConfig.t3RecoveryDuration);
 
-        nextShotTime = Time.time + shotCooldown / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        nextShotTime = Time.time + GetEffectiveCooldownDuration(shotCooldown) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
         isActing = false;
     }
 
@@ -307,7 +307,7 @@ public class EnemyDeadeye : EnemyBase
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
-        nextRepositionTime = Time.time + repositionCooldown;
+        nextRepositionTime = Time.time + GetEffectiveCooldownDuration(repositionCooldown);
         isActing = false;
     }
 
@@ -322,7 +322,7 @@ public class EnemyDeadeye : EnemyBase
             return;
 
         projectile.owner = gameObject;
-        projectile.damage = enemyData != null ? enemyData.damage : projectile.damage;
+        projectile.damage = GetEffectiveDamageFromData(projectile.damage);
 
         if (isControlShot)
         {

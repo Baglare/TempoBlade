@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class Projectile : MonoBehaviour, IDeflectable
 {
     public float speed = 10f;
     public float damage = 10f;
     public float lifeTime = 5f;
+    public float maxTravelDistance = 18f;
 
     [HideInInspector] public GameObject owner;
     private GameObject sourceOwner;
@@ -14,9 +16,12 @@ public class Projectile : MonoBehaviour, IDeflectable
     public GameObject SourceOwner => sourceOwner;
 
     private Rigidbody2D rb;
+    private Collider2D projectileCollider;
     private SpriteRenderer spriteRenderer;
+    private ProjectileBurstOnImpact burstOnImpact;
     private bool hasBeenDeflected;
     private float remainingLife;
+    private float traveledDistance;
     private int remainingPierceCount;
     private float suppressDuration;
     private int splitCount;
@@ -25,21 +30,44 @@ public class Projectile : MonoBehaviour, IDeflectable
     private float splitSpeedMultiplier = 1f;
     private bool hasSpawnedSplits;
     private readonly HashSet<int> hitTargets = new HashSet<int>();
+    private Vector2 lastTrackedPosition;
 
     public bool IsDeflected => hasBeenDeflected;
+    public bool CanBeDeflected
+    {
+        get
+        {
+            if (burstOnImpact == null)
+                burstOnImpact = GetComponent<ProjectileBurstOnImpact>();
+            return burstOnImpact == null || burstOnImpact.CanBeDeflected;
+        }
+    }
+    public Vector2 CurrentVelocity => rb != null ? rb.linearVelocity : Vector2.zero;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        projectileCollider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        burstOnImpact = GetComponent<ProjectileBurstOnImpact>();
         remainingLife = lifeTime;
+        lastTrackedPosition = transform.position;
     }
 
     private void Update()
     {
         remainingLife -= Time.deltaTime;
-        if (remainingLife <= 0f)
+        Vector2 currentPosition = transform.position;
+        traveledDistance += Vector2.Distance(lastTrackedPosition, currentPosition);
+        lastTrackedPosition = currentPosition;
+
+        bool exceededLifetime = remainingLife <= 0f;
+        bool exceededDistance = maxTravelDistance > 0f && traveledDistance >= maxTravelDistance;
+        if (exceededLifetime || exceededDistance)
+        {
+            TryHandleBurstImpact(null);
             DestroyProjectile();
+        }
     }
 
     public void Launch(Vector2 direction)
@@ -48,12 +76,13 @@ public class Projectile : MonoBehaviour, IDeflectable
             sourceOwner = owner;
 
         ApplyVelocity(direction.normalized * speed);
+        ResetTravelTracking();
         AudioManager.Play(AudioEventId.ProjectileLaunch, gameObject);
     }
 
     public void Deflect(DeflectContext context)
     {
-        if (hasBeenDeflected)
+        if (hasBeenDeflected || !CanBeDeflected)
             return;
 
         hasBeenDeflected = true;
@@ -73,6 +102,7 @@ public class Projectile : MonoBehaviour, IDeflectable
         float finalSpeed = speed * Mathf.Max(0.05f, context.speedMultiplier);
         speed = finalSpeed;
         ApplyVelocity(newDirection * finalSpeed);
+        ResetTravelTracking();
         AudioManager.Play(AudioEventId.ProjectileDeflect, gameObject);
 
         remainingLife = Mathf.Max(remainingLife, lifeTime + 2f);
@@ -87,8 +117,9 @@ public class Projectile : MonoBehaviour, IDeflectable
         if (owner != null && other.gameObject == owner)
             return;
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
+        if (IsSolidEnvironmentHit(other))
         {
+            TryHandleBurstImpact(null);
             DestroyProjectile();
             return;
         }
@@ -105,7 +136,7 @@ public class Projectile : MonoBehaviour, IDeflectable
         if (other.CompareTag("Player") && !hasBeenDeflected)
         {
             ParrySystem parry = other.GetComponent<ParrySystem>();
-            if (parry != null && parry.TryDeflect(transform.position, gameObject))
+            if (CanBeDeflected && parry != null && parry.TryDeflect(transform.position, gameObject))
             {
                 Deflect(BuildDeflectContext(other.gameObject, other.transform.position));
                 return;
@@ -124,6 +155,13 @@ public class Projectile : MonoBehaviour, IDeflectable
         if (!hitTargets.Add(targetId))
             return;
 
+        if (burstOnImpact != null && !burstOnImpact.CanApplyDirectHitTo(other))
+        {
+            DestroyProjectile();
+            return;
+        }
+
+        burstOnImpact?.RegisterDirectHit(other);
         damageable.TakeDamage(damage);
         AudioManager.Play(AudioEventId.ProjectileHit, gameObject, other.transform.position);
 
@@ -142,7 +180,16 @@ public class Projectile : MonoBehaviour, IDeflectable
 
             if (DamagePopupManager.Instance != null)
                 DamagePopupManager.Instance.CreateText(transform.position + Vector3.up, "DEFLECT HIT!", Color.magenta, 8f);
+        }
 
+        if (TryHandleBurstImpact(other))
+        {
+            DestroyProjectile();
+            return;
+        }
+
+        if (hasBeenDeflected && isHittingEnemy)
+        {
             TrySpawnSplitProjectiles();
 
             if (remainingPierceCount > 0)
@@ -234,22 +281,88 @@ public class Projectile : MonoBehaviour, IDeflectable
 
     private void ConfigureSplitClone(GameObject currentOwner, GameObject originalSourceOwner, float newDamage, Vector2 velocity, float splitSuppressDuration)
     {
+        ConfigureSpawnedProjectile(currentOwner, originalSourceOwner, newDamage, velocity, Mathf.Max(1f, lifeTime * 0.5f), true);
+        suppressDuration = splitSuppressDuration;
+        splitCount = 0;
+        hasSpawnedSplits = true;
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.yellow;
+    }
+
+    public void ConfigureSpawnedProjectile(GameObject currentOwner, GameObject originalSourceOwner, float newDamage, Vector2 velocity, float newRemainingLife, bool deflected)
+    {
         owner = currentOwner;
         sourceOwner = originalSourceOwner;
         damage = newDamage;
         speed = velocity.magnitude;
-        remainingLife = Mathf.Max(1f, lifeTime * 0.5f);
-        hasBeenDeflected = true;
+        remainingLife = newRemainingLife;
+        hasBeenDeflected = deflected;
         remainingPierceCount = 0;
-        suppressDuration = splitSuppressDuration;
+        suppressDuration = 0f;
         splitCount = 0;
-        hasSpawnedSplits = true;
+        hasSpawnedSplits = false;
         hitTargets.Clear();
-
-        if (spriteRenderer != null)
-            spriteRenderer.color = Color.yellow;
-
         ApplyVelocity(velocity);
+        ResetTravelTracking();
+    }
+
+    private bool TryHandleBurstImpact(Collider2D other)
+    {
+        if (burstOnImpact == null)
+            burstOnImpact = GetComponent<ProjectileBurstOnImpact>();
+
+        if (burstOnImpact == null)
+            return false;
+
+        return burstOnImpact.HandleImpact(other);
+    }
+
+    private void ResetTravelTracking()
+    {
+        traveledDistance = 0f;
+        lastTrackedPosition = transform.position;
+    }
+
+    public void IgnoreColliderForSeconds(Collider2D other, float duration)
+    {
+        if (projectileCollider == null || other == null || duration <= 0f)
+            return;
+
+        Physics2D.IgnoreCollision(projectileCollider, other, true);
+        StartCoroutine(RestoreIgnoredCollision(other, duration));
+    }
+
+    private IEnumerator RestoreIgnoredCollision(Collider2D other, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        if (projectileCollider == null || other == null)
+            yield break;
+
+        Physics2D.IgnoreCollision(projectileCollider, other, false);
+    }
+
+    private bool IsSolidEnvironmentHit(Collider2D other)
+    {
+        if (other == null)
+            return false;
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
+            return true;
+
+        if (other.isTrigger)
+            return false;
+
+        if (other.CompareTag("Player") || other.CompareTag("Enemy"))
+            return false;
+
+        if (other.GetComponent<IDamageable>() != null)
+            return false;
+
+        if (other.GetComponent<Projectile>() != null || other.GetComponent<BossProjectile>() != null)
+            return false;
+
+        return true;
     }
 
     private void DestroyProjectile()

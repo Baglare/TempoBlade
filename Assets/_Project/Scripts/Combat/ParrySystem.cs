@@ -396,7 +396,7 @@ public class ParrySystem : MonoBehaviour
             if (!hit.TryGetComponent<IDeflectable>(out var projectile))
                 continue;
 
-            if (projectile.ObjectOwner == gameObject || projectile.IsDeflected)
+            if (projectile.ObjectOwner == gameObject || projectile.IsDeflected || !projectile.CanBeDeflected)
                 continue;
 
             if (!CanDeflectProjectileAt(hit.transform.position))

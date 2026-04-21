@@ -5,6 +5,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
     [Header("Base Settings")]
     public EnemySO enemyData;
+    [Header("Elite Runtime")]
+    [SerializeField] private bool isElite;
+    [SerializeField] private EliteProfileSO eliteProfile;
     [Header("Stun Feedback")]
     [SerializeField] protected Color stunTintColor = new Color(1f, 0.55f, 0.15f, 1f);
 
@@ -17,12 +20,15 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     private float stunEndTime;
     private bool suppressDeathRewards;
     private bool tempoSubscribed;
+    private bool startInitialized;
     protected TempoManager.TempoTier currentTempoTier = TempoManager.TempoTier.T0;
 
     public float CurrentHealth => currentHealth;
-    public float MaxHealth => enemyData != null ? enemyData.maxHealth : 100f;
+    public float MaxHealth => GetEffectiveMaxHealth(enemyData != null ? enemyData.maxHealth : 100f);
     public float HealthPercent => MaxHealth > 0f ? currentHealth / MaxHealth : 0f;
     public TempoManager.TempoTier CurrentTempoTier => currentTempoTier;
+    public bool IsElite => isElite && eliteProfile != null;
+    public EliteProfileSO ActiveEliteProfile => eliteProfile;
 
     public event Action<float> OnDamageTaken;
     public event Action<float> OnStunned;
@@ -39,10 +45,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected virtual void Start()
     {
-        if (enemyData != null)
-            currentHealth = enemyData.maxHealth;
-        else
-            currentHealth = 100f; // Default
+        currentHealth = MaxHealth;
 
         // Fiziksel kaymayi onlemek icin Drag ekle
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -68,6 +71,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         stunSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
         if (stunSpriteRenderer != null)
             stunOriginalColor = stunSpriteRenderer.color;
+
+        startInitialized = true;
+        RefreshElitePresentation();
 
         currentTempoTier = TempoManager.Instance != null ? TempoManager.Instance.CurrentTier : TempoManager.TempoTier.T0;
         OnTempoTierChanged(currentTempoTier);
@@ -296,5 +302,102 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public EnemySupportBuffReceiver GetSupportBuffReceiver()
     {
         return supportBuffReceiver;
+    }
+
+    public void ApplyEliteProfile(EliteProfileSO profile)
+    {
+        float oldMaxHealth = MaxHealth;
+        eliteProfile = profile;
+        isElite = eliteProfile != null;
+
+        if (startInitialized)
+        {
+            float healthRatio = oldMaxHealth > 0f ? currentHealth / oldMaxHealth : 1f;
+            currentHealth = Mathf.Clamp01(healthRatio) * MaxHealth;
+            RefreshElitePresentation();
+        }
+    }
+
+    protected bool HasEliteMechanic(EliteMechanicType mechanicType)
+    {
+        return IsElite && eliteProfile != null && eliteProfile.HasMechanic(mechanicType);
+    }
+
+    protected float GetEffectiveMaxHealth(float baseHealth)
+    {
+        return baseHealth * GetEliteHealthMultiplier();
+    }
+
+    protected float GetEffectiveDamage(float baseDamage)
+    {
+        return baseDamage * GetEliteDamageMultiplier();
+    }
+
+    protected float GetEffectiveDamageFromData(float fallbackDamage)
+    {
+        float baseDamage = enemyData != null ? enemyData.damage : fallbackDamage;
+        return GetEffectiveDamage(baseDamage);
+    }
+
+    protected float GetEffectiveMoveSpeed(float baseMoveSpeed)
+    {
+        return baseMoveSpeed * GetEliteMoveSpeedMultiplier() * GetSupportMoveSpeedMultiplier();
+    }
+
+    protected float GetEffectiveMoveSpeedFromData(float fallbackMoveSpeed)
+    {
+        float baseMoveSpeed = enemyData != null ? enemyData.moveSpeed : fallbackMoveSpeed;
+        return GetEffectiveMoveSpeed(baseMoveSpeed);
+    }
+
+    protected float GetEffectiveCooldownDuration(float baseDuration)
+    {
+        return baseDuration * GetEliteCooldownMultiplier();
+    }
+
+    protected void PlayEliteCue(Vector3 worldPosition, bool spawnVfx = true, bool playAudio = true)
+    {
+        if (!IsElite || eliteProfile == null)
+            return;
+
+        if (spawnVfx && eliteProfile.eliteVfxPrefab != null)
+        {
+            GameObject vfx = Instantiate(eliteProfile.eliteVfxPrefab, worldPosition, Quaternion.identity);
+            Destroy(vfx, 3f);
+        }
+
+        if (playAudio && eliteProfile.eliteAudioEvent != AudioEventId.None)
+            AudioManager.Play(eliteProfile.eliteAudioEvent, gameObject, worldPosition);
+    }
+
+    private float GetEliteHealthMultiplier()
+    {
+        return IsElite ? Mathf.Max(0.01f, eliteProfile.healthMultiplier) : 1f;
+    }
+
+    private float GetEliteDamageMultiplier()
+    {
+        return IsElite ? Mathf.Max(0.01f, eliteProfile.damageMultiplier) : 1f;
+    }
+
+    private float GetEliteCooldownMultiplier()
+    {
+        return IsElite ? Mathf.Max(0.01f, eliteProfile.cooldownMultiplier) : 1f;
+    }
+
+    private float GetEliteMoveSpeedMultiplier()
+    {
+        return IsElite ? Mathf.Max(0.01f, eliteProfile.moveSpeedMultiplier) : 1f;
+    }
+
+    private void RefreshElitePresentation()
+    {
+        if (IsElite && eliteProfile != null)
+        {
+            SetPerkMarker(true, eliteProfile.eliteCueColor);
+            return;
+        }
+
+        SetPerkMarker(false, Color.clear);
     }
 }

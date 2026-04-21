@@ -471,7 +471,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 }
             }
             var proj = col.GetComponent<IDeflectable>();
-            if (proj != null)
+            if (proj != null && proj.CanBeDeflected)
             {
                 proj.Deflect(DeflectContext.Default(gameObject));
                 if (TempoManager.Instance != null) TempoManager.Instance.AddTempo(10f);

@@ -82,7 +82,7 @@ public class EnemyTrapper : EnemyBase
             if (activeTraps.Count < maxTraps)
                 StartCoroutine(SpawnTrapRoutine());
 
-            float nextInterval = trapSpawnInterval * tempoConfig.trapSpawnIntervalMultiplier.Evaluate(CurrentTempoTier);
+            float nextInterval = GetEffectiveCooldownDuration(trapSpawnInterval * tempoConfig.trapSpawnIntervalMultiplier.Evaluate(CurrentTempoTier));
             nextTrapTime = Time.time + Mathf.Max(0.5f, nextInterval);
         }
     }
@@ -115,7 +115,7 @@ public class EnemyTrapper : EnemyBase
 
     private void UpdateMovement()
     {
-        float speed = enemyData != null ? enemyData.moveSpeed : moveSpeedModifier;
+        float speed = GetEffectiveMoveSpeedFromData(moveSpeedModifier);
         float dist = Vector2.Distance(transform.position, targetRoamPos);
         if (dist < 0.5f)
         {
@@ -155,7 +155,7 @@ public class EnemyTrapper : EnemyBase
         Vector2 spawnPosition = ChooseTrapSpawnPosition();
         if (IsTrapTooCloseToExisting(spawnPosition))
         {
-            nextTrapTime = Time.time + 1f;
+            nextTrapTime = Time.time + GetEffectiveCooldownDuration(1f);
             yield break;
         }
 

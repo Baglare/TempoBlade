@@ -160,7 +160,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         transform.position = Vector2.MoveTowards(
             transform.position,
             playerTransform.position,
-            moveSpeed * moveMultiplier * GetSupportMoveSpeedMultiplier() * Time.deltaTime);
+            GetEffectiveMoveSpeed(moveSpeed * moveMultiplier) * Time.deltaTime);
     }
 
     private IEnumerator AttackRoutine()
@@ -212,7 +212,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (IsDuelStanceActive)
             currentCooldown *= 0.85f;
 
-        nextAttackTime = Time.time + currentCooldown;
+        nextAttackTime = Time.time + GetEffectiveCooldownDuration(currentCooldown);
         UpdateAnimatorState(false);
     }
 
@@ -307,7 +307,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
                 continue;
             }
 
-            damageable?.TakeDamage(damage);
+            damageable?.TakeDamage(GetEffectiveDamage(damage));
         }
     }
 

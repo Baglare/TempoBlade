@@ -85,7 +85,7 @@ public class EnemyKamikaze : EnemyBase
                 }
 
                 Vector2 chaseTarget = GetChaseTargetPosition();
-                MoveTowards(chaseTarget, rushSpeed * tempoConfig.rushSpeedMultiplier.Evaluate(CurrentTempoTier));
+                MoveTowards(chaseTarget, GetEffectiveMoveSpeed(rushSpeed * tempoConfig.rushSpeedMultiplier.Evaluate(CurrentTempoTier)));
                 FaceTarget(chaseTarget);
                 if (animator != null)
                     animator.SetBool("IsMoving", true);
@@ -138,7 +138,7 @@ public class EnemyKamikaze : EnemyBase
         if (wanderTimer <= 0f || Vector2.Distance(transform.position, wanderTarget) < 0.5f)
             SetNewWanderTarget();
 
-        float speed = enemyData != null ? enemyData.moveSpeed : 2f;
+        float speed = GetEffectiveMoveSpeedFromData(2f);
         MoveTowards(wanderTarget, speed);
 
         if (animator != null)
@@ -282,7 +282,7 @@ public class EnemyKamikaze : EnemyBase
                 continue;
             }
 
-            hit.GetComponent<IDamageable>()?.TakeDamage(explosionDamage);
+            hit.GetComponent<IDamageable>()?.TakeDamage(GetEffectiveDamage(explosionDamage));
         }
 
         TriggerNearbyUnstableCores();

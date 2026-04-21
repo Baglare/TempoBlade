@@ -193,6 +193,8 @@ public class RoomManager : MonoBehaviour
                     if (eb != null)
                     {
                         eb.enemyData = enemyGroup.enemyType; // Datayi inject et
+                        if (enemyGroup.isElite && enemyGroup.eliteProfile != null)
+                            eb.ApplyEliteProfile(enemyGroup.eliteProfile);
                     }
                     activeEnemies.Add(enemy);
                 }

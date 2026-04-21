@@ -90,7 +90,7 @@ public class EnemyMelee : EnemyBase
             transform.position = Vector2.MoveTowards(
                 transform.position,
                 player.position,
-                enemyData.moveSpeed * moveMultiplier * GetSupportMoveSpeedMultiplier() * Time.deltaTime);
+                GetEffectiveMoveSpeed(enemyData.moveSpeed * moveMultiplier) * Time.deltaTime);
 
             Vector3 direction = player.position - transform.position;
             SpriteRenderer sr = GetComponent<SpriteRenderer>();
@@ -154,9 +154,10 @@ public class EnemyMelee : EnemyBase
         if (sr != null)
             sr.color = originalColor;
 
-        float cooldown = enemyData.attackCooldown *
+        float cooldown = GetEffectiveCooldownDuration(
+                         enemyData.attackCooldown *
                          tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier) *
-                         tempoConfig.recoveryMultiplier.Evaluate(CurrentTempoTier);
+                         tempoConfig.recoveryMultiplier.Evaluate(CurrentTempoTier));
         yield return new WaitForSeconds(cooldown / attackSpeedMultiplier);
 
         isAttacking = false;

@@ -335,7 +335,7 @@ public class ParryPerkController : MonoBehaviour
             if (hit == null || !hit.TryGetComponent<IDeflectable>(out var deflectable))
                 continue;
 
-            if (deflectable.ObjectOwner == gameObject || deflectable.IsDeflected)
+            if (deflectable.ObjectOwner == gameObject || deflectable.IsDeflected || !deflectable.CanBeDeflected)
                 continue;
 
             if (!parrySystem.CanDeflectProjectileAt(hit.transform.position))

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c34521a503eee464aa33c2580ca066a2, type: 3}
+  m_Name: Elite_Caster_Default
+  m_EditorClassIdentifier: Assembly-CSharp::EliteProfileSO
+  healthMultiplier: 1.25
+  damageMultiplier: 1.12
+  cooldownMultiplier: 0.9
+  moveSpeedMultiplier: 1
+  eliteCueColor: {r: 1, g: 0.45, b: 0.1, a: 1}
+  eliteVfxPrefab: {fileID: 0}
+  eliteAudioEvent: 0
+  eliteMechanicType: 0
+  casterBurstOrb:
+    burstOrbChance: 0.35
+    impactRadius: 1.35
+    impactDamageMultiplier: 0.65
+    fragmentCount: 4
+    fragmentAngleSpread: 80
+    fragmentSpeedMultiplier: 0.9
+    fragmentLifetimeMultiplier: 0.5
+    fragmentDamageMultiplier: 0.4
+    fragmentExplosionRadius: 0.7
+    fragmentExplosionDamageMultiplier: 0.35
+    burstCueColor: {r: 1, g: 0.58, b: 0.12, a: 1}

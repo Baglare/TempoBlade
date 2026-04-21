@@ -21,4 +21,9 @@ public interface IDeflectable
     /// Mermi daha once deflect edildi mi?
     /// </summary>
     bool IsDeflected { get; }
+
+    /// <summary>
+    /// Bu mermi halen deflect edilebilir mi?
+    /// </summary>
+    bool CanBeDeflected { get; }
 }

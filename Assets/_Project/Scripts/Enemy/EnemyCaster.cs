@@ -38,7 +38,8 @@ public class EnemyCaster : EnemyBase, IParryReactive
     private bool isCasting;
     private bool isDead;
     private bool activeOverchargeCast;
-    private Coroutine suppressRoutine;
+    private bool activeEliteBurstCast;
+    private Coroutine attackRoutine;
 
     public bool AllowParryExecute => true;
 
@@ -84,7 +85,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
             {
                 StopMovement();
                 if (Time.time >= nextFireTime)
-                    StartCoroutine(AttackRoutine());
+                    attackRoutine = StartCoroutine(AttackRoutine());
             }
         }
 
@@ -102,7 +103,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
 
     private void MoveTowards(Vector2 target)
     {
-        float speed = (enemyData != null ? enemyData.moveSpeed : 3f) * GetSupportMoveSpeedMultiplier();
+        float speed = GetEffectiveMoveSpeedFromData(3f);
         transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
     }
 
@@ -117,12 +118,18 @@ public class EnemyCaster : EnemyBase, IParryReactive
     {
         isCasting = true;
         activeOverchargeCast = CurrentTempoTier == TempoManager.TempoTier.T3 && Random.value < tempoConfig.overchargeChance;
+        activeEliteBurstCast = ShouldUseEliteBurstOrb();
 
         if (spriteRenderer != null)
-            spriteRenderer.color = activeOverchargeCast ? new Color(1f, 0.45f, 0.15f, 1f) : Color.magenta;
+        {
+            if (activeEliteBurstCast && ActiveEliteProfile != null)
+                spriteRenderer.color = ActiveEliteProfile.casterBurstOrb.burstCueColor;
+            else
+                spriteRenderer.color = activeOverchargeCast ? new Color(1f, 0.45f, 0.15f, 1f) : Color.magenta;
+        }
 
         float attackSpeedMultiplier = Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
-        float windup = castWindup * tempoConfig.castWindupMultiplier.Evaluate(CurrentTempoTier) / attackSpeedMultiplier;
+        float windup = GetEffectiveCooldownDuration(castWindup * tempoConfig.castWindupMultiplier.Evaluate(CurrentTempoTier)) / attackSpeedMultiplier;
         yield return new WaitForSeconds(windup);
 
         if (spriteRenderer != null)
@@ -139,21 +146,25 @@ public class EnemyCaster : EnemyBase, IParryReactive
             if (proj != null)
             {
                 proj.owner = gameObject;
-                proj.damage = enemyData != null ? enemyData.damage : proj.damage;
+                proj.damage = GetEffectiveDamageFromData(proj.damage);
                 if (activeOverchargeCast)
                 {
                     proj.damage *= tempoConfig.overchargeDamageMultiplier;
                     projObj.transform.localScale *= tempoConfig.overchargeProjectileScale;
                 }
 
+                TryApplyEliteBurstOrb(projObj, activeEliteBurstCast);
+
                 proj.Launch(aimDirection);
             }
         }
 
-        float cooldown = fireRate * tempoConfig.fireCooldownMultiplier.Evaluate(CurrentTempoTier) / attackSpeedMultiplier;
+        float cooldown = GetEffectiveCooldownDuration(fireRate * tempoConfig.fireCooldownMultiplier.Evaluate(CurrentTempoTier)) / attackSpeedMultiplier;
         nextFireTime = Time.time + cooldown;
         activeOverchargeCast = false;
+        activeEliteBurstCast = false;
         isCasting = false;
+        attackRoutine = null;
     }
 
     private Vector2 GetAimDirection()
@@ -192,6 +203,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
         isDead = true;
         isCasting = false;
         activeOverchargeCast = false;
+        activeEliteBurstCast = false;
         StopAllCoroutines();
 
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
@@ -216,14 +228,19 @@ public class EnemyCaster : EnemyBase, IParryReactive
 
     private void InterruptCast(float duration, bool triggerHurt)
     {
-        StopAllCoroutines();
+        if (attackRoutine != null)
+        {
+            StopCoroutine(attackRoutine);
+            attackRoutine = null;
+        }
+
         isCasting = false;
 
         if (triggerHurt && animator != null)
             animator.SetTrigger("TakeHit");
 
-        if (suppressRoutine != null)
-            StopCoroutine(suppressRoutine);
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
 
         float finalDuration = duration;
         if (activeOverchargeCast)
@@ -233,17 +250,43 @@ public class EnemyCaster : EnemyBase, IParryReactive
         }
 
         activeOverchargeCast = false;
-        suppressRoutine = StartCoroutine(SuppressRoutine(finalDuration));
+        activeEliteBurstCast = false;
+
+        base.Stun(finalDuration);
+        nextFireTime = Mathf.Max(nextFireTime, Time.time + finalDuration);
     }
 
-    private IEnumerator SuppressRoutine(float duration)
+    private bool ShouldUseEliteBurstOrb()
     {
-        if (spriteRenderer != null)
-            spriteRenderer.color = Color.white;
+        if (ActiveEliteProfile == null)
+            return false;
 
-        base.Stun(duration);
-        nextFireTime = Mathf.Max(nextFireTime, Time.time + duration);
-        yield return new WaitForSeconds(duration);
-        suppressRoutine = null;
+        CasterBurstOrbSettings burstSettings = ActiveEliteProfile.casterBurstOrb;
+        bool mechanicEnabled =
+            HasEliteMechanic(EliteMechanicType.CasterBurstOrb) ||
+            (burstSettings != null && burstSettings.burstOrbChance > 0f);
+
+        if (!mechanicEnabled)
+            return false;
+
+        return burstSettings != null && Random.value <= burstSettings.burstOrbChance;
     }
+
+    private void TryApplyEliteBurstOrb(GameObject projectileObject, bool useBurstOrb)
+    {
+        if (projectileObject == null || !useBurstOrb || ActiveEliteProfile == null)
+            return;
+
+        CasterBurstOrbSettings burstSettings = ActiveEliteProfile.casterBurstOrb;
+        if (burstSettings == null)
+            return;
+
+        ProjectileBurstOnImpact burst = projectileObject.GetComponent<ProjectileBurstOnImpact>();
+        if (burst == null)
+            burst = projectileObject.AddComponent<ProjectileBurstOnImpact>();
+
+        burst.ConfigurePrimary(burstSettings, ActiveEliteProfile.eliteAudioEvent, ActiveEliteProfile.eliteCueColor);
+        PlayEliteCue(projectileObject.transform.position, true, false);
+    }
+
 }

@@ -200,7 +200,7 @@ public class EnemyResonator : EnemyBase
         if (rb != null)
         {
             rb.linearVelocity = isMoving
-                ? toTarget.normalized * repositionMoveSpeed * GetSupportMoveSpeedMultiplier()
+                ? toTarget.normalized * GetEffectiveMoveSpeed(repositionMoveSpeed)
                 : Vector2.zero;
         }
 
@@ -220,7 +220,7 @@ public class EnemyResonator : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = rallyPulseColor;
 
-        yield return new WaitForSeconds(rallyPulseWindup);
+        yield return new WaitForSeconds(GetEffectiveCooldownDuration(rallyPulseWindup));
 
         float currentRadius = GetCurrentRallyRadius();
         float currentDuration = GetCurrentRallyDuration();
@@ -251,7 +251,7 @@ public class EnemyResonator : EnemyBase
             spriteRenderer.color = Color.white;
 
         float cooldown = rallyPulseCooldown * tempoConfig.rallyCooldownMultiplier.Evaluate(CurrentTempoTier);
-        nextRallyPulseTime = Time.time + Mathf.Max(0.2f, cooldown);
+        nextRallyPulseTime = Time.time + Mathf.Max(0.2f, GetEffectiveCooldownDuration(cooldown));
         isCasting = false;
     }
 
@@ -264,7 +264,7 @@ public class EnemyResonator : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = tempoStaticColor;
 
-        yield return new WaitForSeconds(tempoStaticWindup);
+        yield return new WaitForSeconds(GetEffectiveCooldownDuration(tempoStaticWindup));
 
         Vector3 zonePosition = playerTransform.position;
         if (CurrentTempoTier >= TempoManager.TempoTier.T2 && playerRb != null)
@@ -286,7 +286,7 @@ public class EnemyResonator : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;
 
-        nextTempoStaticTime = Time.time + tempoStaticCooldown;
+        nextTempoStaticTime = Time.time + GetEffectiveCooldownDuration(tempoStaticCooldown);
         isCasting = false;
     }
 
@@ -302,7 +302,7 @@ public class EnemyResonator : EnemyBase
         if (toPlayer.magnitude <= soundBurstRange)
         {
             if (playerCombat != null)
-                playerCombat.TakeDamage(soundBurstDamage);
+                playerCombat.TakeDamage(GetEffectiveDamage(soundBurstDamage));
 
             if (playerController != null)
                 playerController.ApplyExternalStagger(soundBurstStagger, toPlayer.normalized * soundBurstKnockback);
@@ -312,7 +312,7 @@ public class EnemyResonator : EnemyBase
         if (DamagePopupManager.Instance != null)
             DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.4f, "BURST!", soundBurstColor, 5.5f);
 
-        nextSoundBurstTime = Time.time + soundBurstCooldown;
+        nextSoundBurstTime = Time.time + GetEffectiveCooldownDuration(soundBurstCooldown);
         isCasting = false;
     }
 

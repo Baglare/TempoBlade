@@ -19,6 +19,7 @@ public class BossProjectile : MonoBehaviour, IDeflectable
     public GameObject ObjectOwner => owner;
     public GameObject SourceOwner => sourceOwner;
     public bool IsDeflected => hasBeenDeflected;
+    public bool CanBeDeflected => true;
 
     private Rigidbody2D rb;
     private SpriteRenderer sr;

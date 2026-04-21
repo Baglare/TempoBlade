@@ -170,7 +170,7 @@ public class EnemyWardenLinker : EnemyBase
         EnemyBase target = EnemySupportUtility.SelectGuardianLinkTarget(transform, guardianSearchRadius, this);
         if (target == null)
         {
-            nextLinkTime = Time.time + guardianLinkCooldown;
+            nextLinkTime = Time.time + GetEffectiveCooldownDuration(guardianLinkCooldown);
             isCasting = false;
             yield break;
         }
@@ -178,7 +178,7 @@ public class EnemyWardenLinker : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = guardianLinkColor;
 
-        float windup = guardianLinkWindup * tempoConfig.guardianLinkWindupMultiplier.Evaluate(CurrentTempoTier);
+        float windup = GetEffectiveCooldownDuration(guardianLinkWindup * tempoConfig.guardianLinkWindupMultiplier.Evaluate(CurrentTempoTier));
         yield return new WaitForSeconds(Mathf.Max(0.05f, windup));
 
         UnsubscribeFromLinkedTarget();
@@ -213,7 +213,7 @@ public class EnemyWardenLinker : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = Color.white;
 
-        nextLinkTime = Time.time + guardianLinkCooldown;
+        nextLinkTime = Time.time + GetEffectiveCooldownDuration(guardianLinkCooldown);
         isCasting = false;
     }
 
@@ -226,7 +226,7 @@ public class EnemyWardenLinker : EnemyBase
         if (spriteRenderer != null)
             spriteRenderer.color = summonCueColor;
 
-        yield return new WaitForSeconds(wardenCallWindup);
+        yield return new WaitForSeconds(GetEffectiveCooldownDuration(wardenCallWindup));
 
         Vector3 summonPosition = transform.position;
         if (linkedTarget != null)
@@ -246,7 +246,7 @@ public class EnemyWardenLinker : EnemyBase
             spriteRenderer.color = Color.white;
 
         float summonCooldown = wardenCallCooldown * tempoConfig.summonCooldownMultiplier.Evaluate(CurrentTempoTier);
-        nextWardenCallTime = Time.time + Mathf.Max(1f, summonCooldown);
+        nextWardenCallTime = Time.time + Mathf.Max(1f, GetEffectiveCooldownDuration(summonCooldown));
         isCasting = false;
     }
 
@@ -265,7 +265,7 @@ public class EnemyWardenLinker : EnemyBase
         {
             float stepSpeed = shieldStepMoveSpeed * tempoConfig.shieldStepMoveMultiplier.Evaluate(CurrentTempoTier);
             rb.linearVelocity = isMoving
-                ? toPoint.normalized * stepSpeed * GetSupportMoveSpeedMultiplier()
+                ? toPoint.normalized * GetEffectiveMoveSpeed(stepSpeed)
                 : Vector2.zero;
         }
 

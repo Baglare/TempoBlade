@@ -34,6 +34,8 @@ public class RoomWave
 public class EnemySpawn
 {
     public EnemySO enemyType;
+    public bool isElite;
+    public EliteProfileSO eliteProfile;
     public int count;
     [Tooltip("Bu gruptaki dusmanlarin tek tek basilma araligi")]
     public float spawnDelay = 0.5f;

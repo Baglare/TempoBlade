@@ -71,7 +71,7 @@ public class EnemyAssassin : EnemyBase
             return;
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
-        float speed = (enemyData != null ? enemyData.moveSpeed : 3f) * GetSupportMoveSpeedMultiplier();
+        float speed = GetEffectiveMoveSpeedFromData(3f);
         if (IsPunishWindowActive())
             speed *= tempoConfig.t3PunishSpeedMultiplier;
 
@@ -170,13 +170,13 @@ public class EnemyAssassin : EnemyBase
                 continue;
             }
 
-            hit.GetComponent<IDamageable>()?.TakeDamage(attackDamage);
+            hit.GetComponent<IDamageable>()?.TakeDamage(GetEffectiveDamage(attackDamage));
             hitPlayer = true;
         }
 
         SetAlpha(invisibleAlpha);
         state = State.Retreating;
-        nextAttackTime = Time.time + attackCooldown * tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier) / attackSpeedMultiplier;
+        nextAttackTime = Time.time + GetEffectiveCooldownDuration(attackCooldown * tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier)) / attackSpeedMultiplier;
 
         if (CurrentTempoTier == TempoManager.TempoTier.T3 && (parried || !hitPlayer))
             EnterPunishWindow();

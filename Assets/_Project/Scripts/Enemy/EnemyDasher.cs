@@ -74,7 +74,7 @@ public class EnemyDasher : EnemyBase
             state = State.Kiting;
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
-        float speed = (enemyData != null ? enemyData.moveSpeed : 7f) * GetSupportMoveSpeedMultiplier();
+        float speed = GetEffectiveMoveSpeedFromData(7f);
         if (state == State.PunishWindow)
             speed *= 0.55f;
 
@@ -111,7 +111,7 @@ public class EnemyDasher : EnemyBase
 
     private IEnumerator FireRoutine()
     {
-        nextFireTime = Time.time + fireRate / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
+        nextFireTime = Time.time + GetEffectiveCooldownDuration(fireRate) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
 
         if (projectilePrefab == null || firePoint == null || playerTransform == null)
             yield break;
@@ -125,7 +125,7 @@ public class EnemyDasher : EnemyBase
         if (proj != null)
         {
             proj.owner = gameObject;
-            proj.damage = enemyData != null ? enemyData.damage : proj.damage;
+            proj.damage = GetEffectiveDamageFromData(proj.damage);
             proj.Launch(aimDir);
         }
     }
@@ -134,7 +134,7 @@ public class EnemyDasher : EnemyBase
     {
         isEvading = true;
         state = State.DashEvading;
-        float cooldown = tempoConfig.proactiveDashBaseCooldown * tempoConfig.proactiveDashCooldownMultiplier.Evaluate(CurrentTempoTier);
+        float cooldown = GetEffectiveCooldownDuration(tempoConfig.proactiveDashBaseCooldown * tempoConfig.proactiveDashCooldownMultiplier.Evaluate(CurrentTempoTier));
         nextProactiveDashTime = Time.time + cooldown;
 
         Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
