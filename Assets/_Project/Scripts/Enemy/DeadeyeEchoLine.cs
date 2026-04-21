@@ -8,7 +8,9 @@ public class DeadeyeEchoLine : MonoBehaviour
     private Vector2 endPoint;
     private float thickness;
     private float expireTime;
+    private float armTime;
     private bool triggered;
+    private bool playerHasLeftLine;
     private Action onTriggered;
     private LineRenderer lineRenderer;
 
@@ -20,7 +22,9 @@ public class DeadeyeEchoLine : MonoBehaviour
         endPoint = end;
         thickness = lineThickness;
         expireTime = Time.time + duration;
+        armTime = Time.time + 0.12f;
         onTriggered = callback;
+        playerHasLeftLine = false;
 
         lineRenderer = GetComponent<LineRenderer>();
         if (lineRenderer == null)
@@ -29,7 +33,7 @@ public class DeadeyeEchoLine : MonoBehaviour
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, startPoint);
         lineRenderer.SetPosition(1, endPoint);
-        lineRenderer.widthMultiplier = 0.05f;
+        lineRenderer.widthMultiplier = Mathf.Max(0.04f, lineThickness);
         Shader shader = Shader.Find("Sprites/Default");
         if (shader != null)
             lineRenderer.material = new Material(shader);
@@ -53,7 +57,10 @@ public class DeadeyeEchoLine : MonoBehaviour
             return;
 
         float distance = DistancePointToSegment(player.transform.position, startPoint, endPoint);
-        if (distance > thickness)
+        if (distance > thickness * 1.2f)
+            playerHasLeftLine = true;
+
+        if (Time.time < armTime || !playerHasLeftLine || distance > thickness)
             return;
 
         triggered = true;

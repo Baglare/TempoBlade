@@ -422,11 +422,17 @@ public class EnemyDeadeye : EnemyBase
         while (timer < duration)
         {
             if (playerTransform != null && firePoint != null)
+            {
                 aimDirection = ((Vector2)playerTransform.position - (Vector2)firePoint.position).normalized;
+                if (aimTelegraph != null)
+                    aimTelegraph.Show(firePoint.position, (Vector2)firePoint.position + aimDirection * maximumRange);
+            }
             timer += Time.deltaTime;
             yield return null;
         }
 
+        if (aimTelegraph != null)
+            aimTelegraph.Hide();
         FireProjectile(projectilePrefab, aimDirection, false);
         nextShotTime = Time.time + GetEffectiveCooldownDuration(shotCooldown) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier());
         isActing = false;

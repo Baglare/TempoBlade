@@ -102,6 +102,8 @@ public static class EnemySupportUtility
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy == exclude || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
                 continue;
+            if (enemy.GetComponent<TemporaryEnemySummon>() != null)
+                continue;
 
             float distance = Vector2.Distance(self.position, enemy.transform.position);
             if (distance > searchRadius)
@@ -181,6 +183,8 @@ public static class EnemySupportUtility
 
     public static float GetGuardianPriorityScore(EnemyBase enemy)
     {
+        if (enemy == null || enemy.GetComponent<TemporaryEnemySummon>() != null)
+            return float.MinValue;
         if (enemy is EnemyBoss)
             return 100f;
         if (enemy is EnemyCaster || enemy is EnemyResonator || enemy is EnemyDeadeye)

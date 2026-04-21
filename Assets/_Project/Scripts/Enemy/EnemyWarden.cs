@@ -114,6 +114,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     private float lastLivingWallTime = -999f;
     private float guardBrokenUntilTime;
     private Vector2 currentShieldForward = Vector2.right;
+    private float eliteSpawnGraceEndTime;
 
     public bool AllowParryExecute => true;
 
@@ -137,12 +138,13 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (livingWall == null)
             livingWall = gameObject.AddComponent<WardenLivingWall>();
         currentShieldForward = GetDesiredShieldForward();
+        eliteSpawnGraceEndTime = Time.time + 1.5f;
 
         TryAcquireProtectTarget();
-        if (protectTarget == null && CountOtherLivingEnemies() <= 0)
-            EnterBerserk(false);
-        else if (protectTarget != null)
+        if (protectTarget != null)
             currentState = WardenState.Guarding;
+        else
+            currentState = WardenState.SeekingProtectTarget;
     }
 
     private void Update()
@@ -176,7 +178,10 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         if (protectTarget == null && !TryAcquireProtectTarget())
         {
-            EnterBerserk(CountOtherLivingEnemies() > 0);
+            if (Time.time >= eliteSpawnGraceEndTime)
+                EnterBerserk(CountOtherLivingEnemies() > 0);
+            else
+                UpdateAnimator(false);
             return;
         }
 

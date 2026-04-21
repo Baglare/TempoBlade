@@ -48,6 +48,7 @@ public class EnemyAssassin : EnemyBase
     private float punishWindowEndTime;
     private int orbitSide = 1;
     private float nextOrbitRefreshTime;
+    private float nextEliteShadowEchoTime;
 
     protected override void Start()
     {
@@ -123,7 +124,10 @@ public class EnemyAssassin : EnemyBase
 
     private IEnumerator AttackSequence()
     {
-        if (HasEliteMechanic(EliteMechanicType.AssassinShadowEcho) && ActiveEliteProfile != null)
+        if (HasEliteMechanic(EliteMechanicType.AssassinShadowEcho) &&
+            ActiveEliteProfile != null &&
+            Time.time >= nextEliteShadowEchoTime &&
+            Random.value < 0.55f)
         {
             yield return EliteShadowEchoRoutine();
             yield break;
@@ -201,6 +205,7 @@ public class EnemyAssassin : EnemyBase
 
         EmitCombatAction(EnemyCombatActionType.Dash);
         SetAlpha(0f);
+        state = State.PreAttack;
 
         Vector2 playerPos = playerTransform.position;
         Vector2[] offsets =
@@ -223,6 +228,7 @@ public class EnemyAssassin : EnemyBase
             echoPos = temp;
         }
 
+        yield return EntryDashTo(playerPos, settings);
         yield return PerformEliteShadowStrike(realFirst ? realPos : echoPos, realFirst, settings);
         yield return new WaitForSeconds(settings.halfBeatDelay);
         yield return PerformEliteShadowStrike(realFirst ? echoPos : realPos, !realFirst, settings);
@@ -230,6 +236,7 @@ public class EnemyAssassin : EnemyBase
         SetAlpha(invisibleAlpha);
         state = State.Retreating;
         nextAttackTime = Time.time + GetEffectiveCooldownDuration(attackCooldown * tempoConfig.attackCooldownMultiplier.Evaluate(CurrentTempoTier));
+        nextEliteShadowEchoTime = Time.time + GetEffectiveCooldownDuration(attackCooldown * 1.65f);
         yield return new WaitForSeconds(retreatDuration);
         if (!isDead)
             state = State.TrackingInvisible;
@@ -238,21 +245,25 @@ public class EnemyAssassin : EnemyBase
     private IEnumerator PerformEliteShadowStrike(Vector2 strikePosition, bool realStrike, EliteAssassinShadowEchoSettings settings)
     {
         EmitCombatAction(EnemyCombatActionType.Attack);
+        Vector2 strikeTarget = playerTransform != null ? (Vector2)playerTransform.position : strikePosition;
         if (realStrike)
         {
             transform.position = strikePosition;
             SetAlpha(0.85f);
             if (spriteRenderer != null)
                 spriteRenderer.color = settings.realBodyCueColor;
+            yield return LungeTo(strikeTarget, settings.entryDashDuration);
         }
         else
         {
             SupportPulseVisualUtility.SpawnPulse(strikePosition, 0.12f, 0.6f, 0.15f, settings.echoColor);
+            SupportPulseVisualUtility.SpawnPulse(strikeTarget, 0.08f, settings.strikeRadius, 0.1f, settings.echoColor);
+            yield return new WaitForSeconds(settings.entryDashDuration * 0.8f);
         }
 
-        yield return new WaitForSeconds(0.08f);
+        yield return new WaitForSeconds(0.05f);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(strikePosition, settings.strikeRadius);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(strikeTarget, settings.strikeRadius);
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hit = hits[i];
@@ -260,7 +271,7 @@ public class EnemyAssassin : EnemyBase
                 continue;
 
             ParrySystem parry = hit.GetComponent<ParrySystem>();
-            if (parry != null && parry.TryBlockMelee(strikePosition, gameObject))
+            if (parry != null && parry.TryBlockMelee(strikeTarget, gameObject))
             {
                 if (realStrike)
                     Stun(settings.heavyParryStun);
@@ -279,6 +290,35 @@ public class EnemyAssassin : EnemyBase
 
         if (realStrike && spriteRenderer != null)
             spriteRenderer.color = Color.white;
+    }
+
+    private IEnumerator EntryDashTo(Vector2 playerPos, EliteAssassinShadowEchoSettings settings)
+    {
+        Vector2 toPlayer = (playerPos - (Vector2)transform.position).normalized;
+        if (toPlayer.sqrMagnitude <= 0.001f)
+            yield break;
+
+        Vector2 start = transform.position;
+        Vector2 end = start + toPlayer * settings.entryDashDistance;
+        float elapsed = 0f;
+        while (elapsed < settings.entryDashDuration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector2.Lerp(start, end, elapsed / settings.entryDashDuration);
+            yield return null;
+        }
+    }
+
+    private IEnumerator LungeTo(Vector2 target, float duration)
+    {
+        Vector2 start = transform.position;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transform.position = Vector2.Lerp(start, target, elapsed / Mathf.Max(0.01f, duration));
+            yield return null;
+        }
     }
 
     private IEnumerator ShortReposition(int sideSign)

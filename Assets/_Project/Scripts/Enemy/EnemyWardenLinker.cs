@@ -496,6 +496,8 @@ public class EnemyWardenLinker : EnemyBase
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy == this || enemy == primaryTarget || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
                 continue;
+            if (enemy.GetComponent<TemporaryEnemySummon>() != null)
+                continue;
             if (Vector2.Distance(primaryTarget.transform.position, enemy.transform.position) > settings.clusterRadius)
                 continue;
             candidates.Add(enemy);

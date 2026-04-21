@@ -48,6 +48,7 @@ public class EnemyDasher : EnemyBase
     private float eliteDodgeSuppressedUntil;
     private bool isDead;
     private bool isEvading;
+    private float nextEliteFalseExitTime;
 
     protected override void Start()
     {
@@ -138,9 +139,13 @@ public class EnemyDasher : EnemyBase
         state = State.DashEvading;
         EmitCombatAction(EnemyCombatActionType.Dash);
 
-        if (HasEliteMechanic(EliteMechanicType.DasherFalseExit) && ActiveEliteProfile != null)
+        if (HasEliteMechanic(EliteMechanicType.DasherFalseExit) &&
+            ActiveEliteProfile != null &&
+            Time.time >= nextEliteFalseExitTime &&
+            distanceToPlayer <= preferredRange * 1.05f &&
+            Random.value < 0.65f)
         {
-            yield return EliteFalseExitRoutine();
+            yield return EliteFalseExitRoutine(distanceToPlayer);
             isEvading = false;
             if (state != State.PunishWindow)
                 state = State.Kiting;
@@ -296,7 +301,7 @@ public class EnemyDasher : EnemyBase
         state = State.PunishWindow;
     }
 
-    private IEnumerator EliteFalseExitRoutine()
+    private IEnumerator EliteFalseExitRoutine(float distanceToPlayer)
     {
         EliteDasherFalseExitSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.dasherFalseExit : null;
         if (settings == null || playerTransform == null)
@@ -304,6 +309,7 @@ public class EnemyDasher : EnemyBase
 
         float cooldown = GetEffectiveCooldownDuration(tempoConfig.proactiveDashBaseCooldown * tempoConfig.proactiveDashCooldownMultiplier.Evaluate(CurrentTempoTier));
         nextProactiveDashTime = Time.time + cooldown;
+        nextEliteFalseExitTime = Time.time + cooldown * 1.2f;
 
         Vector2 playerPos = playerTransform.position;
         Vector2 selfPos = transform.position;
@@ -313,10 +319,11 @@ public class EnemyDasher : EnemyBase
 
         float exitOffset = Random.value < 0.5f ? -settings.falseExitArcDegrees * 0.5f : settings.falseExitArcDegrees * 0.5f;
         Vector2 exitDir = Quaternion.Euler(0f, 0f, exitOffset) * fromPlayer;
-        Vector2 exitPoint = playerPos + exitDir * settings.firstDashDistance;
+        float orbitRadius = Mathf.Max(settings.firstDashDistance, distanceToPlayer + 1.4f);
+        Vector2 exitPoint = playerPos + exitDir * orbitRadius;
         yield return DashTowardPoint(exitPoint, settings.firstDashDuration);
 
-        yield return new WaitForSeconds(0.08f);
+        yield return new WaitForSeconds(0.12f);
 
         bool snapParried = false;
         Vector2 snapTarget = playerTransform.position;
@@ -345,8 +352,9 @@ public class EnemyDasher : EnemyBase
             yield break;
 
         Vector2 escapePoint;
-        if (!RangedTacticalMovementUtility.TryFindEscapePoint(transform, playerTransform.position, settings.thirdDashDistance, settings.thirdDashSectorDegrees, 8, transform, out escapePoint))
-            escapePoint = (Vector2)transform.position + ((Vector2)transform.position - (Vector2)playerTransform.position).normalized * settings.thirdDashDistance;
+        float retreatDistance = Mathf.Max(settings.thirdDashDistance, preferredRange * 0.9f);
+        if (!RangedTacticalMovementUtility.TryFindEscapePoint(transform, playerTransform.position, retreatDistance, settings.thirdDashSectorDegrees, 12, transform, out escapePoint))
+            escapePoint = (Vector2)transform.position + ((Vector2)transform.position - (Vector2)playerTransform.position).normalized * retreatDistance;
 
         Vector2 escapeDirection = (escapePoint - (Vector2)transform.position).normalized;
         FireProjectile(escapeDirection);

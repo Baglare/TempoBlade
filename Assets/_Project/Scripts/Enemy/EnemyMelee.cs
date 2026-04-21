@@ -34,6 +34,10 @@ public class EnemyMelee : EnemyBase
     private bool isAttacking;
     private float baseArcAngle;
     private Vector2 eliteLockedDirection = Vector2.right;
+    private Vector2 wanderTarget;
+    private float wanderTimer;
+    private float pursueUntilTime;
+    private float nextEliteRendTime;
 
     protected override void Start()
     {
@@ -62,6 +66,8 @@ public class EnemyMelee : EnemyBase
             baseArcAngle = weaponArcVisual.arcAngle / multiplier;
             ApplyTempoVisuals(CurrentTempoTier);
         }
+
+        SetNewWanderTarget();
     }
 
     protected override void OnTempoTierChanged(TempoManager.TempoTier tier)
@@ -82,8 +88,15 @@ public class EnemyMelee : EnemyBase
             return;
 
         float dist = Vector2.Distance(transform.position, player.position);
-        if (dist > enemyData.detectionRange)
+        if (dist <= enemyData.detectionRange)
+            pursueUntilTime = Time.time + 2.5f;
+
+        bool shouldPursue = dist <= enemyData.detectionRange || Time.time < pursueUntilTime;
+        if (!shouldPursue)
+        {
+            UpdateWander();
             return;
+        }
 
         if (dist > enemyData.attackRange)
         {
@@ -112,9 +125,13 @@ public class EnemyMelee : EnemyBase
         isAttacking = true;
         EmitCombatAction(EnemyCombatActionType.Attack);
 
-        if (HasEliteMechanic(EliteMechanicType.MeleeRendCombo) && ActiveEliteProfile != null)
+        if (HasEliteMechanic(EliteMechanicType.MeleeRendCombo) &&
+            ActiveEliteProfile != null &&
+            Time.time >= nextEliteRendTime &&
+            Random.value < 0.5f)
         {
             yield return EliteRendComboRoutine();
+            nextEliteRendTime = Time.time + GetEffectiveCooldownDuration(2.4f);
             isAttacking = false;
             yield break;
         }
@@ -297,5 +314,21 @@ public class EnemyMelee : EnemyBase
 
         float baseAngle = baseArcAngle;
         weaponArcVisual.arcAngle = baseAngle * tempoConfig.swingArcMultiplier.Evaluate(tier);
+    }
+
+    private void UpdateWander()
+    {
+        wanderTimer -= Time.deltaTime;
+        if (wanderTimer <= 0f || Vector2.Distance(transform.position, wanderTarget) < 0.35f)
+            SetNewWanderTarget();
+
+        float wanderSpeed = GetEffectiveMoveSpeedFromData(enemyData != null ? enemyData.moveSpeed * 0.55f : 1.8f);
+        transform.position = Vector2.MoveTowards(transform.position, wanderTarget, wanderSpeed * Time.deltaTime);
+    }
+
+    private void SetNewWanderTarget()
+    {
+        wanderTarget = (Vector2)transform.position + Random.insideUnitCircle.normalized * Random.Range(1.5f, 3.5f);
+        wanderTimer = Random.Range(1.25f, 2.4f);
     }
 }

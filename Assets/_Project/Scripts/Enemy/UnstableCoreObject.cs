@@ -9,18 +9,34 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
     private bool exploded;
     private SpriteRenderer spriteRenderer;
     private EnemyOverheadMeter overheadMeter;
+    private LineRenderer ringRenderer;
+    private CircleCollider2D hitCollider;
+    private const int RingSegments = 28;
 
     public void Configure(EliteKamikazeUnstableCoreSettings coreSettings, float sourceDamage)
     {
         settings = coreSettings;
         baseDamage = sourceDamage;
         expireTime = Time.time + settings.coreLifetime;
+        int enemyLayer = LayerMask.NameToLayer("Enemy");
+        if (enemyLayer >= 0)
+            gameObject.layer = enemyLayer;
+        gameObject.tag = "Enemy";
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer == null)
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         overheadMeter = GetComponent<EnemyOverheadMeter>();
         if (overheadMeter == null)
             overheadMeter = gameObject.AddComponent<EnemyOverheadMeter>();
+        hitCollider = GetComponent<CircleCollider2D>();
+        if (hitCollider == null)
+            hitCollider = gameObject.AddComponent<CircleCollider2D>();
+        hitCollider.radius = Mathf.Max(0.4f, settings.brokenExplosionRadius * 0.33f);
+        hitCollider.isTrigger = false;
+        ringRenderer = GetComponent<LineRenderer>();
+        if (ringRenderer == null)
+            ringRenderer = gameObject.AddComponent<LineRenderer>();
+        ConfigureRing();
         overheadMeter.Configure(settings.coreColor, 0.9f, 0.07f);
         overheadMeter.SetVisible(true);
     }
@@ -34,6 +50,7 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
         overheadMeter.SetProgress(progress);
         if (spriteRenderer != null)
             spriteRenderer.color = Color.Lerp(settings.coreColor * 0.5f, settings.coreColor, progress);
+        UpdateRing(progress);
 
         if (Time.time >= expireTime)
             Explode(false);
@@ -79,5 +96,36 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
 
         SupportPulseVisualUtility.SpawnPulse(transform.position, 0.2f, radius, 0.28f, settings.coreColor);
         Destroy(gameObject);
+    }
+
+    private void ConfigureRing()
+    {
+        ringRenderer.useWorldSpace = false;
+        ringRenderer.loop = true;
+        ringRenderer.positionCount = RingSegments;
+        ringRenderer.widthMultiplier = 0.08f;
+        ringRenderer.startColor = settings.coreColor;
+        ringRenderer.endColor = settings.coreColor;
+        Shader shader = Shader.Find("Sprites/Default");
+        if (shader != null)
+            ringRenderer.material = new Material(shader);
+    }
+
+    private void UpdateRing(float progress)
+    {
+        if (ringRenderer == null || settings == null)
+            return;
+
+        float radius = Mathf.Lerp(settings.brokenExplosionRadius * 0.18f, settings.brokenExplosionRadius * 0.42f, progress);
+        for (int i = 0; i < RingSegments; i++)
+        {
+            float t = (i / (float)RingSegments) * Mathf.PI * 2f;
+            ringRenderer.SetPosition(i, new Vector3(Mathf.Cos(t) * radius, Mathf.Sin(t) * radius, 0f));
+        }
+
+        Color color = Color.Lerp(settings.coreColor * 0.45f, settings.coreColor, progress);
+        ringRenderer.startColor = color;
+        ringRenderer.endColor = color;
+        transform.localScale = Vector3.one * Mathf.Lerp(0.9f, 1.1f, progress);
     }
 }

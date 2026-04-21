@@ -55,6 +55,8 @@ public class EnemyTrapper : EnemyBase
     private Transform playerTransform;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private TrapArea tetherTrapA;
+    private TrapArea tetherTrapB;
 
     protected override void Start()
     {
@@ -121,11 +123,13 @@ public class EnemyTrapper : EnemyBase
 
     private void UpdateMovement()
     {
+        targetRoamPos = GetStrategicMoveTarget();
         float speed = GetEffectiveMoveSpeedFromData(moveSpeedModifier);
         float dist = Vector2.Distance(transform.position, targetRoamPos);
         if (dist < 0.5f)
         {
-            PickNewRoamPosition();
+            if (!HasEliteMechanic(EliteMechanicType.TrapperTetherTrap))
+                PickNewRoamPosition();
         }
         else
         {
@@ -144,7 +148,7 @@ public class EnemyTrapper : EnemyBase
             stuckTimer += Time.deltaTime;
             if (stuckTimer > 0.4f)
             {
-                PickNewRoamPosition();
+                targetRoamPos = GetStrategicMoveTarget(true);
                 stuckTimer = 0f;
             }
         }
@@ -196,35 +200,26 @@ public class EnemyTrapper : EnemyBase
             yield break;
         }
 
-        TrapArea trapA = null;
-        TrapArea trapB = null;
-        float bestDistance = float.MaxValue;
-        for (int i = 0; i < activeTraps.Count; i++)
+        TrapArea trapA;
+        TrapArea trapB;
+        float tetherRange = Mathf.Max(settings.tetherSearchRadius, 9f);
+        if (!TryFindBestTetherPair(tetherRange, out trapA, out trapB))
         {
-            TrapArea first = activeTraps[i];
-            if (first == null)
-                continue;
-
-            for (int j = i + 1; j < activeTraps.Count; j++)
-            {
-                TrapArea second = activeTraps[j];
-                if (second == null)
-                    continue;
-
-                float distance = Vector2.Distance(first.transform.position, second.transform.position);
-                if (distance > settings.tetherSearchRadius || distance >= bestDistance)
-                    continue;
-
-                bestDistance = distance;
-                trapA = first;
-                trapB = second;
-            }
+            nextTetherTime = Time.time + 1f;
+            yield break;
         }
 
         if (trapA == null || trapB == null)
         {
             nextTetherTime = Time.time + 1f;
             yield break;
+        }
+
+        Vector2 midpoint = ((Vector2)trapA.transform.position + (Vector2)trapB.transform.position) * 0.5f;
+        while (Vector2.Distance(transform.position, midpoint) > 1.2f)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, midpoint, GetEffectiveMoveSpeedFromData(moveSpeedModifier) * Time.deltaTime);
+            yield return null;
         }
 
         isPlacingTrap = true;
@@ -240,6 +235,71 @@ public class EnemyTrapper : EnemyBase
 
         isPlacingTrap = false;
         nextTetherTime = Time.time + settings.tetherLifetime;
+    }
+
+    private Vector2 GetStrategicMoveTarget(bool forceRefresh = false)
+    {
+        if (!HasEliteMechanic(EliteMechanicType.TrapperTetherTrap) || ActiveEliteProfile == null)
+        {
+            if (forceRefresh)
+                PickNewRoamPosition();
+            return targetRoamPos;
+        }
+
+        EliteTrapperTetherSettings settings = ActiveEliteProfile.trapperTetherTrap;
+        float tetherRange = Mathf.Max(settings.tetherSearchRadius, 9f);
+        if (activeTraps.Count >= 2 && Time.time >= nextTetherTime && TryFindBestTetherPair(tetherRange, out tetherTrapA, out tetherTrapB))
+            return ((Vector2)tetherTrapA.transform.position + (Vector2)tetherTrapB.transform.position) * 0.5f;
+
+        if (activeTraps.Count < maxTraps)
+            return ChooseTrapSpawnPosition();
+
+        if (activeTraps.Count > 0)
+            return activeTraps[0].transform.position;
+
+        if (forceRefresh)
+            PickNewRoamPosition();
+        return targetRoamPos;
+    }
+
+    private bool TryFindBestTetherPair(float searchRadius, out TrapArea trapA, out TrapArea trapB)
+    {
+        trapA = null;
+        trapB = null;
+        float bestScore = float.MinValue;
+        for (int i = 0; i < activeTraps.Count; i++)
+        {
+            TrapArea first = activeTraps[i];
+            if (first == null)
+                continue;
+
+            for (int j = i + 1; j < activeTraps.Count; j++)
+            {
+                TrapArea second = activeTraps[j];
+                if (second == null)
+                    continue;
+
+                float distance = Vector2.Distance(first.transform.position, second.transform.position);
+                if (distance > searchRadius)
+                    continue;
+
+                Vector2 midpoint = ((Vector2)first.transform.position + (Vector2)second.transform.position) * 0.5f;
+                float score = 0f;
+                score -= Mathf.Abs(distance - searchRadius * 0.75f);
+                score -= Vector2.Distance(transform.position, midpoint) * 0.2f;
+                if (playerTransform != null)
+                    score -= Vector2.Distance(playerTransform.position, midpoint) * 0.08f;
+
+                if (score <= bestScore)
+                    continue;
+
+                bestScore = score;
+                trapA = first;
+                trapB = second;
+            }
+        }
+
+        return trapA != null && trapB != null;
     }
 
     private void PickNewRoamPosition()
