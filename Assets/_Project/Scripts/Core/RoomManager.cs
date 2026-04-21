@@ -340,31 +340,36 @@ public class RoomManager : MonoBehaviour
         if (enemyBase == null || enemySpawn == null)
             return;
 
+        enemyBase.ClearEliteProfile();
+
         switch (enemySpawn.eliteSpawnMode)
         {
-            case EliteSpawnMode.UsePrefabDefault:
-                return;
-
             case EliteSpawnMode.ForceElite:
                 if (enemySpawn.eliteProfile != null)
-                    enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
-                return;
-
-            case EliteSpawnMode.ChanceBased:
-                if (enemySpawn.ShouldSpawnElite())
                 {
-                    if (enemySpawn.eliteProfile != null)
-                        enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
+                    enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
                 }
                 else
                 {
-                    enemyBase.ClearEliteProfile();
+                    Debug.LogWarning($"RoomManager: ForceElite secili ama eliteProfile bos. Enemy normal dogdu: {enemySpawn.enemyType?.name}");
                 }
                 return;
 
+            case EliteSpawnMode.ChanceBased:
+                bool shouldSpawnElite = enemySpawn.ShouldSpawnElite();
+                if (shouldSpawnElite && enemySpawn.eliteProfile != null)
+                {
+                    enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
+                }
+                else if (shouldSpawnElite)
+                {
+                    Debug.LogWarning($"RoomManager: ChanceBased elite secildi ama eliteProfile bos. Enemy normal dogdu: {enemySpawn.enemyType?.name}");
+                }
+                return;
+
+            case EliteSpawnMode.LegacyPrefabDefault:
             case EliteSpawnMode.NormalOnly:
             default:
-                enemyBase.ClearEliteProfile();
                 return;
         }
     }

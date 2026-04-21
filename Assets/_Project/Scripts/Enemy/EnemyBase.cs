@@ -7,9 +7,6 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     [Header("Base Settings")]
     public EnemySO enemyData;
-    [Header("Elite Runtime")]
-    [SerializeField] private bool isElite;
-    [SerializeField] private EliteProfileSO eliteProfile;
     [Header("Stun Feedback")]
     [SerializeField] protected Color stunTintColor = new Color(1f, 0.55f, 0.15f, 1f);
 
@@ -24,6 +21,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     private bool tempoSubscribed;
     private bool startInitialized;
     protected TempoManager.TempoTier currentTempoTier = TempoManager.TempoTier.T0;
+    [NonSerialized] private bool isElite;
+    [NonSerialized] private EliteProfileSO eliteProfile;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => GetEffectiveMaxHealth(enemyData != null ? enemyData.maxHealth : 100f);
@@ -39,12 +38,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected virtual void Awake()
     {
-        SyncEliteRuntimeFromSerializedProfile();
-    }
-
-    private void OnValidate()
-    {
-        SyncEliteRuntimeFromSerializedProfile();
+        ClearEliteProfile();
     }
 
     protected virtual void OnEnable()
@@ -437,10 +431,5 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             time = Time.time,
             worldPosition = transform.position
         });
-    }
-
-    private void SyncEliteRuntimeFromSerializedProfile()
-    {
-        isElite = eliteProfile != null;
     }
 }

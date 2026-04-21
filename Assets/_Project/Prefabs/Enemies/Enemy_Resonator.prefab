@@ -180,8 +180,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyResonator
   enemyData: {fileID: 11400000, guid: a24a2a7ba6c38874f9e0e75d74efe521, type: 2}
-  isElite: 0
-  eliteProfile: {fileID: 0}
+  isElite: 1
+  eliteProfile: {fileID: 11400000, guid: 54d2b9286cb2c8440accbb2b7e456a44, type: 2}
   stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   supportSearchRadius: 10

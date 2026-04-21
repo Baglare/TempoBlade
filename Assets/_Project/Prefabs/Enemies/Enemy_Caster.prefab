@@ -380,8 +380,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyCaster
   enemyData: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
-  isElite: 0
-  eliteProfile: {fileID: 0}
+  isElite: 1
+  eliteProfile: {fileID: 11400000, guid: 2bea6c28c03157042a6df39a5fe3cfc9, type: 2}
   stunTintColor: {r: 1, g: 0.55, b: 0.15, a: 1}
   deathVFX: {fileID: 2576387379676683452, guid: 03b4e89c0facd9246b257ac3a92c2e15, type: 3}
   projectilePrefab: {fileID: 1047795383070638735, guid: 0ea61595a55f4164bb27be1d3b6b5eb5, type: 3}
