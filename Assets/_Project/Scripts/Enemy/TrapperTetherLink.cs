@@ -7,7 +7,6 @@ public class TrapperTetherLink : MonoBehaviour
     private TrapArea trapA;
     private TrapArea trapB;
     private LineRenderer lineRenderer;
-    private float expireTime;
     private float miniBurstDamage;
     private float miniBurstRadius;
     private float slowMultiplier;
@@ -20,7 +19,6 @@ public class TrapperTetherLink : MonoBehaviour
     {
         trapA = first;
         trapB = second;
-        expireTime = Time.time + settings.tetherLifetime;
         miniBurstDamage = settings.miniBurstDamage;
         miniBurstRadius = settings.miniBurstRadius;
         slowMultiplier = settings.slowMultiplier;
@@ -45,7 +43,7 @@ public class TrapperTetherLink : MonoBehaviour
 
     private void Update()
     {
-        if (trapA == null || trapB == null || Time.time >= expireTime)
+        if (trapA == null || trapB == null)
         {
             Destroy(gameObject);
             return;
@@ -83,6 +81,11 @@ public class TrapperTetherLink : MonoBehaviour
         playerController.speedMultiplier *= slowMultiplier;
         yield return new WaitForSeconds(slowDuration);
         playerController.speedMultiplier /= slowMultiplier;
+    }
+
+    public bool Connects(TrapArea first, TrapArea second)
+    {
+        return (trapA == first && trapB == second) || (trapA == second && trapB == first);
     }
 
     private static float DistancePointToSegment(Vector2 point, Vector2 a, Vector2 b)

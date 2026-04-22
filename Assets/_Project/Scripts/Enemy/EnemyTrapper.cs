@@ -50,6 +50,7 @@ public class EnemyTrapper : EnemyBase
     private readonly List<TrapperTetherLink> activeTethers = new List<TrapperTetherLink>();
 
     private float stuckTimer;
+    private float nextEliteRoamRefreshTime;
     private Vector2 lastPosition;
 
     private Transform playerTransform;
@@ -77,10 +78,12 @@ public class EnemyTrapper : EnemyBase
         if (isDead || isStunned)
             return;
 
+        activeTraps.RemoveAll(t => t == null);
+        activeTethers.RemoveAll(t => t == null);
+
         if (!isPlacingTrap)
             UpdateMovement();
 
-        activeTraps.RemoveAll(t => t == null);
         if (!isPlacingTrap && Time.time >= nextTrapTime)
         {
             if (activeTraps.Count < maxTraps)
@@ -90,9 +93,21 @@ public class EnemyTrapper : EnemyBase
             nextTrapTime = Time.time + Mathf.Max(0.5f, nextInterval);
         }
 
-        activeTethers.RemoveAll(t => t == null);
-        if (HasEliteMechanic(EliteMechanicType.TrapperTetherTrap) && !isPlacingTrap && Time.time >= nextTetherTime)
-            StartCoroutine(CreateTetherRoutine());
+        if (!isPlacingTrap &&
+            HasEliteMechanic(EliteMechanicType.TrapperTetherTrap) &&
+            Time.time >= nextTetherTime)
+        {
+            EliteTrapperTetherSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.trapperTetherTrap : null;
+            float tetherRange = GetEffectiveTetherSearchRange(settings);
+            if (settings != null && activeTraps.Count >= 2 && TryFindBestTetherPair(tetherRange, out tetherTrapA, out tetherTrapB))
+            {
+                StartCoroutine(CreateTetherRoutine(tetherTrapA, tetherTrapB));
+            }
+            else
+            {
+                nextTetherTime = Time.time + 0.45f;
+            }
+        }
     }
 
     public override void TakeDamage(float amount)
@@ -124,7 +139,19 @@ public class EnemyTrapper : EnemyBase
     private void UpdateMovement()
     {
         targetRoamPos = GetStrategicMoveTarget();
+        Vector2 currentPosition = transform.position;
+        if (!EnemyLineOfSightUtility.HasLineOfSight(currentPosition, targetRoamPos, null, transform))
+            targetRoamPos = GetStrategicMoveTarget(true);
+
         float speed = GetEffectiveMoveSpeedFromData(moveSpeedModifier);
+        Vector2 moveDirection = (targetRoamPos - currentPosition).normalized;
+        Vector2 projectedPosition = currentPosition + moveDirection * Mathf.Max(0.45f, speed * 0.22f);
+        if (moveDirection.sqrMagnitude > 0.001f &&
+            !EnemyLineOfSightUtility.IsPointNavigable(projectedPosition, 0.26f, transform))
+        {
+            targetRoamPos = GetStrategicMoveTarget(true);
+        }
+
         float dist = Vector2.Distance(transform.position, targetRoamPos);
         if (dist < 0.5f)
         {
@@ -203,40 +230,32 @@ public class EnemyTrapper : EnemyBase
         isPlacingTrap = false;
     }
 
-    private IEnumerator CreateTetherRoutine()
+    private IEnumerator CreateTetherRoutine(TrapArea trapA, TrapArea trapB)
     {
         EliteTrapperTetherSettings settings = ActiveEliteProfile != null ? ActiveEliteProfile.trapperTetherTrap : null;
-        if (settings == null || activeTraps.Count < 2)
+        if (settings == null || trapA == null || trapB == null)
         {
-            nextTetherTime = Time.time + 1f;
+            nextTetherTime = Time.time + 0.8f;
             yield break;
-        }
-
-        TrapArea trapA;
-        TrapArea trapB;
-        float tetherRange = Mathf.Max(settings.tetherSearchRadius, 9f);
-        if (!TryFindBestTetherPair(tetherRange, out trapA, out trapB))
-        {
-            nextTetherTime = Time.time + 1f;
-            yield break;
-        }
-
-        if (trapA == null || trapB == null)
-        {
-            nextTetherTime = Time.time + 1f;
-            yield break;
-        }
-
-        Vector2 midpoint = ((Vector2)trapA.transform.position + (Vector2)trapB.transform.position) * 0.5f;
-        while (Vector2.Distance(transform.position, midpoint) > 1.2f)
-        {
-            transform.position = Vector2.MoveTowards(transform.position, midpoint, GetEffectiveMoveSpeedFromData(moveSpeedModifier) * Time.deltaTime);
-            yield return null;
         }
 
         isPlacingTrap = true;
+        Vector2 castAnchor = GetPreferredTetherCastPoint(trapA, trapB);
+        while (Vector2.Distance(transform.position, castAnchor) > 0.8f)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, castAnchor, GetEffectiveMoveSpeedFromData(moveSpeedModifier) * Time.deltaTime);
+            if (animator != null)
+                animator.SetBool("IsMoving", true);
+            if (spriteRenderer != null)
+                spriteRenderer.flipX = castAnchor.x < transform.position.x;
+            yield return null;
+        }
+
         if (animator != null)
+        {
             animator.SetTrigger("Attack");
+            animator.SetBool("IsMoving", false);
+        }
         EmitCombatAction(EnemyCombatActionType.Skill);
         yield return new WaitForSeconds(settings.linkWindup);
 
@@ -246,7 +265,8 @@ public class EnemyTrapper : EnemyBase
         activeTethers.Add(tether);
 
         isPlacingTrap = false;
-        nextTetherTime = Time.time + settings.tetherLifetime;
+        float tetherCooldown = GetEffectiveCooldownDuration(Mathf.Max(1.25f, settings.tetherCooldown));
+        nextTetherTime = Time.time + tetherCooldown;
     }
 
     private Vector2 GetStrategicMoveTarget(bool forceRefresh = false)
@@ -259,18 +279,19 @@ public class EnemyTrapper : EnemyBase
         }
 
         EliteTrapperTetherSettings settings = ActiveEliteProfile.trapperTetherTrap;
-        float tetherRange = Mathf.Max(settings.tetherSearchRadius, 9f);
-        if (activeTraps.Count >= 2 && Time.time >= nextTetherTime && TryFindBestTetherPair(tetherRange, out tetherTrapA, out tetherTrapB))
+        float tetherRange = GetEffectiveTetherSearchRange(settings);
+        bool hasTetherOpportunity = activeTraps.Count >= 2 &&
+            TryFindBestTetherPair(tetherRange, out tetherTrapA, out tetherTrapB);
+
+        if (hasTetherOpportunity && Time.time >= nextTetherTime)
             return ((Vector2)tetherTrapA.transform.position + (Vector2)tetherTrapB.transform.position) * 0.5f;
 
-        if (activeTraps.Count < maxTraps)
-            return ChooseTrapSpawnPosition();
+        if (forceRefresh || Time.time >= nextEliteRoamRefreshTime || Vector2.Distance(transform.position, targetRoamPos) < 0.45f)
+        {
+            PickEliteRoamPosition(hasTetherOpportunity);
+            nextEliteRoamRefreshTime = Time.time + Random.Range(0.85f, 1.35f);
+        }
 
-        if (activeTraps.Count > 0)
-            return activeTraps[0].transform.position;
-
-        if (forceRefresh)
-            PickNewRoamPosition();
         return targetRoamPos;
     }
 
@@ -289,6 +310,8 @@ public class EnemyTrapper : EnemyBase
             {
                 TrapArea second = activeTraps[j];
                 if (second == null)
+                    continue;
+                if (HasExistingTether(first, second))
                     continue;
 
                 float distance = Vector2.Distance(first.transform.position, second.transform.position);
@@ -346,37 +369,109 @@ public class EnemyTrapper : EnemyBase
 
     private Vector2 ChooseTrapSpawnPosition()
     {
-        if (playerTransform == null)
-            return transform.position;
+        return transform.position;
+    }
 
-        if (HasEliteMechanic(EliteMechanicType.TrapperTetherTrap))
+    private void PickEliteRoamPosition(bool tetherOpportunityAvailable)
+    {
+        Vector2 anchor = tetherOpportunityAvailable ? GetTrapAnchorPoint() : (Vector2)transform.position;
+        Vector2 best = anchor;
+        float bestScore = float.MinValue;
+        for (int i = 0; i < 16; i++)
         {
-            return EnemySupportUtility.FindBestTrapPlacement(
-                transform,
-                playerTransform,
-                Mathf.Max(2.4f, tempoConfig.t1CentralBiasDistance),
-                Mathf.Max(10, tempoConfig.t2PlacementSamples),
-                tempoConfig.t2ForwardBias + 1f);
+            Vector2 dir = Quaternion.Euler(0f, 0f, i * 45f + Random.Range(-14f, 14f)) * Vector2.right;
+            float distance = tetherOpportunityAvailable ? Random.Range(1.8f, 4.2f) : Random.Range(2.6f, 5.8f);
+            Vector2 candidate = anchor + dir.normalized * distance;
+            if (!EnemyLineOfSightUtility.IsPointNavigable(candidate, 0.3f, transform))
+                continue;
+            if (!EnemyLineOfSightUtility.HasLineOfSight((Vector2)transform.position, candidate, null, transform))
+                continue;
+
+            float score = Random.Range(-0.35f, 0.35f);
+            score -= EnemyLineOfSightUtility.GetObstacleDensity(candidate, 0.7f, transform) * 3.2f;
+            if (playerTransform != null)
+            {
+                float playerDistance = Vector2.Distance(candidate, playerTransform.position);
+                if (playerDistance < 3.6f)
+                    score -= (3.6f - playerDistance) * 2.4f;
+                if (playerDistance > 8.5f)
+                    score -= (playerDistance - 8.5f) * 0.35f;
+
+                Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
+                if (toPlayer.sqrMagnitude > 0.001f)
+                {
+                    Vector2 moveDir = (candidate - (Vector2)transform.position).normalized;
+                    score -= Mathf.Max(0f, Vector2.Dot(moveDir, toPlayer)) * 1.2f;
+                }
+            }
+
+            if (tetherOpportunityAvailable)
+                score -= Vector2.Distance(candidate, anchor) * 0.08f;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                best = candidate;
+            }
         }
 
-        if (CurrentTempoTier == TempoManager.TempoTier.T0)
-            return transform.position;
+        targetRoamPos = best;
+    }
 
-        if (CurrentTempoTier == TempoManager.TempoTier.T1)
+    private float GetEffectiveTetherSearchRange(EliteTrapperTetherSettings settings)
+    {
+        float configuredRange = settings != null ? settings.tetherSearchRadius : 6f;
+        return Mathf.Max(configuredRange, Mathf.Min(roamRadius + 1.5f, 12f), 9f);
+    }
+
+    private Vector2 GetPreferredTetherCastPoint(TrapArea trapA, TrapArea trapB)
+    {
+        Vector2 firstPosition = trapA.transform.position;
+        Vector2 secondPosition = trapB.transform.position;
+        float firstDistance = Vector2.Distance(transform.position, firstPosition);
+        float secondDistance = Vector2.Distance(transform.position, secondPosition);
+        Vector2 primary = firstDistance <= secondDistance ? firstPosition : secondPosition;
+        Vector2 secondary = primary == firstPosition ? secondPosition : firstPosition;
+
+        if (EnemyLineOfSightUtility.IsPointNavigable(primary, 0.3f, transform))
+            return primary;
+        if (EnemyLineOfSightUtility.IsPointNavigable(secondary, 0.3f, transform))
+            return secondary;
+
+        return primary;
+    }
+
+    private bool HasExistingTether(TrapArea first, TrapArea second)
+    {
+        for (int i = 0; i < activeTethers.Count; i++)
         {
-            Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-            if (toPlayer.sqrMagnitude <= 0.001f)
-                return transform.position;
-
-            return (Vector2)transform.position + toPlayer * tempoConfig.t1CentralBiasDistance;
+            TrapperTetherLink tether = activeTethers[i];
+            if (tether == null)
+                continue;
+            if (tether.Connects(first, second))
+                return true;
         }
 
-        return EnemySupportUtility.FindBestTrapPlacement(
-            transform,
-            playerTransform,
-            tempoConfig.t1CentralBiasDistance,
-            tempoConfig.t2PlacementSamples,
-            tempoConfig.t2ForwardBias);
+        return false;
+    }
+
+    private Vector2 GetTrapAnchorPoint()
+    {
+        if (activeTraps.Count == 0)
+            return transform.position;
+
+        Vector2 sum = Vector2.zero;
+        int count = 0;
+        for (int i = 0; i < activeTraps.Count; i++)
+        {
+            TrapArea trap = activeTraps[i];
+            if (trap == null)
+                continue;
+            sum += (Vector2)trap.transform.position;
+            count++;
+        }
+
+        return count > 0 ? sum / count : (Vector2)transform.position;
     }
 
     private bool IsTrapTooCloseToExisting(Vector2 spawnPosition)

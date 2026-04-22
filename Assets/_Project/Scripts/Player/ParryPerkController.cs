@@ -556,6 +556,7 @@ public class ParryPerkController : MonoBehaviour
             return;
 
         _baseParryOnlyEndTime = Mathf.Max(_baseParryOnlyEndTime, Time.time + duration);
+        parrySystem?.ForceResetForBaseParryOnly();
         ApplyToParrySystem();
     }
 }

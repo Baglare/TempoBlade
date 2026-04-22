@@ -88,6 +88,7 @@ public class EliteTrapperTetherSettings
     public float tetherSearchRadius = 6f;
     public float tetherLifetime = 6f;
     public float linkWindup = 0.45f;
+    public float tetherCooldown = 2.6f;
     public float miniBurstDamage = 9f;
     public float miniBurstRadius = 1f;
     public float slowMultiplier = 0.7f;
@@ -100,12 +101,14 @@ public class EliteTrapperTetherSettings
 public class EliteDuelistGuardDebtSettings
 {
     public int requiredGuardHits = 3;
-    public float debtDecayDelay = 2.4f;
+    public float debtDecayDelay = 10f;
     public float bashWindup = 0.28f;
     public float bashRange = 1.55f;
     public float bashDamageMultiplier = 0.55f;
     public float bashMovementLockDuration = 0.45f;
     public float bashBaseParryOnlyDuration = 0.55f;
+    public float bashParryStunDuration = 1.25f;
+    public float interPhaseDelay = 0.22f;
     public float cleaveWindup = 0.24f;
     public float cleaveRange = 1.95f;
     public float cleaveDamageMultiplier = 2.2f;

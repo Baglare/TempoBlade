@@ -73,6 +73,7 @@ MonoBehaviour:
     tetherSearchRadius: 6
     tetherLifetime: 6
     linkWindup: 0.45
+    tetherCooldown: 2.6
     miniBurstDamage: 9
     miniBurstRadius: 1
     slowMultiplier: 0.7
@@ -87,6 +88,8 @@ MonoBehaviour:
     bashDamageMultiplier: 0.55
     bashMovementLockDuration: 0.45
     bashBaseParryOnlyDuration: 0.55
+    bashParryStunDuration: 1.25
+    interPhaseDelay: 0.22
     cleaveWindup: 0.24
     cleaveRange: 1.95
     cleaveDamageMultiplier: 2.2
@@ -100,6 +103,7 @@ MonoBehaviour:
     echoLineColor: {r: 1, g: 0.45, b: 0.12, a: 0.75}
   kamikazeUnstableCore:
     coreLifetime: 2.4
+    earlyBreakDetonationDelay: 0.6
     fullExplosionRadius: 3.2
     fullExplosionDamageMultiplier: 1.35
     brokenExplosionRadius: 2.1
@@ -110,8 +114,11 @@ MonoBehaviour:
     wallCooldown: 10
     maxProtectTargetDistance: 3.8
     wallWidth: 4.8
+    arcRadius: 2.2
+    arcDegrees: 120
     segmentThickness: 0.65
     segmentHeight: 1.9
+    lineWidth: 0.2
     projectileGapWidth: 0.42
     gapCount: 2
     wallColor: {r: 0.35, g: 0.95, b: 1, a: 0.85}

@@ -17,18 +17,11 @@ MonoBehaviour:
   waves:
   - waveDelay: 1
     enemyGroups:
-    - enemyType: {fileID: 11400000, guid: 1b51088c1a978d343bd0dfc6d302d3d2, type: 2}
+    - enemyType: {fileID: 11400000, guid: 8c1277e0cc1cac84db3081d2cb3f1c88, type: 2}
       eliteSpawnMode: 2
       eliteChance: 0.15
       isElite: 1
-      eliteProfile: {fileID: 11400000, guid: ea5bf27aa97cfcb45b4479ac44961dbe, type: 2}
-      count: 1
-      spawnDelay: 0.1
-    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
-      eliteSpawnMode: 2
-      eliteChance: 0.15
-      isElite: 1
-      eliteProfile: {fileID: 0}
+      eliteProfile: {fileID: 11400000, guid: ab2c933b8d1928d46b5ac4da623d6c06, type: 2}
       count: 1
       spawnDelay: 0.1
   isBossRoom: 0

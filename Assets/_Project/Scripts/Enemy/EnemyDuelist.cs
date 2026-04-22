@@ -30,6 +30,8 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     [Header("Duelist Settings")]
     public float moveSpeed = 2f;
     public float attackRange = 1.5f;
+    public float blockRangeBonus = 1.15f;
+    public float guardDebtRangeBonus = 0.85f;
     public float attackCooldown = 3f;
 
     [Header("Block Settings")]
@@ -71,6 +73,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     private float duelStanceEndTime;
     private float nextDuelStanceTime;
     private float guardHoldUntilTime;
+    private float guardPressureUntilTime;
     private int guardDebtCount;
     private float guardDebtExpireTime;
     private float nextGuardDebtTime;
@@ -135,23 +138,34 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             return;
 
         float dist = Vector2.Distance(transform.position, playerTransform.position);
-        if (dist <= attackRange)
+        float guardRange = attackRange + blockRangeBonus;
+        float guardDebtRange = attackRange + guardDebtRangeBonus;
+        if (dist <= guardRange)
         {
-            if (isGuarding && !guardBroken && Time.time < guardHoldUntilTime)
-            {
-                UpdateAnimatorState(false);
-                return;
-            }
+            if (!guardBroken)
+                isGuarding = true;
 
-            if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) && guardDebtCount >= GetGuardDebtRequiredHits() && Time.time >= nextGuardDebtTime && !guardBroken)
+            if (dist <= guardDebtRange &&
+                HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) &&
+                guardDebtCount >= GetGuardDebtRequiredHits() &&
+                Time.time >= nextGuardDebtTime &&
+                !guardBroken)
             {
                 StartCoroutine(GuardDebtRoutine());
             }
-            else if (Time.time >= nextAttackTime && !guardBroken)
+            else if (dist <= attackRange && Time.time >= nextAttackTime && !guardBroken)
+            {
                 StartCoroutine(AttackRoutine());
+            }
+            else if (!guardBroken)
+            {
+                MaintainGuardSpacing();
+                isMoving = true;
+            }
         }
         else
         {
+            isGuarding = false;
             MoveTowardsPlayer();
             isMoving = true;
         }
@@ -182,10 +196,51 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             GetEffectiveMoveSpeed(moveSpeed * moveMultiplier) * Time.deltaTime);
     }
 
+    private void MaintainGuardSpacing()
+    {
+        if (playerTransform == null)
+            return;
+
+        Vector2 currentPosition = transform.position;
+        Vector2 toPlayer = (Vector2)playerTransform.position - currentPosition;
+        float distance = toPlayer.magnitude;
+        if (distance <= 0.001f)
+            return;
+
+        Vector2 radialDirection = toPlayer.normalized;
+        float desiredDistance = attackRange * 0.92f;
+        float tooCloseDistance = attackRange * 0.55f;
+
+        Vector2 moveDirection = Vector2.zero;
+        if (distance > desiredDistance)
+        {
+            moveDirection = radialDirection;
+        }
+        else if (distance < tooCloseDistance)
+        {
+            moveDirection = -radialDirection;
+        }
+
+        if (moveDirection.sqrMagnitude <= 0.001f)
+            return;
+
+        float moveMultiplier = tempoConfig.moveSpeedMultiplier.Evaluate(CurrentTempoTier) * 0.92f;
+        if (IsDuelStanceActive)
+            moveMultiplier *= tempoConfig.t3DuelStanceMoveMultiplier;
+
+        float step = GetEffectiveMoveSpeed(moveSpeed * moveMultiplier) * Time.deltaTime;
+        Vector2 candidate = currentPosition + moveDirection.normalized * step;
+        if (!EnemyLineOfSightUtility.IsPointNavigable(candidate, 0.22f, transform))
+        {
+            return;
+        }
+
+        transform.position = candidate;
+    }
+
     private IEnumerator AttackRoutine()
     {
         isAttacking = true;
-        isGuarding = false;
         EmitCombatAction(EnemyCombatActionType.Attack);
         UpdateAnimatorState(false);
         if (animator != null)
@@ -207,6 +262,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
         yield return new WaitForSeconds(currentWindup);
 
+        isGuarding = false;
         if (!isDead && !isStunned)
             ResolveAttackHit();
 
@@ -241,29 +297,25 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (isDead)
             return;
 
-        if (isGuarding && !guardBroken && playerTransform != null)
+        if (isGuarding && !guardBroken && IsPlayerInsideGuardArc())
         {
-            Vector2 facing = transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
-            Vector2 toPlayer = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-            if (Vector2.Angle(facing, toPlayer) <= blockAngle * 0.5f)
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "BLOCK!", Color.cyan, 5f);
+
+            if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt))
             {
-                if (DamagePopupManager.Instance != null)
-                    DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.5f, "BLOCK!", Color.cyan, 5f);
-
-                if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt))
-                {
-                    guardDebtCount++;
-                    guardDebtExpireTime = Time.time + ActiveEliteProfile.duelistGuardDebt.debtDecayDelay;
-                    RefreshGuardDebtMeter();
-                }
-
-                guardHoldUntilTime = Mathf.Max(guardHoldUntilTime, Time.time + 0.45f);
-                nextAttackTime = Mathf.Max(nextAttackTime, guardHoldUntilTime);
-                if (CurrentTempoTier >= TempoManager.TempoTier.T1)
-                    readWindowEndTime = Mathf.Max(readWindowEndTime, Time.time + 0.5f);
-
-                return;
+                guardDebtCount++;
+                guardDebtExpireTime = Time.time + Mathf.Max(10f, ActiveEliteProfile.duelistGuardDebt.debtDecayDelay);
+                RefreshGuardDebtMeter();
             }
+
+            guardHoldUntilTime = Mathf.Max(guardHoldUntilTime, Time.time + 0.45f);
+            guardPressureUntilTime = Mathf.Max(guardPressureUntilTime, Time.time + 0.65f);
+            nextAttackTime = Mathf.Max(nextAttackTime, Time.time + 0.2f);
+            if (CurrentTempoTier >= TempoManager.TempoTier.T1)
+                readWindowEndTime = Mathf.Max(readWindowEndTime, Time.time + 0.5f);
+
+            return;
         }
 
         if (animator != null)
@@ -281,6 +333,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         base.Stun(finalDuration);
         isAttacking = false;
         isGuarding = false;
+        guardPressureUntilTime = Mathf.Max(guardPressureUntilTime, Time.time + 0.12f);
     }
 
     public void OnParryReaction(ParryReactionContext context)
@@ -291,6 +344,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         StopAllCoroutines();
         isAttacking = false;
         isGuarding = false;
+        guardPressureUntilTime = Mathf.Max(guardPressureUntilTime, Time.time + 0.12f);
 
         if (animator != null)
             animator.SetTrigger(AnimHurt);
@@ -342,9 +396,12 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
     private void UpdateReadAndStanceState()
     {
-        if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) && guardDebtCount > 0 && Time.time >= guardDebtExpireTime)
+        if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) &&
+            guardDebtCount > 0 &&
+            Time.time >= guardDebtExpireTime)
         {
             guardDebtCount = 0;
+            guardDebtExpireTime = 0f;
             RefreshGuardDebtMeter();
         }
 
@@ -408,6 +465,20 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         attackPoint.localPosition = local;
     }
 
+    private bool IsPlayerInsideGuardArc()
+    {
+        if (playerTransform == null)
+            return false;
+
+        Vector2 facing = transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+        Vector2 toPlayer = (Vector2)playerTransform.position - (Vector2)transform.position;
+        if (toPlayer.sqrMagnitude <= 0.04f)
+            return true;
+
+        float effectiveHalfAngle = Mathf.Max(blockAngle * 0.5f, 92f);
+        return Vector2.Angle(facing, toPlayer.normalized) <= effectiveHalfAngle;
+    }
+
     protected override void OnDeathAnimationStart()
     {
         isDead = true;
@@ -454,15 +525,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         {
             isGuarding = true;
             guardHoldUntilTime = Mathf.Max(guardHoldUntilTime, Time.time + 0.2f);
-        }
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (attackPoint != null)
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(attackPoint.position, attackRadius);
+            guardPressureUntilTime = Mathf.Max(guardPressureUntilTime, Time.time + 0.25f);
         }
     }
 
@@ -473,7 +536,6 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             yield break;
 
         isAttacking = true;
-        isGuarding = false;
         guardDebtCount = 0;
         guardDebtExpireTime = 0f;
         RefreshGuardDebtMeter();
@@ -481,11 +543,33 @@ public class EnemyDuelist : EnemyBase, IParryReactive
 
         yield return new WaitForSeconds(settings.bashWindup);
 
+        if (playerTransform != null)
+        {
+            float bashEngageDistance = Mathf.Max(0.8f, settings.bashRange * 0.82f);
+            float currentDistance = Vector2.Distance(transform.position, playerTransform.position);
+            if (currentDistance > bashEngageDistance)
+            {
+                Vector2 engageTarget = Vector2.MoveTowards(transform.position, playerTransform.position, Mathf.Min(currentDistance - bashEngageDistance, 0.9f));
+                transform.position = engageTarget;
+            }
+        }
+
+        isGuarding = false;
         if (playerTransform != null && Vector2.Distance(transform.position, playerTransform.position) <= settings.bashRange)
         {
             PlayerController controller = playerTransform.GetComponent<PlayerController>();
             ParrySystem parry = playerTransform.GetComponent<ParrySystem>();
-            if (parry == null || !parry.TryBlockMelee(transform.position, gameObject))
+            bool bashParried = parry != null && parry.TryBlockMelee(transform.position, gameObject);
+            if (bashParried)
+            {
+                nextGuardDebtTime = Time.time + settings.debtCooldown;
+                isAttacking = false;
+                isGuarding = false;
+                Stun(settings.bashParryStunDuration);
+                yield break;
+            }
+
+            if (!bashParried)
             {
                 playerTransform.GetComponent<PlayerCombat>()?.TakeDamage(GetEffectiveDamage(damage) * settings.bashDamageMultiplier);
                 controller?.ApplyMovementLock(settings.bashMovementLockDuration, true);
@@ -493,10 +577,13 @@ public class EnemyDuelist : EnemyBase, IParryReactive
             }
         }
 
+        yield return new WaitForSeconds(settings.interPhaseDelay);
         yield return new WaitForSeconds(settings.cleaveWindup);
         ResolveGuardDebtCleave(settings);
 
         nextGuardDebtTime = Time.time + settings.debtCooldown;
+        float debtRecoveryLock = Mathf.Max(0.55f, settings.interPhaseDelay + settings.cleaveWindup + 0.2f);
+        nextAttackTime = Mathf.Max(nextAttackTime, Time.time + debtRecoveryLock);
         isAttacking = false;
         isGuarding = true;
     }

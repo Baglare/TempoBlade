@@ -311,6 +311,27 @@ public class ParrySystem : MonoBehaviour
         projectileParryMode = mode;
     }
 
+    public void ForceResetForBaseParryOnly()
+    {
+        IsParryActive = false;
+        timer = 0f;
+        parryElapsed = 0f;
+        blockCount = 0;
+        initialWindowDuration = 0f;
+        currentWindowExtension = 0f;
+        currentMaxParryWindow = 0f;
+        currentPerfectWindow = 0f;
+        OnWindowNormalized?.Invoke(0f);
+
+        if (IsCounterWindowActive)
+        {
+            IsCounterWindowActive = false;
+            accumulatedCounterBonus = 0f;
+            counterTimer = 0f;
+            OnCounterWindowEnded?.Invoke();
+        }
+    }
+
     private void CloseParryWindow()
     {
         IsParryActive = false;
