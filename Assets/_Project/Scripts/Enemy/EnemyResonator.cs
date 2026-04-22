@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EnemyResonator : EnemyBase
 {
+    private const float CrescendoCastDistanceTolerance = 0.45f;
+
     [System.Serializable]
     public class ResonatorTempoConfig
     {
@@ -128,10 +130,19 @@ public class EnemyResonator : EnemyBase
 
         RefreshCrescendoPresentationIfNeeded();
 
-        if (HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && !isCasting && !isCrescendoChanneling && crescendoMeter >= 1f)
+        EliteResonatorCrescendoSettings crescendoSettings = HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && ActiveEliteProfile != null
+            ? ActiveEliteProfile.resonatorCrescendo
+            : null;
+
+        if (crescendoSettings != null && !isCasting && !isCrescendoChanneling && crescendoMeter >= 1f)
         {
-            StartCoroutine(CrescendoRoutine());
-            return;
+            float castDistance = Vector2.Distance(transform.position, playerTransform.position);
+            float desiredCastDistance = Mathf.Clamp(crescendoSettings.pulseRadius * 0.72f, 2.2f, 4.25f);
+            if (castDistance <= desiredCastDistance + CrescendoCastDistanceTolerance)
+            {
+                StartCoroutine(CrescendoRoutine());
+                return;
+            }
         }
 
         float anchorRefresh = anchorRefreshInterval * tempoConfig.anchorRefreshMultiplier.Evaluate(CurrentTempoTier);
@@ -226,11 +237,44 @@ public class EnemyResonator : EnemyBase
     private void UpdateMovement()
     {
         Vector2 targetPosition = currentAnchor;
+        float currentDesiredSupportDistance = desiredSupportDistance;
+        float currentRetreatDistance = retreatDistance;
+        EliteResonatorCrescendoSettings crescendoSettings = HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && ActiveEliteProfile != null
+            ? ActiveEliteProfile.resonatorCrescendo
+            : null;
+        bool crescendoReady = crescendoSettings != null && !isCrescendoChanneling && crescendoMeter >= 1f;
+        if (crescendoReady)
+        {
+            Vector2 awayFromPlayer = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
+            if (awayFromPlayer.sqrMagnitude <= 0.001f)
+                awayFromPlayer = Vector2.right;
+
+            float desiredCastDistance = Mathf.Clamp(crescendoSettings.pulseRadius * 0.72f, 2.2f, 4.25f);
+            float crescendoDistanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
+            if (crescendoDistanceToPlayer <= desiredCastDistance + CrescendoCastDistanceTolerance)
+            {
+                targetPosition = transform.position;
+                currentDesiredSupportDistance = desiredCastDistance;
+                currentRetreatDistance = 0f;
+            }
+            else
+            {
+                targetPosition = (Vector2)playerTransform.position + awayFromPlayer * desiredCastDistance;
+                currentDesiredSupportDistance = desiredCastDistance;
+                currentRetreatDistance = desiredCastDistance * 0.45f;
+            }
+        }
+        else if (crescendoSettings != null)
+        {
+            currentDesiredSupportDistance += 1.45f;
+            currentRetreatDistance += 0.95f;
+        }
+
         float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
-        if (distanceToPlayer <= retreatDistance)
+        if (distanceToPlayer <= currentRetreatDistance)
         {
             Vector2 away = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
-            targetPosition = (Vector2)transform.position + away * desiredSupportDistance;
+            targetPosition = (Vector2)transform.position + away * currentDesiredSupportDistance;
         }
 
         if (!EnemyLineOfSightUtility.IsPointNavigable(targetPosition, 0.3f, transform))
@@ -239,7 +283,7 @@ public class EnemyResonator : EnemyBase
                 transform,
                 playerTransform,
                 transform.position,
-                desiredSupportDistance + 1.2f,
+                currentDesiredSupportDistance + 1.2f,
                 supportSearchRadius,
                 2.5f,
                 8,
@@ -486,11 +530,14 @@ public class EnemyResonator : EnemyBase
                 DamagePopupManager.Instance.CreateText(ally.transform.position + Vector3.up * 1.6f, "CRESCENDO+", settings.meterColor, 5.4f);
         }
 
-        if (TempoManager.Instance != null)
-            TempoManager.Instance.AddTempo(-settings.playerRhythmShock);
+        if (playerTransform != null && Vector2.Distance(transform.position, playerTransform.position) <= settings.pulseRadius)
+        {
+            if (TempoManager.Instance != null)
+                TempoManager.Instance.AddTempo(-settings.playerRhythmShock);
 
-        if (playerTransform != null && DamagePopupManager.Instance != null)
-            DamagePopupManager.Instance.CreateText(playerTransform.position + Vector3.up * 1.8f, "RHYTHM SHOCK", settings.meterColor, 6f);
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(playerTransform.position + Vector3.up * 1.8f, "RHYTHM SHOCK", settings.meterColor, 6f);
+        }
 
         SupportPulseVisualUtility.SpawnPulse(transform.position, 0.3f, settings.pulseRadius, 0.35f, settings.meterColor);
         if (spriteRenderer != null)

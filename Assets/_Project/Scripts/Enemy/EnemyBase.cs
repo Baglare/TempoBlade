@@ -10,7 +10,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     [Header("Stun Feedback")]
     [SerializeField] protected Color stunTintColor = new Color(1f, 0.55f, 0.15f, 1f);
     [Header("Facing")]
-    [SerializeField] protected float facingTurnDelay = 0.09f;
+    [SerializeField] protected float facingTurnDelay = 0.18f;
+    [SerializeField] protected float facingHorizontalDeadzone = 0.28f;
 
     protected float currentHealth;
     protected bool isStunned;
@@ -463,7 +464,11 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     {
         EnsureFacingStateInitialized(currentVisualSign);
 
-        int targetSign = targetX < transform.position.x ? -1 : 1;
+        float deltaX = targetX - transform.position.x;
+        if (Mathf.Abs(deltaX) <= Mathf.Max(0f, facingHorizontalDeadzone))
+            return currentFacingSign;
+
+        int targetSign = deltaX < 0f ? -1 : 1;
         if (targetSign != pendingFacingSign)
         {
             pendingFacingSign = targetSign;

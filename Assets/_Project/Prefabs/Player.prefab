@@ -1184,7 +1184,7 @@ MonoBehaviour:
   huntCooldownRegenBonus: 0.3
   huntAttackSpeedCDBonus: 0.35
   huntFlowCheckInterval: 0.2
-  executeHealthThreshold: 0.18
+  executeHealthThreshold: 1
   executeRearConeAngle: 70
   executeDashEntryRange: 2
   executeInvulnDuration: 0.35

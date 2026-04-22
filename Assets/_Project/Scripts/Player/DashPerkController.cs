@@ -1051,8 +1051,7 @@ public class DashPerkController : MonoBehaviour
 
         if (dist > blindSpotDashRange) return false;
 
-        // Hedefin baktığı yön (localScale.x > 0 = sağ, < 0 = sol)
-        Vector2 targetForward = _currentHuntTarget.transform.localScale.x >= 0 ? Vector2.right : Vector2.left;
+        Vector2 targetForward = GetTargetForward(_currentHuntTarget);
         Vector2 toPlayer = (playerPos - targetPos).normalized;
 
         float angle = Vector2.Angle(targetForward, toPlayer);
@@ -1110,7 +1109,7 @@ public class DashPerkController : MonoBehaviour
         if (dist > executeDashEntryRange)
             return false;
 
-        Vector2 targetForward = _currentHuntTarget.transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+        Vector2 targetForward = GetTargetForward(_currentHuntTarget);
         Vector2 toPlayer = ((Vector2)transform.position - (Vector2)_currentHuntTarget.transform.position).normalized;
         float rearAngle = Vector2.Angle(-targetForward, toPlayer);
         if (rearAngle > executeRearConeAngle * 0.5f)
@@ -1133,6 +1132,22 @@ public class DashPerkController : MonoBehaviour
         _currentHuntTarget = null;
 
         return true;
+    }
+
+    private Vector2 GetTargetForward(EnemyBase target)
+    {
+        if (target == null)
+            return Vector2.right;
+
+        bool facingLeft = false;
+        SpriteRenderer sr = target.GetComponentInChildren<SpriteRenderer>();
+        if (sr != null)
+            facingLeft = sr.flipX;
+
+        if (target.transform.lossyScale.x < 0f)
+            facingLeft = !facingLeft;
+
+        return facingLeft ? Vector2.left : Vector2.right;
     }
 
     // ═══════════ ODA SIFIRLAMA ═══════════
