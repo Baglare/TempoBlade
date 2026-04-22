@@ -13,47 +13,54 @@ public class WardenLivingWall : MonoBehaviour
 
     public void Activate(Vector2 forward, EliteWardenLivingWallSettings settings)
     {
-        EnsureSegments(Mathf.Max(1, settings.gapCount + 1));
-        expireTime = Time.time + settings.wallDuration;
+        float wallDuration = Mathf.Max(6.5f, settings.wallDuration);
+        float radius = Mathf.Max(1.6f, settings.arcRadius);
+        float configuredArc = settings.arcDegrees > 0f ? settings.arcDegrees : 120f;
+        float effectiveArcDegrees = Mathf.Clamp(configuredArc * 0.7f, 72f, 96f);
+        int segmentCount = Mathf.Max(8, Mathf.RoundToInt(effectiveArcDegrees / 8f));
+        EnsureSegments(segmentCount);
+        expireTime = Time.time + wallDuration;
         active = true;
 
         Vector2 normal = forward.sqrMagnitude > 0.001f ? forward.normalized : Vector2.right;
-        Vector2 tangent = new Vector2(-normal.y, normal.x);
-        float totalGapWidth = settings.projectileGapWidth * settings.gapCount;
-        float remainingWidth = Mathf.Max(0.4f, settings.wallWidth - totalGapWidth);
-        float segmentWidth = remainingWidth / Mathf.Max(1, settings.gapCount + 1);
-        float cursor = -settings.wallWidth * 0.5f;
+        float centerAngle = Mathf.Atan2(normal.y, normal.x) * Mathf.Rad2Deg;
+        float angleStart = centerAngle - effectiveArcDegrees * 0.5f;
+        float step = effectiveArcDegrees / Mathf.Max(1, segmentCount - 1);
+        float visualWidth = Mathf.Max(0.06f, settings.lineWidth * 0.5f);
 
         for (int i = 0; i < segmentColliders.Count; i++)
         {
-            float centerOffset = cursor + segmentWidth * 0.5f;
-            cursor += segmentWidth + settings.projectileGapWidth;
-
-            Vector2 center = (Vector2)transform.position + tangent * centerOffset;
             BoxCollider2D collider = segmentColliders[i];
+            LineRenderer line = segmentLines[i];
+            if (i >= segmentCount)
+            {
+                collider.enabled = false;
+                line.enabled = false;
+                continue;
+            }
+
+            float angle = angleStart + step * i;
+            Vector2 radial = Quaternion.Euler(0f, 0f, angle) * Vector2.right;
+            Vector2 center = (Vector2)transform.position + radial * radius;
+            Vector2 tangent = new Vector2(-radial.y, radial.x).normalized;
+            float segmentArcLength = 2f * radius * Mathf.Tan(Mathf.Deg2Rad * step * 0.5f) * 0.88f;
+
             collider.enabled = true;
-            collider.size = new Vector2(segmentWidth, settings.segmentHeight);
+            collider.size = new Vector2(Mathf.Max(0.18f, segmentArcLength), Mathf.Max(0.62f, settings.segmentThickness * 0.75f));
             collider.offset = Vector2.zero;
             collider.transform.position = center;
             collider.transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(tangent.y, tangent.x) * Mathf.Rad2Deg);
 
-            LineRenderer line = segmentLines[i];
             line.enabled = true;
             line.startColor = settings.wallColor;
             line.endColor = settings.wallColor;
-            float halfW = segmentWidth * 0.5f;
-            float halfH = settings.segmentHeight * 0.5f;
-            Vector3[] corners =
-            {
-                center + tangent * -halfW + (Vector2)Vector3.Cross(tangent, Vector3.forward) * halfH,
-                center + tangent * halfW + (Vector2)Vector3.Cross(tangent, Vector3.forward) * halfH,
-                center + tangent * halfW - (Vector2)Vector3.Cross(tangent, Vector3.forward) * halfH,
-                center + tangent * -halfW - (Vector2)Vector3.Cross(tangent, Vector3.forward) * halfH,
-                center + tangent * -halfW + (Vector2)Vector3.Cross(tangent, Vector3.forward) * halfH
-            };
-            line.positionCount = corners.Length;
-            for (int j = 0; j < corners.Length; j++)
-                line.SetPosition(j, corners[j]);
+            line.startWidth = visualWidth;
+            line.endWidth = visualWidth;
+            Vector3 start = center - tangent * (segmentArcLength * 0.5f);
+            Vector3 end = center + tangent * (segmentArcLength * 0.5f);
+            line.positionCount = 2;
+            line.SetPosition(0, start);
+            line.SetPosition(1, end);
         }
     }
 
@@ -82,14 +89,15 @@ public class WardenLivingWall : MonoBehaviour
             GameObject child = new GameObject($"WallSegment_{segmentColliders.Count}");
             child.transform.SetParent(transform, false);
             BoxCollider2D box = child.AddComponent<BoxCollider2D>();
+            child.AddComponent<WardenLivingWallSegment>();
             box.enabled = false;
             segmentColliders.Add(box);
 
             LineRenderer line = child.AddComponent<LineRenderer>();
             line.useWorldSpace = true;
             line.loop = false;
-            line.startWidth = 0.05f;
-            line.endWidth = 0.05f;
+            line.startWidth = 0.2f;
+            line.endWidth = 0.2f;
             Shader shader = Shader.Find("Sprites/Default");
             if (shader != null)
                 line.material = new Material(shader);

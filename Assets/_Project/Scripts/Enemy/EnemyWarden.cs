@@ -112,9 +112,12 @@ public class EnemyWarden : EnemyBase, IParryReactive
     private bool isExecutingAction;
     private bool isBerserkCharging;
     private float lastLivingWallTime = -999f;
+    private bool livingWallWasActive;
+    private Vector2 livingWallAnchorPosition;
     private float guardBrokenUntilTime;
     private Vector2 currentShieldForward = Vector2.right;
     private float eliteSpawnGraceEndTime;
+    private bool elitePermanentBerserk;
 
     public bool AllowParryExecute => true;
 
@@ -152,6 +155,18 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (isDead || currentState == WardenState.Dead || playerTransform == null)
             return;
 
+        bool wallActive = livingWall != null && livingWall.IsActive;
+        if (livingWallWasActive && !wallActive)
+            HandleLivingWallEnded();
+        livingWallWasActive = wallActive;
+
+        if (wallActive)
+        {
+            transform.position = livingWallAnchorPosition;
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+        }
+
         if (isStunned)
         {
             if (rb != null)
@@ -172,7 +187,13 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         if (protectTarget != null && !HasValidProtectTarget())
         {
-            EnterBerserk(CountOtherLivingEnemies() > 0);
+            if (!TryAcquireProtectTarget(true))
+            {
+                if (HasEliteMechanic(EliteMechanicType.WardenLivingDefenceWall))
+                    EnterElitePermanentBerserk();
+                else
+                    EnterBerserk(CountOtherLivingEnemies() > 0);
+            }
             return;
         }
 
@@ -291,7 +312,10 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         float distance = Vector2.Distance(transform.position, cachedGuardPoint);
         bool wallLocked = livingWall != null && livingWall.IsActive;
-        bool isMoving = !wallLocked && distance > positionTolerance;
+        bool holdGround = !wallLocked &&
+                          playerTransform != null &&
+                          Vector2.Distance(transform.position, playerTransform.position) <= closePunishRange * 1.35f;
+        bool isMoving = !wallLocked && !holdGround && distance > positionTolerance;
 
         if (rb != null)
         {
@@ -326,7 +350,11 @@ public class EnemyWarden : EnemyBase, IParryReactive
             permanentBerserk = true;
         }
 
-        if (!isExecutingAction && Time.time >= lastBerserkChargeTime + (GetEffectiveCooldownDuration(berserkChargeCooldown) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier())))
+        float chargeCooldown = berserkChargeCooldown;
+        if (elitePermanentBerserk)
+            chargeCooldown *= 0.42f;
+
+        if (!isExecutingAction && Time.time >= lastBerserkChargeTime + (GetEffectiveCooldownDuration(chargeCooldown) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier())))
         {
             StartAction(BerserkChargeRoutine());
             return;
@@ -335,7 +363,10 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (rb != null)
         {
             Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
-            rb.linearVelocity = dir * GetEffectiveMoveSpeed(berserkMoveSpeed);
+            float berserkMove = berserkMoveSpeed;
+            if (elitePermanentBerserk)
+                berserkMove *= 1.35f;
+            rb.linearVelocity = dir * GetEffectiveMoveSpeed(berserkMove);
         }
 
         UpdateAnimator(true);
@@ -440,7 +471,10 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
             Vector2 dir = ((Vector2)playerTransform.position - (Vector2)transform.position).normalized;
             if (rb != null)
-                rb.linearVelocity = dir * GetEffectiveMoveSpeed(berserkChargeSpeed);
+            {
+                float chargeSpeed = elitePermanentBerserk ? berserkChargeSpeed * 1.3f : berserkChargeSpeed;
+                rb.linearVelocity = dir * GetEffectiveMoveSpeed(chargeSpeed);
+            }
 
             elapsed += Time.deltaTime;
             yield return null;
@@ -475,6 +509,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         currentState = WardenState.Berserk;
         livingWall?.Deactivate();
         permanentBerserk = !temporary;
+        elitePermanentBerserk = false;
         berserkEndTime = temporary ? Time.time + berserkDuration : float.PositiveInfinity;
         guardBrokenUntilTime = 0f;
         CancelActiveAction();
@@ -483,9 +518,9 @@ public class EnemyWarden : EnemyBase, IParryReactive
             animator.SetBool(AnimBerserk, true);
     }
 
-    private bool TryAcquireProtectTarget()
+    private bool TryAcquireProtectTarget(bool forceRefresh = false)
     {
-        if (Time.time < lastProtectTargetRefreshTime + ProtectTargetRefreshInterval && HasValidProtectTarget())
+        if (!forceRefresh && Time.time < lastProtectTargetRefreshTime + ProtectTargetRefreshInterval && HasValidProtectTarget())
             return true;
 
         lastProtectTargetRefreshTime = Time.time;
@@ -574,6 +609,8 @@ public class EnemyWarden : EnemyBase, IParryReactive
     {
         if (protectTarget == null)
             return false;
+        if (livingWall != null && livingWall.IsActive)
+            return false;
 
         float cooldown = GetEffectiveCooldownDuration(repositionDashCooldown * tempoConfig.repositionCooldownMultiplier.Evaluate(CurrentTempoTier));
         if (Time.time < lastRepositionDashTime + cooldown)
@@ -584,6 +621,8 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
     private bool CanStartClosePunish()
     {
+        if (livingWall != null && livingWall.IsActive)
+            return false;
         if (Time.time < lastClosePunishTime + (GetEffectiveCooldownDuration(closePunishCooldown) / Mathf.Max(0.01f, GetSupportAttackSpeedMultiplier())))
             return false;
 
@@ -680,19 +719,42 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         EliteWardenLivingWallSettings settings = ActiveEliteProfile.wardenLivingDefenceWall;
         if (livingWall.IsActive)
-        {
-            float targetDistance = Vector2.Distance(transform.position, protectTarget.transform.position);
-            if (targetDistance > settings.maxProtectTargetDistance)
-                livingWall.Deactivate();
-            return;
-        }
-
-        if (Time.time < lastLivingWallTime + settings.wallCooldown)
             return;
 
+        if (Time.time < lastLivingWallTime + Mathf.Max(14f, settings.wallCooldown))
+            return;
+
+        float playerToTargetDistance = Vector2.Distance(playerTransform.position, protectTarget.transform.position);
+        if (playerToTargetDistance > protectSearchRadius * 0.9f)
+            return;
+
+        livingWallAnchorPosition = transform.position;
         livingWall.Activate(currentShieldForward, settings);
-        lastLivingWallTime = Time.time;
+        livingWallWasActive = true;
         EmitCombatAction(EnemyCombatActionType.Skill, 1.2f);
+    }
+
+    private void HandleLivingWallEnded()
+    {
+        lastLivingWallTime = Time.time;
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
+
+        bool targetInvalid = !HasValidProtectTarget();
+        bool targetTooFar = protectTarget != null &&
+                            (Vector2.Distance(transform.position, protectTarget.transform.position) > protectSearchRadius * 0.85f ||
+                             Vector2.Distance(playerTransform.position, protectTarget.transform.position) > protectSearchRadius * 0.9f);
+
+        if (!targetInvalid && !targetTooFar)
+            return;
+
+        if (!TryAcquireProtectTarget(true))
+        {
+            if (HasEliteMechanic(EliteMechanicType.WardenLivingDefenceWall))
+                EnterElitePermanentBerserk();
+            else
+                EnterBerserk(CountOtherLivingEnemies() > 0);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -720,6 +782,29 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (currentState != WardenState.Berserk || other == null || !other.CompareTag("Player"))
             return;
 
+        if (isBerserkCharging)
+        {
+            ParrySystem parry = other.GetComponent<ParrySystem>();
+            if (parry != null && parry.TryBlockMelee(transform.position, gameObject))
+            {
+                lastCollisionDamageTime = Time.time;
+                OnParryReaction(new ParryReactionContext
+                {
+                    isProjectile = false,
+                    isPerfect = true,
+                    breakGuard = false,
+                    interruptOnly = false,
+                    duration = elitePermanentBerserk ? 1f : 0.8f,
+                    instigator = other.gameObject
+                });
+
+                if (rb != null)
+                    rb.linearVelocity = Vector2.zero;
+
+                return;
+            }
+        }
+
         if (Time.time < lastCollisionDamageTime + collisionDamageInterval)
             return;
 
@@ -728,7 +813,16 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         lastCollisionDamageTime = Time.time;
         if (playerCombat != null)
-            playerCombat.TakeDamage(GetEffectiveDamage(collisionDamage));
+        {
+            float hitDamage = elitePermanentBerserk ? collisionDamage * 1.35f : collisionDamage;
+            playerCombat.TakeDamage(GetEffectiveDamage(hitDamage));
+        }
+    }
+
+    private void EnterElitePermanentBerserk()
+    {
+        EnterBerserk(false);
+        elitePermanentBerserk = true;
     }
 
     private void OnDrawGizmosSelected()

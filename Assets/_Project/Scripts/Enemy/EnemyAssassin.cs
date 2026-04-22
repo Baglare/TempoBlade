@@ -256,7 +256,7 @@ public class EnemyAssassin : EnemyBase
         }
         else
         {
-            SupportPulseVisualUtility.SpawnPulse(strikePosition, 0.12f, 0.6f, 0.15f, settings.echoColor);
+            SpawnEchoBody(strikePosition, settings);
             SupportPulseVisualUtility.SpawnPulse(strikeTarget, 0.08f, settings.strikeRadius, 0.1f, settings.echoColor);
             yield return new WaitForSeconds(settings.entryDashDuration * 0.8f);
         }
@@ -319,6 +319,26 @@ public class EnemyAssassin : EnemyBase
             transform.position = Vector2.Lerp(start, target, elapsed / Mathf.Max(0.01f, duration));
             yield return null;
         }
+    }
+
+    private void SpawnEchoBody(Vector2 position, EliteAssassinShadowEchoSettings settings)
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+        {
+            SupportPulseVisualUtility.SpawnPulse(position, 0.12f, 0.6f, 0.15f, settings.echoColor);
+            return;
+        }
+
+        GameObject echoObject = new GameObject("AssassinShadowEcho");
+        echoObject.transform.position = position;
+        SpriteRenderer ghost = echoObject.AddComponent<SpriteRenderer>();
+        ghost.sprite = spriteRenderer.sprite;
+        ghost.flipX = spriteRenderer.flipX;
+        ghost.sortingLayerID = spriteRenderer.sortingLayerID;
+        ghost.sortingOrder = spriteRenderer.sortingOrder - 1;
+        ghost.color = new Color(settings.echoColor.r, settings.echoColor.g, settings.echoColor.b, Mathf.Max(0.45f, settings.echoColor.a));
+        echoObject.transform.localScale = transform.localScale;
+        Destroy(echoObject, Mathf.Max(0.18f, settings.halfBeatDelay + 0.12f));
     }
 
     private IEnumerator ShortReposition(int sideSign)

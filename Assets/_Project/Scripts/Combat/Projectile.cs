@@ -347,6 +347,9 @@ public class Projectile : MonoBehaviour, IDeflectable
         if (other == null)
             return false;
 
+        if (other.GetComponent<WardenLivingWallSegment>() != null)
+            return hasBeenDeflected;
+
         if (other.gameObject.layer == LayerMask.NameToLayer("Environment"))
             return true;
 

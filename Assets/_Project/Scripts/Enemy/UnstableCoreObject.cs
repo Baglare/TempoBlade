@@ -2,11 +2,13 @@ using UnityEngine;
 
 public class UnstableCoreObject : MonoBehaviour, IDamageable
 {
+    private static Sprite defaultCoreSprite;
     private EliteKamikazeUnstableCoreSettings settings;
     private float baseDamage;
     private float expireTime;
     private bool brokenEarly;
     private bool exploded;
+    private float brokenProgress;
     private SpriteRenderer spriteRenderer;
     private EnemyOverheadMeter overheadMeter;
     private LineRenderer ringRenderer;
@@ -25,6 +27,11 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer == null)
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+        if (defaultCoreSprite == null)
+            defaultCoreSprite = Sprite.Create(Texture2D.whiteTexture, new Rect(0f, 0f, 1f, 1f), new Vector2(0.5f, 0.5f), 1f);
+        spriteRenderer.sprite = defaultCoreSprite;
+        spriteRenderer.drawMode = SpriteDrawMode.Simple;
+        spriteRenderer.sortingOrder = 20;
         overheadMeter = GetComponent<EnemyOverheadMeter>();
         if (overheadMeter == null)
             overheadMeter = gameObject.AddComponent<EnemyOverheadMeter>();
@@ -49,7 +56,10 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
         float progress = 1f - Mathf.Clamp01((expireTime - Time.time) / Mathf.Max(0.01f, settings.coreLifetime));
         overheadMeter.SetProgress(progress);
         if (spriteRenderer != null)
+        {
             spriteRenderer.color = Color.Lerp(settings.coreColor * 0.5f, settings.coreColor, progress);
+            spriteRenderer.transform.localScale = Vector3.one * Mathf.Lerp(0.55f, 0.8f, progress);
+        }
         UpdateRing(progress);
 
         if (Time.time >= expireTime)
@@ -62,7 +72,9 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
             return;
 
         brokenEarly = true;
-        Invoke(nameof(ExplodeFromBreak), 0.1f);
+        brokenProgress = 1f - Mathf.Clamp01((expireTime - Time.time) / Mathf.Max(0.01f, settings.coreLifetime));
+        hitCollider.enabled = false;
+        Invoke(nameof(ExplodeFromBreak), Mathf.Max(0.2f, settings.earlyBreakDetonationDelay));
     }
 
     public void Stun(float duration) { }
@@ -78,8 +90,19 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
             return;
 
         exploded = true;
-        float radius = weak ? settings.brokenExplosionRadius : settings.fullExplosionRadius;
-        float damage = baseDamage * (weak ? settings.brokenExplosionDamageMultiplier : settings.fullExplosionDamageMultiplier);
+        float radius;
+        float damage;
+        if (weak)
+        {
+            float t = Mathf.Clamp01(brokenProgress);
+            radius = Mathf.Lerp(settings.brokenExplosionRadius, settings.fullExplosionRadius, t);
+            damage = baseDamage * Mathf.Lerp(settings.brokenExplosionDamageMultiplier, settings.fullExplosionDamageMultiplier, t);
+        }
+        else
+        {
+            radius = settings.fullExplosionRadius;
+            damage = baseDamage * settings.fullExplosionDamageMultiplier;
+        }
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius);
         for (int i = 0; i < hits.Length; i++)
         {
@@ -94,7 +117,9 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
             hit.GetComponent<IDamageable>()?.TakeDamage(damage);
         }
 
-        SupportPulseVisualUtility.SpawnPulse(transform.position, 0.2f, radius, 0.28f, settings.coreColor);
+        float pulseThickness = weak ? Mathf.Lerp(0.16f, 0.24f, Mathf.Clamp01(brokenProgress)) : 0.28f;
+        float pulseDuration = weak ? Mathf.Lerp(0.18f, 0.26f, Mathf.Clamp01(brokenProgress)) : 0.34f;
+        SupportPulseVisualUtility.SpawnPulse(transform.position, pulseThickness, radius, pulseDuration, settings.coreColor);
         Destroy(gameObject);
     }
 
@@ -126,6 +151,6 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
         Color color = Color.Lerp(settings.coreColor * 0.45f, settings.coreColor, progress);
         ringRenderer.startColor = color;
         ringRenderer.endColor = color;
-        transform.localScale = Vector3.one * Mathf.Lerp(0.9f, 1.1f, progress);
+        ringRenderer.transform.localScale = Vector3.one * Mathf.Lerp(0.9f, 1.1f, progress);
     }
 }

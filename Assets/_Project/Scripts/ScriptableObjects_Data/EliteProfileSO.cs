@@ -126,11 +126,12 @@ public class EliteDeadeyeEchoLineSettings
 [Serializable]
 public class EliteKamikazeUnstableCoreSettings
 {
-    public float coreLifetime = 2.4f;
-    public float fullExplosionRadius = 3.2f;
+    public float coreLifetime = 3.1f;
+    public float earlyBreakDetonationDelay = 0.6f;
+    public float fullExplosionRadius = 3.7f;
     public float fullExplosionDamageMultiplier = 1.35f;
-    public float brokenExplosionRadius = 2.1f;
-    public float brokenExplosionDamageMultiplier = 0.75f;
+    public float brokenExplosionRadius = 1.8f;
+    public float brokenExplosionDamageMultiplier = 0.5f;
     public Color coreColor = new Color(1f, 0.35f, 0.15f, 0.95f);
 }
 
@@ -141,8 +142,11 @@ public class EliteWardenLivingWallSettings
     public float wallCooldown = 10f;
     public float maxProtectTargetDistance = 3.8f;
     public float wallWidth = 4.8f;
+    public float arcRadius = 2.2f;
+    public float arcDegrees = 120f;
     public float segmentThickness = 0.65f;
     public float segmentHeight = 1.9f;
+    public float lineWidth = 0.2f;
     public float projectileGapWidth = 0.42f;
     public int gapCount = 2;
     public Color wallColor = new Color(0.35f, 0.95f, 1f, 0.85f);
