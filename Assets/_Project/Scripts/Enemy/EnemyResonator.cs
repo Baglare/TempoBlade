@@ -73,6 +73,8 @@ public class EnemyResonator : EnemyBase
     private EnemyOverheadMeter overheadMeter;
     private float crescendoMeter;
     private bool isCrescendoChanneling;
+    private bool crescendoPresentationActive;
+    private bool crescendoReadyAnnounced;
 
     private float nextAnchorRefreshTime;
     private float nextRallyPulseTime;
@@ -123,6 +125,8 @@ public class EnemyResonator : EnemyBase
     {
         if (isDead || isStunned || playerTransform == null)
             return;
+
+        RefreshCrescendoPresentationIfNeeded();
 
         if (HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && !isCasting && !isCrescendoChanneling && crescendoMeter >= 1f)
         {
@@ -434,8 +438,16 @@ public class EnemyResonator : EnemyBase
         if (meterGain <= 0f)
             return;
 
+        float previousMeter = crescendoMeter;
         crescendoMeter = Mathf.Clamp01(crescendoMeter + meterGain * Mathf.Max(0.2f, combatEvent.weight));
         UpdateOverheadMeter();
+        if (!crescendoReadyAnnounced && previousMeter < 1f && crescendoMeter >= 1f)
+        {
+            crescendoReadyAnnounced = true;
+            SupportPulseVisualUtility.SpawnPulse(transform.position, 0.18f, 1.2f, 0.2f, settings.meterColor);
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(transform.position + Vector3.up * 1.9f, "CRESCENDO", settings.meterColor, 5.8f);
+        }
     }
 
     private IEnumerator CrescendoRoutine()
@@ -449,6 +461,8 @@ public class EnemyResonator : EnemyBase
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
         EmitCombatAction(EnemyCombatActionType.Skill, 1.5f);
+        if (spriteRenderer != null)
+            spriteRenderer.color = settings.meterColor;
 
         float timer = 0f;
         while (timer < settings.channelDuration)
@@ -472,9 +486,12 @@ public class EnemyResonator : EnemyBase
             TempoManager.Instance.AddTempo(-settings.playerRhythmShock);
 
         SupportPulseVisualUtility.SpawnPulse(transform.position, 0.3f, settings.pulseRadius, 0.35f, settings.meterColor);
+        if (spriteRenderer != null)
+            spriteRenderer.color = Color.white;
         isCrescendoChanneling = false;
         isCasting = false;
         crescendoMeter = 0f;
+        crescendoReadyAnnounced = false;
         UpdateOverheadMeter();
     }
 
@@ -501,5 +518,17 @@ public class EnemyResonator : EnemyBase
 
         overheadMeter.SetVisible(true);
         overheadMeter.SetProgress(crescendoMeter);
+    }
+
+    private void RefreshCrescendoPresentationIfNeeded()
+    {
+        bool shouldShow = HasEliteMechanic(EliteMechanicType.ResonatorCrescendo) && ActiveEliteProfile != null;
+        if (shouldShow == crescendoPresentationActive)
+            return;
+
+        crescendoPresentationActive = shouldShow;
+        RefreshEliteMeterVisibility();
+        if (!shouldShow)
+            crescendoReadyAnnounced = false;
     }
 }

@@ -254,6 +254,8 @@ public class EnemyWardenLinker : EnemyBase
             {
                 SupportLinkVisual extraVisual = GetOrCreateExtraLinkVisual(i - 1);
                 extraVisual.SetTarget(nextTarget.transform);
+                if (DamagePopupManager.Instance != null)
+                    DamagePopupManager.Instance.CreateText(nextTarget.transform.position + Vector3.up * 1.6f, "LINKED", guardianLinkColor, 5.5f);
             }
         }
 
@@ -284,18 +286,31 @@ public class EnemyWardenLinker : EnemyBase
         yield return new WaitForSeconds(GetEffectiveCooldownDuration(wardenCallWindup));
 
         Vector3 summonPosition = transform.position;
-        if (linkedTarget != null)
+        float minRadius = Mathf.Max(0.8f, summonOffset * 1.15f);
+        float maxRadius = Mathf.Max(minRadius + 0.25f, summonOffset * 2.25f);
+        bool foundPosition = false;
+        for (int attempt = 0; attempt < 10; attempt++)
         {
-            Vector2 awayFromTarget = ((Vector2)transform.position - (Vector2)linkedTarget.transform.position).normalized;
-            if (awayFromTarget.sqrMagnitude <= 0.001f)
-                awayFromTarget = Vector2.right;
-            summonPosition = linkedTarget.transform.position + (Vector3)(awayFromTarget * summonOffset);
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
+            if (randomDir.sqrMagnitude <= 0.001f)
+                randomDir = Vector2.right;
+            float randomRadius = Random.Range(minRadius, maxRadius);
+            Vector2 candidate = (Vector2)transform.position + randomDir * randomRadius;
+            if (!EnemyLineOfSightUtility.IsPointNavigable(candidate, 0.35f, transform))
+                continue;
+
+            summonPosition = candidate;
+            foundPosition = true;
+            break;
         }
+
+        if (!foundPosition)
+            summonPosition = transform.position + (Vector3)(Random.insideUnitCircle.normalized * minRadius);
 
         EliteProfileSO summonProfile = null;
         if (HasEliteMechanic(EliteMechanicType.WardenLinkerMultipleLink))
             summonProfile = summonedEliteWardenProfile;
-        EnemySummonHelper.SummonTemporaryEnemy(summonedWardenPrefab, summonPosition, summonedWardenDuration, summonedWardenAlpha, summonProfile);
+        EnemySummonHelper.SummonTemporaryEnemy(summonedWardenPrefab, summonPosition, summonedWardenDuration, summonedWardenAlpha, summonProfile, this);
         SupportPulseVisualUtility.SpawnPulse(summonPosition, 0.2f, 1.1f, 0.25f, summonCueColor);
         if (DamagePopupManager.Instance != null)
             DamagePopupManager.Instance.CreateText(summonPosition + Vector3.up, "WARDEN!", summonCueColor, 6f);
@@ -324,6 +339,8 @@ public class EnemyWardenLinker : EnemyBase
         if (rb != null)
         {
             float stepSpeed = shieldStepMoveSpeed * tempoConfig.shieldStepMoveMultiplier.Evaluate(CurrentTempoTier);
+            if (linkedTarget == null)
+                stepSpeed *= 0.92f;
             rb.linearVelocity = isMoving
                 ? toPoint.normalized * GetEffectiveMoveSpeed(stepSpeed)
                 : Vector2.zero;
@@ -353,10 +370,17 @@ public class EnemyWardenLinker : EnemyBase
             Vector2 toPlayer = (Vector2)playerTransform.position - targetPos;
             if (toPlayer.sqrMagnitude > 0.001f)
             {
-                Vector2 interceptPoint = targetPos + toPlayer.normalized * interceptOffset;
-                float distFromTarget = Vector2.Distance(interceptPoint, targetPos);
-                if (distFromTarget > maxDistanceFromGuardTarget)
-                    interceptPoint = targetPos + (interceptPoint - targetPos).normalized * maxDistanceFromGuardTarget;
+                Vector2 awayFromPlayer = (-toPlayer).normalized;
+                Vector2 lateral = new Vector2(-toPlayer.y, toPlayer.x).normalized;
+                bool targetIsWarden = target is EnemyWarden;
+                float sideSign = ((GetInstanceID() & 1) == 0) ? 1f : -1f;
+                float supportAngle = targetIsWarden ? 72f : 58f;
+                Vector2 supportDirection = (Quaternion.Euler(0f, 0f, supportAngle * sideSign) * awayFromPlayer).normalized;
+                float orbitRadius = targetIsWarden
+                    ? Mathf.Max(interceptOffset * 2.35f, maxDistanceFromGuardTarget * 0.96f)
+                    : Mathf.Max(interceptOffset * 1.75f, maxDistanceFromGuardTarget * 0.82f);
+                Vector2 interceptPoint = targetPos + supportDirection * orbitRadius;
+
                 if (!EnemyLineOfSightUtility.IsPointNavigable(interceptPoint, 0.28f, transform))
                 {
                     RangedTacticalDecision decision = RangedTacticalMovementUtility.EvaluatePosition(
@@ -371,17 +395,14 @@ public class EnemyWardenLinker : EnemyBase
                     if (decision.foundBetterPosition)
                         interceptPoint = decision.moveTarget;
                 }
+
+                if (Vector2.Distance(interceptPoint, playerTransform.position) < retreatDistance * 1.1f)
+                    interceptPoint = targetPos + awayFromPlayer * Mathf.Max(interceptOffset * 1.8f, maxDistanceFromGuardTarget * 0.88f);
+
                 return interceptPoint;
             }
 
             return targetPos;
-        }
-
-        float distToPlayer = Vector2.Distance(transform.position, playerTransform.position);
-        if (distToPlayer <= retreatDistance)
-        {
-            Vector2 away = ((Vector2)transform.position - (Vector2)playerTransform.position).normalized;
-            return (Vector2)transform.position + away * interceptOffset;
         }
 
         return transform.position;
@@ -510,15 +531,7 @@ public class EnemyWardenLinker : EnemyBase
             return bScore.CompareTo(aScore);
         });
 
-        int allowedLinks = 1;
-        if (candidates.Count >= 1)
-            allowedLinks = 2;
-        if (candidates.Count >= 2 && (CurrentTempoTier >= TempoManager.TempoTier.T2 || Time.time < lastHeavyLinkHitTime + settings.heavyHitWindow))
-            allowedLinks = 3;
-        if (candidates.Count >= 3 && CurrentTempoTier == TempoManager.TempoTier.T3)
-            allowedLinks = 1 + candidates.Count;
-
-        while (result.Count < allowedLinks && candidates.Count >= result.Count)
+        while (candidates.Count >= result.Count)
         {
             EnemyBase nextTarget = candidates[result.Count - 1];
             if (nextTarget == null)

@@ -16,6 +16,9 @@ public class TemporaryEnemySummon : MonoBehaviour
     private Slider lifetimeSlider;
     private Canvas sliderCanvas;
     private bool initialized;
+    private EnemyBase summoner;
+
+    public EnemyBase Summoner => summoner;
 
     public void Configure(float summonDuration, float alpha)
     {
@@ -27,6 +30,11 @@ public class TemporaryEnemySummon : MonoBehaviour
             expireTime = Time.time + duration;
             ApplyTemporaryVisual();
         }
+    }
+
+    public void SetSummoner(EnemyBase sourceEnemy)
+    {
+        summoner = sourceEnemy;
     }
 
     private void Awake()

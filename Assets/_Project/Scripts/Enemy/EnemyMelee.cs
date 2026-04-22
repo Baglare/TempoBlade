@@ -38,6 +38,7 @@ public class EnemyMelee : EnemyBase
     private float wanderTimer;
     private float pursueUntilTime;
     private float nextEliteRendTime;
+    private float recoveryLockUntilTime;
 
     protected override void Start()
     {
@@ -97,6 +98,9 @@ public class EnemyMelee : EnemyBase
             UpdateWander();
             return;
         }
+
+        if (Time.time < recoveryLockUntilTime)
+            return;
 
         if (dist > enemyData.attackRange)
         {
@@ -275,9 +279,16 @@ public class EnemyMelee : EnemyBase
     {
         float finalDuration = duration * tempoConfig.stunDurationMultiplier.Evaluate(CurrentTempoTier);
         base.Stun(finalDuration);
+        StopAllCoroutines();
         isAttacking = false;
         if (hitboxCollider != null)
             hitboxCollider.enabled = false;
+        recoveryLockUntilTime = Time.time + finalDuration + 0.28f;
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+            sr.color = Color.white;
+        if (weaponArcVisual != null)
+            weaponArcVisual.arcAngle = baseArcAngle * tempoConfig.swingArcMultiplier.Evaluate(CurrentTempoTier);
     }
 
     private void AlignAttackToPlayer()

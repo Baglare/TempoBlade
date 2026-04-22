@@ -170,6 +170,18 @@ public class EnemyTrapper : EnemyBase
         }
 
         isPlacingTrap = true;
+        float moveSpeed = GetEffectiveMoveSpeedFromData(moveSpeedModifier);
+        float approachTimeout = Time.time + 1.25f;
+        while (Vector2.Distance(transform.position, spawnPosition) > 0.95f && Time.time < approachTimeout)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, spawnPosition, moveSpeed * Time.deltaTime);
+            if (spriteRenderer != null)
+                spriteRenderer.flipX = spawnPosition.x < transform.position.x;
+            if (animator != null)
+                animator.SetBool("IsMoving", true);
+            yield return null;
+        }
+
         if (animator != null)
             animator.SetTrigger("Attack");
         if (animator != null)
@@ -336,6 +348,16 @@ public class EnemyTrapper : EnemyBase
     {
         if (playerTransform == null)
             return transform.position;
+
+        if (HasEliteMechanic(EliteMechanicType.TrapperTetherTrap))
+        {
+            return EnemySupportUtility.FindBestTrapPlacement(
+                transform,
+                playerTransform,
+                Mathf.Max(2.4f, tempoConfig.t1CentralBiasDistance),
+                Mathf.Max(10, tempoConfig.t2PlacementSamples),
+                tempoConfig.t2ForwardBias + 1f);
+        }
 
         if (CurrentTempoTier == TempoManager.TempoTier.T0)
             return transform.position;

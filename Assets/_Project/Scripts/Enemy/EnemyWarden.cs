@@ -537,6 +537,10 @@ public class EnemyWarden : EnemyBase, IParryReactive
             if (enemy == null || enemy == this || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
                 continue;
 
+            TemporaryEnemySummon temporarySummon = GetComponent<TemporaryEnemySummon>();
+            if (temporarySummon != null && enemy == temporarySummon.Summoner)
+                continue;
+
             float distance = Vector2.Distance(transform.position, enemy.transform.position);
             if (distance > protectSearchRadius)
                 continue;
@@ -558,6 +562,13 @@ public class EnemyWarden : EnemyBase, IParryReactive
         }
 
         protectTarget = bestPriorityTarget != null ? bestPriorityTarget : bestFallbackTarget;
+        if (protectTarget == null)
+        {
+            TemporaryEnemySummon temporarySummon = GetComponent<TemporaryEnemySummon>();
+            if (temporarySummon != null && temporarySummon.Summoner != null && temporarySummon.Summoner.CurrentHealth > 0f && temporarySummon.Summoner.gameObject.activeInHierarchy)
+                protectTarget = temporarySummon.Summoner;
+        }
+
         if (protectTarget != null)
         {
             currentState = WardenState.Guarding;

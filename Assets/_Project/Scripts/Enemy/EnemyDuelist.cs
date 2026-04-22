@@ -70,6 +70,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     private float readWindowEndTime;
     private float duelStanceEndTime;
     private float nextDuelStanceTime;
+    private float guardHoldUntilTime;
     private int guardDebtCount;
     private float guardDebtExpireTime;
     private float nextGuardDebtTime;
@@ -136,6 +137,12 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         float dist = Vector2.Distance(transform.position, playerTransform.position);
         if (dist <= attackRange)
         {
+            if (isGuarding && !guardBroken && Time.time < guardHoldUntilTime)
+            {
+                UpdateAnimatorState(false);
+                return;
+            }
+
             if (HasEliteMechanic(EliteMechanicType.DuelistGuardDebt) && guardDebtCount >= GetGuardDebtRequiredHits() && Time.time >= nextGuardDebtTime && !guardBroken)
             {
                 StartCoroutine(GuardDebtRoutine());
@@ -250,6 +257,8 @@ public class EnemyDuelist : EnemyBase, IParryReactive
                     RefreshGuardDebtMeter();
                 }
 
+                guardHoldUntilTime = Mathf.Max(guardHoldUntilTime, Time.time + 0.45f);
+                nextAttackTime = Mathf.Max(nextAttackTime, guardHoldUntilTime);
                 if (CurrentTempoTier >= TempoManager.TempoTier.T1)
                     readWindowEndTime = Mathf.Max(readWindowEndTime, Time.time + 0.5f);
 
@@ -442,7 +451,10 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     {
         yield return new WaitForSeconds(duration);
         if (!isDead && !guardBroken)
+        {
             isGuarding = true;
+            guardHoldUntilTime = Mathf.Max(guardHoldUntilTime, Time.time + 0.2f);
+        }
     }
 
     private void OnDrawGizmosSelected()
