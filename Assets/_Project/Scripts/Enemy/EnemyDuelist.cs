@@ -178,10 +178,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (isAttacking || playerTransform == null)
             return;
 
-        if (playerTransform.position.x > transform.position.x)
-            transform.localScale = new Vector3(1f, 1f, 1f);
-        else
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+        UpdateScaleFacing(playerTransform.position.x);
     }
 
     private void MoveTowardsPlayer()

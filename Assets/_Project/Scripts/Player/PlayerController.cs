@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -69,6 +70,8 @@ public class PlayerController : MonoBehaviour
     }
 
     private Rigidbody2D rb;
+    private Collider2D[] playerColliders;
+    private readonly HashSet<Collider2D> ignoredEnemyColliders = new HashSet<Collider2D>();
     private Vector2 moveInput;
 
     public PlayerState currentState { get; private set; } = PlayerState.Idle;
@@ -84,6 +87,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        playerColliders = GetComponentsInChildren<Collider2D>(true);
         parrySystem = GetComponent<ParrySystem>();
         playerCombat = GetComponent<PlayerCombat>();
         dashPerkController = GetComponent<DashPerkController>();
@@ -107,6 +111,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
+        RestoreIgnoredEnemyCollisions();
         if (parrySystem != null)
         {
             parrySystem.OnParryResolved -= HandleParryResolved;
@@ -285,6 +290,7 @@ public class PlayerController : MonoBehaviour
         // NOT: Tempo T2/T3 hız bonusu kaldırıldı — skill tree bonusları ile değiştirilecek.
         
         rb.linearVelocity = dodgeDir * currentDodgeSpeed;
+        RefreshDashEnemyCollisionIgnore();
         AudioManager.Play(AudioEventId.PlayerDash, gameObject);
         
         OnDodgeStarted?.Invoke(dir);
@@ -294,6 +300,7 @@ public class PlayerController : MonoBehaviour
     {
         dodgeTimer -= Time.fixedDeltaTime;
 
+        RefreshDashEnemyCollisionIgnore();
         rb.linearVelocity = dodgeDir * currentDodgeSpeed;
 
         // Ghost Trail Spawning
@@ -332,6 +339,7 @@ public class PlayerController : MonoBehaviour
     {
         IsInvulnerable = false;
         dodgeCooldownTimer = baseDodgeCooldown * dashCommitmentDodgeCooldownMultiplier * parryCommitmentDodgeCooldownMultiplier;
+        RestoreIgnoredEnemyCollisions();
 
         rb.linearVelocity = Vector2.zero;
 
@@ -355,11 +363,13 @@ public class PlayerController : MonoBehaviour
         IsInvulnerable    = true;
         ghostSpawnTimer   = 0f; // Ghost Trail hemen başlasın
         rb.linearVelocity = dir * speed;
+        RefreshDashEnemyCollisionIgnore();
     }
 
     private void UpdateExternalDash()
     {
         externalDashTimer -= Time.fixedDeltaTime;
+        RefreshDashEnemyCollisionIgnore();
         rb.linearVelocity  = externalDashDir * externalDashSpeed;
 
         // Ghost Trail Spawning (Dodge ile aynı mekanik)
@@ -373,6 +383,7 @@ public class PlayerController : MonoBehaviour
         if (externalDashTimer <= 0f)
         {
             IsInvulnerable    = false;
+            RestoreIgnoredEnemyCollisions();
             rb.linearVelocity = Vector2.zero;
             currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
 
@@ -427,8 +438,63 @@ public class PlayerController : MonoBehaviour
         IsInvulnerable = false;
         externalDashTimer = 0f;
         dodgeTimer = 0f;
+        RestoreIgnoredEnemyCollisions();
         rb.linearVelocity = Vector2.zero;
         currentState = PlayerState.Idle;
+    }
+
+    private void RefreshDashEnemyCollisionIgnore()
+    {
+        if (playerColliders == null || playerColliders.Length == 0)
+            return;
+
+        EnemyBase[] enemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        for (int i = 0; i < enemies.Length; i++)
+        {
+            EnemyBase enemy = enemies[i];
+            if (enemy == null)
+                continue;
+
+            Collider2D[] enemyColliders = enemy.GetComponentsInChildren<Collider2D>(true);
+            for (int j = 0; j < enemyColliders.Length; j++)
+            {
+                Collider2D enemyCollider = enemyColliders[j];
+                if (enemyCollider == null || enemyCollider.isTrigger)
+                    continue;
+                if (!ignoredEnemyColliders.Add(enemyCollider))
+                    continue;
+
+                for (int k = 0; k < playerColliders.Length; k++)
+                {
+                    Collider2D playerCollider = playerColliders[k];
+                    if (playerCollider == null || playerCollider.isTrigger)
+                        continue;
+                    Physics2D.IgnoreCollision(playerCollider, enemyCollider, true);
+                }
+            }
+        }
+    }
+
+    private void RestoreIgnoredEnemyCollisions()
+    {
+        if (playerColliders == null || playerColliders.Length == 0 || ignoredEnemyColliders.Count == 0)
+            return;
+
+        foreach (Collider2D enemyCollider in ignoredEnemyColliders)
+        {
+            if (enemyCollider == null)
+                continue;
+
+            for (int i = 0; i < playerColliders.Length; i++)
+            {
+                Collider2D playerCollider = playerColliders[i];
+                if (playerCollider == null || playerCollider.isTrigger)
+                    continue;
+                Physics2D.IgnoreCollision(playerCollider, enemyCollider, false);
+            }
+        }
+
+        ignoredEnemyColliders.Clear();
     }
 
     // --- PARRY FEEDBACK ---

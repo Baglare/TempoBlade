@@ -708,9 +708,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
         if (playerTransform == null)
             return;
 
-        Vector3 scale = transform.localScale;
-        scale.x = playerTransform.position.x < transform.position.x ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
-        transform.localScale = scale;
+        UpdateScaleFacing(playerTransform.position.x);
     }
 
     private void UpdateAnimator(bool isMoving)

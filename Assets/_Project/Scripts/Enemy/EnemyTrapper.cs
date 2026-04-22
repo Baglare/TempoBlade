@@ -163,7 +163,7 @@ public class EnemyTrapper : EnemyBase
             transform.position = Vector2.MoveTowards(transform.position, targetRoamPos, speed * Time.deltaTime);
 
             if (spriteRenderer != null)
-                spriteRenderer.flipX = targetRoamPos.x < transform.position.x;
+                UpdateSpriteFacing(spriteRenderer, targetRoamPos.x);
 
             if (animator != null)
                 animator.SetBool("IsMoving", true);
@@ -203,7 +203,7 @@ public class EnemyTrapper : EnemyBase
         {
             transform.position = Vector2.MoveTowards(transform.position, spawnPosition, moveSpeed * Time.deltaTime);
             if (spriteRenderer != null)
-                spriteRenderer.flipX = spawnPosition.x < transform.position.x;
+                UpdateSpriteFacing(spriteRenderer, spawnPosition.x);
             if (animator != null)
                 animator.SetBool("IsMoving", true);
             yield return null;
@@ -247,7 +247,7 @@ public class EnemyTrapper : EnemyBase
             if (animator != null)
                 animator.SetBool("IsMoving", true);
             if (spriteRenderer != null)
-                spriteRenderer.flipX = castAnchor.x < transform.position.x;
+                UpdateSpriteFacing(spriteRenderer, castAnchor.x);
             yield return null;
         }
 

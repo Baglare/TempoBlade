@@ -125,7 +125,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
         if (spriteRenderer == null || playerTransform == null)
             return;
 
-        spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+        UpdateSpriteFacing(spriteRenderer, playerTransform.position.x);
     }
 
     private void MoveTowards(Vector2 target)

@@ -420,7 +420,7 @@ public class EnemyDasher : EnemyBase
     {
         if (spriteRenderer == null || playerTransform == null)
             return;
-        spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+        UpdateSpriteFacing(spriteRenderer, playerTransform.position.x);
     }
 
     private void OnDrawGizmosSelected()

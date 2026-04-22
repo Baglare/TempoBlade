@@ -258,7 +258,7 @@ public class EnemyResonator : EnemyBase
         }
 
         if (spriteRenderer != null)
-            spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+            UpdateSpriteFacing(spriteRenderer, playerTransform.position.x);
 
         if (animator != null)
             animator.SetBool("IsMoving", isMoving);
@@ -475,15 +475,22 @@ public class EnemyResonator : EnemyBase
         EnemySupportUtility.GatherNearbyAllies(transform, settings.pulseRadius, nearbyAllies, this);
         for (int i = 0; i < nearbyAllies.Count; i++)
         {
-            nearbyAllies[i]?.GetSupportBuffReceiver()?.ApplyRallyBuff(
+            EnemyBase ally = nearbyAllies[i];
+            ally?.GetSupportBuffReceiver()?.ApplyRallyBuff(
                 settings.pulseDuration,
                 settings.pulseMoveMultiplier,
                 settings.pulseAttackMultiplier,
                 true);
+
+            if (ally != null && DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(ally.transform.position + Vector3.up * 1.6f, "CRESCENDO+", settings.meterColor, 5.4f);
         }
 
         if (TempoManager.Instance != null)
             TempoManager.Instance.AddTempo(-settings.playerRhythmShock);
+
+        if (playerTransform != null && DamagePopupManager.Instance != null)
+            DamagePopupManager.Instance.CreateText(playerTransform.position + Vector3.up * 1.8f, "RHYTHM SHOCK", settings.meterColor, 6f);
 
         SupportPulseVisualUtility.SpawnPulse(transform.position, 0.3f, settings.pulseRadius, 0.35f, settings.meterColor);
         if (spriteRenderer != null)

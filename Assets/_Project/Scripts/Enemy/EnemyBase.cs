@@ -9,6 +9,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public EnemySO enemyData;
     [Header("Stun Feedback")]
     [SerializeField] protected Color stunTintColor = new Color(1f, 0.55f, 0.15f, 1f);
+    [Header("Facing")]
+    [SerializeField] protected float facingTurnDelay = 0.09f;
 
     protected float currentHealth;
     protected bool isStunned;
@@ -23,6 +25,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected TempoManager.TempoTier currentTempoTier = TempoManager.TempoTier.T0;
     [NonSerialized] private bool isElite;
     [NonSerialized] private EliteProfileSO eliteProfile;
+    private int currentFacingSign = 1;
+    private int pendingFacingSign = 1;
+    private float facingTurnCommitTime;
+    private bool facingStateInitialized;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => GetEffectiveMaxHealth(enemyData != null ? enemyData.maxHealth : 100f);
@@ -431,5 +437,53 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             time = Time.time,
             worldPosition = transform.position
         });
+    }
+
+    protected void UpdateSpriteFacing(SpriteRenderer targetRenderer, float targetX)
+    {
+        if (targetRenderer == null)
+            return;
+
+        int currentVisualSign = targetRenderer.flipX ? -1 : 1;
+        int resolvedSign = ResolveFacingSign(targetX, currentVisualSign);
+        targetRenderer.flipX = resolvedSign < 0;
+    }
+
+    protected void UpdateScaleFacing(float targetX)
+    {
+        int currentVisualSign = transform.localScale.x >= 0f ? 1 : -1;
+        int resolvedSign = ResolveFacingSign(targetX, currentVisualSign);
+
+        Vector3 scale = transform.localScale;
+        scale.x = Mathf.Abs(scale.x) * resolvedSign;
+        transform.localScale = scale;
+    }
+
+    private int ResolveFacingSign(float targetX, int currentVisualSign)
+    {
+        EnsureFacingStateInitialized(currentVisualSign);
+
+        int targetSign = targetX < transform.position.x ? -1 : 1;
+        if (targetSign != pendingFacingSign)
+        {
+            pendingFacingSign = targetSign;
+            facingTurnCommitTime = Time.time + Mathf.Max(0f, facingTurnDelay);
+        }
+
+        if (Time.time >= facingTurnCommitTime)
+            currentFacingSign = pendingFacingSign;
+
+        return currentFacingSign;
+    }
+
+    private void EnsureFacingStateInitialized(int currentVisualSign)
+    {
+        if (facingStateInitialized)
+            return;
+
+        currentFacingSign = currentVisualSign >= 0 ? 1 : -1;
+        pendingFacingSign = currentFacingSign;
+        facingTurnCommitTime = Time.time;
+        facingStateInitialized = true;
     }
 }

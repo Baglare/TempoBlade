@@ -114,8 +114,8 @@ public class EnemyMelee : EnemyBase
             SpriteRenderer sr = GetComponent<SpriteRenderer>();
             if (sr != null)
             {
-                if (direction.x > 0) sr.flipX = false;
-                else if (direction.x < 0) sr.flipX = true;
+                if (Mathf.Abs(direction.x) > 0.001f)
+                    UpdateSpriteFacing(sr, player.position.x);
             }
         }
         else

@@ -347,7 +347,7 @@ public class EnemyWardenLinker : EnemyBase
         }
 
         if (spriteRenderer != null)
-            spriteRenderer.flipX = playerTransform.position.x < transform.position.x;
+            UpdateSpriteFacing(spriteRenderer, playerTransform.position.x);
 
         if (animator != null)
             animator.SetBool("IsMoving", isMoving);

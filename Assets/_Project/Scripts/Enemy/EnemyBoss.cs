@@ -123,9 +123,7 @@ public class EnemyBoss : EnemyBase, IParryReactive
     private void FacePlayer()
     {
         if (player == null) return;
-        Vector3 sc = transform.localScale;
-        sc.x = player.position.x < transform.position.x ? -Mathf.Abs(sc.x) : Mathf.Abs(sc.x);
-        transform.localScale = sc;
+        UpdateScaleFacing(player.position.x);
     }
 
     private void ChooseAttack(float distToPlayer)

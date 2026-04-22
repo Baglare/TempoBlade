@@ -165,7 +165,7 @@ public class EnemyKamikaze : EnemyBase
         if (spriteRenderer == null)
             return;
 
-        spriteRenderer.flipX = target.x < transform.position.x;
+        UpdateSpriteFacing(spriteRenderer, target.x);
     }
 
     private Vector2 GetChaseTargetPosition()
