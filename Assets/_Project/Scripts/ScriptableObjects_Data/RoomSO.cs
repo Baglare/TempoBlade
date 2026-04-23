@@ -24,6 +24,9 @@ public class RoomSO : ScriptableObject
     public EncounterType encounterType = EncounterType.Normal;
     public DifficultyTier difficulty = DifficultyTier.Normal;
 
+    [Header("Elite Spawn Layer")]
+    public EliteSpawnConfig eliteSpawnConfig = new EliteSpawnConfig();
+
     [Header("Rewards")]
     public int goldReward;
     public WeaponSO possibleWeaponDrop;
@@ -53,7 +56,7 @@ public class EnemySpawn
 
     [HideInInspector] public bool isElite;
 
-    [Tooltip("ForceElite veya ChanceBased modunda kullanilacak elite profile. Normal akista bunu RoomSO uzerinden ver.")]
+    [Tooltip("ForceElite/ChanceBased icin dogrudan kullanilir. NormalOnly modunda da doluysa yeni elite conversion layer bunu aday profile olarak kullanir.")]
     public EliteProfileSO eliteProfile;
 
     public int count;

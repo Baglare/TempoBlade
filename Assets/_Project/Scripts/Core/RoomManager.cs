@@ -16,11 +16,16 @@ public class RoomManager : MonoBehaviour
     [Header("Rewards Setup")]
     [Tooltip("Kapılara rastgele dağıtılacak tüm olası ödül SO'ları (Inspector'dan sürükle)")]
     public RewardDefinitionSO[] possibleRewards;
+    [Header("Elite Spawn Debug")]
+    public EliteSpawnDebugOverrides eliteSpawnDebugOverrides = new EliteSpawnDebugOverrides();
 
     [Header("State")]
     public bool isRoomActive = false;
     public int currentWaveIndex = 0;
     public List<GameObject> activeEnemies = new List<GameObject>();
+    public EliteSpawnWaveMetrics LastEliteSpawnMetrics { get; private set; } = new EliteSpawnWaveMetrics();
+
+    private readonly EliteSpawnHistoryState eliteSpawnHistory = new EliteSpawnHistoryState();
 
     private void Awake()
     {
@@ -71,6 +76,8 @@ public class RoomManager : MonoBehaviour
 
         // --- RESET STATE FOR NEW ROOM ---
         activeEnemies.Clear();
+        if (RunManager.Instance != null && RunManager.Instance.roomsCleared <= 0)
+            eliteSpawnHistory.Clear();
 
         // Sahnede önceden yerleştirilmiş düşmanları temizle
         EnemyBase[] existingEnemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
@@ -175,32 +182,39 @@ public class RoomManager : MonoBehaviour
             yield break;
         }
 
-        // Bu wave icindeki tum dusman gruplarini don
-        foreach (var enemyGroup in currentWave.enemyGroups)
-        {
-            if (enemyGroup.enemyType == null || enemyGroup.count <= 0) continue;
+        List<EliteSpawnPlanEntry> spawnPlan = BuildWaveSpawnPlan(currentWave);
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        PlayerCombat playerCombat = player != null ? player.GetComponent<PlayerCombat>() : null;
+        LastEliteSpawnMetrics = EliteSpawnLayer.ApplyConversion(
+            currentRoomData,
+            currentWave,
+            currentWaveIndex,
+            spawnPlan,
+            playerCombat,
+            eliteSpawnHistory,
+            eliteSpawnDebugOverrides,
+            LastEliteSpawnMetrics);
 
-            for (int i = 0; i < enemyGroup.count; i++)
+        for (int i = 0; i < spawnPlan.Count; i++)
+        {
+            EliteSpawnPlanEntry planEntry = spawnPlan[i];
+            if (planEntry == null || planEntry.enemyType == null || planEntry.enemyType.prefab == null)
+                continue;
+
+            Transform sp = validSpawnPoints[Random.Range(0, validSpawnPoints.Count)];
+            if (planEntry.enemyType.prefab != null)
             {
-                // Gecerli noktalardan rastgele sec
-                Transform sp = validSpawnPoints[Random.Range(0, validSpawnPoints.Count)];
-                
-                // Prefab instantiation
-                if (enemyGroup.enemyType.prefab != null)
+                GameObject enemy = Instantiate(planEntry.enemyType.prefab, sp.position, Quaternion.identity);
+                EnemyBase eb = enemy.GetComponent<EnemyBase>();
+                if (eb != null)
                 {
-                    GameObject enemy = Instantiate(enemyGroup.enemyType.prefab, sp.position, Quaternion.identity);
-                    EnemyBase eb = enemy.GetComponent<EnemyBase>();
-                    if (eb != null)
-                    {
-                        eb.enemyData = enemyGroup.enemyType; // Datayi inject et
-                        ApplyEnemySpawnEliteMode(eb, enemyGroup);
-                    }
-                    activeEnemies.Add(enemy);
+                    eb.enemyData = planEntry.enemyType;
+                    ApplySpawnPlanElite(eb, planEntry);
                 }
-                
-                // Ayni guptaki dusmanlar arasi bekleme
-                yield return new WaitForSeconds(enemyGroup.spawnDelay); 
+                activeEnemies.Add(enemy);
             }
+
+            yield return new WaitForSeconds(planEntry.spawnDelay);
         }
     }
 
@@ -335,42 +349,32 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    private void ApplyEnemySpawnEliteMode(EnemyBase enemyBase, EnemySpawn enemySpawn)
+    private List<EliteSpawnPlanEntry> BuildWaveSpawnPlan(RoomWave wave)
     {
-        if (enemyBase == null || enemySpawn == null)
+        List<EliteSpawnPlanEntry> plan = new List<EliteSpawnPlanEntry>();
+        if (wave == null || wave.enemyGroups == null)
+            return plan;
+
+        for (int groupIndex = 0; groupIndex < wave.enemyGroups.Count; groupIndex++)
+        {
+            EnemySpawn enemyGroup = wave.enemyGroups[groupIndex];
+            if (enemyGroup == null || enemyGroup.enemyType == null || enemyGroup.count <= 0)
+                continue;
+
+            for (int instanceIndex = 0; instanceIndex < enemyGroup.count; instanceIndex++)
+                plan.Add(new EliteSpawnPlanEntry(enemyGroup, groupIndex, instanceIndex));
+        }
+
+        return plan;
+    }
+
+    private void ApplySpawnPlanElite(EnemyBase enemyBase, EliteSpawnPlanEntry planEntry)
+    {
+        if (enemyBase == null)
             return;
 
         enemyBase.ClearEliteProfile();
-
-        switch (enemySpawn.eliteSpawnMode)
-        {
-            case EliteSpawnMode.ForceElite:
-                if (enemySpawn.eliteProfile != null)
-                {
-                    enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
-                }
-                else
-                {
-                    Debug.LogWarning($"RoomManager: ForceElite secili ama eliteProfile bos. Enemy normal dogdu: {enemySpawn.enemyType?.name}");
-                }
-                return;
-
-            case EliteSpawnMode.ChanceBased:
-                bool shouldSpawnElite = enemySpawn.ShouldSpawnElite();
-                if (shouldSpawnElite && enemySpawn.eliteProfile != null)
-                {
-                    enemyBase.ApplyEliteProfile(enemySpawn.eliteProfile);
-                }
-                else if (shouldSpawnElite)
-                {
-                    Debug.LogWarning($"RoomManager: ChanceBased elite secildi ama eliteProfile bos. Enemy normal dogdu: {enemySpawn.enemyType?.name}");
-                }
-                return;
-
-            case EliteSpawnMode.LegacyPrefabDefault:
-            case EliteSpawnMode.NormalOnly:
-            default:
-                return;
-        }
+        if (planEntry != null && planEntry.isElite && planEntry.eliteProfile != null)
+            enemyBase.ApplyEliteProfile(planEntry.eliteProfile);
     }
 }

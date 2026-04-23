@@ -20,6 +20,12 @@ public class EnemySO : ScriptableObject
     [Tooltip("Kapaliysa bu dusman XP/affinity sayaçlarinda kullanilmaz. Training dummy gibi hedefler icin kapat.")]
     public bool countsForProgression = true;
 
+    [Header("Elite Conversion")]
+    [Tooltip("Kapaliysa bu dusman elite conversion aday havuzuna girmez.")]
+    public bool eliteEligible = true;
+    [Tooltip("Bu tipin elite conversion maliyetini carpan olarak etkiler.")]
+    public float eliteCostMultiplier = 1f;
+
     [Header("Warden")]
     [Tooltip("Warden bu dusmani koruma adayi olarak ne kadar oncelikli gorsun?")]
     public WardenProtectPriority wardenProtectPriority = WardenProtectPriority.None;
