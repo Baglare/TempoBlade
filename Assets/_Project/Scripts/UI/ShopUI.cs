@@ -1,12 +1,11 @@
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Hub dukkan arayuzu. Kalici stat yukseltmeleri ve silah satisi yapar.
-/// Tum maliyet/artis degerleri UpgradeConfigSO'dan alinir — Inspector'dan ayarlanabilir.
-/// 
-/// Silah sistemi: Sol tarafta silah listesi, sag tarafta secilen silah detayi.
+/// Responsive modal shell runtime'da kurulur, mevcut veri akisi korunur.
 /// </summary>
 public class ShopUI : MonoBehaviour
 {
@@ -28,48 +27,68 @@ public class ShopUI : MonoBehaviour
     public TextMeshProUGUI tempoInfoText;
 
     [Header("Weapon Shop - Liste (Sol)")]
-    [Tooltip("Satisa sunulacak silahlar (WeaponSO listesi)")]
     public WeaponSO[] weaponsForSale;
-    [Tooltip("Silah isim butonlarinin oluşturulacağı parent (sol panel icindeki Scroll Content)")]
     public Transform weaponListParent;
-    [Tooltip("Basit text buton prefab'i (sadece isim gostermek icin)")]
     public GameObject weaponButtonPrefab;
 
     [Header("Weapon Shop - Detay (Sag)")]
-    [Tooltip("Silah detay paneli (sag taraf). Silah secilince aktif olur.")]
     public GameObject weaponDetailPanel;
-    [Tooltip("Secilen silah adi")]
     public TextMeshProUGUI weaponDetailName;
-    [Tooltip("Secilen silah statlari (Hasar, Hiz, Menzil, Offset)")]
     public TextMeshProUGUI weaponDetailStats;
-    [Tooltip("Secilen silah fiyati (sag alt kose)")]
     public TextMeshProUGUI weaponDetailPrice;
-    [Tooltip("Satin Al / Mevcut butonu")]
     public Button weaponBuyButton;
-    [Tooltip("Satin Al butonunun text'i")]
     public TextMeshProUGUI weaponBuyButtonText;
 
-    // Su an secili silah
+    private const string ModalId = "shop";
+
     private WeaponSO selectedWeapon;
+    private Canvas cachedCanvas;
+    private bool layoutBuilt;
+    private bool isOpen;
+
+    public bool IsOpen => isOpen;
+
+    private void Awake()
+    {
+        cachedCanvas = GetComponent<Canvas>();
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponentInParent<Canvas>();
+    }
 
     private void OnEnable()
     {
+        EnsureRuntimeLayout();
         RefreshUI();
+    }
+
+    private void OnDisable()
+    {
+        isOpen = false;
     }
 
     private void Update()
     {
-        // ESC ile dukkani kapat
-        if (UnityEngine.InputSystem.Keyboard.current != null &&
-            UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
+        if (!isOpen)
+            return;
+
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             CloseShop();
-        }
     }
 
-    /// <summary>
-    /// Tum UI elemanlarini gunceller.
-    /// </summary>
+    public void OpenPanel()
+    {
+        EnsureRuntimeLayout();
+
+        if (!ModalUIManager.Instance.TryOpenModal(ModalId, gameObject))
+            return;
+
+        SetPlayerMovement(false);
+        gameObject.SetActive(true);
+        isOpen = true;
+        HubInteractable.HideAllPrompts();
+        RefreshUI();
+    }
+
     public void RefreshUI()
     {
         if (SaveManager.Instance == null)
@@ -86,73 +105,63 @@ public class ShopUI : MonoBehaviour
 
         SaveData data = SaveManager.Instance.data;
 
-        // Altin goster
         if (goldText != null)
-            goldText.text = "Altın: " + data.totalGold;
+            goldText.text = "Altin: " + data.totalGold;
 
-        // --- Yukseltme bilgileri ---
-        const float baseMaxHealth     = 100f;
-        const float baseDamageMultiplier = 1.0f;
-        const float baseTempoGain     = 1.0f;
+        const float baseMaxHealth = 100f;
+        const float baseDamageMultiplier = 1f;
+        const float baseTempoGain = 1f;
 
-        // Can
         RefreshUpgradeSlot(
-            infoText:   healthInfoText,
-            button:     upgradeHealthButton,
-            label:      "Can",
+            infoText: healthInfoText,
+            button: upgradeHealthButton,
+            label: "Can",
             currentLevel: data.bonusMaxHealth,
-            maxLevel:   upgradeConfig.healthMaxLevel,
+            maxLevel: upgradeConfig.healthMaxLevel,
             currentVal: upgradeConfig.GetMaxHealth(data.bonusMaxHealth, baseMaxHealth),
-            nextVal:    upgradeConfig.GetMaxHealth(data.bonusMaxHealth + 1, baseMaxHealth),
-            valFormat:  "F0",
-            prefix: "", suffix: "",
+            nextVal: upgradeConfig.GetMaxHealth(data.bonusMaxHealth + 1, baseMaxHealth),
+            valFormat: "F0",
+            prefix: "",
+            suffix: "",
             cost: upgradeConfig.GetCost(upgradeConfig.healthBaseCost, upgradeConfig.healthCostPerLevel, data.bonusMaxHealth)
         );
 
-        // Hasar Çarpanı
         RefreshUpgradeSlot(
-            infoText:   damageInfoText,
-            button:     upgradeDamageButton,
-            label:      "Hasar Çarpanı",
+            infoText: damageInfoText,
+            button: upgradeDamageButton,
+            label: "Hasar Carpani",
             currentLevel: data.bonusDamageMultiplier,
-            maxLevel:   upgradeConfig.damageMaxLevel,
+            maxLevel: upgradeConfig.damageMaxLevel,
             currentVal: upgradeConfig.GetDamageMultiplier(data.bonusDamageMultiplier, baseDamageMultiplier),
-            nextVal:    upgradeConfig.GetDamageMultiplier(data.bonusDamageMultiplier + 1, baseDamageMultiplier),
-            valFormat:  "F2",
-            prefix: "x", suffix: "",
+            nextVal: upgradeConfig.GetDamageMultiplier(data.bonusDamageMultiplier + 1, baseDamageMultiplier),
+            valFormat: "F2",
+            prefix: "x",
+            suffix: "",
             cost: upgradeConfig.GetCost(upgradeConfig.damageBaseCost, upgradeConfig.damageCostPerLevel, data.bonusDamageMultiplier)
         );
 
-        // Tempo Kazanımı
         RefreshUpgradeSlot(
-            infoText:   tempoInfoText,
-            button:     upgradeTempoButton,
-            label:      "Tempo Kazanımı",
+            infoText: tempoInfoText,
+            button: upgradeTempoButton,
+            label: "Tempo Kazanimi",
             currentLevel: data.bonusTempoGain,
-            maxLevel:   upgradeConfig.tempoMaxLevel,
+            maxLevel: upgradeConfig.tempoMaxLevel,
             currentVal: upgradeConfig.GetTempoGainMultiplier(data.bonusTempoGain, baseTempoGain),
-            nextVal:    upgradeConfig.GetTempoGainMultiplier(data.bonusTempoGain + 1, baseTempoGain),
-            valFormat:  "F2",
-            prefix: "x", suffix: "",
+            nextVal: upgradeConfig.GetTempoGainMultiplier(data.bonusTempoGain + 1, baseTempoGain),
+            valFormat: "F2",
+            prefix: "x",
+            suffix: "",
             cost: upgradeConfig.GetCost(upgradeConfig.tempoBaseCost, upgradeConfig.tempoCostPerLevel, data.bonusTempoGain)
         );
 
-        // Silah listesini guncelle
         RefreshWeaponList();
 
-        // Secili silah varsa detayini guncelle
         if (selectedWeapon != null)
             ShowWeaponDetail(selectedWeapon);
         else if (weaponDetailPanel != null)
             weaponDetailPanel.SetActive(false);
     }
 
-    // ===================== YARDIMCI: UPGRADE SLOT GUNCELLEME =====================
-
-    /// <summary>
-    /// Tek bir upgrade satırının info text'ini ve butonunu günceller.
-    /// Max seviyeye ulaşıldıysa butonu devre dışı bırakır ve "MAKS" gösterir.
-    /// </summary>
     private void RefreshUpgradeSlot(
         TextMeshProUGUI infoText, Button button,
         string label, int currentLevel, int maxLevel,
@@ -160,44 +169,41 @@ public class ShopUI : MonoBehaviour
         string prefix, string suffix, int cost)
     {
         bool isMaxed = currentLevel >= maxLevel;
-        string bar   = UpgradeConfigSO.BuildProgressBar(currentLevel, maxLevel);
+        string bar = UpgradeConfigSO.BuildProgressBar(currentLevel, maxLevel);
 
         if (infoText != null)
         {
             if (isMaxed)
             {
-                infoText.text = $"<b>{label}</b>  <color=#FFD700>{bar}</color>  {currentLevel}/{maxLevel}\n"
-                              + $"<color=#FFD700>✦ MAKSİMUM SEVİYE ✦</color>";
+                infoText.text = $"<b>{label}</b>  <color=#FFD700>{bar}</color>  {currentLevel}/{maxLevel}\n" +
+                                "<color=#FFD700>MAKSIMUM SEVIYE</color>";
             }
             else
             {
                 string goldColor = SaveManager.Instance != null && SaveManager.Instance.data.totalGold >= cost
                     ? "#FFD700" : "#FF6666";
-                infoText.text = $"<b>{label}</b>  {bar}  {currentLevel}/{maxLevel}\n"
-                              + $"{prefix}{currentVal.ToString(valFormat)}{suffix}  →  "
-                              + $"{prefix}{nextVal.ToString(valFormat)}{suffix}"
-                              + $"  <color={goldColor}>[{cost}g]</color>";
+
+                infoText.text = $"<b>{label}</b>  {bar}  {currentLevel}/{maxLevel}\n" +
+                                $"{prefix}{currentVal.ToString(valFormat)}{suffix}  ->  {prefix}{nextVal.ToString(valFormat)}{suffix}" +
+                                $"  <color={goldColor}>[{cost}g]</color>";
             }
         }
 
         if (button != null)
-        {
             button.interactable = !isMaxed;
-        }
     }
-
-    // ===================== STAT YUKSELTMELERI =====================
 
     public void UpgradeHealth()
     {
         if (upgradeConfig == null || SaveManager.Instance == null) return;
         if (SaveManager.Instance.data.bonusMaxHealth >= upgradeConfig.healthMaxLevel) return;
+
         int cost = upgradeConfig.GetCost(upgradeConfig.healthBaseCost, upgradeConfig.healthCostPerLevel, SaveManager.Instance.data.bonusMaxHealth);
         if (SaveManager.Instance.SpendGold(cost))
         {
             SaveManager.Instance.data.bonusMaxHealth++;
             SaveManager.Instance.Save();
-            FindFirstObjectByType<PlayerCombat>()?.RefreshFromSave(); // Slider'ı anında güncelle
+            FindFirstObjectByType<PlayerCombat>()?.RefreshFromSave();
             RefreshUI();
         }
     }
@@ -206,12 +212,13 @@ public class ShopUI : MonoBehaviour
     {
         if (upgradeConfig == null || SaveManager.Instance == null) return;
         if (SaveManager.Instance.data.bonusDamageMultiplier >= upgradeConfig.damageMaxLevel) return;
+
         int cost = upgradeConfig.GetCost(upgradeConfig.damageBaseCost, upgradeConfig.damageCostPerLevel, SaveManager.Instance.data.bonusDamageMultiplier);
         if (SaveManager.Instance.SpendGold(cost))
         {
             SaveManager.Instance.data.bonusDamageMultiplier++;
             SaveManager.Instance.Save();
-            FindFirstObjectByType<PlayerCombat>()?.RefreshFromSave(); // damageMultiplier'ı güncelle
+            FindFirstObjectByType<PlayerCombat>()?.RefreshFromSave();
             RefreshUI();
         }
     }
@@ -220,6 +227,7 @@ public class ShopUI : MonoBehaviour
     {
         if (upgradeConfig == null || SaveManager.Instance == null) return;
         if (SaveManager.Instance.data.bonusTempoGain >= upgradeConfig.tempoMaxLevel) return;
+
         int cost = upgradeConfig.GetCost(upgradeConfig.tempoBaseCost, upgradeConfig.tempoCostPerLevel, SaveManager.Instance.data.bonusTempoGain);
         if (SaveManager.Instance.SpendGold(cost))
         {
@@ -229,26 +237,18 @@ public class ShopUI : MonoBehaviour
         }
     }
 
-    // ===================== SILAH DUKKAN - LISTE =====================
-
-    /// <summary>
-    /// Sol taraftaki silah isim listesini olusturur.
-    /// Her silah icin bir buton: "Katana", "Kan Katili" gibi.
-    /// Tiklaninca sag tarafta detay paneli acilir.
-    /// </summary>
     private void RefreshWeaponList()
     {
-        if (weaponListParent == null || weaponButtonPrefab == null || weaponsForSale == null) return;
+        if (weaponListParent == null || weaponButtonPrefab == null || weaponsForSale == null)
+            return;
 
-        // Onceki butonlari temizle
         foreach (Transform child in weaponListParent)
-        {
             Destroy(child.gameObject);
-        }
 
         foreach (WeaponSO weapon in weaponsForSale)
         {
-            if (weapon == null) continue;
+            if (weapon == null)
+                continue;
 
             GameObject btnObj = Instantiate(weaponButtonPrefab, weaponListParent);
             Button btn = btnObj.GetComponent<Button>();
@@ -257,58 +257,51 @@ public class ShopUI : MonoBehaviour
             if (btnText != null)
             {
                 btnText.text = weapon.weaponName;
+                ModalUIRuntimeUtility.NormalizeText(btnText, false);
+                btnText.color = new Color(0.95f, 0.97f, 1f, 1f);
+                btnText.fontSize = 18f;
             }
 
             if (btn != null)
             {
-                WeaponSO wpn = weapon; // closure icin local copy
-                btn.onClick.AddListener(() => ShowWeaponDetail(wpn));
+                ModalUIRuntimeUtility.NormalizeButton(btn, 50f);
+                Image image = btn.GetComponent<Image>();
+                if (image != null)
+                    image.color = new Color(0.16f, 0.20f, 0.28f, 0.98f);
+
+                WeaponSO cachedWeapon = weapon;
+                btn.onClick.AddListener(() => ShowWeaponDetail(cachedWeapon));
             }
         }
     }
 
-    // ===================== SILAH DUKKAN - DETAY =====================
-
-    /// <summary>
-    /// Sag taraftaki detay panelini secilen silah bilgisiyle doldurur.
-    /// </summary>
     private void ShowWeaponDetail(WeaponSO weapon)
     {
-        if (weapon == null) return;
+        if (weapon == null)
+            return;
 
         selectedWeapon = weapon;
 
-        // Detay panelini ac
         if (weaponDetailPanel != null)
             weaponDetailPanel.SetActive(true);
 
         bool isUnlocked = SaveManager.Instance != null && SaveManager.Instance.IsWeaponUnlocked(weapon.weaponName);
 
-        // Silah adi
         if (weaponDetailName != null)
-        {
-            weaponDetailName.text = isUnlocked
-                ? weapon.weaponName + " (ACILDI)"
-                : weapon.weaponName;
-        }
+            weaponDetailName.text = isUnlocked ? weapon.weaponName + " (ACILDI)" : weapon.weaponName;
 
-        // Stat bilgileri
         if (weaponDetailStats != null)
         {
             weaponDetailStats.text =
-                "Hasar: " + weapon.damage
-                + "\nSaldiri Hizi: " + weapon.attackRate.ToString("F2")
-                + "\nMenzil: " + weapon.range.ToString("F1")
-                + "\nOffset: " + weapon.attackOffset.ToString("F1");
+                "Hasar: " + weapon.damage +
+                "\nSaldiri Hizi: " + weapon.attackRate.ToString("F2") +
+                "\nMenzil: " + weapon.range.ToString("F1") +
+                "\nOffset: " + weapon.attackOffset.ToString("F1");
         }
 
-        // Fiyat (sag alt kose)
         if (weaponDetailPrice != null)
-        {
             weaponDetailPrice.text = isUnlocked ? "0g" : weapon.price + "g";
-        }
 
-        // Satin Al butonu
         if (weaponBuyButton != null)
         {
             weaponBuyButton.onClick.RemoveAllListeners();
@@ -317,12 +310,14 @@ public class ShopUI : MonoBehaviour
             {
                 if (weaponBuyButtonText != null)
                     weaponBuyButtonText.text = "Mevcut";
+
                 weaponBuyButton.interactable = false;
             }
             else
             {
                 if (weaponBuyButtonText != null)
-                    weaponBuyButtonText.text = "Satın Al";
+                    weaponBuyButtonText.text = "Satin Al";
+
                 weaponBuyButton.interactable = true;
 
                 string wpnName = weapon.weaponName;
@@ -334,7 +329,9 @@ public class ShopUI : MonoBehaviour
 
     private void BuyWeapon(string weaponName, int price)
     {
-        if (SaveManager.Instance == null) return;
+        if (SaveManager.Instance == null)
+            return;
+
         if (SaveManager.Instance.SpendGold(price))
         {
             SaveManager.Instance.UnlockWeapon(weaponName);
@@ -342,13 +339,141 @@ public class ShopUI : MonoBehaviour
         }
     }
 
-    // ===================== PANEL KONTROL =====================
-
     public void CloseShop()
     {
-        if (HubManager.Instance != null)
-            HubManager.Instance.CloseShop();
-        else
-            gameObject.SetActive(false);
+        isOpen = false;
+        ModalUIManager.Instance.CloseModal(ModalId);
+        SetPlayerMovement(true);
+        gameObject.SetActive(false);
+        HubInteractable.ShowAllPrompts();
+    }
+
+    private void EnsureRuntimeLayout()
+    {
+        if (layoutBuilt)
+            return;
+
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponent<Canvas>();
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponentInParent<Canvas>();
+
+        ModalUIRuntimeUtility.EnsureFullscreenCanvas(cachedCanvas);
+        ModalUIRuntimeUtility.Stretch(GetComponent<RectTransform>());
+
+        RectTransform overlay = ModalUIRuntimeUtility.CreateOrGetOverlayRoot(transform, "ModalOverlay");
+        RectTransform shell = ModalUIRuntimeUtility.CreateCard(
+            overlay,
+            "ShopShell",
+            new Color(0.08f, 0.10f, 0.14f, 0.98f),
+            new Vector2(0.03f, 0.04f),
+            new Vector2(0.97f, 0.96f),
+            Vector2.zero,
+            Vector2.zero);
+
+        RectTransform header = new GameObject("Header", typeof(RectTransform)).GetComponent<RectTransform>();
+        header.SetParent(shell, false);
+        header.anchorMin = new Vector2(0.03f, 0.90f);
+        header.anchorMax = new Vector2(0.97f, 0.97f);
+        header.offsetMin = Vector2.zero;
+        header.offsetMax = Vector2.zero;
+
+        ModalUIRuntimeUtility.CreateTitle(header, "DUKKAN");
+        ModalUIRuntimeUtility.CreateCloseButton(header, CloseShop);
+
+        RectTransform body = new GameObject("Body", typeof(RectTransform), typeof(ResponsiveSplitLayout)).GetComponent<RectTransform>();
+        body.SetParent(shell, false);
+        body.anchorMin = new Vector2(0.03f, 0.05f);
+        body.anchorMax = new Vector2(0.97f, 0.87f);
+        body.offsetMin = Vector2.zero;
+        body.offsetMax = Vector2.zero;
+
+        ResponsiveSplitLayout split = body.GetComponent<ResponsiveSplitLayout>();
+        split.keepFirstSectionWiderOnDesktop = true;
+        split.firstSectionFlexibleWidth = 1f;
+        split.secondSectionFlexibleWidth = 1.15f;
+
+        RectTransform left = ModalUIRuntimeUtility.CreateSection(body, "UpgradeSection", ModalUIRuntimeUtility.SectionColor);
+        RectTransform right = ModalUIRuntimeUtility.CreateSection(body, "WeaponSection", ModalUIRuntimeUtility.SectionAltColor);
+
+        CreateSectionLabel(left, "Kalici Gelisim");
+        ModalUIRuntimeUtility.NormalizeText(goldText, false, 28f);
+        ModalUIRuntimeUtility.Wrap(goldText.rectTransform, left, "GoldRow", 32f);
+
+        BuildUpgradeCard(left, "Can Gelisimi", healthInfoText, upgradeHealthButton);
+        BuildUpgradeCard(left, "Hasar Gelisimi", damageInfoText, upgradeDamageButton);
+        BuildUpgradeCard(left, "Tempo Gelisimi", tempoInfoText, upgradeTempoButton);
+
+        CreateSectionLabel(right, "Silah Tezgahi");
+        RectTransform listContent = weaponListParent as RectTransform;
+        if (listContent != null)
+            ModalUIRuntimeUtility.CreateScrollableList(right, "WeaponListViewport", listContent);
+
+        if (weaponDetailPanel != null)
+        {
+            LayoutElement detailLayout = weaponDetailPanel.GetComponent<LayoutElement>();
+            if (detailLayout == null)
+                detailLayout = weaponDetailPanel.AddComponent<LayoutElement>();
+
+            detailLayout.flexibleHeight = 1f;
+            detailLayout.minHeight = 220f;
+            weaponDetailPanel.transform.SetParent(right, false);
+            RectTransform detailRect = weaponDetailPanel.GetComponent<RectTransform>();
+            ModalUIRuntimeUtility.StretchHorizontally(detailRect);
+        }
+
+        ModalUIRuntimeUtility.NormalizeText(weaponDetailName, false, 30f);
+        ModalUIRuntimeUtility.NormalizeText(weaponDetailStats, true, 110f);
+        ModalUIRuntimeUtility.NormalizeText(weaponDetailPrice, false, 24f);
+        ModalUIRuntimeUtility.NormalizeText(weaponBuyButtonText, false);
+        ModalUIRuntimeUtility.NormalizeButton(weaponBuyButton, 50f);
+
+        layoutBuilt = true;
+    }
+
+    private void BuildUpgradeCard(RectTransform parent, string title, TextMeshProUGUI infoText, Button button)
+    {
+        RectTransform card = ModalUIRuntimeUtility.CreateSection(parent, title.Replace(" ", string.Empty) + "Card", new Color(1f, 1f, 1f, 0.04f));
+        LayoutElement cardLayout = card.GetComponent<LayoutElement>();
+        cardLayout.minHeight = 128f;
+
+        CreateSectionLabel(card, title, 19f);
+        ModalUIRuntimeUtility.NormalizeText(infoText, true, 70f);
+        ModalUIRuntimeUtility.Wrap(infoText.rectTransform, card, title.Replace(" ", string.Empty) + "Info", 76f);
+        ModalUIRuntimeUtility.NormalizeButton(button, 50f);
+        ModalUIRuntimeUtility.Wrap(button.GetComponent<RectTransform>(), card, title.Replace(" ", string.Empty) + "Button", 50f);
+    }
+
+    private static void CreateSectionLabel(RectTransform parent, string title, float fontSize = 22f)
+    {
+        GameObject go = new GameObject(title.Replace(" ", string.Empty) + "Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI), typeof(LayoutElement));
+        go.transform.SetParent(parent, false);
+
+        TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+        text.text = title;
+        text.fontSize = fontSize;
+        text.fontStyle = FontStyles.Bold;
+        text.color = ModalUIRuntimeUtility.HeaderTextColor;
+        text.alignment = TextAlignmentOptions.MidlineLeft;
+
+        LayoutElement layout = go.GetComponent<LayoutElement>();
+        layout.minHeight = fontSize + 8f;
+        layout.flexibleWidth = 1f;
+
+        RectTransform rect = go.GetComponent<RectTransform>();
+        ModalUIRuntimeUtility.StretchHorizontally(rect);
+    }
+
+    private static void SetPlayerMovement(bool enabled)
+    {
+        PlayerController pc = FindFirstObjectByType<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.canMove = enabled;
+
+        Rigidbody2D rb = pc.GetComponent<Rigidbody2D>();
+        if (rb != null && !enabled)
+            rb.linearVelocity = Vector2.zero;
     }
 }

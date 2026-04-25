@@ -1,59 +1,79 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
-/// Demirci paneli — Hub'daki interactable ile acilir.
-/// Sahip olunan silahlar listelenir, secilen silah +1 → +9 arasi yukseltilebilir.
-/// Her seviyenin artisi, maliyeti ve basari orani WeaponSO'dan okunur.
+/// Demirci paneli. Responsive modal shell runtime'da kurulur, mevcut upgrade akisi korunur.
 /// </summary>
 public class BlacksmithUI : MonoBehaviour
 {
     [Header("Silah Listesi (Sol Panel)")]
-    [Tooltip("Merkezi silah veritabani (tek SO). Project > Create > TempoBlade > Weapon Database")]
     public WeaponDatabase weaponDatabase;
-    [Tooltip("Silah isim butonlarinin olusturulacagi parent")]
     public Transform weaponListParent;
-    [Tooltip("Basit text buton prefab'i")]
     public GameObject weaponButtonPrefab;
 
     [Header("Yukseltme Detay (Sag Panel)")]
-    [Tooltip("Silah adi + seviye")]
     public TextMeshProUGUI weaponNameText;
-    [Tooltip("Mevcut statlar")]
     public TextMeshProUGUI currentStatsText;
-    [Tooltip("Sonraki seviye statlari")]
     public TextMeshProUGUI nextStatsText;
-    [Tooltip("Yukseltme maliyeti")]
     public TextMeshProUGUI costText;
-    [Tooltip("Basari orani")]
     public TextMeshProUGUI successRateText;
-    [Tooltip("Sonuc mesaji (basarili/basarisiz)")]
     public TextMeshProUGUI resultText;
-    [Tooltip("Yukselt butonu")]
     public Button upgradeButton;
-    [Tooltip("Yukselt butonunun text'i")]
     public TextMeshProUGUI upgradeButtonText;
 
     [Header("Gold Display")]
     public TextMeshProUGUI goldText;
 
-    // Secili silah
+    private const string ModalId = "blacksmith";
+
     private WeaponSO selectedWeapon;
+    private Canvas cachedCanvas;
+    private bool layoutBuilt;
+    private bool isOpen;
+
+    public bool IsOpen => isOpen;
+
+    private void Awake()
+    {
+        cachedCanvas = GetComponent<Canvas>();
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponentInParent<Canvas>();
+    }
 
     private void OnEnable()
     {
+        EnsureRuntimeLayout();
         RefreshAll();
+    }
+
+    private void OnDisable()
+    {
+        isOpen = false;
     }
 
     private void Update()
     {
-        // ESC ile demirciyi kapat
+        if (!isOpen)
+            return;
+
         if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
             CloseBlacksmith();
-        }
+    }
+
+    public void OpenPanel()
+    {
+        EnsureRuntimeLayout();
+
+        if (!ModalUIManager.Instance.TryOpenModal(ModalId, gameObject))
+            return;
+
+        SetPlayerMovement(false);
+        gameObject.SetActive(true);
+        isOpen = true;
+        HubInteractable.HideAllPrompts();
+        RefreshAll();
     }
 
     public void RefreshAll()
@@ -70,12 +90,9 @@ public class BlacksmithUI : MonoBehaviour
     private void RefreshGold()
     {
         if (goldText != null && SaveManager.Instance != null)
-            goldText.text = "Altın: " + SaveManager.Instance.data.totalGold;
+            goldText.text = "Altin: " + SaveManager.Instance.data.totalGold;
     }
 
-    /// <summary>
-    /// Sahip olunan silahlari listeler.
-    /// </summary>
     private void RefreshWeaponList()
     {
         if (weaponListParent == null || weaponButtonPrefab == null || weaponDatabase == null) return;
@@ -96,19 +113,26 @@ public class BlacksmithUI : MonoBehaviour
             TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
 
             if (btnText != null)
+            {
                 btnText.text = weapon.GetDisplayName(level);
+                ModalUIRuntimeUtility.NormalizeText(btnText, false);
+                btnText.color = new Color(0.95f, 0.97f, 1f, 1f);
+                btnText.fontSize = 18f;
+            }
 
             if (btn != null)
             {
-                WeaponSO wpn = weapon;
-                btn.onClick.AddListener(() => ShowUpgradeDetail(wpn));
+                ModalUIRuntimeUtility.NormalizeButton(btn, 50f);
+                Image image = btn.GetComponent<Image>();
+                if (image != null)
+                    image.color = new Color(0.22f, 0.17f, 0.13f, 0.98f);
+
+                WeaponSO cachedWeapon = weapon;
+                btn.onClick.AddListener(() => ShowUpgradeDetail(cachedWeapon));
             }
         }
     }
 
-    /// <summary>
-    /// Secilen silah icin yukseltme detayini gosterir.
-    /// </summary>
     private void ShowUpgradeDetail(WeaponSO weapon)
     {
         if (weapon == null || SaveManager.Instance == null) return;
@@ -117,20 +141,17 @@ public class BlacksmithUI : MonoBehaviour
         int level = SaveManager.Instance.data.GetWeaponLevel(weapon.weaponName);
         bool isMaxLevel = level >= 9;
 
-        // Silah adi + seviye
         if (weaponNameText != null)
             weaponNameText.text = weapon.GetDisplayName(level);
 
-        // Mevcut statlar
         if (currentStatsText != null)
         {
             currentStatsText.text =
-                "Hasar: " + weapon.GetUpgradedDamage(level).ToString("F1")
-                + "\nSaldırı Hızı: " + weapon.GetUpgradedAttackRate(level).ToString("F2")
-                + "\nMenzil: " + weapon.GetUpgradedRange(level).ToString("F1");
+                "Hasar: " + weapon.GetUpgradedDamage(level).ToString("F1") +
+                "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(level).ToString("F2") +
+                "\nMenzil: " + weapon.GetUpgradedRange(level).ToString("F1");
         }
 
-        // Sonraki seviye statlari
         if (nextStatsText != null)
         {
             if (isMaxLevel)
@@ -140,36 +161,22 @@ public class BlacksmithUI : MonoBehaviour
             else
             {
                 int nextLevel = level + 1;
-                nextStatsText.text = "+" + nextLevel + " Sonrası:"
-                    + "\nHasar: " + weapon.GetUpgradedDamage(nextLevel).ToString("F1")
-                    + "\nSaldırı Hızı: " + weapon.GetUpgradedAttackRate(nextLevel).ToString("F2")
-                    + "\nMenzil: " + weapon.GetUpgradedRange(nextLevel).ToString("F1");
+                nextStatsText.text = "+" + nextLevel + " Sonrasi:" +
+                    "\nHasar: " + weapon.GetUpgradedDamage(nextLevel).ToString("F1") +
+                    "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(nextLevel).ToString("F2") +
+                    "\nMenzil: " + weapon.GetUpgradedRange(nextLevel).ToString("F1");
             }
         }
 
-        // Maliyet
         if (costText != null)
-        {
-            if (isMaxLevel)
-                costText.text = "";
-            else
-                costText.text = "Maliyet: " + weapon.GetUpgradeCost(level) + "g";
-        }
+            costText.text = isMaxLevel ? "" : "Maliyet: " + weapon.GetUpgradeCost(level) + "g";
 
-        // Basari orani
         if (successRateText != null)
-        {
-            if (isMaxLevel)
-                successRateText.text = "";
-            else
-                successRateText.text = "Başarı: %" + Mathf.RoundToInt(weapon.GetSuccessRate(level) * 100);
-        }
+            successRateText.text = isMaxLevel ? "" : "Basari: %" + Mathf.RoundToInt(weapon.GetSuccessRate(level) * 100);
 
-        // Sonuc temizle
         if (resultText != null)
             resultText.text = "";
 
-        // Buton
         if (upgradeButton != null)
         {
             upgradeButton.onClick.RemoveAllListeners();
@@ -178,24 +185,21 @@ public class BlacksmithUI : MonoBehaviour
             {
                 if (upgradeButtonText != null)
                     upgradeButtonText.text = "Maksimum Seviye";
+
                 upgradeButton.interactable = false;
             }
             else
             {
                 if (upgradeButtonText != null)
-                    upgradeButtonText.text = "Yükselt (+" + (level + 1) + ")";
-                upgradeButton.interactable = true;
+                    upgradeButtonText.text = "Yukselt (+" + (level + 1) + ")";
 
-                WeaponSO wpn = weapon;
-                upgradeButton.onClick.AddListener(() => AttemptUpgrade(wpn));
+                upgradeButton.interactable = true;
+                WeaponSO cachedWeapon = weapon;
+                upgradeButton.onClick.AddListener(() => AttemptUpgrade(cachedWeapon));
             }
         }
     }
 
-    /// <summary>
-    /// Yukseltme denemesi — basari oranina gore sonuc belirlenir.
-    /// Basarisiz olursa para gider, silah yukselmez.
-    /// </summary>
     private void AttemptUpgrade(WeaponSO weapon)
     {
         if (weapon == null || SaveManager.Instance == null) return;
@@ -206,44 +210,37 @@ public class BlacksmithUI : MonoBehaviour
         int cost = weapon.GetUpgradeCost(level);
         float successRate = weapon.GetSuccessRate(level);
 
-        // Yeterli altin var mi?
         if (SaveManager.Instance.data.totalGold < cost)
         {
             if (resultText != null)
-                resultText.text = "<color=red>Yeterli altın yok!</color>";
+                resultText.text = "<color=red>Yeterli altin yok!</color>";
             return;
         }
 
-        // Parayi al (basarili veya basarisiz, para gider)
         SaveManager.Instance.SpendGold(cost);
 
-        // Basari kontrolu
-        float roll = Random.Range(0f, 1f);
-        if (roll <= successRate)
+        if (Random.Range(0f, 1f) <= successRate)
         {
-            // BASARILI
             SaveManager.Instance.data.SetWeaponLevel(weapon.weaponName, level + 1);
             SaveManager.Instance.Save();
 
             if (resultText != null)
-                resultText.text = "<color=green>Yükseltme başarılı! +" + (level + 1) + "</color>";
+                resultText.text = "<color=green>Yukseltme basarili! +" + (level + 1) + "</color>";
         }
         else
         {
-            // BASARISIZ
             SaveManager.Instance.Save();
 
             if (resultText != null)
-                resultText.text = "<color=red>Yükseltme başarısız! Silah aynı kaldı.</color>";
+                resultText.text = "<color=red>Yukseltme basarisiz! Silah ayni kaldi.</color>";
         }
 
-        // UI guncelle
         RefreshAll();
     }
 
     private void ClearDetail()
     {
-        if (weaponNameText != null) weaponNameText.text = "Bir silah seçin";
+        if (weaponNameText != null) weaponNameText.text = "Bir silah secin";
         if (currentStatsText != null) currentStatsText.text = "";
         if (nextStatsText != null) nextStatsText.text = "";
         if (costText != null) costText.text = "";
@@ -252,13 +249,124 @@ public class BlacksmithUI : MonoBehaviour
         if (upgradeButton != null) upgradeButton.interactable = false;
     }
 
-    // ===================== PANEL KONTROL =====================
-
     public void CloseBlacksmith()
     {
-        if (HubManager.Instance != null)
-            HubManager.Instance.CloseBlacksmith();
-        else
-            gameObject.SetActive(false);
+        isOpen = false;
+        ModalUIManager.Instance.CloseModal(ModalId);
+        SetPlayerMovement(true);
+        gameObject.SetActive(false);
+        HubInteractable.ShowAllPrompts();
+    }
+
+    private void EnsureRuntimeLayout()
+    {
+        if (layoutBuilt)
+            return;
+
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponent<Canvas>();
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponentInParent<Canvas>();
+
+        ModalUIRuntimeUtility.EnsureFullscreenCanvas(cachedCanvas);
+        ModalUIRuntimeUtility.Stretch(GetComponent<RectTransform>());
+
+        RectTransform overlay = ModalUIRuntimeUtility.CreateOrGetOverlayRoot(transform, "ModalOverlay");
+        RectTransform shell = ModalUIRuntimeUtility.CreateCard(
+            overlay,
+            "BlacksmithShell",
+            new Color(0.11f, 0.08f, 0.07f, 0.98f),
+            new Vector2(0.03f, 0.04f),
+            new Vector2(0.97f, 0.96f),
+            Vector2.zero,
+            Vector2.zero);
+
+        RectTransform header = new GameObject("Header", typeof(RectTransform)).GetComponent<RectTransform>();
+        header.SetParent(shell, false);
+        header.anchorMin = new Vector2(0.03f, 0.90f);
+        header.anchorMax = new Vector2(0.97f, 0.97f);
+        header.offsetMin = Vector2.zero;
+        header.offsetMax = Vector2.zero;
+
+        CreateSectionLabel(header, "DEMIRCI", 30f);
+        ModalUIRuntimeUtility.CreateCloseButton(header, CloseBlacksmith);
+
+        RectTransform body = new GameObject("Body", typeof(RectTransform), typeof(ResponsiveSplitLayout)).GetComponent<RectTransform>();
+        body.SetParent(shell, false);
+        body.anchorMin = new Vector2(0.03f, 0.05f);
+        body.anchorMax = new Vector2(0.97f, 0.87f);
+        body.offsetMin = Vector2.zero;
+        body.offsetMax = Vector2.zero;
+
+        ResponsiveSplitLayout split = body.GetComponent<ResponsiveSplitLayout>();
+        split.keepFirstSectionWiderOnDesktop = false;
+        split.secondSectionFlexibleWidth = 1.2f;
+
+        RectTransform left = ModalUIRuntimeUtility.CreateSection(body, "OwnedWeaponsSection", ModalUIRuntimeUtility.SectionColor);
+        RectTransform right = ModalUIRuntimeUtility.CreateSection(body, "UpgradeSection", ModalUIRuntimeUtility.SectionAltColor);
+
+        CreateSectionLabel(left, "Silahlar");
+        ModalUIRuntimeUtility.NormalizeText(goldText, false, 28f);
+        ModalUIRuntimeUtility.Wrap(goldText.rectTransform, left, "GoldRow", 32f);
+
+        RectTransform listContent = weaponListParent as RectTransform;
+        if (listContent != null)
+            ModalUIRuntimeUtility.CreateScrollableList(left, "WeaponListViewport", listContent);
+
+        CreateSectionLabel(right, "Yukseltme Detayi");
+        ModalUIRuntimeUtility.NormalizeText(weaponNameText, false, 34f);
+        ModalUIRuntimeUtility.NormalizeText(currentStatsText, true, 84f);
+        ModalUIRuntimeUtility.NormalizeText(nextStatsText, true, 84f);
+        ModalUIRuntimeUtility.NormalizeText(costText, false, 24f);
+        ModalUIRuntimeUtility.NormalizeText(successRateText, false, 24f);
+        ModalUIRuntimeUtility.NormalizeText(resultText, true, 44f);
+        ModalUIRuntimeUtility.NormalizeText(upgradeButtonText, false);
+        ModalUIRuntimeUtility.NormalizeButton(upgradeButton, 52f);
+
+        ModalUIRuntimeUtility.Wrap(weaponNameText.rectTransform, right, "WeaponNameRow", 38f);
+        ModalUIRuntimeUtility.Wrap(currentStatsText.rectTransform, right, "CurrentStatsRow", 86f);
+        ModalUIRuntimeUtility.Wrap(nextStatsText.rectTransform, right, "NextStatsRow", 86f);
+
+        RectTransform metaRow = ModalUIRuntimeUtility.CreateRow(right, "MetaRow", 32f);
+        ModalUIRuntimeUtility.Wrap(costText.rectTransform, metaRow, "CostWrap", 30f);
+        ModalUIRuntimeUtility.Wrap(successRateText.rectTransform, metaRow, "SuccessWrap", 30f);
+
+        ModalUIRuntimeUtility.Wrap(resultText.rectTransform, right, "ResultRow", 48f);
+        ModalUIRuntimeUtility.Wrap(upgradeButton.GetComponent<RectTransform>(), right, "UpgradeButtonRow", 52f);
+
+        layoutBuilt = true;
+    }
+
+    private static void CreateSectionLabel(RectTransform parent, string title, float fontSize = 22f)
+    {
+        GameObject go = new GameObject(title.Replace(" ", string.Empty) + "Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI), typeof(LayoutElement));
+        go.transform.SetParent(parent, false);
+
+        TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+        text.text = title;
+        text.fontSize = fontSize;
+        text.fontStyle = FontStyles.Bold;
+        text.color = ModalUIRuntimeUtility.HeaderTextColor;
+        text.alignment = TextAlignmentOptions.MidlineLeft;
+
+        LayoutElement layout = go.GetComponent<LayoutElement>();
+        layout.minHeight = fontSize + 8f;
+        layout.flexibleWidth = 1f;
+
+        RectTransform rect = go.GetComponent<RectTransform>();
+        ModalUIRuntimeUtility.StretchHorizontally(rect);
+    }
+
+    private static void SetPlayerMovement(bool enabled)
+    {
+        PlayerController pc = FindFirstObjectByType<PlayerController>();
+        if (pc == null)
+            return;
+
+        pc.canMove = enabled;
+
+        Rigidbody2D rb = pc.GetComponent<Rigidbody2D>();
+        if (rb != null && !enabled)
+            rb.linearVelocity = Vector2.zero;
     }
 }

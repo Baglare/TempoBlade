@@ -1,74 +1,73 @@
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using TMPro;
+using UnityEngine.UI;
 
 /// <summary>
-/// Istatistik Paneli (I tusu ile acilir).
-/// Sol taraf: Oyuncunun tum anlık istatistikleri (can, hasar, hiz, menzil, tempo, parry).
-/// Sag taraf:
-///   - Hub'da: Silah kuşanma (liste + detay + kuşan butonu)
-///   - Gameplay'de: Sadece kuşanılan silahın ikonu ve adı (liste/buton yok)
+/// Istatistik paneli. Hub ve gameplay kullanimi korunur, modal shell runtime'da kurulur.
 /// </summary>
 public class StatsPanel : MonoBehaviour
 {
     [Header("Panel")]
-    [Tooltip("I tusu ile acilip kapanacak panel")]
     public GameObject statsPanel;
 
     [Header("Istatistikler (Sol Taraf)")]
-    [Tooltip("Tum istatistikleri gosteren text")]
     public TextMeshProUGUI allStatsText;
 
     [Header("Silah Kusanma (Sag Taraf)")]
-    [Tooltip("Su an kusanilan silah iconu (placeholder)")]
     public Image equippedWeaponIcon;
-    [Tooltip("Su an kusanilan silah adi")]
     public TextMeshProUGUI equippedWeaponName;
 
     [Header("Silah Listesi (Sadece Hub)")]
-    [Tooltip("Merkezi silah veritabani")]
     public WeaponDatabase weaponDatabase;
-    [Tooltip("Sahip olunan silahlarin listelenecegi parent")]
     public Transform weaponListParent;
-    [Tooltip("Silah isim buton prefab'i")]
     public GameObject weaponButtonPrefab;
 
     [Header("Silah Detay (Sadece Hub)")]
-    [Tooltip("Secilen silah detay paneli")]
     public GameObject weaponDetailPanel;
-    [Tooltip("Secilen silah adi")]
     public TextMeshProUGUI detailWeaponName;
-    [Tooltip("Secilen silah statlari")]
     public TextMeshProUGUI detailWeaponStats;
-    [Tooltip("Kusan / Zaten Kusanildi butonu")]
     public Button equipButton;
-    [Tooltip("Kusan butonunun text'i")]
     public TextMeshProUGUI equipButtonText;
 
     [Header("Hub-Only UI Gruplari")]
-    [Tooltip("Hub'da gorunen ama Gameplay'de gizlenen UI parent'lari (silah listesi paneli, detay paneli vb.)")]
     public GameObject[] hubOnlyElements;
 
     [Header("Config")]
     public UpgradeConfigSO upgradeConfig;
 
+    private const string ModalId = "stats";
+
     private WeaponSO selectedWeapon;
-    private bool isOpen = false;
+    private bool isOpen;
+    private bool layoutBuilt;
+    private Canvas cachedCanvas;
+
+    private void Awake()
+    {
+        cachedCanvas = GetComponent<Canvas>();
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponentInParent<Canvas>();
+    }
+
+    private void Start()
+    {
+        EnsureRuntimeLayout();
+        if (statsPanel != null)
+            statsPanel.SetActive(false);
+    }
 
     private void Update()
     {
         if (Keyboard.current == null) return;
 
-        // ESC ile paneli kapat
         if (isOpen && Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             ClosePanel();
             return;
         }
 
-        // I tusu ile ac/kapat
         if (Keyboard.current.iKey.wasPressedThisFrame)
         {
             if (isOpen)
@@ -82,17 +81,22 @@ public class StatsPanel : MonoBehaviour
     {
         if (statsPanel == null) return;
 
+        EnsureRuntimeLayout();
+
+        if (!ModalUIManager.Instance.TryOpenModal(ModalId, statsPanel))
+            return;
+
+        SetPlayerMovement(false);
         statsPanel.SetActive(true);
         isOpen = true;
 
         bool isHub = IsInHub();
-
-        // Hub-only elemanlari goster/gizle
         if (hubOnlyElements != null)
         {
-            foreach (var go in hubOnlyElements)
+            foreach (GameObject go in hubOnlyElements)
             {
-                if (go != null) go.SetActive(isHub);
+                if (go != null)
+                    go.SetActive(isHub);
             }
         }
 
@@ -105,9 +109,6 @@ public class StatsPanel : MonoBehaviour
             if (weaponDetailPanel != null)
                 weaponDetailPanel.SetActive(false);
         }
-
-        // Hareket kilitleme
-        SetPlayerMovement(false);
     }
 
     public void ClosePanel()
@@ -116,15 +117,10 @@ public class StatsPanel : MonoBehaviour
 
         statsPanel.SetActive(false);
         isOpen = false;
-
+        ModalUIManager.Instance.CloseModal(ModalId);
         SetPlayerMovement(true);
     }
 
-    // ===================== ISTATISTIKLER =====================
-
-    /// <summary>
-    /// Sol taraftaki tum istatistikleri gunceller.
-    /// </summary>
     private void RefreshAllStats()
     {
         if (allStatsText == null) return;
@@ -136,82 +132,65 @@ public class StatsPanel : MonoBehaviour
             return;
         }
 
-        string stats = "";
-
+        string stats = string.Empty;
         SaveData saveData = SaveManager.Instance != null ? SaveManager.Instance.data : null;
-        bool hasConfig    = upgradeConfig != null;
+        bool hasConfig = upgradeConfig != null;
 
-        // --- CAN ---
-        {
-            int lv  = saveData != null ? saveData.bonusMaxHealth : 0;
-            int max = hasConfig ? upgradeConfig.healthMaxLevel : 0;
-            string bar = hasConfig ? " " + LvBar(lv, max) : "";
-            stats += "<b>Can:</b> " + combat.currentHealth.ToString("F0")
-                   + " / " + combat.maxHealth.ToString("F0");
-            if (lv > 0 && hasConfig)
-                stats += " <color=#88ff88>(+" + (lv * upgradeConfig.healthPerLevel).ToString("F0") + ")</color>";
-            if (hasConfig)
-                stats += $"\n  <size=80%>{bar}  <color=#aaaaaa>Sv.{lv}/{max}</color></size>";
-        }
+        int healthLevel = saveData != null ? saveData.bonusMaxHealth : 0;
+        int healthMax = hasConfig ? upgradeConfig.healthMaxLevel : 0;
+        string healthBar = hasConfig ? " " + LvBar(healthLevel, healthMax) : "";
+        stats += "<b>Can:</b> " + combat.currentHealth.ToString("F0") + " / " + combat.maxHealth.ToString("F0");
+        if (healthLevel > 0 && hasConfig)
+            stats += " <color=#88ff88>(+" + (healthLevel * upgradeConfig.healthPerLevel).ToString("F0") + ")</color>";
+        if (hasConfig)
+            stats += $"\n  <size=80%>{healthBar}  <color=#aaaaaa>Sv.{healthLevel}/{healthMax}</color></size>";
 
-        // --- SILAH STATLARI ---
         if (combat.currentWeapon != null)
         {
             int level = combat.CurrentWeaponLevel;
-            stats += "\n\n<b>─── Silah ───</b>";
+            stats += "\n\n<b>--- Silah ---</b>";
             stats += "\nSilah: " + combat.currentWeapon.GetDisplayName(level);
             stats += "\nHasar: " + combat.GetEffectiveDamage().ToString("F1");
-            stats += "\nSaldırı Hızı: " + combat.GetEffectiveAttackRate().ToString("F2") + "s";
+            stats += "\nSaldiri Hizi: " + combat.GetEffectiveAttackRate().ToString("F2") + "s";
             stats += "\nMenzil: " + combat.GetEffectiveRange().ToString("F1");
         }
 
-        // --- HASAR CARPANI ---
-        stats += "\n\n<b>─── Genel ───</b>";
-        {
-            int lv  = saveData != null ? saveData.bonusDamageMultiplier : 0;
-            int max = hasConfig ? upgradeConfig.damageMaxLevel : 0;
-            stats += "\nHasar Çarpanı: x" + combat.damageMultiplier.ToString("F2");
-            if (lv > 0 && hasConfig)
-                stats += " <color=#88ff88>(+" + (lv * upgradeConfig.damageMultiplierPerLevel).ToString("F2") + ")</color>";
-            if (hasConfig)
-                stats += $"\n  <size=80%>{LvBar(lv, max)}  <color=#aaaaaa>Sv.{lv}/{max}</color></size>";
-        }
+        stats += "\n\n<b>--- Genel ---</b>";
 
-        // --- TEMPO ---
+        int damageLevel = saveData != null ? saveData.bonusDamageMultiplier : 0;
+        int damageMax = hasConfig ? upgradeConfig.damageMaxLevel : 0;
+        stats += "\nHasar Carpani: x" + combat.damageMultiplier.ToString("F2");
+        if (damageLevel > 0 && hasConfig)
+            stats += " <color=#88ff88>(+" + (damageLevel * upgradeConfig.damageMultiplierPerLevel).ToString("F2") + ")</color>";
+        if (hasConfig)
+            stats += $"\n  <size=80%>{LvBar(damageLevel, damageMax)}  <color=#aaaaaa>Sv.{damageLevel}/{damageMax}</color></size>";
+
         if (TempoManager.Instance != null)
         {
-            int lv  = saveData != null ? saveData.bonusTempoGain : 0;
-            int max = hasConfig ? upgradeConfig.tempoMaxLevel : 0;
-            stats += "\nTempo: " + TempoManager.Instance.tempo.ToString("F0")
-                   + " / " + TempoManager.Instance.maxTempo.ToString("F0");
+            int tempoLevel = saveData != null ? saveData.bonusTempoGain : 0;
+            int tempoMax = hasConfig ? upgradeConfig.tempoMaxLevel : 0;
+            stats += "\nTempo: " + TempoManager.Instance.tempo.ToString("F0") + " / " + TempoManager.Instance.maxTempo.ToString("F0");
             if (hasConfig)
-                stats += $"\n  <size=80%>{LvBar(lv, max)}  <color=#aaaaaa>Sv.{lv}/{max}</color></size>";
+                stats += $"\n  <size=80%>{LvBar(tempoLevel, tempoMax)}  <color=#aaaaaa>Sv.{tempoLevel}/{tempoMax}</color></size>";
         }
 
         allStatsText.text = stats;
     }
 
-    // ===================== SILAH GORUNTULEME =====================
-
-    /// <summary>
-    /// Kusanilan silah ikon ve adini gosterir (Hub + Gameplay).
-    /// </summary>
     private void RefreshEquippedDisplay()
     {
         PlayerCombat combat = FindFirstObjectByType<PlayerCombat>();
         if (combat == null || combat.currentWeapon == null) return;
 
-        WeaponSO wpn = combat.currentWeapon;
+        WeaponSO weapon = combat.currentWeapon;
         int level = combat.CurrentWeaponLevel;
 
         if (equippedWeaponName != null)
-            equippedWeaponName.text = wpn.GetDisplayName(level);
+            equippedWeaponName.text = weapon.GetDisplayName(level);
 
-        if (equippedWeaponIcon != null && wpn.icon != null)
-            equippedWeaponIcon.sprite = wpn.icon;
+        if (equippedWeaponIcon != null && weapon.icon != null)
+            equippedWeaponIcon.sprite = weapon.icon;
     }
-
-    // ===================== SILAH KUSANMA (SADECE HUB) =====================
 
     private void RefreshWeaponList()
     {
@@ -231,14 +210,23 @@ public class StatsPanel : MonoBehaviour
             TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
 
             int level = SaveManager.Instance.data.GetWeaponLevel(weapon.weaponName);
-
             if (btnText != null)
+            {
                 btnText.text = weapon.GetDisplayName(level);
+                ModalUIRuntimeUtility.NormalizeText(btnText, false);
+                btnText.color = new Color(0.95f, 0.97f, 1f, 1f);
+                btnText.fontSize = 18f;
+            }
 
             if (btn != null)
             {
-                WeaponSO wpn = weapon;
-                btn.onClick.AddListener(() => ShowWeaponDetail(wpn));
+                ModalUIRuntimeUtility.NormalizeButton(btn, 50f);
+                Image image = btn.GetComponent<Image>();
+                if (image != null)
+                    image.color = new Color(0.16f, 0.20f, 0.28f, 0.98f);
+
+                WeaponSO cachedWeapon = weapon;
+                btn.onClick.AddListener(() => ShowWeaponDetail(cachedWeapon));
             }
         }
     }
@@ -261,15 +249,15 @@ public class StatsPanel : MonoBehaviour
         if (detailWeaponStats != null)
         {
             detailWeaponStats.text =
-                "Hasar: " + weapon.GetUpgradedDamage(level).ToString("F1")
-                + "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(level).ToString("F2")
-                + "\nMenzil: " + weapon.GetUpgradedRange(level).ToString("F1");
+                "Hasar: " + weapon.GetUpgradedDamage(level).ToString("F1") +
+                "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(level).ToString("F2") +
+                "\nMenzil: " + weapon.GetUpgradedRange(level).ToString("F1");
         }
 
-        // Kusan butonu
         PlayerCombat combat = FindFirstObjectByType<PlayerCombat>();
-        bool isEquipped = combat != null && combat.currentWeapon != null
-            && combat.currentWeapon.weaponName == weapon.weaponName;
+        bool isEquipped = combat != null &&
+                          combat.currentWeapon != null &&
+                          combat.currentWeapon.weaponName == weapon.weaponName;
 
         if (equipButton != null)
         {
@@ -278,17 +266,17 @@ public class StatsPanel : MonoBehaviour
             if (isEquipped)
             {
                 if (equipButtonText != null)
-                    equipButtonText.text = "Zaten Kuşanıldı";
+                    equipButtonText.text = "Zaten Kusanildi";
                 equipButton.interactable = false;
             }
             else
             {
                 if (equipButtonText != null)
-                    equipButtonText.text = "Kuşan";
+                    equipButtonText.text = "Kusan";
                 equipButton.interactable = true;
 
-                WeaponSO wpn = weapon;
-                equipButton.onClick.AddListener(() => EquipWeapon(wpn));
+                WeaponSO cachedWeapon = weapon;
+                equipButton.onClick.AddListener(() => EquipWeapon(cachedWeapon));
             }
         }
     }
@@ -306,15 +294,9 @@ public class StatsPanel : MonoBehaviour
         ShowWeaponDetail(weapon);
     }
 
-    // ===================== YARDIMCI =====================
-
-    /// <summary>
-    /// Küçük progress bar: █░ karakterleri, 8 blok uzunluğunda.
-    /// Max'taysa altın renkli tam dolu bar döner.
-    /// </summary>
     private static string LvBar(int current, int max)
     {
-        if (max <= 0) return "";
+        if (max <= 0) return string.Empty;
         string bar = UpgradeConfigSO.BuildProgressBar(current, max, 8);
         bool isMaxed = current >= max;
         return isMaxed
@@ -328,10 +310,140 @@ public class StatsPanel : MonoBehaviour
         return sceneName.Contains("Hub") || sceneName.Contains("hub");
     }
 
-    private void SetPlayerMovement(bool canMove)
+    private void EnsureRuntimeLayout()
+    {
+        if (layoutBuilt || statsPanel == null)
+            return;
+
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponent<Canvas>();
+        if (cachedCanvas == null)
+            cachedCanvas = GetComponentInParent<Canvas>();
+
+        ModalUIRuntimeUtility.EnsureFullscreenCanvas(cachedCanvas);
+
+        RectTransform modalRoot = statsPanel.GetComponent<RectTransform>();
+        ModalUIRuntimeUtility.Stretch(modalRoot);
+
+        RectTransform overlay = ModalUIRuntimeUtility.CreateOrGetOverlayRoot(statsPanel.transform, "ModalOverlay");
+        RectTransform shell = ModalUIRuntimeUtility.CreateCard(
+            overlay,
+            "StatsShell",
+            new Color(0.06f, 0.09f, 0.13f, 0.98f),
+            new Vector2(0.03f, 0.04f),
+            new Vector2(0.97f, 0.96f),
+            Vector2.zero,
+            Vector2.zero);
+
+        RectTransform header = new GameObject("Header", typeof(RectTransform)).GetComponent<RectTransform>();
+        header.SetParent(shell, false);
+        header.anchorMin = new Vector2(0.03f, 0.90f);
+        header.anchorMax = new Vector2(0.97f, 0.97f);
+        header.offsetMin = Vector2.zero;
+        header.offsetMax = Vector2.zero;
+
+        CreateSectionLabel(header, "ISTATISTIK PANELI", 30f);
+        ModalUIRuntimeUtility.CreateCloseButton(header, ClosePanel);
+
+        RectTransform body = new GameObject("Body", typeof(RectTransform), typeof(ResponsiveSplitLayout)).GetComponent<RectTransform>();
+        body.SetParent(shell, false);
+        body.anchorMin = new Vector2(0.03f, 0.05f);
+        body.anchorMax = new Vector2(0.97f, 0.87f);
+        body.offsetMin = Vector2.zero;
+        body.offsetMax = Vector2.zero;
+
+        ResponsiveSplitLayout split = body.GetComponent<ResponsiveSplitLayout>();
+        split.keepFirstSectionWiderOnDesktop = true;
+        split.firstSectionFlexibleWidth = 1.2f;
+        split.secondSectionFlexibleWidth = 1f;
+
+        RectTransform left = ModalUIRuntimeUtility.CreateSection(body, "StatsSection", ModalUIRuntimeUtility.SectionColor);
+        RectTransform right = ModalUIRuntimeUtility.CreateSection(body, "WeaponSection", ModalUIRuntimeUtility.SectionAltColor);
+
+        CreateSectionLabel(left, "Mevcut Durum");
+        ModalUIRuntimeUtility.NormalizeText(allStatsText, true, 320f);
+        ModalUIRuntimeUtility.Wrap(allStatsText.rectTransform, left, "StatsTextWrap", 320f);
+
+        CreateSectionLabel(right, "Silah");
+        RectTransform equippedRow = ModalUIRuntimeUtility.CreateRow(right, "EquippedRow", 92f);
+        NormalizeIcon(equippedWeaponIcon);
+        ModalUIRuntimeUtility.Wrap(equippedWeaponIcon.rectTransform, equippedRow, "EquippedIconWrap", 84f);
+        ModalUIRuntimeUtility.NormalizeText(equippedWeaponName, false, 40f);
+        ModalUIRuntimeUtility.Wrap(equippedWeaponName.rectTransform, equippedRow, "EquippedNameWrap", 40f);
+
+        RectTransform listContent = weaponListParent as RectTransform;
+        if (listContent != null)
+            ModalUIRuntimeUtility.CreateScrollableList(right, "OwnedWeaponsViewport", listContent);
+
+        if (weaponDetailPanel != null)
+        {
+            LayoutElement detailLayout = weaponDetailPanel.GetComponent<LayoutElement>();
+            if (detailLayout == null)
+                detailLayout = weaponDetailPanel.AddComponent<LayoutElement>();
+
+            detailLayout.flexibleHeight = 1f;
+            detailLayout.minHeight = 220f;
+            weaponDetailPanel.transform.SetParent(right, false);
+            ModalUIRuntimeUtility.StretchHorizontally(weaponDetailPanel.GetComponent<RectTransform>());
+        }
+
+        ModalUIRuntimeUtility.NormalizeText(detailWeaponName, false, 34f);
+        ModalUIRuntimeUtility.NormalizeText(detailWeaponStats, true, 90f);
+        ModalUIRuntimeUtility.NormalizeText(equipButtonText, false);
+        ModalUIRuntimeUtility.NormalizeButton(equipButton, 50f);
+
+        layoutBuilt = true;
+    }
+
+    private static void NormalizeIcon(Image image)
+    {
+        if (image == null)
+            return;
+
+        RectTransform rect = image.rectTransform;
+        rect.localScale = Vector3.one;
+
+        LayoutElement layout = image.GetComponent<LayoutElement>();
+        if (layout == null)
+            layout = image.gameObject.AddComponent<LayoutElement>();
+
+        layout.minWidth = 84f;
+        layout.minHeight = 84f;
+        layout.preferredWidth = 84f;
+        layout.preferredHeight = 84f;
+        image.preserveAspect = true;
+    }
+
+    private static void CreateSectionLabel(RectTransform parent, string title, float fontSize = 22f)
+    {
+        GameObject go = new GameObject(title.Replace(" ", string.Empty) + "Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI), typeof(LayoutElement));
+        go.transform.SetParent(parent, false);
+
+        TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+        text.text = title;
+        text.fontSize = fontSize;
+        text.fontStyle = FontStyles.Bold;
+        text.color = ModalUIRuntimeUtility.HeaderTextColor;
+        text.alignment = TextAlignmentOptions.MidlineLeft;
+
+        LayoutElement layout = go.GetComponent<LayoutElement>();
+        layout.minHeight = fontSize + 8f;
+        layout.flexibleWidth = 1f;
+
+        RectTransform rect = go.GetComponent<RectTransform>();
+        ModalUIRuntimeUtility.StretchHorizontally(rect);
+    }
+
+    private static void SetPlayerMovement(bool enabled)
     {
         PlayerController pc = FindFirstObjectByType<PlayerController>();
-        if (pc != null)
-            pc.canMove = canMove;
+        if (pc == null)
+            return;
+
+        pc.canMove = enabled;
+
+        Rigidbody2D rb = pc.GetComponent<Rigidbody2D>();
+        if (rb != null && !enabled)
+            rb.linearVelocity = Vector2.zero;
     }
 }

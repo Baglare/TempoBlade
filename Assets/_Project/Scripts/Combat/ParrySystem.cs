@@ -41,6 +41,8 @@ public class ParrySystem : MonoBehaviour
     [HideInInspector] public bool rotateArcWhileActive = false;
     [HideInInspector] public float rotatingArcDegreesPerSecond = 1080f;
     [HideInInspector] public float rotatingArcDuration = 0.18f;
+    [HideInInspector] public float projectileWindowExtensionMultiplier = 1f;
+    [HideInInspector] public float projectileMaxWindowBonus = 0f;
 
     [Header("Projectile Parry Mode")]
     [Tooltip("Cone: tum koni icindeki projectile'lar. EdgeLine: sadece en on cizgiye yakin projectile'lar.")]
@@ -57,6 +59,8 @@ public class ParrySystem : MonoBehaviour
     private float currentWindowExtension;
     private float currentMaxParryWindow;
     private float currentPerfectWindow;
+    private float currentProjectileWindowExtensionMultiplier;
+    private float currentProjectileMaxWindowBonus;
     private float parryElapsed;
     private Vector2 parryDirection = Vector2.right;
     private int blockCount;
@@ -141,6 +145,8 @@ public class ParrySystem : MonoBehaviour
         currentWindowExtension = windowExtensionPerBlock / Mathf.Max(0.01f, tempoSpeed);
         currentMaxParryWindow = (maxParryWindow * externalWindowMultiplier * normalWindowMultiplier) / Mathf.Max(0.01f, tempoSpeed);
         currentPerfectWindow = enablePerfectParry ? perfectWindowDuration / Mathf.Max(0.01f, tempoSpeed) : 0f;
+        currentProjectileWindowExtensionMultiplier = Mathf.Max(1f, projectileWindowExtensionMultiplier);
+        currentProjectileMaxWindowBonus = (projectileMaxWindowBonus * externalWindowMultiplier * normalWindowMultiplier) / Mathf.Max(0.01f, tempoSpeed);
 
         AudioManager.Play(AudioEventId.PlayerParryStart, gameObject);
         OnParryStarted?.Invoke(parryDirection);
@@ -371,7 +377,15 @@ public class ParrySystem : MonoBehaviour
                 OnCounterWindowStarted?.Invoke();
         }
 
-        timer = Mathf.Min(timer + currentWindowExtension, Mathf.Max(initialWindowDuration, currentMaxParryWindow));
+        float extension = currentWindowExtension;
+        float effectiveMaxWindow = currentMaxParryWindow;
+        if (isRanged)
+        {
+            extension *= currentProjectileWindowExtensionMultiplier;
+            effectiveMaxWindow += currentProjectileMaxWindowBonus;
+        }
+
+        timer = Mathf.Min(timer + extension, Mathf.Max(initialWindowDuration, effectiveMaxWindow));
         initialWindowDuration = Mathf.Max(initialWindowDuration, timer);
 
         if (HitStopManager.Instance != null)

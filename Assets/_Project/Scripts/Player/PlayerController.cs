@@ -173,7 +173,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Hareket kilitliyse dur
-        if (!canMove)
+        if (!CanProcessMovement())
         {
             rb.linearVelocity = Vector2.zero;
             return;
@@ -241,12 +241,13 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputValue value)
     {
-        moveInput = value.Get<Vector2>();
+        moveInput = CanProcessMovement() ? value.Get<Vector2>() : Vector2.zero;
     }
 
     public void OnAttack(InputValue value)
     {
         if (!value.isPressed) return;
+        if (!CanProcessCombatInput()) return;
         if (playerCombat == null) return;
         if (IsExternallyStaggered) return;
         
@@ -257,6 +258,7 @@ public class PlayerController : MonoBehaviour
     public void OnDodge(InputValue value)
     {
         if (!value.isPressed) return;
+        if (!CanProcessCombatInput()) return;
         if (IsExternallyStaggered) return;
         if (IsMovementLocked) return;
         if (currentState == PlayerState.Dodging) return;
@@ -269,6 +271,7 @@ public class PlayerController : MonoBehaviour
     public void OnParry(InputValue value)
     {
         if (!value.isPressed) return;
+        if (!CanProcessCombatInput()) return;
         if (parrySystem == null) return;
         if (IsExternallyStaggered) return;
 
@@ -280,6 +283,35 @@ public class PlayerController : MonoBehaviour
         if (aimDir.sqrMagnitude < 0.001f) aimDir = Vector2.right;
 
         parrySystem.StartParry(aimDir);
+    }
+
+    private bool CanProcessMovement()
+    {
+        if (!canMove)
+            return false;
+
+        if (ModalUIManager.HasOpenModal)
+            return false;
+
+        if (GameManager.Instance != null)
+        {
+            if (GameManager.Instance.CurrentState == GameManager.GameState.Paused ||
+                GameManager.Instance.CurrentState == GameManager.GameState.GameOver)
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool CanProcessCombatInput()
+    {
+        if (ModalUIManager.HasOpenModal)
+            return false;
+
+        if (GameManager.Instance == null)
+            return true;
+
+        return GameManager.Instance.CurrentState == GameManager.GameState.Gameplay;
     }
 
     // --- DODGE LOGIC ---

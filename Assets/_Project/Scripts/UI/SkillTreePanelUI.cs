@@ -55,6 +55,7 @@ public class SkillTreePanelUI : MonoBehaviour
     private Button unlockButton;
     private TextMeshProUGUI unlockButtonLabel;
     private bool isOpen;
+    private GameManager.GameState previousGameState = GameManager.GameState.Gameplay;
     private ProgressionAxisSO activeAxis;
     private SkillNodeSO selectedNode;
 
@@ -172,6 +173,8 @@ public class SkillTreePanelUI : MonoBehaviour
         { "cadence_t2flow_overflow_harmony", new Vector2Int(4, 5) }
     };
 
+    public bool IsOpen => isOpen;
+
     private void Start()
     {
         BuildShell();
@@ -219,17 +222,33 @@ public class SkillTreePanelUI : MonoBehaviour
 
     private void OpenPanel()
     {
+        if (ModalUIManager.HasOpenModal)
+            return;
+
         isOpen = true;
         panelRoot.SetActive(true);
         RefreshAll();
-        Time.timeScale = 0f;
+
+        if (GameManager.Instance != null)
+        {
+            previousGameState = GameManager.Instance.CurrentState;
+            GameManager.Instance.SetState(GameManager.GameState.Paused);
+        }
+        else
+        {
+            Time.timeScale = 0f;
+        }
     }
 
     private void ClosePanel()
     {
         isOpen = false;
         panelRoot.SetActive(false);
-        Time.timeScale = 1f;
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetState(previousGameState);
+        else
+            Time.timeScale = 1f;
     }
 
     private void BuildShell()

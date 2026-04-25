@@ -250,6 +250,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     public void TryAttack()
     {
+        if (!CanAcceptCombatInput())
+            return;
+
         // --- Cooldown / State Guard ---
         if (isExecutingComboStep) return;
 
@@ -664,7 +667,19 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public void OnFinisher(UnityEngine.InputSystem.InputValue value)
     {
         if (!value.isPressed) return;
+        if (!CanAcceptCombatInput()) return;
         ExecuteFinisher();
+    }
+
+    private bool CanAcceptCombatInput()
+    {
+        if (ModalUIManager.HasOpenModal)
+            return false;
+
+        if (GameManager.Instance == null)
+            return true;
+
+        return GameManager.Instance.CurrentState == GameManager.GameState.Gameplay;
     }
 
     private void ExecuteFinisher()

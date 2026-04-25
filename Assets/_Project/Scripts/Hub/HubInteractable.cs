@@ -71,6 +71,8 @@ public class HubInteractable : MonoBehaviour
         foreach (var interactable in FindObjectsByType<HubInteractable>(FindObjectsSortMode.None))
         {
             interactable.forcedHidden = false;
+            if (interactable.promptObj != null)
+                interactable.promptObj.SetActive(interactable.playerInRange && !ModalUIManager.HasOpenModal);
         }
     }
 
@@ -93,13 +95,16 @@ public class HubInteractable : MonoBehaviour
         if (inRange && !playerInRange)
         {
             playerInRange = true;
-            if (promptObj != null && !forcedHidden) promptObj.SetActive(true);
+            if (promptObj != null && !forcedHidden && !ModalUIManager.HasOpenModal) promptObj.SetActive(true);
         }
         else if (!inRange && playerInRange)
         {
             playerInRange = false;
             if (promptObj != null) promptObj.SetActive(false);
         }
+
+        if (promptObj != null && ModalUIManager.HasOpenModal && promptObj.activeSelf)
+            promptObj.SetActive(false);
 
         // Prompt pozisyonunu guncelle (objenin ustunde takip etsin)
         if (playerInRange && promptObj != null && mainCam != null)
@@ -128,7 +133,7 @@ public class HubInteractable : MonoBehaviour
         {
             case InteractionType.OpenShop:
                 if (HubManager.Instance != null)
-                    HubManager.Instance.OpenShop();
+                    HubManager.Instance.ToggleShop();
                 break;
 
             case InteractionType.StartRun:
@@ -143,7 +148,7 @@ public class HubInteractable : MonoBehaviour
 
             case InteractionType.OpenBlacksmith:
                 if (HubManager.Instance != null)
-                    HubManager.Instance.OpenBlacksmith();
+                    HubManager.Instance.ToggleBlacksmith();
                 break;
         }
     }
@@ -165,7 +170,7 @@ public class HubInteractable : MonoBehaviour
         GameObject canvasObj = new GameObject("PromptCanvas");
         uiCanvas = canvasObj.AddComponent<Canvas>();
         uiCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        uiCanvas.sortingOrder = 999; // Her seyin ustunde
+        uiCanvas.sortingOrder = 100; // Modal panellerin altinda, normal hub ustunde
 
         CanvasScaler scaler = canvasObj.AddComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;

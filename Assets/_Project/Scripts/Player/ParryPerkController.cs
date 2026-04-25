@@ -87,6 +87,8 @@ public class ParryPerkController : MonoBehaviour
     [Header("=== T2 Mükemmeliyetçi: Dönen Koni ===")]
     public float rotatingConeDegreesPerSecond = 1080f;
     public float rotatingConeDuration = 0.18f;
+    public float rotatingConeProjectileWindowExtensionMultiplier = 2f;
+    public float rotatingConeProjectileMaxWindowBonus = 0.26f;
 
     [Header("=== T2 Mükemmeliyetçi: Kusursuz Döngü ===")]
     public float perfectCycleRecoveryRefund = 0.08f;
@@ -280,6 +282,12 @@ public class ParryPerkController : MonoBehaviour
         parrySystem.rotateArcWhileActive = usePerks && _hasRotatingCone;
         parrySystem.rotatingArcDegreesPerSecond = rotatingConeDegreesPerSecond;
         parrySystem.rotatingArcDuration = rotatingConeDuration;
+        parrySystem.projectileWindowExtensionMultiplier = usePerks && _hasRotatingCone
+            ? rotatingConeProjectileWindowExtensionMultiplier
+            : 1f;
+        parrySystem.projectileMaxWindowBonus = usePerks && _hasRotatingCone
+            ? rotatingConeProjectileMaxWindowBonus
+            : 0f;
     }
 
     private void ApplyCommitmentToDash()

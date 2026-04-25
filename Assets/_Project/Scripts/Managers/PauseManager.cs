@@ -164,16 +164,15 @@ public class PauseManager : MonoBehaviour
     /// </summary>
     private bool IsAnyOverlayPanelOpen()
     {
-        if (HubManager.Instance != null)
-        {
-            if (HubManager.Instance.shopPanel != null && HubManager.Instance.shopPanel.activeSelf)
-                return true;
-            if (HubManager.Instance.blacksmithPanel != null && HubManager.Instance.blacksmithPanel.activeSelf)
-                return true;
-        }
+        if (ModalUIManager.HasOpenModal)
+            return true;
 
         StatsPanel sp = FindFirstObjectByType<StatsPanel>();
         if (sp != null && sp.statsPanel != null && sp.statsPanel.activeSelf)
+            return true;
+
+        SkillTreePanelUI skillTree = FindFirstObjectByType<SkillTreePanelUI>();
+        if (skillTree != null && skillTree.IsOpen)
             return true;
 
         return false;

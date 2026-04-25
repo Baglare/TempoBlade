@@ -42,6 +42,9 @@ public class HubManager : MonoBehaviour
         // Dukkan panelini baslangicta kapat
         if (shopPanel != null)
             shopPanel.SetActive(false);
+
+        if (blacksmithPanel != null)
+            blacksmithPanel.SetActive(false);
     }
 
     // ===================== SAHNE GECISLERI =====================
@@ -91,9 +94,11 @@ public class HubManager : MonoBehaviour
     {
         if (shopPanel != null)
         {
-            shopPanel.SetActive(true);
-            SetPlayerMovement(false);
-            HubInteractable.HideAllPrompts(); // Tum promptlari gizle
+            ShopUI shopUI = shopPanel.GetComponent<ShopUI>();
+            if (shopUI != null)
+                shopUI.OpenPanel();
+            else
+                shopPanel.SetActive(true);
         }
     }
 
@@ -101,15 +106,28 @@ public class HubManager : MonoBehaviour
     {
         if (shopPanel != null)
         {
-            shopPanel.SetActive(false);
-            SetPlayerMovement(true);
-            HubInteractable.ShowAllPrompts(); // Promptlari geri ac
+            ShopUI shopUI = shopPanel.GetComponent<ShopUI>();
+            if (shopUI != null)
+                shopUI.CloseShop();
+            else
+                shopPanel.SetActive(false);
         }
     }
 
     public void ToggleShop()
     {
         if (shopPanel == null) return;
+
+        ShopUI shopUI = shopPanel.GetComponent<ShopUI>();
+        if (shopUI != null)
+        {
+            if (shopUI.IsOpen)
+                CloseShop();
+            else
+                OpenShop();
+
+            return;
+        }
 
         if (shopPanel.activeSelf)
             CloseShop();
@@ -123,9 +141,11 @@ public class HubManager : MonoBehaviour
     {
         if (blacksmithPanel != null)
         {
-            blacksmithPanel.SetActive(true);
-            SetPlayerMovement(false);
-            HubInteractable.HideAllPrompts();
+            BlacksmithUI blacksmithUI = blacksmithPanel.GetComponent<BlacksmithUI>();
+            if (blacksmithUI != null)
+                blacksmithUI.OpenPanel();
+            else
+                blacksmithPanel.SetActive(true);
         }
     }
 
@@ -133,10 +153,33 @@ public class HubManager : MonoBehaviour
     {
         if (blacksmithPanel != null)
         {
-            blacksmithPanel.SetActive(false);
-            SetPlayerMovement(true);
-            HubInteractable.ShowAllPrompts();
+            BlacksmithUI blacksmithUI = blacksmithPanel.GetComponent<BlacksmithUI>();
+            if (blacksmithUI != null)
+                blacksmithUI.CloseBlacksmith();
+            else
+                blacksmithPanel.SetActive(false);
         }
+    }
+
+    public void ToggleBlacksmith()
+    {
+        if (blacksmithPanel == null) return;
+
+        BlacksmithUI blacksmithUI = blacksmithPanel.GetComponent<BlacksmithUI>();
+        if (blacksmithUI != null)
+        {
+            if (blacksmithUI.IsOpen)
+                CloseBlacksmith();
+            else
+                OpenBlacksmith();
+
+            return;
+        }
+
+        if (blacksmithPanel.activeSelf)
+            CloseBlacksmith();
+        else
+            OpenBlacksmith();
     }
 
     /// <summary>
