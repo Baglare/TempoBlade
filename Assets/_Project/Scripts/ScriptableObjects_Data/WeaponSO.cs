@@ -3,118 +3,166 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Weapon", menuName = "TempoBlade/Weapon")]
 public class WeaponSO : ScriptableObject
 {
+    public const int MaxUpgradeLevel = 10;
+
     [Header("Identity")]
     public string weaponName;
     [TextArea] public string description;
     public Sprite icon;
+    public WeaponType weaponType = WeaponType.Unknown;
 
-    [Header("Combat Stats (Base — +0 degerleri)")]
+    [Header("Combat Stats (Base - +0 degerleri)")]
     public float damage = 10f;
     public float attackRate = 0.5f;
     public float range = 1.5f;
     public float attackOffset = 1.0f;
 
     [Header("Combo Sequence")]
-    [Tooltip("Kombo adımları. Boş bırakılırsa tek vuruş olarak çalışır (geriye dönük uyumlu).")]
+    [Tooltip("Kombo adimlari. Bos birakilirsa tek vurus olarak calisir.")]
     public ComboStepData[] comboSteps;
 
     [Header("Tempo Identity")]
     public TempoIdentity tempoIdentity;
 
+    [Header("Weapon Profiles")]
+    public WeaponAttackRhythmProfile attackRhythmProfile = new WeaponAttackRhythmProfile();
+    public WeaponRangeProfile rangeProfile = new WeaponRangeProfile();
+    public WeaponStaggerProfile staggerProfile = new WeaponStaggerProfile();
+    public WeaponRecoveryProfile recoveryProfile = new WeaponRecoveryProfile();
+    public WeaponTempoGainStyle tempoGainStyle = new WeaponTempoGainStyle();
+    public WeaponRiskProfile riskProfile = new WeaponRiskProfile();
+
     [Header("Economy")]
     [Tooltip("Bu silahin Hub dukkanindaki altin fiyati. 0 ise satilamaz.")]
     public int price = 200;
 
-    [Header("Upgrade Config (+1 → +9)")]
-    [Tooltip("Her seviye icin hasar artisi. 9 elemanli dizi: [0]=+1, [1]=+2, ... [8]=+9")]
-    public float[] damagePerLevel = new float[9] { 1, 1, 2, 2, 3, 3, 4, 4, 5 };
+    [Header("Legacy Upgrade Config (+1 -> +10)")]
+    [Tooltip("Her seviye icin hasar artisi. 10 elemanli dizi: [0]=+1, [1]=+2, ... [9]=+10")]
+    public float[] damagePerLevel = new float[10] { 1, 1, 2, 2, 3, 3, 4, 4, 5, 6 };
 
-    [Tooltip("Her seviye icin saldiri hizi iyilesmesi (attackRate azalir). 9 elemanli.")]
-    public float[] speedPerLevel = new float[9] { 0.01f, 0.01f, 0.02f, 0.02f, 0.03f, 0.03f, 0.04f, 0.04f, 0.05f };
+    [Tooltip("Her seviye icin saldiri hizi iyilesmesi (attackRate azalir). 10 elemanli.")]
+    public float[] speedPerLevel = new float[10] { 0.01f, 0.01f, 0.02f, 0.02f, 0.03f, 0.03f, 0.04f, 0.04f, 0.05f, 0.05f };
 
-    [Tooltip("Her seviye icin menzil artisi. 9 elemanli.")]
-    public float[] rangePerLevel = new float[9] { 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.2f };
+    [Tooltip("Her seviye icin menzil artisi. 10 elemanli.")]
+    public float[] rangePerLevel = new float[10] { 0, 0, 0.1f, 0, 0, 0.1f, 0, 0, 0.2f, 0.1f };
 
-    [Tooltip("Her seviye icin yukseltme maliyeti (gold). 9 elemanli.")]
-    public int[] upgradeCosts = new int[9] { 50, 75, 100, 150, 200, 300, 500, 750, 1000 };
+    [Tooltip("Her seviye icin yukseltme maliyeti (gold). 10 elemanli.")]
+    public int[] upgradeCosts = new int[10] { 50, 75, 100, 150, 200, 300, 500, 750, 1000, 1500 };
 
-    [Tooltip("Her seviye icin basari orani (0.0 - 1.0). 9 elemanli. 1.0 = %100")]
-    public float[] successRates = new float[9] { 1f, 0.95f, 0.85f, 0.7f, 0.55f, 0.4f, 0.25f, 0.15f, 0.05f };
+    [Tooltip("Her seviye icin basari orani (0.0 - 1.0). 10 elemanli. 1.0 = %100")]
+    public float[] successRates = new float[10] { 1f, 0.95f, 0.85f, 0.7f, 0.55f, 0.4f, 0.25f, 0.15f, 0.05f, 0.03f };
 
-    // ===================== HELPER METODLAR =====================
+    [Header("Extended Upgrade Data")]
+    public WeaponUpgradeScalingData upgradeScalingData = new WeaponUpgradeScalingData();
+    public WeaponMilestoneUpgradeData milestoneUpgradeData = new WeaponMilestoneUpgradeData();
 
-    /// <summary>
-    /// Belirtilen yukseltme seviyesindeki toplam hasar (base + tum upgrade bonuslari).
-    /// </summary>
+    [Header("Finisher")]
+    public FinisherSO finisher;
+
     public float GetUpgradedDamage(int level)
     {
-        float total = damage;
-        for (int i = 0; i < Mathf.Min(level, 9); i++)
+        if (upgradeScalingData != null && upgradeScalingData.useOverrideArrays && upgradeScalingData.damagePerLevel != null && upgradeScalingData.damagePerLevel.Length > 0)
         {
-            if (i < damagePerLevel.Length)
-                total += damagePerLevel[i];
+            float totalOverride = damage;
+            for (int i = 0; i < Mathf.Min(level, MaxUpgradeLevel); i++)
+                totalOverride += GetFloatUpgradeValue(upgradeScalingData.damagePerLevel, i, 0f);
+            return totalOverride;
         }
+
+        float total = damage;
+        for (int i = 0; i < Mathf.Min(level, MaxUpgradeLevel); i++)
+            total += GetFloatUpgradeValue(damagePerLevel, i, 0f);
         return total;
     }
 
-    /// <summary>
-    /// Belirtilen yukseltme seviyesindeki saldiri hizi (base - tum upgrade bonuslari).
-    /// Daha dusuk = daha hizli.
-    /// </summary>
     public float GetUpgradedAttackRate(int level)
     {
-        float total = attackRate;
-        for (int i = 0; i < Mathf.Min(level, 9); i++)
+        if (upgradeScalingData != null && upgradeScalingData.useOverrideArrays && upgradeScalingData.speedPerLevel != null && upgradeScalingData.speedPerLevel.Length > 0)
         {
-            if (i < speedPerLevel.Length)
-                total -= speedPerLevel[i];
+            float totalOverride = attackRate;
+            for (int i = 0; i < Mathf.Min(level, MaxUpgradeLevel); i++)
+                totalOverride -= GetFloatUpgradeValue(upgradeScalingData.speedPerLevel, i, 0f);
+            return Mathf.Max(0.05f, totalOverride);
         }
-        return Mathf.Max(0.05f, total); // Minimum 0.05s
+
+        float total = attackRate;
+        for (int i = 0; i < Mathf.Min(level, MaxUpgradeLevel); i++)
+            total -= GetFloatUpgradeValue(speedPerLevel, i, 0f);
+        return Mathf.Max(0.05f, total);
     }
 
-    /// <summary>
-    /// Belirtilen yukseltme seviyesindeki menzil (base + tum upgrade bonuslari).
-    /// </summary>
     public float GetUpgradedRange(int level)
     {
-        float total = range;
-        for (int i = 0; i < Mathf.Min(level, 9); i++)
+        if (upgradeScalingData != null && upgradeScalingData.useOverrideArrays && upgradeScalingData.rangePerLevel != null && upgradeScalingData.rangePerLevel.Length > 0)
         {
-            if (i < rangePerLevel.Length)
-                total += rangePerLevel[i];
+            float totalOverride = range;
+            for (int i = 0; i < Mathf.Min(level, MaxUpgradeLevel); i++)
+                totalOverride += GetFloatUpgradeValue(upgradeScalingData.rangePerLevel, i, 0f);
+            return totalOverride;
         }
+
+        float total = range;
+        for (int i = 0; i < Mathf.Min(level, MaxUpgradeLevel); i++)
+            total += GetFloatUpgradeValue(rangePerLevel, i, 0f);
         return total;
     }
 
-    /// <summary>
-    /// Sonraki seviyeye yukseltme maliyetini dondurur. Max seviyedeyse -1.
-    /// </summary>
     public int GetUpgradeCost(int currentLevel)
     {
-        if (currentLevel >= 9) return -1;
+        if (currentLevel >= MaxUpgradeLevel)
+            return -1;
+
+        if (upgradeScalingData != null && upgradeScalingData.useOverrideArrays && upgradeScalingData.upgradeCosts != null && upgradeScalingData.upgradeCosts.Length > 0)
+        {
+            if (currentLevel < upgradeScalingData.upgradeCosts.Length)
+                return upgradeScalingData.upgradeCosts[currentLevel];
+            int last = upgradeScalingData.upgradeCosts[upgradeScalingData.upgradeCosts.Length - 1];
+            return last + 500;
+        }
+
         if (currentLevel < upgradeCosts.Length)
             return upgradeCosts[currentLevel];
-        return 9999;
+
+        int fallback = upgradeCosts.Length > 0 ? upgradeCosts[upgradeCosts.Length - 1] : 1000;
+        return fallback + 500;
     }
 
-    /// <summary>
-    /// Sonraki seviyeye yukseltme basari oranini dondurur (0.0-1.0).
-    /// </summary>
     public float GetSuccessRate(int currentLevel)
     {
-        if (currentLevel >= 9) return 0f;
+        if (currentLevel >= MaxUpgradeLevel)
+            return 0f;
+
+        if (upgradeScalingData != null && upgradeScalingData.useOverrideArrays && upgradeScalingData.successRates != null && upgradeScalingData.successRates.Length > 0)
+        {
+            if (currentLevel < upgradeScalingData.successRates.Length)
+                return upgradeScalingData.successRates[currentLevel];
+            float last = upgradeScalingData.successRates[upgradeScalingData.successRates.Length - 1];
+            return Mathf.Max(0.01f, last - 0.02f);
+        }
+
         if (currentLevel < successRates.Length)
             return successRates[currentLevel];
-        return 0.05f;
+        float fallback = successRates.Length > 0 ? successRates[successRates.Length - 1] : 0.05f;
+        return Mathf.Max(0.01f, fallback - 0.02f);
     }
 
-    /// <summary>
-    /// Silah adini seviye ile birlikte dondurur. Orn: "Katana +3"
-    /// </summary>
     public string GetDisplayName(int level)
     {
-        if (level <= 0) return weaponName;
+        if (level <= 0)
+            return weaponName;
+
         return weaponName + " +" + level;
+    }
+
+    private static float GetFloatUpgradeValue(float[] source, int index, float fallback)
+    {
+        if (source == null || source.Length == 0)
+            return fallback;
+
+        if (index < source.Length)
+            return source[index];
+
+        return source[source.Length - 1];
     }
 }
 

@@ -34,10 +34,22 @@ public class EnemySO : ScriptableObject
     public float detectionRange = 8f;
     public float attackRange = 1.5f;
     public float attackCooldown = 2f;
+
+    [Header("Combat Class")]
+    [Tooltip("Finisher gibi sistemlerin bu dusmani nasil yorumlayacagini belirler. Elite durumu runtime'da ayri da yukselebilir.")]
+    public EnemyCombatClass combatClass = EnemyCombatClass.Normal;
 }
 
 public enum WardenProtectPriority
 {
     None,
     RangedSupport
+}
+
+public enum EnemyCombatClass
+{
+    Normal,
+    Elite,
+    MiniBoss,
+    Boss
 }

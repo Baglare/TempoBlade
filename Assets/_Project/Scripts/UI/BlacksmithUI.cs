@@ -32,6 +32,13 @@ public class BlacksmithUI : MonoBehaviour
     private Canvas cachedCanvas;
     private bool layoutBuilt;
     private bool isOpen;
+    private GameObject specializationSection;
+    private TextMeshProUGUI milestoneInfoText;
+    private TextMeshProUGUI specializationStatusText;
+    private Button specializationButtonA;
+    private Button specializationButtonB;
+    private TextMeshProUGUI specializationButtonAText;
+    private TextMeshProUGUI specializationButtonBText;
 
     public bool IsOpen => isOpen;
 
@@ -139,7 +146,11 @@ public class BlacksmithUI : MonoBehaviour
         selectedWeapon = weapon;
 
         int level = SaveManager.Instance.data.GetWeaponLevel(weapon.weaponName);
-        bool isMaxLevel = level >= 9;
+        string specializationId = SaveManager.Instance.data.GetWeaponSpecializationChoice(weapon.weaponName);
+        WeaponResolvedStats currentStats = WeaponUpgradeResolver.Resolve(weapon, level, specializationId);
+        WeaponResolvedStats nextStats = WeaponUpgradeResolver.Resolve(weapon, Mathf.Min(level + 1, WeaponSO.MaxUpgradeLevel), specializationId);
+        WeaponMilestoneUpgradeData milestones = WeaponUpgradeResolver.GetMilestones(weapon);
+        bool isMaxLevel = level >= WeaponSO.MaxUpgradeLevel;
 
         if (weaponNameText != null)
             weaponNameText.text = weapon.GetDisplayName(level);
@@ -147,9 +158,9 @@ public class BlacksmithUI : MonoBehaviour
         if (currentStatsText != null)
         {
             currentStatsText.text =
-                "Hasar: " + weapon.GetUpgradedDamage(level).ToString("F1") +
-                "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(level).ToString("F2") +
-                "\nMenzil: " + weapon.GetUpgradedRange(level).ToString("F1");
+                "Hasar: " + currentStats.damage.ToString("F1") +
+                "\nSaldiri Hizi: " + currentStats.attackRate.ToString("F2") +
+                "\nMenzil: " + currentStats.range.ToString("F1");
         }
 
         if (nextStatsText != null)
@@ -162,9 +173,9 @@ public class BlacksmithUI : MonoBehaviour
             {
                 int nextLevel = level + 1;
                 nextStatsText.text = "+" + nextLevel + " Sonrasi:" +
-                    "\nHasar: " + weapon.GetUpgradedDamage(nextLevel).ToString("F1") +
-                    "\nSaldiri Hizi: " + weapon.GetUpgradedAttackRate(nextLevel).ToString("F2") +
-                    "\nMenzil: " + weapon.GetUpgradedRange(nextLevel).ToString("F1");
+                    "\nHasar: " + nextStats.damage.ToString("F1") +
+                    "\nSaldiri Hizi: " + nextStats.attackRate.ToString("F2") +
+                    "\nMenzil: " + nextStats.range.ToString("F1");
             }
         }
 
@@ -198,6 +209,8 @@ public class BlacksmithUI : MonoBehaviour
                 upgradeButton.onClick.AddListener(() => AttemptUpgrade(cachedWeapon));
             }
         }
+
+        RefreshMilestoneSection(weapon, level, specializationId, milestones, currentStats);
     }
 
     private void AttemptUpgrade(WeaponSO weapon)
@@ -205,7 +218,7 @@ public class BlacksmithUI : MonoBehaviour
         if (weapon == null || SaveManager.Instance == null) return;
 
         int level = SaveManager.Instance.data.GetWeaponLevel(weapon.weaponName);
-        if (level >= 9) return;
+        if (level >= WeaponSO.MaxUpgradeLevel) return;
 
         int cost = weapon.GetUpgradeCost(level);
         float successRate = weapon.GetSuccessRate(level);
@@ -238,6 +251,97 @@ public class BlacksmithUI : MonoBehaviour
         RefreshAll();
     }
 
+    private void RefreshMilestoneSection(WeaponSO weapon, int level, string specializationId, WeaponMilestoneUpgradeData milestones, WeaponResolvedStats currentStats)
+    {
+        if (specializationSection == null)
+            return;
+
+        specializationSection.SetActive(true);
+
+        string level3Label = string.IsNullOrWhiteSpace(milestones?.level3?.label) ? "+3 Reinforcement" : milestones.level3.label;
+        string level6Label = string.IsNullOrWhiteSpace(milestones?.level6?.label) ? "+6 Reinforcement" : milestones.level6.label;
+
+        if (milestoneInfoText != null)
+        {
+            if (level < 3)
+            {
+                milestoneInfoText.text = "Yaklasan milestone: +3 -> " + level3Label;
+            }
+            else if (level < 6)
+            {
+                milestoneInfoText.text = "Aktif: " + level3Label + "\nSonraki: +6 -> " + level6Label;
+            }
+            else if (level < WeaponSO.MaxUpgradeLevel)
+            {
+                milestoneInfoText.text = "Aktif: " + level3Label + " / " + level6Label + "\n+10'da specialization secimi acilir.";
+            }
+            else
+            {
+                milestoneInfoText.text = "Milestone: " + currentStats.milestoneLabel;
+            }
+        }
+
+        WeaponSpecializationChoiceData[] choices = milestones != null ? milestones.level9Choices : null;
+        bool hasChoices = choices != null && choices.Length > 0;
+        bool pendingChoice = level >= WeaponSO.MaxUpgradeLevel && string.IsNullOrWhiteSpace(specializationId) && hasChoices;
+
+        if (specializationStatusText != null)
+        {
+            if (level < WeaponSO.MaxUpgradeLevel)
+            {
+                specializationStatusText.text = "Specialization +10'da acilir.";
+            }
+            else if (pendingChoice)
+            {
+                specializationStatusText.text = "Bir specialization sec. Bu secim silaha kaydedilir.";
+            }
+            else
+            {
+                specializationStatusText.text = string.IsNullOrWhiteSpace(currentStats.specializationName)
+                    ? "Specialization secilmedi."
+                    : "Secili specialization: " + currentStats.specializationName;
+            }
+        }
+
+        ConfigureSpecializationButton(specializationButtonA, specializationButtonAText, weapon, choices, 0, pendingChoice);
+        ConfigureSpecializationButton(specializationButtonB, specializationButtonBText, weapon, choices, 1, pendingChoice);
+    }
+
+    private void ConfigureSpecializationButton(Button button, TextMeshProUGUI label, WeaponSO weapon, WeaponSpecializationChoiceData[] choices, int index, bool enabled)
+    {
+        if (button == null)
+            return;
+
+        button.onClick.RemoveAllListeners();
+
+        WeaponSpecializationChoiceData choice = choices != null && index < choices.Length ? choices[index] : null;
+        bool isValidChoice = choice != null && !string.IsNullOrWhiteSpace(choice.choiceId);
+        button.gameObject.SetActive(enabled && isValidChoice);
+        button.interactable = enabled && isValidChoice;
+
+        if (label != null && isValidChoice)
+            label.text = choice.displayName + "\n<size=70%>" + choice.description + "</size>";
+
+        if (enabled && isValidChoice)
+        {
+            button.onClick.AddListener(() => SelectSpecialization(weapon, choice.choiceId));
+        }
+    }
+
+    private void SelectSpecialization(WeaponSO weapon, string choiceId)
+    {
+        if (weapon == null || SaveManager.Instance == null || string.IsNullOrWhiteSpace(choiceId))
+            return;
+
+        SaveManager.Instance.data.SetWeaponSpecializationChoice(weapon.weaponName, choiceId);
+        SaveManager.Instance.Save();
+
+        if (resultText != null)
+            resultText.text = "<color=green>Specialization secildi.</color>";
+
+        RefreshAll();
+    }
+
     private void ClearDetail()
     {
         if (weaponNameText != null) weaponNameText.text = "Bir silah secin";
@@ -247,6 +351,7 @@ public class BlacksmithUI : MonoBehaviour
         if (successRateText != null) successRateText.text = "";
         if (resultText != null) resultText.text = "";
         if (upgradeButton != null) upgradeButton.interactable = false;
+        if (specializationSection != null) specializationSection.SetActive(false);
     }
 
     public void CloseBlacksmith()
@@ -331,10 +436,74 @@ public class BlacksmithUI : MonoBehaviour
         ModalUIRuntimeUtility.Wrap(costText.rectTransform, metaRow, "CostWrap", 30f);
         ModalUIRuntimeUtility.Wrap(successRateText.rectTransform, metaRow, "SuccessWrap", 30f);
 
+        RectTransform specializationRect = ModalUIRuntimeUtility.CreateSection(right, "SpecializationSection", new Color(0.15f, 0.10f, 0.09f, 0.96f));
+        specializationSection = specializationRect.gameObject;
+        LayoutElement specializationLayout = specializationSection.GetComponent<LayoutElement>();
+        if (specializationLayout != null)
+            specializationLayout.minHeight = 148f;
+
+        milestoneInfoText = CreateRuntimeText(specializationRect, "MilestoneInfo", 22f, true);
+        specializationStatusText = CreateRuntimeText(specializationRect, "SpecializationStatus", 20f, true);
+        RectTransform specButtonsRow = ModalUIRuntimeUtility.CreateRow(specializationRect, "SpecializationButtons", 64f);
+        specializationButtonA = CreateRuntimeButton(specButtonsRow, "SpecChoiceA", out specializationButtonAText);
+        specializationButtonB = CreateRuntimeButton(specButtonsRow, "SpecChoiceB", out specializationButtonBText);
+        specializationSection.SetActive(false);
         ModalUIRuntimeUtility.Wrap(resultText.rectTransform, right, "ResultRow", 48f);
         ModalUIRuntimeUtility.Wrap(upgradeButton.GetComponent<RectTransform>(), right, "UpgradeButtonRow", 52f);
 
         layoutBuilt = true;
+    }
+
+    private static TextMeshProUGUI CreateRuntimeText(RectTransform parent, string name, float fontSize, bool richText)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI), typeof(LayoutElement));
+        RectTransform rect = go.GetComponent<RectTransform>();
+        rect.SetParent(parent, false);
+        ModalUIRuntimeUtility.StretchHorizontally(rect);
+
+        TextMeshProUGUI text = go.GetComponent<TextMeshProUGUI>();
+        text.fontSize = fontSize;
+        text.enableWordWrapping = true;
+        text.richText = richText;
+        text.color = new Color(0.92f, 0.93f, 0.98f, 1f);
+
+        LayoutElement layout = go.GetComponent<LayoutElement>();
+        layout.minHeight = fontSize + 10f;
+        layout.flexibleWidth = 1f;
+        return text;
+    }
+
+    private static Button CreateRuntimeButton(RectTransform parent, string name, out TextMeshProUGUI label)
+    {
+        GameObject buttonObject = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button), typeof(LayoutElement));
+        RectTransform rect = buttonObject.GetComponent<RectTransform>();
+        rect.SetParent(parent, false);
+
+        Image image = buttonObject.GetComponent<Image>();
+        image.color = new Color(0.30f, 0.18f, 0.12f, 0.98f);
+
+        LayoutElement layout = buttonObject.GetComponent<LayoutElement>();
+        layout.minHeight = 64f;
+        layout.flexibleWidth = 1f;
+
+        GameObject textObject = new GameObject("Label", typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+        RectTransform textRect = textObject.GetComponent<RectTransform>();
+        textRect.SetParent(rect, false);
+        textRect.anchorMin = Vector2.zero;
+        textRect.anchorMax = Vector2.one;
+        textRect.offsetMin = new Vector2(10f, 6f);
+        textRect.offsetMax = new Vector2(-10f, -6f);
+
+        label = textObject.GetComponent<TextMeshProUGUI>();
+        label.alignment = TextAlignmentOptions.Center;
+        label.enableWordWrapping = true;
+        label.fontSize = 17f;
+        label.color = new Color(0.95f, 0.97f, 1f, 1f);
+        label.richText = true;
+
+        Button button = buttonObject.GetComponent<Button>();
+        ModalUIRuntimeUtility.NormalizeButton(button, 64f);
+        return button;
     }
 
     private static void CreateSectionLabel(RectTransform parent, string title, float fontSize = 22f)

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TempoManager : MonoBehaviour
@@ -6,12 +7,12 @@ public class TempoManager : MonoBehaviour
 
     public enum TempoTier { T0, T1, T2, T3 }
 
-    [System.Serializable]
+    [Serializable]
     public class TempoRegenConfig
     {
         public float healAmount = 0f;
-        [Tooltip("0 ise regen kapali")] 
-        public float healInterval = 0f; 
+        [Tooltip("0 ise regen kapali")]
+        public float healInterval = 0f;
     }
 
     [Header("HP Regen per Tier (T0, T1, T2, T3)")]
@@ -21,47 +22,134 @@ public class TempoManager : MonoBehaviour
     [Range(0f, 100f)]
     public float tempo = 0f;
     public float maxTempo = 100f;
-    
+
     [Header("Run Modifiers")]
     public float tempoGainMultiplier = 1.0f;
 
     [Header("Tier Thresholds (Non-Linear)")]
-    [Tooltip("0-39")] public float tier1Start = 40f; 
+    [Tooltip("0-39")] public float tier1Start = 40f;
     [Tooltip("40-69")] public float tier2Start = 70f;
-    [Tooltip("70-89")] public float tier3Start = 90f; // 90-100 is T3 (Shortest)
+    [Tooltip("90-100")] public float tier3Start = 90f;
 
     [Header("Gain")]
     public float gainOnPerfectParry = 20f;
 
     [Header("Decay")]
     public bool enableDecay = true;
-    public float decayPerSecond = 6f; // Decay başladıktan sonraki saniyelik düşüş hızı
+    public float decayPerSecond = 6f;
     private float overdriveDecayMultiplier = 1f;
     private float cadenceDecayMultiplier = 1f;
     private float supportZoneGainMultiplier = 1f;
     private float supportZoneDecayMultiplier = 1f;
     private float overdriveDamagePenaltyMultiplier = 1f;
     private float cadenceDamagePenaltyMultiplier = 1f;
-    
-    // Tier bazlı Decay bekleme süreleri
-    private float GetDecayDelayForTier(TempoTier tier)
-    {
-        switch (tier)
-        {
-            case TempoTier.T3: return 1.1f;
-            case TempoTier.T2: return 1.9f;
-            case TempoTier.T1: return 2.8f;
-            default: return 4.0f; // T0
-        }
-    }
 
-    private float decayTimer = 0f;
-    private float regenTimer = 0f;
+    private float decayTimer;
+    private float regenTimer;
+    private int positiveTempoGainSuppressionCount;
 
     public TempoTier CurrentTier { get; private set; } = TempoTier.T0;
+    public bool IsPositiveTempoGainSuppressed => positiveTempoGainSuppressionCount > 0;
 
-    public System.Action<TempoTier> OnTierChanged;
-    public System.Action<float> OnTempoChanged;
+    public Action<TempoTier> OnTierChanged;
+    public Action<float> OnTempoChanged;
+
+    private PlayerCombat cachedPlayer;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
+    public void InitializeLoadedState()
+    {
+        OnTempoChanged?.Invoke(tempo);
+        CurrentTier = EvaluateTier(tempo);
+        ApplyGlobalSpeed(CurrentTier);
+        OnTierChanged?.Invoke(CurrentTier);
+        decayTimer = GetDecayDelayForTier(CurrentTier);
+    }
+
+    public IDisposable SuppressPositiveTempoGain(string reason = "")
+    {
+        positiveTempoGainSuppressionCount++;
+        return new TempoGainSuppressionHandle(this);
+    }
+
+    public void ResetTempoToZero()
+    {
+        SetTempoImmediate(0f, false);
+    }
+
+    public void SetTempoImmediate(float value, bool refreshDecayTimer)
+    {
+        float clamped = Mathf.Clamp(value, 0f, maxTempo);
+        bool changed = !Mathf.Approximately(tempo, clamped);
+        tempo = clamped;
+
+        if (changed)
+            OnTempoChanged?.Invoke(tempo);
+
+        TempoTier newTier = EvaluateTier(tempo);
+        if (newTier != CurrentTier)
+        {
+            CurrentTier = newTier;
+            ApplyGlobalSpeed(CurrentTier);
+            OnTierChanged?.Invoke(CurrentTier);
+        }
+
+        if (refreshDecayTimer)
+            decayTimer = GetDecayDelayForTier(CurrentTier);
+    }
+
+    public void AddTempo(float amount)
+    {
+        if (amount > 0f && IsPositiveTempoGainSuppressed)
+            return;
+
+        if (amount > 0f)
+            decayTimer = GetDecayDelayForTier(CurrentTier);
+
+        float actualAmount = amount > 0f
+            ? amount * tempoGainMultiplier * supportZoneGainMultiplier
+            : amount;
+
+        SetTempoImmediate(tempo + actualAmount, false);
+
+        if (amount > 0f)
+            decayTimer = GetDecayDelayForTier(CurrentTier);
+    }
+
+    public void ApplyDamagePenalty()
+    {
+        float penaltyMultiplier = overdriveDamagePenaltyMultiplier * cadenceDamagePenaltyMultiplier;
+
+        if (CurrentTier == TempoTier.T3)
+        {
+            float penalty = Mathf.Max(0f, tempo - (tier3Start - 1f));
+            SetTempoImmediate(tempo - penalty * penaltyMultiplier, false);
+        }
+        else if (CurrentTier == TempoTier.T2)
+        {
+            SetTempoImmediate(Mathf.Clamp(tempo - 15f * penaltyMultiplier, tier1Start, maxTempo), false);
+        }
+        else if (CurrentTier == TempoTier.T1)
+        {
+            SetTempoImmediate(tempo - 10f * penaltyMultiplier, false);
+        }
+        else
+        {
+            SetTempoImmediate(tempo - 5f * penaltyMultiplier, false);
+        }
+
+        decayTimer = GetDecayDelayForTier(EvaluateTier(tempo));
+    }
 
     public void SetOverdriveTempoMultipliers(float decayMultiplier, float damagePenaltyMultiplier)
     {
@@ -81,120 +169,37 @@ public class TempoManager : MonoBehaviour
         supportZoneDecayMultiplier = Mathf.Max(0.05f, decayMultiplier);
     }
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-    }
-
-    public void InitializeLoadedState()
-    {
-        // UI ve sistemlerin yeni yuklenen tempo degerine adapte olmasi icin tetikle
-        OnTempoChanged?.Invoke(tempo);
-        
-        CurrentTier = EvaluateTier(tempo);
-        ApplyGlobalSpeed(CurrentTier);
-        OnTierChanged?.Invoke(CurrentTier);
-        
-        // Cok hizli bir decay baslamasin diye baslangic suresi ver
-        decayTimer = GetDecayDelayForTier(CurrentTier);
-    }
-
-    public void AddTempo(float amount)
-    {
-        // Kazanç varsa süreyi yenile, yoksa elleme (penalty metodu ayrı olacak)
-        if (amount > 0)
-        {
-            decayTimer = GetDecayDelayForTier(CurrentTier);
-        }
-
-        float actualAmount = amount > 0 ? amount * tempoGainMultiplier * supportZoneGainMultiplier : amount; // Sadece kazanclari carp
-        float prevTempo = tempo;
-        tempo = Mathf.Clamp(tempo + actualAmount, 0f, maxTempo);
-
-        if (!Mathf.Approximately(prevTempo, tempo))
-            OnTempoChanged?.Invoke(tempo);
-
-        var newTier = EvaluateTier(tempo);
-        if (newTier != CurrentTier)
-        {
-            CurrentTier = newTier;
-            ApplyGlobalSpeed(CurrentTier);
-            OnTierChanged?.Invoke(CurrentTier);
-            
-            // Eğer tier değiştiyse decay timer'ı yeni tier'e göre yenile (sadece yukarı çıkarken)
-            if (amount > 0) decayTimer = GetDecayDelayForTier(CurrentTier);
-        }
-    }
-
-    // Hasar alındığında çağrılır
-    public void ApplyDamagePenalty()
-    {
-        float prevTempo = tempo;
-        float penaltyMultiplier = overdriveDamagePenaltyMultiplier * cadenceDamagePenaltyMultiplier;
-
-        if (CurrentTier == TempoTier.T3)
-        {
-            // T3'te hasar yenirse direkt T2'nin en üstüne (veya biraz altına) çakılır.
-            float penalty = Mathf.Max(0f, tempo - (tier3Start - 1f));
-            tempo = Mathf.Clamp(tempo - penalty * penaltyMultiplier, 0f, maxTempo);
-        }
-        else if (CurrentTier == TempoTier.T2)
-        {
-            // T2'de hasar yenirse sabit bir ceza, ama direkt T1'e çakılmayabilir
-            tempo = Mathf.Clamp(tempo - 15f * penaltyMultiplier, tier1Start, maxTempo); // T1 eşiğinin altına düşmez
-        }
-        else if (CurrentTier == TempoTier.T1)
-        {
-            // T1'de yenirse
-            tempo = Mathf.Clamp(tempo - 10f * penaltyMultiplier, 0f, maxTempo);
-        }
-        else
-        {
-            // T0'da yenirse
-            tempo = Mathf.Clamp(tempo - 5f * penaltyMultiplier, 0f, maxTempo);
-        }
-
-        // Korumayı sıfırlama, hatta hafif afterglow verebiliriz, oyuncu hemen decay yaşamaz
-        decayTimer = GetDecayDelayForTier(EvaluateTier(tempo));
-
-        if (!Mathf.Approximately(prevTempo, tempo))
-            OnTempoChanged?.Invoke(tempo);
-
-        var newTier = EvaluateTier(tempo);
-        if (newTier != CurrentTier)
-        {
-            CurrentTier = newTier;
-            ApplyGlobalSpeed(CurrentTier);
-            OnTierChanged?.Invoke(CurrentTier);
-        }
-    }
-
-    // --- PLAYER STAT BOOSTS ---
     public float GetDamageMultiplier()
     {
-        switch (CurrentTier)
+        return CurrentTier switch
         {
-            case TempoTier.T1: return 1.2f; // +20% Hasar
-            case TempoTier.T2: return 1.5f; // +50% Hasar
-            case TempoTier.T3: return 2.0f; // +100% Hasar
-            default: return 1.0f;           // Normal
-        }
+            TempoTier.T1 => 1.2f,
+            TempoTier.T2 => 1.5f,
+            TempoTier.T3 => 2.0f,
+            _ => 1.0f
+        };
     }
 
     public float GetSpeedMultiplier()
     {
-        switch (CurrentTier)
+        return CurrentTier switch
         {
-            case TempoTier.T1: return 1.1f; // +10% Hiz
-            case TempoTier.T2: return 1.25f;// +25% Hiz
-            case TempoTier.T3: return 1.5f; // +50% Hiz
-            default: return 1.0f;           // Normal
-        }
+            TempoTier.T1 => 1.1f,
+            TempoTier.T2 => 1.25f,
+            TempoTier.T3 => 1.5f,
+            _ => 1.0f
+        };
+    }
+
+    private float GetDecayDelayForTier(TempoTier tier)
+    {
+        return tier switch
+        {
+            TempoTier.T3 => 1.1f,
+            TempoTier.T2 => 1.9f,
+            TempoTier.T1 => 2.8f,
+            _ => 4.0f
+        };
     }
 
     private TempoTier EvaluateTier(float value)
@@ -205,34 +210,28 @@ public class TempoManager : MonoBehaviour
         return TempoTier.T0;
     }
 
-    private PlayerCombat cachedPlayer;
-
     private void ApplyGlobalSpeed(TempoTier tier)
     {
-        // GameManager'in duraklamadigi bir durumdaysak hizi degistir
-        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameManager.GameState.Gameplay) return;
+        if (GameManager.Instance != null && GameManager.Instance.CurrentState != GameManager.GameState.Gameplay)
+            return;
 
-        // Çift bindirme sorunu için TimeScale sabit 1.0f yapıldı.
-        // Hız zaten GetSpeedMultiplier() ile çarpan olarak karakter scriptlerinde kullanılıyor.
         Time.timeScale = 1.0f;
     }
 
     private void TryCachePlayer()
     {
         if (cachedPlayer == null)
-        {
             cachedPlayer = FindFirstObjectByType<PlayerCombat>();
-        }
     }
 
     private void Update()
     {
-        if (!enableDecay) return;
+        if (!enableDecay)
+            return;
 
-        // --- HP Regen Logic ---
         if (regenConfigs != null && regenConfigs.Length > (int)CurrentTier)
         {
-            var currentConfig = regenConfigs[(int)CurrentTier];
+            TempoRegenConfig currentConfig = regenConfigs[(int)CurrentTier];
             if (currentConfig.healInterval > 0f && currentConfig.healAmount > 0f)
             {
                 regenTimer -= Time.deltaTime;
@@ -240,21 +239,17 @@ public class TempoManager : MonoBehaviour
                 {
                     TryCachePlayer();
                     if (cachedPlayer != null)
-                    {
                         cachedPlayer.Heal(currentConfig.healAmount);
-                    }
-                    // Timer'i resetle
+
                     regenTimer = currentConfig.healInterval;
                 }
             }
             else
             {
-                // Mevcut Tier'da regen yoksa veya kapatilmissa, timer'i sifirda tut
                 regenTimer = 0f;
             }
         }
 
-        // --- Decay Logic ---
         if (decayTimer > 0f)
         {
             decayTimer -= Time.deltaTime;
@@ -263,5 +258,29 @@ public class TempoManager : MonoBehaviour
 
         if (tempo > 0f)
             AddTempo(-decayPerSecond * overdriveDecayMultiplier * cadenceDecayMultiplier * supportZoneDecayMultiplier * Time.deltaTime);
+    }
+
+    private void ReleasePositiveTempoGainSuppression()
+    {
+        positiveTempoGainSuppressionCount = Mathf.Max(0, positiveTempoGainSuppressionCount - 1);
+    }
+
+    private sealed class TempoGainSuppressionHandle : IDisposable
+    {
+        private TempoManager owner;
+
+        public TempoGainSuppressionHandle(TempoManager owner)
+        {
+            this.owner = owner;
+        }
+
+        public void Dispose()
+        {
+            if (owner == null)
+                return;
+
+            owner.ReleasePositiveTempoGainSuppression();
+            owner = null;
+        }
     }
 }

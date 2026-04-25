@@ -112,7 +112,14 @@ public class SaveManager : MonoBehaviour
 public class WeaponUpgradeEntry
 {
     public string weaponName;
-    public int upgradeLevel; // 0 = +0, 1 = +1, ..., 9 = +9
+    public int upgradeLevel; // 0 = +0, 1 = +1, ..., 10 = +10
+}
+
+[System.Serializable]
+public class WeaponSpecializationEntry
+{
+    public string weaponName;
+    public string specializationChoiceId;
 }
 
 /// <summary>
@@ -139,6 +146,7 @@ public class SaveData
 
     // Silah yukseltme seviyeleri (her silah icin ayri)
     public List<WeaponUpgradeEntry> weaponUpgrades = new List<WeaponUpgradeEntry>();
+    public List<WeaponSpecializationEntry> weaponSpecializations = new List<WeaponSpecializationEntry>();
 
     // ── Eksen Bazlı Progression (Skill Tree) State ──
     public List<string> unlockedSkillNodeIds = new List<string>();
@@ -174,6 +182,35 @@ public class SaveData
         }
         // Yeni entry olustur
         weaponUpgrades.Add(new WeaponUpgradeEntry { weaponName = weaponName, upgradeLevel = level });
+    }
+
+    public string GetWeaponSpecializationChoice(string weaponName)
+    {
+        foreach (var entry in weaponSpecializations)
+        {
+            if (entry.weaponName == weaponName)
+                return entry.specializationChoiceId;
+        }
+
+        return string.Empty;
+    }
+
+    public void SetWeaponSpecializationChoice(string weaponName, string specializationChoiceId)
+    {
+        foreach (var entry in weaponSpecializations)
+        {
+            if (entry.weaponName == weaponName)
+            {
+                entry.specializationChoiceId = specializationChoiceId;
+                return;
+            }
+        }
+
+        weaponSpecializations.Add(new WeaponSpecializationEntry
+        {
+            weaponName = weaponName,
+            specializationChoiceId = specializationChoiceId
+        });
     }
 }
 

@@ -15,6 +15,7 @@ MonoBehaviour:
   weaponName: Combo Dagger
   description: "Han\xE7er. \u0130lk kombolu silah."
   icon: {fileID: 1936746835, guid: 6eb16e372762d6b4cb708c44ebfab931, type: 3}
+  weaponType: 2
   damage: 35
   attackRate: 0.2
   range: 0.35
@@ -65,6 +66,39 @@ MonoBehaviour:
     dashSpeed: 16
     dashDuration: 0.22
   tempoIdentity: 1
+  attackRhythmProfile:
+    overrideDefaultProfile: 0
+    profileName: Balanced
+    cooldownMultiplier: 1
+    windupMultiplier: 1
+    comboWindowMultiplier: 1
+  rangeProfile:
+    overrideDefaultProfile: 0
+    profileName: Standard
+    rangeMultiplier: 1
+    attackOffsetBonus: 0
+  staggerProfile:
+    overrideDefaultProfile: 0
+    profileName: Balanced
+    extraStaggerOnHit: 0
+    extraStaggerOnHeavyHit: 0.08
+    heavyHitThreshold: 1.5
+    finisherPressureBonus: 0.1
+  recoveryProfile:
+    overrideDefaultProfile: 0
+    profileName: Standard
+    recoveryMultiplier: 1
+  tempoGainStyle:
+    overrideDefaultProfile: 0
+    profileName: Balanced
+    tempoGainOnHit: 2
+    tempoGainOnProjectileDeflect: 10
+    whiffPenalty: -5
+  riskProfile:
+    overrideDefaultProfile: 0
+    profileName: Measured
+    whiffPenaltyMultiplier: 1
+    counterBonusMultiplier: 1
   price: 10
   damagePerLevel:
   - 1
@@ -107,3 +141,60 @@ MonoBehaviour:
   - 0.25
   - 0.15
   - 0.05
+  upgradeScalingData:
+    useOverrideArrays: 0
+    damagePerLevel: []
+    speedPerLevel: []
+    rangePerLevel: []
+    upgradeCosts: 
+    successRates: []
+  milestoneUpgradeData:
+    useCustomMilestones: 0
+    level3:
+      label: 
+      description: 
+      flatDamageBonus: 0
+      attackRateReduction: 0
+      flatRangeBonus: 0
+      extraStaggerOnHit: 0
+      tempoGainOnHitBonus: 0
+      whiffPenaltyDelta: 0
+      comboWindowMultiplierBonus: 0
+      recoveryMultiplierBonus: 0
+    level6:
+      label: 
+      description: 
+      flatDamageBonus: 0
+      attackRateReduction: 0
+      flatRangeBonus: 0
+      extraStaggerOnHit: 0
+      tempoGainOnHitBonus: 0
+      whiffPenaltyDelta: 0
+      comboWindowMultiplierBonus: 0
+      recoveryMultiplierBonus: 0
+    level9Choices:
+    - choiceId: 
+      displayName: 
+      description: 
+      flatDamageBonus: 0
+      attackRateReduction: 0
+      flatRangeBonus: 0
+      extraStaggerOnHit: 0
+      tempoGainOnHitBonus: 0
+      whiffPenaltyDelta: 0
+      comboWindowMultiplierBonus: 0
+      recoveryMultiplierBonus: 0
+      finisherOverride: {fileID: 0}
+    - choiceId: 
+      displayName: 
+      description: 
+      flatDamageBonus: 0
+      attackRateReduction: 0
+      flatRangeBonus: 0
+      extraStaggerOnHit: 0
+      tempoGainOnHitBonus: 0
+      whiffPenaltyDelta: 0
+      comboWindowMultiplierBonus: 0
+      recoveryMultiplierBonus: 0
+      finisherOverride: {fileID: 0}
+  finisher: {fileID: 0}

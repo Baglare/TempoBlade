@@ -174,6 +174,8 @@ public class StatsPanel : MonoBehaviour
                 stats += $"\n  <size=80%>{LvBar(tempoLevel, tempoMax)}  <color=#aaaaaa>Sv.{tempoLevel}/{tempoMax}</color></size>";
         }
 
+        stats += combat.GetWeaponDebugSummary();
+
         allStatsText.text = stats;
     }
 
