@@ -18,6 +18,10 @@ public class RoomManager : MonoBehaviour
     public RewardDefinitionSO[] possibleRewards;
     [Header("Elite Spawn Debug")]
     public EliteSpawnDebugOverrides eliteSpawnDebugOverrides = new EliteSpawnDebugOverrides();
+    [Header("MiniBoss Debug")]
+    public bool forceMiniBossEncounterForDebug;
+    public MiniBossEncounterSO forcedMiniBossEncounter;
+    public bool logMiniBossEvents = true;
 
     [Header("State")]
     public bool isRoomActive = false;
@@ -26,6 +30,7 @@ public class RoomManager : MonoBehaviour
     public EliteSpawnWaveMetrics LastEliteSpawnMetrics { get; private set; } = new EliteSpawnWaveMetrics();
 
     private readonly EliteSpawnHistoryState eliteSpawnHistory = new EliteSpawnHistoryState();
+    private MiniBossRoomController miniBossRoomController;
 
     private void Awake()
     {
@@ -36,6 +41,9 @@ public class RoomManager : MonoBehaviour
             return;
         }
         Instance = this;
+        miniBossRoomController = GetComponent<MiniBossRoomController>();
+        if (miniBossRoomController == null)
+            miniBossRoomController = gameObject.AddComponent<MiniBossRoomController>();
     }
 
     private void Start()
@@ -134,6 +142,13 @@ public class RoomManager : MonoBehaviour
 
         GameObject telemetryPlayer = GameObject.FindGameObjectWithTag("Player");
         affinityManager.StartEncounter(currentRoomData, telemetryPlayer);
+
+        MiniBossEncounterSO miniBossEncounter = ResolveMiniBossEncounter();
+        if (miniBossEncounter != null)
+        {
+            miniBossRoomController.BeginEncounter(this, currentRoomData, currentRoomLayout, miniBossEncounter, logMiniBossEvents);
+            yield break;
+        }
         
         // Eğer odanın wave tanımı yoksa direkt odayı tamamla (Örn: Boş Boss odası test için)
         if (currentRoomData.waves == null || currentRoomData.waves.Count == 0 || currentRoomLayout == null)
@@ -224,6 +239,9 @@ public class RoomManager : MonoBehaviour
          {
              activeEnemies.Remove(enemy);
          }
+
+         if (miniBossRoomController != null && miniBossRoomController.IsEncounterActive)
+             return;
 
          if (activeEnemies.Count == 0)
          {
@@ -347,6 +365,99 @@ public class RoomManager : MonoBehaviour
         {
             Debug.LogWarning("RoomManager: RoomLayout'ta RewardDoor atanmamış! Kapı açılamıyor.");
         }
+    }
+
+    public void HandleMiniBossEncounterCompleted(MiniBossEncounterSO encounter, MiniBossRewardResolution rewardResolution)
+    {
+        isRoomActive = false;
+        EncounterAffinityManager.EnsureInstance().EndEncounter(currentRoomData);
+
+        TrapArea[] remainingTraps = FindObjectsByType<TrapArea>(FindObjectsSortMode.None);
+        foreach (var trap in remainingTraps)
+        {
+            if (trap != null) Destroy(trap.gameObject);
+        }
+
+        if (RunManager.Instance != null)
+            RunManager.Instance.GrantPendingReward();
+
+        if (RunManager.Instance != null && RunManager.Instance.IsRunComplete())
+        {
+            if (EconomyManager.Instance != null)
+                EconomyManager.Instance.DepositRunGold();
+
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetState(GameManager.GameState.GameOver);
+
+            return;
+        }
+
+        UnlockExitDoorsWithoutRewards();
+
+        if (logMiniBossEvents)
+        {
+            string rewardName = rewardResolution != null && rewardResolution.reward != null
+                ? rewardResolution.reward.rewardName
+                : "None";
+            Debug.Log($"[MiniBoss] Room clear complete -> {encounter?.displayName ?? currentRoomData?.roomName} | DirectReward: {rewardName}");
+        }
+    }
+
+    public void HandleMiniBossEncounterSetupFailed()
+    {
+        isRoomActive = false;
+        EncounterAffinityManager.EnsureInstance().EndEncounter(currentRoomData);
+
+        if (RunManager.Instance != null)
+            RunManager.Instance.GrantPendingReward();
+
+        if (RunManager.Instance != null && RunManager.Instance.IsRunComplete())
+        {
+            if (EconomyManager.Instance != null)
+                EconomyManager.Instance.DepositRunGold();
+
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetState(GameManager.GameState.GameOver);
+
+            return;
+        }
+
+        UnlockExitDoorsWithoutRewards();
+    }
+
+    private void UnlockExitDoorsWithoutRewards()
+    {
+        RewardDoor[] doors = currentRoomLayout != null ? currentRoomLayout.rewardDoors : null;
+        if (doors == null || doors.Length == 0)
+        {
+            Debug.LogWarning("RoomManager: Mini-boss room icin cikis kapisi bulunamadi.");
+            return;
+        }
+
+        for (int i = 0; i < doors.Length; i++)
+        {
+            if (doors[i] == null)
+                continue;
+
+            doors[i].Initialize(null, -1);
+            doors[i].Unlock();
+        }
+    }
+
+    private MiniBossEncounterSO ResolveMiniBossEncounter()
+    {
+        bool roomWantsMiniBoss = currentRoomData != null && currentRoomData.encounterType == EncounterType.MiniBoss;
+        if (!roomWantsMiniBoss)
+            return null;
+
+        if (forceMiniBossEncounterForDebug && forcedMiniBossEncounter != null)
+            return forcedMiniBossEncounter;
+
+        if (currentRoomData != null && currentRoomData.miniBossEncounter != null)
+            return currentRoomData.miniBossEncounter;
+
+        Debug.LogWarning($"[MiniBoss] {currentRoomData.roomName} MiniBoss encounter olarak isaretli ama miniBossEncounter referansi bos.");
+        return null;
     }
 
     private List<EliteSpawnPlanEntry> BuildWaveSpawnPlan(RoomWave wave)

@@ -23,6 +23,7 @@ public class RoomSO : ScriptableObject
     public bool isBossRoom;
     public EncounterType encounterType = EncounterType.Normal;
     public DifficultyTier difficulty = DifficultyTier.Normal;
+    public MiniBossEncounterSO miniBossEncounter;
 
     [Header("Elite Spawn Layer")]
     public EliteSpawnConfig eliteSpawnConfig = new EliteSpawnConfig();

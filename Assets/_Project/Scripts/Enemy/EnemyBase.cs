@@ -30,6 +30,10 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     private int pendingFacingSign = 1;
     private float facingTurnCommitTime;
     private bool facingStateInitialized;
+    private float encounterHealthMultiplier = 1f;
+    private float encounterDamageMultiplier = 1f;
+    private float encounterCooldownMultiplier = 1f;
+    private float encounterMoveSpeedMultiplier = 1f;
 
     public float CurrentHealth => currentHealth;
     public float MaxHealth => GetEffectiveMaxHealth(enemyData != null ? enemyData.maxHealth : 100f);
@@ -347,12 +351,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected float GetEffectiveMaxHealth(float baseHealth)
     {
-        return baseHealth * GetEliteHealthMultiplier();
+        return baseHealth * GetEliteHealthMultiplier() * encounterHealthMultiplier;
     }
 
     protected float GetEffectiveDamage(float baseDamage)
     {
-        return baseDamage * GetEliteDamageMultiplier();
+        return baseDamage * GetEliteDamageMultiplier() * encounterDamageMultiplier;
     }
 
     public float GetEffectiveContactDamage(float fallbackDamage)
@@ -368,7 +372,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected float GetEffectiveMoveSpeed(float baseMoveSpeed)
     {
-        return baseMoveSpeed * GetEliteMoveSpeedMultiplier() * GetSupportMoveSpeedMultiplier();
+        return baseMoveSpeed * GetEliteMoveSpeedMultiplier() * encounterMoveSpeedMultiplier * GetSupportMoveSpeedMultiplier();
     }
 
     protected float GetEffectiveMoveSpeedFromData(float fallbackMoveSpeed)
@@ -379,7 +383,22 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected float GetEffectiveCooldownDuration(float baseDuration)
     {
-        return baseDuration * GetEliteCooldownMultiplier();
+        return baseDuration * GetEliteCooldownMultiplier() * encounterCooldownMultiplier;
+    }
+
+    public void SetEncounterCombatModifiers(MiniBossCombatModifierData modifiers)
+    {
+        float oldMaxHealth = MaxHealth;
+        encounterHealthMultiplier = Mathf.Max(0.01f, modifiers != null ? modifiers.healthMultiplier : 1f);
+        encounterDamageMultiplier = Mathf.Max(0.01f, modifiers != null ? modifiers.damageMultiplier : 1f);
+        encounterCooldownMultiplier = Mathf.Max(0.01f, modifiers != null ? modifiers.cooldownMultiplier : 1f);
+        encounterMoveSpeedMultiplier = Mathf.Max(0.01f, modifiers != null ? modifiers.moveSpeedMultiplier : 1f);
+
+        if (!startInitialized)
+            return;
+
+        float healthRatio = oldMaxHealth > 0f ? currentHealth / oldMaxHealth : 1f;
+        currentHealth = Mathf.Clamp01(healthRatio) * MaxHealth;
     }
 
     protected void PlayEliteCue(Vector3 worldPosition, bool spawnVfx = true, bool playAudio = true)

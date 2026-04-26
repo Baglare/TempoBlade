@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class RunManager : MonoBehaviour
 {
     public static RunManager Instance { get; private set; }
+
+    private readonly HashSet<string> clearedMiniBossEncounterIdsThisRun = new HashSet<string>();
 
     [Header("Run State")]
     public int roomsCleared = 0;
@@ -83,6 +86,7 @@ public class RunManager : MonoBehaviour
         pendingRewardContext = new RunRewardContext();
         runResourceBank = new RunResourceBankState();
         CurrentRunModifierContext = PactContractService.BuildDefaultRunModifierContext();
+        clearedMiniBossEncounterIdsThisRun.Clear();
     }
 
     /// <summary>
@@ -163,9 +167,11 @@ public class RunManager : MonoBehaviour
     // Oda temizlendiginde cagrilir (RoomManager icinden)
     public void GrantPendingReward()
     {
-        roomsCleared++;
+        RewardDefinitionSO rewardToGrant = pendingReward;
+        RunRewardContext rewardContext = pendingRewardContext ?? new RunRewardContext();
+        AdvanceRoomProgress();
 
-        if (pendingReward == null)
+        if (rewardToGrant == null)
             return;
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -174,11 +180,15 @@ public class RunManager : MonoBehaviour
             var pCombat = player.GetComponent<PlayerCombat>();
             if (pCombat != null)
             {
-                RunRewardApplier.ApplyReward(pendingReward, pCombat, pendingRewardContext);
+                RunRewardApplier.ApplyReward(rewardToGrant, pCombat, rewardContext);
                 pCombat.UpdateHealthUI();
             }
         }
+    }
 
+    public void AdvanceRoomProgress()
+    {
+        roomsCleared++;
         pendingReward = null;
         pendingRewardContext = new RunRewardContext();
     }
@@ -202,5 +212,18 @@ public class RunManager : MonoBehaviour
     public void SetRunModifierContext(RunModifierContext context)
     {
         CurrentRunModifierContext = context ?? PactContractService.BuildDefaultRunModifierContext();
+    }
+
+    public bool HasClearedMiniBossEncounterThisRun(string encounterId)
+    {
+        return !string.IsNullOrEmpty(encounterId) && clearedMiniBossEncounterIdsThisRun.Contains(encounterId);
+    }
+
+    public void MarkMiniBossEncounterClearedThisRun(string encounterId)
+    {
+        if (string.IsNullOrEmpty(encounterId))
+            return;
+
+        clearedMiniBossEncounterIdsThisRun.Add(encounterId);
     }
 }

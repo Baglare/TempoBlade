@@ -196,6 +196,9 @@ public static class EliteSpawnLayer
         if (room == null || wave == null || spawnPlan == null || spawnPlan.Count == 0)
             return metrics;
 
+        if (room.encounterType == EncounterType.MiniBoss)
+            return metrics;
+
         EliteSpawnConfig config = room.eliteSpawnConfig ?? new EliteSpawnConfig();
         if (!config.enableEliteConversion)
             return metrics;
