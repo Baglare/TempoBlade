@@ -10,6 +10,9 @@ public class RunManager : MonoBehaviour
     [Tooltip("The reward the player chose from the previous room. Will be granted when this room is cleared.")]
     public RewardDefinitionSO pendingReward;
 
+    [Tooltip("Context metadata for the pending reward. Used by the new reward skeleton while legacy rewards stay intact.")]
+    public RunRewardContext pendingRewardContext = new RunRewardContext();
+
     [Tooltip("Oyuncunun son gectigi kapinin yonu (RewardDoor.DoorDirection int). -1 = ilk oda/belirtilmemis")]
     [HideInInspector] public int lastDoorDirection = -1;
 
@@ -48,6 +51,9 @@ public class RunManager : MonoBehaviour
     public float savedCurrentHealth = 100f;
     public float savedDamageMultiplier = 1.0f;
     public float savedTempo = 0f;
+    private RunResourceBankState runResourceBank = new RunResourceBankState();
+
+    public RunModifierContext CurrentRunModifierContext { get; private set; } = PactContractService.BuildDefaultRunModifierContext();
 
     // Sahne arasinda oyunculari kaydetmek icin cagrilir
     public void SavePlayerState(PlayerCombat player, TempoManager tempoMgr)
@@ -74,6 +80,9 @@ public class RunManager : MonoBehaviour
         savedTempo = 0f;
         roomsCleared = 0;
         pendingReward = null;
+        pendingRewardContext = new RunRewardContext();
+        runResourceBank = new RunResourceBankState();
+        CurrentRunModifierContext = PactContractService.BuildDefaultRunModifierContext();
     }
 
     /// <summary>
@@ -145,9 +154,10 @@ public class RunManager : MonoBehaviour
     }
 
     // Oyuncu bir portaldan gectiginde cagrilir (RoomExitTrigger icinden)
-    public void SetNextRewardContext(RewardDefinitionSO chosenReward)
+    public void SetNextRewardContext(RewardDefinitionSO chosenReward, RunRewardContext rewardContext = null)
     {
         pendingReward = chosenReward;
+        pendingRewardContext = rewardContext ?? RunRewardResolver.CreateContext(chosenReward, -1);
     }
 
     // Oda temizlendiginde cagrilir (RoomManager icinden)
@@ -164,11 +174,33 @@ public class RunManager : MonoBehaviour
             var pCombat = player.GetComponent<PlayerCombat>();
             if (pCombat != null)
             {
-                pendingReward.GrantReward(pCombat);
+                RunRewardApplier.ApplyReward(pendingReward, pCombat, pendingRewardContext);
                 pCombat.UpdateHealthUI();
             }
         }
 
         pendingReward = null;
+        pendingRewardContext = new RunRewardContext();
+    }
+
+    public RunResourceBankState GetRunResourceBank()
+    {
+        if (runResourceBank == null)
+            runResourceBank = new RunResourceBankState();
+
+        return runResourceBank;
+    }
+
+    public void AddBankedResource(ProgressionResourceType resourceType, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        GetRunResourceBank().AddAmount(resourceType, amount);
+    }
+
+    public void SetRunModifierContext(RunModifierContext context)
+    {
+        CurrentRunModifierContext = context ?? PactContractService.BuildDefaultRunModifierContext();
     }
 }

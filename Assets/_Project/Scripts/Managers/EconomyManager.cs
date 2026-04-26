@@ -12,6 +12,7 @@ public class EconomyManager : MonoBehaviour
     [Header("Run Economy")]
     [Tooltip("Bu run boyunca kazanilan gecici altin miktari.")]
     public int runGold = 0;
+    private bool runDepositCommitted = false;
 
     private void Awake()
     {
@@ -30,7 +31,8 @@ public class EconomyManager : MonoBehaviour
     /// </summary>
     public void AddRunGold(int amount)
     {
-        runGold += amount;
+        RunResourceBankService.AddResource(ProgressionResourceType.Gold, amount);
+        runGold = RunResourceBankService.GetAmount(ProgressionResourceType.Gold);
 
         // TODO: UI guncelleme (HUD'a altin sayaci eklendikten sonra)
     }
@@ -47,10 +49,13 @@ public class EconomyManager : MonoBehaviour
             return;
         }
 
-        if (runGold > 0)
-        {
-            SaveManager.Instance.AddGold(runGold);
-        }
+        RunResourceBankService.DepositAllToPersistent();
+        runGold = RunResourceBankService.GetAmount(ProgressionResourceType.Gold);
+
+        if (runDepositCommitted)
+            return;
+
+        runDepositCommitted = true;
 
         // Run istatistiklerini guncelle
         SaveManager.Instance.data.totalRunsPlayed++;
@@ -71,6 +76,8 @@ public class EconomyManager : MonoBehaviour
     /// </summary>
     public void ResetRunGold()
     {
+        RunResourceBankService.ResetBank();
         runGold = 0;
+        runDepositCommitted = false;
     }
 }

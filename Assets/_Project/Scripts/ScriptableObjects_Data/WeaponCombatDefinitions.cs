@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public enum WeaponType
 {
@@ -129,7 +130,8 @@ public class WeaponMilestoneUpgradeData
     public bool useCustomMilestones = false;
     public WeaponMilestoneBonusData level3 = new WeaponMilestoneBonusData();
     public WeaponMilestoneBonusData level6 = new WeaponMilestoneBonusData();
-    public WeaponSpecializationChoiceData[] level9Choices = new WeaponSpecializationChoiceData[2];
+    [FormerlySerializedAs("level9Choices")]
+    public WeaponSpecializationChoiceData[] level10Choices = new WeaponSpecializationChoiceData[2];
 }
 
 public struct WeaponResolvedStats
@@ -419,7 +421,7 @@ public static class WeaponArchetypeDefaults
                     extraStaggerOnHit = 0.05f,
                     recoveryMultiplierBonus = -0.04f
                 },
-                level9Choices = new[]
+                level10Choices = new[]
                 {
                     new WeaponSpecializationChoiceData
                     {
@@ -455,7 +457,7 @@ public static class WeaponArchetypeDefaults
                     tempoGainOnHitBonus = 0.35f,
                     flatRangeBonus = 0.04f
                 },
-                level9Choices = new[]
+                level10Choices = new[]
                 {
                     new WeaponSpecializationChoiceData
                     {
@@ -491,7 +493,7 @@ public static class WeaponArchetypeDefaults
                     flatRangeBonus = 0.12f,
                     recoveryMultiplierBonus = 0.04f
                 },
-                level9Choices = new[]
+                level10Choices = new[]
                 {
                     new WeaponSpecializationChoiceData
                     {

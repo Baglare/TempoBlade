@@ -55,6 +55,7 @@ public class WeaponSO : ScriptableObject
     [Header("Extended Upgrade Data")]
     public WeaponUpgradeScalingData upgradeScalingData = new WeaponUpgradeScalingData();
     public WeaponMilestoneUpgradeData milestoneUpgradeData = new WeaponMilestoneUpgradeData();
+    public WeaponUpgradeProgressionData upgradeProgression = new WeaponUpgradeProgressionData();
 
     [Header("Finisher")]
     public FinisherSO finisher;

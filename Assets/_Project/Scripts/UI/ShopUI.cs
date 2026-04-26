@@ -196,44 +196,44 @@ public class ShopUI : MonoBehaviour
     public void UpgradeHealth()
     {
         if (upgradeConfig == null || SaveManager.Instance == null) return;
-        if (SaveManager.Instance.data.bonusMaxHealth >= upgradeConfig.healthMaxLevel) return;
 
-        int cost = upgradeConfig.GetCost(upgradeConfig.healthBaseCost, upgradeConfig.healthCostPerLevel, SaveManager.Instance.data.bonusMaxHealth);
-        if (SaveManager.Instance.SpendGold(cost))
+        if (CoreProgressionService.TryPurchaseLegacyUpgrade(CoreLegacyUpgradeType.MaxHealth, upgradeConfig, out string failureReason))
         {
-            SaveManager.Instance.data.bonusMaxHealth++;
-            SaveManager.Instance.Save();
             FindFirstObjectByType<PlayerCombat>()?.RefreshFromSave();
             RefreshUI();
+        }
+        else if (!string.IsNullOrWhiteSpace(failureReason))
+        {
+            Debug.LogWarning("[ShopUI] " + failureReason);
         }
     }
 
     public void UpgradeDamage()
     {
         if (upgradeConfig == null || SaveManager.Instance == null) return;
-        if (SaveManager.Instance.data.bonusDamageMultiplier >= upgradeConfig.damageMaxLevel) return;
 
-        int cost = upgradeConfig.GetCost(upgradeConfig.damageBaseCost, upgradeConfig.damageCostPerLevel, SaveManager.Instance.data.bonusDamageMultiplier);
-        if (SaveManager.Instance.SpendGold(cost))
+        if (CoreProgressionService.TryPurchaseLegacyUpgrade(CoreLegacyUpgradeType.DamageMultiplier, upgradeConfig, out string failureReason))
         {
-            SaveManager.Instance.data.bonusDamageMultiplier++;
-            SaveManager.Instance.Save();
             FindFirstObjectByType<PlayerCombat>()?.RefreshFromSave();
             RefreshUI();
+        }
+        else if (!string.IsNullOrWhiteSpace(failureReason))
+        {
+            Debug.LogWarning("[ShopUI] " + failureReason);
         }
     }
 
     public void UpgradeTempo()
     {
         if (upgradeConfig == null || SaveManager.Instance == null) return;
-        if (SaveManager.Instance.data.bonusTempoGain >= upgradeConfig.tempoMaxLevel) return;
 
-        int cost = upgradeConfig.GetCost(upgradeConfig.tempoBaseCost, upgradeConfig.tempoCostPerLevel, SaveManager.Instance.data.bonusTempoGain);
-        if (SaveManager.Instance.SpendGold(cost))
+        if (CoreProgressionService.TryPurchaseLegacyUpgrade(CoreLegacyUpgradeType.TempoGain, upgradeConfig, out string failureReason))
         {
-            SaveManager.Instance.data.bonusTempoGain++;
-            SaveManager.Instance.Save();
             RefreshUI();
+        }
+        else if (!string.IsNullOrWhiteSpace(failureReason))
+        {
+            Debug.LogWarning("[ShopUI] " + failureReason);
         }
     }
 

@@ -250,6 +250,7 @@ public class PlayerController : MonoBehaviour
         if (!CanProcessCombatInput()) return;
         if (playerCombat == null) return;
         if (IsExternallyStaggered) return;
+        if (currentState == PlayerState.Dodging || currentState == PlayerState.DashStriking) return;
         
         // Örn: GameManager durduysa falan buradan kesebiliriz (ileride)
         playerCombat.TryAttack();

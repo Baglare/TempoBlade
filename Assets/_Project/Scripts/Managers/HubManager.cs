@@ -21,6 +21,8 @@ public class HubManager : MonoBehaviour
     [Tooltip("Demirci panelini buraya surekle (BlacksmithUI Canvas)")]
     public GameObject blacksmithPanel;
 
+    private int lastUiToggleFrame = -1;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -34,6 +36,7 @@ public class HubManager : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
+        ProgressionWalletUI.EnsureInstance();
 
         // Hub'a girince oyun durumunu guncelle
         if (GameManager.Instance != null)
@@ -92,18 +95,30 @@ public class HubManager : MonoBehaviour
 
     public void OpenShop()
     {
+        if (lastUiToggleFrame == Time.frameCount)
+            return;
+
         if (shopPanel != null)
         {
             ShopUI shopUI = shopPanel.GetComponent<ShopUI>();
             if (shopUI != null)
+            {
+                if (!shopPanel.activeSelf)
+                    shopPanel.SetActive(true);
                 shopUI.OpenPanel();
+            }
             else
                 shopPanel.SetActive(true);
         }
+
+        lastUiToggleFrame = Time.frameCount;
     }
 
     public void CloseShop()
     {
+        if (lastUiToggleFrame == Time.frameCount)
+            return;
+
         if (shopPanel != null)
         {
             ShopUI shopUI = shopPanel.GetComponent<ShopUI>();
@@ -112,6 +127,8 @@ public class HubManager : MonoBehaviour
             else
                 shopPanel.SetActive(false);
         }
+
+        lastUiToggleFrame = Time.frameCount;
     }
 
     public void ToggleShop()
@@ -139,18 +156,30 @@ public class HubManager : MonoBehaviour
 
     public void OpenBlacksmith()
     {
+        if (lastUiToggleFrame == Time.frameCount)
+            return;
+
         if (blacksmithPanel != null)
         {
             BlacksmithUI blacksmithUI = blacksmithPanel.GetComponent<BlacksmithUI>();
             if (blacksmithUI != null)
+            {
+                if (!blacksmithPanel.activeSelf)
+                    blacksmithPanel.SetActive(true);
                 blacksmithUI.OpenPanel();
+            }
             else
                 blacksmithPanel.SetActive(true);
         }
+
+        lastUiToggleFrame = Time.frameCount;
     }
 
     public void CloseBlacksmith()
     {
+        if (lastUiToggleFrame == Time.frameCount)
+            return;
+
         if (blacksmithPanel != null)
         {
             BlacksmithUI blacksmithUI = blacksmithPanel.GetComponent<BlacksmithUI>();
@@ -159,6 +188,8 @@ public class HubManager : MonoBehaviour
             else
                 blacksmithPanel.SetActive(false);
         }
+
+        lastUiToggleFrame = Time.frameCount;
     }
 
     public void ToggleBlacksmith()

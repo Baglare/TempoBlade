@@ -279,7 +279,7 @@ public class ParryPerkController : MonoBehaviour
             parrySystem.dualArcRearHalfAngle = 0f;
         }
 
-        parrySystem.rotateArcWhileActive = usePerks && _hasRotatingCone;
+        parrySystem.rotateArcWhileActive = false;
         parrySystem.rotatingArcDegreesPerSecond = rotatingConeDegreesPerSecond;
         parrySystem.rotatingArcDuration = rotatingConeDuration;
         parrySystem.projectileWindowExtensionMultiplier = usePerks && _hasRotatingCone
@@ -288,6 +288,7 @@ public class ParryPerkController : MonoBehaviour
         parrySystem.projectileMaxWindowBonus = usePerks && _hasRotatingCone
             ? rotatingConeProjectileMaxWindowBonus
             : 0f;
+        parrySystem.omniProjectileDeflectWhileActive = usePerks && _hasRotatingCone;
     }
 
     private void ApplyCommitmentToDash()

@@ -25,6 +25,7 @@ public class RewardDoor : MonoBehaviour
     [Header("Ödül")]
     [Tooltip("Bu kapıdan geçince verilecek ödül (ScriptableObject)")]
     public RewardDefinitionSO doorReward;
+    private int rewardChoiceIndex = -1;
 
     [Header("Görseller")]
     [Tooltip("Kapının ana sprite'ı (kilitli/açık görünüm)")]
@@ -65,9 +66,10 @@ public class RewardDoor : MonoBehaviour
     /// <summary>
     /// Kapıya ödül tipi atar ve görsellerini günceller. Oda spawn'ında çağrılır.
     /// </summary>
-    public void Initialize(RewardDefinitionSO rewardSO)
+    public void Initialize(RewardDefinitionSO rewardSO, int choiceIndex = -1)
     {
         doorReward = rewardSO;
+        rewardChoiceIndex = choiceIndex;
         ApplyLockedVisuals();
     }
 
@@ -216,7 +218,8 @@ public class RewardDoor : MonoBehaviour
         // RunManager'a seçimi ve kapı yönünü bildir
         if (RunManager.Instance != null)
         {
-            RunManager.Instance.SetNextRewardContext(doorReward);
+            RunRewardContext rewardContext = RunRewardResolver.CreateContext(doorReward, rewardChoiceIndex);
+            RunManager.Instance.SetNextRewardContext(doorReward, rewardContext);
             RunManager.Instance.lastDoorDirection = (int)direction;
 
             // Oyuncu verilerini kaydet

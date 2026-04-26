@@ -151,6 +151,7 @@ public class BlacksmithUI : MonoBehaviour
         WeaponResolvedStats nextStats = WeaponUpgradeResolver.Resolve(weapon, Mathf.Min(level + 1, WeaponSO.MaxUpgradeLevel), specializationId);
         WeaponMilestoneUpgradeData milestones = WeaponUpgradeResolver.GetMilestones(weapon);
         bool isMaxLevel = level >= WeaponSO.MaxUpgradeLevel;
+        WeaponUpgradeAttempt attempt = WeaponProgressionService.BuildAttempt(weapon, false);
 
         if (weaponNameText != null)
             weaponNameText.text = weapon.GetDisplayName(level);
@@ -180,10 +181,10 @@ public class BlacksmithUI : MonoBehaviour
         }
 
         if (costText != null)
-            costText.text = isMaxLevel ? "" : "Maliyet: " + weapon.GetUpgradeCost(level) + "g";
+            costText.text = isMaxLevel ? "" : BuildCostText(attempt);
 
         if (successRateText != null)
-            successRateText.text = isMaxLevel ? "" : "Basari: %" + Mathf.RoundToInt(weapon.GetSuccessRate(level) * 100);
+            successRateText.text = isMaxLevel ? "" : BuildSuccessText(attempt);
 
         if (resultText != null)
             resultText.text = "";
@@ -220,35 +221,52 @@ public class BlacksmithUI : MonoBehaviour
         int level = SaveManager.Instance.data.GetWeaponLevel(weapon.weaponName);
         if (level >= WeaponSO.MaxUpgradeLevel) return;
 
-        int cost = weapon.GetUpgradeCost(level);
-        float successRate = weapon.GetSuccessRate(level);
-
-        if (SaveManager.Instance.data.totalGold < cost)
-        {
-            if (resultText != null)
-                resultText.text = "<color=red>Yeterli altin yok!</color>";
-            return;
-        }
-
-        SaveManager.Instance.SpendGold(cost);
-
-        if (Random.Range(0f, 1f) <= successRate)
-        {
-            SaveManager.Instance.data.SetWeaponLevel(weapon.weaponName, level + 1);
-            SaveManager.Instance.Save();
-
-            if (resultText != null)
-                resultText.text = "<color=green>Yukseltme basarili! +" + (level + 1) + "</color>";
-        }
-        else
-        {
-            SaveManager.Instance.Save();
-
-            if (resultText != null)
-                resultText.text = "<color=red>Yukseltme basarisiz! Silah ayni kaldi.</color>";
-        }
+        WeaponUpgradeResult result = WeaponProgressionService.TryUpgrade(weapon, false);
+        if (resultText != null)
+            resultText.text = result.succeeded
+                ? "<color=green>" + result.message + "</color>"
+                : "<color=red>" + result.message + "</color>";
 
         RefreshAll();
+    }
+
+    private static string BuildCostText(WeaponUpgradeAttempt attempt)
+    {
+        if (attempt == null)
+            return string.Empty;
+
+        string text = "Maliyet: " + attempt.goldCost + "g";
+        if (attempt.additionalCosts != null)
+        {
+            for (int i = 0; i < attempt.additionalCosts.Count; i++)
+            {
+                ProgressionResourceCost cost = attempt.additionalCosts[i];
+                if (cost == null || cost.amount <= 0)
+                    continue;
+
+                text += "\n+ " + cost.amount + " " + ProgressionResourceUtility.GetDisplayName(cost.resourceType);
+            }
+        }
+
+        return text;
+    }
+
+    private static string BuildSuccessText(WeaponUpgradeAttempt attempt)
+    {
+        if (attempt == null)
+            return string.Empty;
+
+        string text = "Basari: %" + Mathf.RoundToInt(attempt.successRate * 100f);
+        if (attempt.canUseSuccessBooster && attempt.successBoosterAmount > 0)
+        {
+            int boosted = Mathf.RoundToInt(Mathf.Clamp01(attempt.successRate + attempt.successBoosterFlatBonus) * 100f);
+            text += "\nBooster opsiyonu: %" + boosted + " (+" + attempt.successBoosterAmount + " " + ProgressionResourceUtility.GetDisplayName(attempt.successBoosterType) + ")";
+        }
+
+        if (attempt.isMilestoneUpgrade)
+            text += "\nMilestone upgrade";
+
+        return text;
     }
 
     private void RefreshMilestoneSection(WeaponSO weapon, int level, string specializationId, WeaponMilestoneUpgradeData milestones, WeaponResolvedStats currentStats)
@@ -281,7 +299,7 @@ public class BlacksmithUI : MonoBehaviour
             }
         }
 
-        WeaponSpecializationChoiceData[] choices = milestones != null ? milestones.level9Choices : null;
+        WeaponSpecializationChoiceData[] choices = milestones != null ? milestones.level10Choices : null;
         bool hasChoices = choices != null && choices.Length > 0;
         bool pendingChoice = level >= WeaponSO.MaxUpgradeLevel && string.IsNullOrWhiteSpace(specializationId) && hasChoices;
 

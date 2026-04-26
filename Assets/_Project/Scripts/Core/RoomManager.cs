@@ -339,7 +339,7 @@ public class RoomManager : MonoBehaviour
                 if (doors[i] == null) continue;
                 // Kapı sayısına göre dağıt (Eğer kapı sayısı ödül çeşidinden fazlaysa mod alıp başa döner)
                 RewardDefinitionSO reward = availableRewards[i % availableRewards.Count];
-                doors[i].Initialize(reward);
+                doors[i].Initialize(reward, i);
                 doors[i].Unlock();
             }
         }

@@ -57,12 +57,12 @@ public static class WeaponUpgradeResolver
             return null;
 
         WeaponMilestoneUpgradeData milestones = GetMilestones(weapon);
-        if (milestones?.level9Choices == null)
+        if (milestones?.level10Choices == null)
             return null;
 
-        for (int i = 0; i < milestones.level9Choices.Length; i++)
+        for (int i = 0; i < milestones.level10Choices.Length; i++)
         {
-            WeaponSpecializationChoiceData choice = milestones.level9Choices[i];
+            WeaponSpecializationChoiceData choice = milestones.level10Choices[i];
             if (choice == null || string.IsNullOrWhiteSpace(choice.choiceId))
                 continue;
 

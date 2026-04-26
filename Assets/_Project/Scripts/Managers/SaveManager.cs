@@ -43,6 +43,7 @@ public class SaveManager : MonoBehaviour
     // ===================== SAVE =====================
     public void Save()
     {
+        EnsureDataIntegrity(false);
         string json = JsonUtility.ToJson(data, true); // prettyPrint = true
         File.WriteAllText(SaveFilePath, json);
     }
@@ -59,6 +60,11 @@ public class SaveManager : MonoBehaviour
         {
             data = new SaveData(); // Ilk kez oynaniyor, bos veri olustur
         }
+
+        if (data == null)
+            data = new SaveData();
+
+        EnsureDataIntegrity(true);
     }
 
     // ===================== DELETE =====================
@@ -69,25 +75,21 @@ public class SaveManager : MonoBehaviour
             File.Delete(SaveFilePath);
         }
         data = new SaveData();
+        EnsureDataIntegrity(false);
     }
 
     // ===================== HELPERS =====================
     public void AddGold(int amount)
     {
-        data.totalGold += amount;
-        Save();
+        ProgressionResourceWalletService.AddPersistentResource(ProgressionResourceType.Gold, amount);
     }
 
     public bool SpendGold(int amount)
     {
-        if (data.totalGold >= amount)
-        {
-            data.totalGold -= amount;
-            Save();
-            return true;
-        }
-        Debug.LogWarning("[SaveManager] Not enough gold! Have: " + data.totalGold + ", Need: " + amount);
-        return false;
+        bool spent = ProgressionResourceWalletService.SpendPersistentResource(ProgressionResourceType.Gold, amount);
+        if (!spent)
+            Debug.LogWarning("[SaveManager] Not enough gold! Have: " + data.totalGold + ", Need: " + amount);
+        return spent;
     }
 
     public bool IsWeaponUnlocked(string weaponName)
@@ -102,6 +104,29 @@ public class SaveManager : MonoBehaviour
             data.unlockedWeapons.Add(weaponName);
             Save();
         }
+    }
+
+    public int GetResourceAmount(ProgressionResourceType resourceType)
+    {
+        EnsureDataIntegrity(false);
+        return data.persistentResourceWallet.GetAmount(resourceType);
+    }
+
+    public bool SpendResources(IReadOnlyList<ProgressionResourceCost> costs)
+    {
+        return ProgressionResourceWalletService.SpendCosts(costs);
+    }
+
+    private void EnsureDataIntegrity(bool logFallbacks)
+    {
+        if (data == null)
+            data = new SaveData();
+
+        data.EnsureProgressionState();
+        ProgressionResourceWalletService.SyncLegacyGoldState(data, logFallbacks);
+        CoreProgressionService.SyncLegacyCoreState(data, logFallbacks);
+        WeaponProgressionService.SyncLegacyWeaponState(data, logFallbacks);
+        PactContractService.SyncState(data);
     }
 }
 
@@ -147,6 +172,12 @@ public class SaveData
     // Silah yukseltme seviyeleri (her silah icin ayri)
     public List<WeaponUpgradeEntry> weaponUpgrades = new List<WeaponUpgradeEntry>();
     public List<WeaponSpecializationEntry> weaponSpecializations = new List<WeaponSpecializationEntry>();
+
+    // Yeni progression state bloklari
+    public PersistentResourceWalletState persistentResourceWallet = new PersistentResourceWalletState();
+    public CoreProgressionState coreProgressionState = new CoreProgressionState();
+    public WeaponProgressionState weaponProgressionState = new WeaponProgressionState();
+    public PactContractState pactContractState = new PactContractState();
 
     // ── Eksen Bazlı Progression (Skill Tree) State ──
     public List<string> unlockedSkillNodeIds = new List<string>();
@@ -211,6 +242,48 @@ public class SaveData
             weaponName = weaponName,
             specializationChoiceId = specializationChoiceId
         });
+    }
+
+    public void EnsureProgressionState()
+    {
+        if (unlockedWeapons == null)
+            unlockedWeapons = new List<string> { "Starting Weapon" };
+
+        if (weaponUpgrades == null)
+            weaponUpgrades = new List<WeaponUpgradeEntry>();
+
+        if (weaponSpecializations == null)
+            weaponSpecializations = new List<WeaponSpecializationEntry>();
+
+        if (unlockedSkillNodeIds == null)
+            unlockedSkillNodeIds = new List<string>();
+
+        if (formAffinities == null)
+            formAffinities = new List<FormAffinityEntry>();
+
+        if (axisCommitments == null)
+            axisCommitments = new List<AxisCommitmentEntry>();
+
+        if (treeProgressions == null)
+            treeProgressions = new List<TreeProgressionEntry>();
+
+        if (persistentResourceWallet == null)
+            persistentResourceWallet = new PersistentResourceWalletState();
+
+        if (coreProgressionState == null)
+            coreProgressionState = new CoreProgressionState();
+
+        if (weaponProgressionState == null)
+            weaponProgressionState = new WeaponProgressionState();
+
+        if (pactContractState == null)
+            pactContractState = new PactContractState();
+
+        persistentResourceWallet.EnsureEntryExists(ProgressionResourceType.Gold);
+        persistentResourceWallet.EnsureEntryExists(ProgressionResourceType.WeaponMaterial);
+        persistentResourceWallet.EnsureEntryExists(ProgressionResourceType.SuccessBooster);
+        persistentResourceWallet.EnsureEntryExists(ProgressionResourceType.CoreMaterial);
+        persistentResourceWallet.EnsureEntryExists(ProgressionResourceType.SpecialTrophy);
     }
 }
 

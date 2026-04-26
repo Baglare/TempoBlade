@@ -423,6 +423,7 @@ public class DashPerkController : MonoBehaviour
         _dodgedProjectileCountThisDash = 0;
         _tempoGainedThisDash = 0f;
         RefreshAggressiveZoneIds();
+        playerCombat?.ResetComboState();
 
         // Dodge window hesapla (perk'e göre)
         float totalWindow = 0f;

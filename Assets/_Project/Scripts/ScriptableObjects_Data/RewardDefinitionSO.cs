@@ -1,44 +1,59 @@
 using UnityEngine;
 
 /// <summary>
-/// Tüm ödüllerin ortak arayüzü. Yeni ödül eklemek için bu sınıftan
-/// türetip GrantReward'ı override et, sonra Unity'de CreateAssetMenu ile oluştur.
-/// Hiçbir switch-case'e dokunmana gerek yok!
+/// Tum reward ScriptableObject tiplerinin ortak tabani.
+/// Legacy reward akisi korunur, yeni run reward metadata'si da burada tasinir.
 /// </summary>
 public abstract class RewardDefinitionSO : ScriptableObject
 {
     [Header("Genel")]
-    public string rewardName = "Yeni Ödül";
+    public string rewardName = "Yeni Odul";
 
-    [Tooltip("Kapı üstünde ve haritada gösterilecek ikon")]
+    [Tooltip("Kapi ustunde ve haritada gosterilecek ikon")]
     public Sprite icon;
 
-    [Tooltip("Kapı üstündeki ikon renk tonu")]
+    [Tooltip("Kapi ustundeki ikon renk tonu")]
     public Color tintColor = Color.white;
 
     [Header("Kategori")]
-    [Tooltip("Oyuncuya sunulacak ödül kategorisi (ileride filtreleme için)")]
+    [Tooltip("Legacy reward kategorisi. Yeni reward omurgasi icin fallback olarak kalir.")]
     public RewardCategory category = RewardCategory.Survival;
 
+    [Header("Progression Skeleton Metadata")]
+    [Tooltip("Yeni reward iskeleti icindeki tip etiketi. Bos ise legacy kategori fallback kullanilir.")]
+    public RunRewardType runRewardType = RunRewardType.Unspecified;
+
+    [Tooltip("Reward rarity etiketi. Bu sprintte metadata olarak tasinir.")]
+    public RunRewardRarity rarity = RunRewardRarity.Common;
+
+    [Tooltip("Reward resolver tarafinda kullanilabilecek hafif agirlik metadata'si.")]
+    public RunRewardWeightProfile weightProfile = new RunRewardWeightProfile();
+
     /// <summary>
-    /// Ödülü oyuncuya uygular. Her SO kendi mantığını yazar.
+    /// Legacy reward uygulama giris noktasi.
     /// </summary>
     public abstract void GrantReward(PlayerCombat player);
 
     /// <summary>
-    /// UI'da gösterilecek açıklama metni.
+    /// Yeni reward apply omurgasi icin context alabilen adapter.
+    /// Reward siniflari isterse override edebilir, override etmezse legacy akisa duser.
+    /// </summary>
+    public virtual void GrantReward(PlayerCombat player, RunRewardContext context)
+    {
+        GrantReward(player);
+    }
+
+    /// <summary>
+    /// UI'da gosterilecek aciklama metni.
     /// </summary>
     public virtual string GetDescription() => rewardName;
 }
 
-/// <summary>
-/// Ödül kategorileri — ileride oynanış seçimi (Hades boon grid) için kullanılacak.
-/// </summary>
 public enum RewardCategory
 {
-    Survival,       // Can, kalkan, iyileşme
-    Offensive,      // Hasar, hız, kritik
-    Tempo,          // Tempo kazanımı, çarpan
-    Economy,        // Altın, meta-currency
-    Utility         // Hareket, dodge, özel
+    Survival,
+    Offensive,
+    Tempo,
+    Economy,
+    Utility
 }

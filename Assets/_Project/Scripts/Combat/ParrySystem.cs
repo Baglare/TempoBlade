@@ -43,6 +43,7 @@ public class ParrySystem : MonoBehaviour
     [HideInInspector] public float rotatingArcDuration = 0.18f;
     [HideInInspector] public float projectileWindowExtensionMultiplier = 1f;
     [HideInInspector] public float projectileMaxWindowBonus = 0f;
+    [HideInInspector] public bool omniProjectileDeflectWhileActive = false;
 
     [Header("Projectile Parry Mode")]
     [Tooltip("Cone: tum koni icindeki projectile'lar. EdgeLine: sadece en on cizgiye yakin projectile'lar.")]
@@ -53,6 +54,7 @@ public class ParrySystem : MonoBehaviour
     public bool IsOnCooldown { get; private set; }
     public bool IsPerfectWindowActive => enablePerfectParry && IsParryActive && parryElapsed <= currentPerfectWindow;
     public float CurrentDeflectRange => GetDeflectRange();
+    public bool IsOmniProjectileDeflectActive => allowProjectileDeflect && IsParryActive && omniProjectileDeflectWhileActive;
 
     private float timer;
     private float initialWindowDuration;
@@ -299,6 +301,9 @@ public class ParrySystem : MonoBehaviour
         float distance = toProjectile.magnitude;
         if (distance > maxRange)
             return false;
+
+        if (omniProjectileDeflectWhileActive)
+            return true;
 
         if (projectileParryMode == ProjectileParryMode.EdgeLine)
         {

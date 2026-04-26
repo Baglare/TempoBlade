@@ -176,7 +176,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             float attackOffset = currentWeapon != null ? GetResolvedWeaponStats().attackOffset : 1.0f;
             weaponArcVisual.range = GetEffectiveRange() + attackOffset;
 
-            float overrideAngle = isParrying ? parrySystem.parryArcHalfAngle * 2f : -1f;
+            float overrideAngle = -1f;
+            if (isParrying)
+                overrideAngle = parrySystem.IsOmniProjectileDeflectActive ? 360f : parrySystem.parryArcHalfAngle * 2f;
             bool isPerfectWindow = isParrying && parrySystem.IsPerfectWindowActive;
             weaponArcVisual.UpdateVisuals(
                 transform.position,
@@ -200,6 +202,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         if (isExecutingComboStep)
             return;
 
+        bool usedDashRecoveryBypass = false;
         if (Time.time < nextAttackTime)
         {
             bool canBypassRecovery = _dashPerks != null && _dashPerks.IsPostDashAttackSpeedActive;
@@ -210,7 +213,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             if ((nextAttackTime - Time.time) > bypassWindow)
                 return;
 
+            _dashPerks.ConsumeAttackSpeed();
             nextAttackTime = Time.time;
+            usedDashRecoveryBypass = true;
         }
 
         ParrySystem parrySystem = GetComponent<ParrySystem>();
@@ -253,7 +258,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         if (_cadencePerks != null)
             effectiveCooldown *= _cadencePerks.GetAttackCooldownMultiplier();
 
-        if (_dashPerks != null && _dashPerks.IsPostDashAttackSpeedActive)
+        if (!usedDashRecoveryBypass && _dashPerks != null && _dashPerks.IsPostDashAttackSpeedActive)
             _dashPerks.ConsumeAttackSpeed();
 
         nextAttackTime = Time.time + effectiveCooldown;
