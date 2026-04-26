@@ -110,6 +110,7 @@ MonoBehaviour:
   - 4
   - 4
   - 5
+  - 5
   speedPerLevel:
   - 0.01
   - 0.01
@@ -119,6 +120,7 @@ MonoBehaviour:
   - 0.03
   - 0.04
   - 0.04
+  - 0.05
   - 0.05
   rangePerLevel:
   - 0
@@ -130,7 +132,8 @@ MonoBehaviour:
   - 0
   - 0
   - 0.2
-  upgradeCosts: 320000004b0000006400000096000000c80000002c010000f4010000ee020000e8030000
+  - 0.2
+  upgradeCosts: 320000004b0000006400000096000000c80000002c010000f4010000ee020000e8030000e8030000
   successRates:
   - 1
   - 0.95
@@ -140,6 +143,7 @@ MonoBehaviour:
   - 0.4
   - 0.25
   - 0.15
+  - 0.05
   - 0.05
   upgradeScalingData:
     useOverrideArrays: 0
