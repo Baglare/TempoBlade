@@ -28,6 +28,7 @@ public class WeaponSO : ScriptableObject
     public WeaponAttackRhythmProfile attackRhythmProfile = new WeaponAttackRhythmProfile();
     public WeaponRangeProfile rangeProfile = new WeaponRangeProfile();
     public WeaponStaggerProfile staggerProfile = new WeaponStaggerProfile();
+    public WeaponStabilityProfile stabilityProfile = new WeaponStabilityProfile();
     public WeaponRecoveryProfile recoveryProfile = new WeaponRecoveryProfile();
     public WeaponTempoGainStyle tempoGainStyle = new WeaponTempoGainStyle();
     public WeaponRiskProfile riskProfile = new WeaponRiskProfile();

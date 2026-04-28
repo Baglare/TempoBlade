@@ -55,6 +55,17 @@ public class WeaponStaggerProfile
 }
 
 [Serializable]
+public class WeaponStabilityProfile
+{
+    public bool overrideDefaultProfile = false;
+    public string profileName = "Balanced";
+    public float stabilityDamageMultiplier = 0.65f;
+    public float dashAttackStabilityMultiplier = 1.15f;
+    public float counterStabilityMultiplier = 1.25f;
+    public float finisherStabilityMultiplier = 1.35f;
+}
+
+[Serializable]
 public class WeaponRecoveryProfile
 {
     public bool overrideDefaultProfile = false;
@@ -101,6 +112,7 @@ public class WeaponMilestoneBonusData
     public float attackRateReduction = 0f;
     public float flatRangeBonus = 0f;
     public float extraStaggerOnHit = 0f;
+    public float stabilityDamageMultiplierBonus = 0f;
     public float tempoGainOnHitBonus = 0f;
     public float whiffPenaltyDelta = 0f;
     public float comboWindowMultiplierBonus = 0f;
@@ -117,6 +129,7 @@ public class WeaponSpecializationChoiceData
     public float attackRateReduction = 0f;
     public float flatRangeBonus = 0f;
     public float extraStaggerOnHit = 0f;
+    public float stabilityDamageMultiplierBonus = 0f;
     public float tempoGainOnHitBonus = 0f;
     public float whiffPenaltyDelta = 0f;
     public float comboWindowMultiplierBonus = 0f;
@@ -152,6 +165,10 @@ public struct WeaponResolvedStats
     public float extraStaggerOnHeavyHit;
     public float heavyHitThreshold;
     public float finisherPressureBonus;
+    public float stabilityDamageMultiplier;
+    public float dashAttackStabilityMultiplier;
+    public float counterStabilityMultiplier;
+    public float finisherStabilityMultiplier;
     public float counterBonusMultiplier;
     public WeaponMilestoneState milestoneState;
     public string milestoneLabel;
@@ -192,6 +209,17 @@ public static class WeaponArchetypeDefaults
         { WeaponType.Katana, new WeaponStaggerProfile { profileName = "Temiz Kesit", extraStaggerOnHit = 0.02f, extraStaggerOnHeavyHit = 0.08f, heavyHitThreshold = 1.45f, finisherPressureBonus = 0.16f } },
         { WeaponType.Scythe, new WeaponStaggerProfile { profileName = "Alan Kontrol", extraStaggerOnHit = 0.05f, extraStaggerOnHeavyHit = 0.14f, heavyHitThreshold = 1.35f, finisherPressureBonus = 0.22f } },
         { WeaponType.DemonHand, new WeaponStaggerProfile { profileName = "Ezici", extraStaggerOnHit = 0.06f, extraStaggerOnHeavyHit = 0.2f, heavyHitThreshold = 1.25f, finisherPressureBonus = 0.25f } }
+    };
+
+    private static readonly Dictionary<WeaponType, WeaponStabilityProfile> StabilityProfiles = new()
+    {
+        { WeaponType.Sword, new WeaponStabilityProfile { profileName = "Dengeli Stability", stabilityDamageMultiplier = 0.65f, dashAttackStabilityMultiplier = 1.15f, counterStabilityMultiplier = 1.25f, finisherStabilityMultiplier = 1.35f } },
+        { WeaponType.DualBlades, new WeaponStabilityProfile { profileName = "Coklu Baski", stabilityDamageMultiplier = 0.48f, dashAttackStabilityMultiplier = 1.12f, counterStabilityMultiplier = 1.18f, finisherStabilityMultiplier = 1.2f } },
+        { WeaponType.Greatsword, new WeaponStabilityProfile { profileName = "Kirici Stability", stabilityDamageMultiplier = 0.95f, dashAttackStabilityMultiplier = 1.2f, counterStabilityMultiplier = 1.35f, finisherStabilityMultiplier = 1.55f } },
+        { WeaponType.Spear, new WeaponStabilityProfile { profileName = "Hat Baskisi", stabilityDamageMultiplier = 0.7f, dashAttackStabilityMultiplier = 1.18f, counterStabilityMultiplier = 1.24f, finisherStabilityMultiplier = 1.35f } },
+        { WeaponType.Katana, new WeaponStabilityProfile { profileName = "Keskin Basinc", stabilityDamageMultiplier = 0.62f, dashAttackStabilityMultiplier = 1.16f, counterStabilityMultiplier = 1.3f, finisherStabilityMultiplier = 1.32f } },
+        { WeaponType.Scythe, new WeaponStabilityProfile { profileName = "Alan Basinci", stabilityDamageMultiplier = 0.72f, dashAttackStabilityMultiplier = 1.15f, counterStabilityMultiplier = 1.22f, finisherStabilityMultiplier = 1.42f } },
+        { WeaponType.DemonHand, new WeaponStabilityProfile { profileName = "Ham Kiris", stabilityDamageMultiplier = 0.88f, dashAttackStabilityMultiplier = 1.22f, counterStabilityMultiplier = 1.32f, finisherStabilityMultiplier = 1.5f } }
     };
 
     private static readonly Dictionary<WeaponType, WeaponRecoveryProfile> RecoveryProfiles = new()
@@ -280,6 +308,17 @@ public static class WeaponArchetypeDefaults
         return StaggerProfiles.TryGetValue(type, out WeaponStaggerProfile profile)
             ? profile
             : StaggerProfiles[WeaponType.Sword];
+    }
+
+    public static WeaponStabilityProfile GetStabilityProfile(WeaponSO weapon)
+    {
+        WeaponType type = ResolveWeaponType(weapon);
+        if (weapon != null && weapon.stabilityProfile != null && weapon.stabilityProfile.overrideDefaultProfile)
+            return weapon.stabilityProfile;
+
+        return StabilityProfiles.TryGetValue(type, out WeaponStabilityProfile profile)
+            ? profile
+            : StabilityProfiles[WeaponType.Sword];
     }
 
     public static WeaponRecoveryProfile GetRecoveryProfile(WeaponSO weapon)

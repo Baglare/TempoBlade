@@ -9,6 +9,8 @@ public class ComboStepData
     public ComboStepType type = ComboStepType.Normal;
     [Tooltip("Silah hasarına çarpan (1.0 = base hasar)")]
     public float damageMultiplier = 1f;
+    [Tooltip("Bu adimin stability damage carpani. 1.0 = silahin varsayilan stability baskisi.")]
+    public float stabilityDamageMultiplier = 1f;
     [Tooltip("Bu adımda silah menzeline eklenen bonus")]
     public float rangeBonus = 0f;
 

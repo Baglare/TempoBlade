@@ -38,6 +38,9 @@ public enum EnemyStateFeedbackType
     Stun,
     Stagger,
     GuardBreak,
+    Broken,
+    Armor,
+    Guard,
     ExecuteReady,
     Executed
 }

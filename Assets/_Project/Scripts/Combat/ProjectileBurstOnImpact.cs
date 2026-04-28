@@ -158,7 +158,23 @@ public class ProjectileBurstOnImpact : MonoBehaviour
                     continue;
             }
 
-            damageable.TakeDamage(explosionDamage);
+            EnemyBase enemy = hit.GetComponent<EnemyBase>();
+            if (enemy != null && projectile.IsDeflected)
+            {
+                EnemyDamageUtility.ApplyDamage(
+                    enemy,
+                    explosionDamage,
+                    EnemyDamageSource.ProjectileDeflect,
+                    projectile.ObjectOwner,
+                    projectile.CurrentVelocity.sqrMagnitude > 0.001f ? projectile.CurrentVelocity.normalized : Vector2.zero,
+                    0.6f,
+                    isParryCounter: true,
+                    isPerfectTiming: true);
+            }
+            else
+            {
+                damageable.TakeDamage(explosionDamage);
+            }
         }
     }
 

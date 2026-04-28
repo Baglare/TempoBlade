@@ -176,7 +176,7 @@ public sealed class FinisherExecutor
                 continue;
 
             float beforeHealth = target.enemy.CurrentHealth;
-            target.enemy.TakeDamage(finalDamage);
+            target.enemy.TakeDamage(BuildFinisherPayload(target.enemy, finalDamage, stats, heavyImpact));
             target.enemy.Stun(rule.pressureStaggerDuration + stats.finisherPressureBonus + (heavyImpact ? 0.08f : 0f));
 
             bool killed = beforeHealth > 0f && target.enemy.CurrentHealth <= 0f;
@@ -188,6 +188,35 @@ public sealed class FinisherExecutor
         }
 
         return hitSomeone;
+    }
+
+    private EnemyDamagePayload BuildFinisherPayload(EnemyBase enemy, float finalDamage, WeaponResolvedStats stats, bool heavyImpact)
+    {
+        Vector2 hitDirection = Vector2.zero;
+        if (enemy != null)
+        {
+            hitDirection = (Vector2)enemy.transform.position - (Vector2)owner.transform.position;
+            if (hitDirection.sqrMagnitude > 0.001f)
+                hitDirection.Normalize();
+        }
+
+        float stabilityMultiplier = Mathf.Max(0f, stats.stabilityDamageMultiplier) *
+                                    Mathf.Max(0f, stats.finisherStabilityMultiplier);
+
+        return new EnemyDamagePayload
+        {
+            healthDamage = finalDamage,
+            stabilityDamage = finalDamage * stabilityMultiplier,
+            hasExplicitStabilityDamage = true,
+            damageSource = EnemyDamageSource.PlayerFinisher,
+            hitDirection = hitDirection,
+            instigator = owner.gameObject,
+            isFinisher = true,
+            isParryCounter = false,
+            isDashAttack = false,
+            isCritical = true,
+            isPerfectTiming = heavyImpact
+        };
     }
 
     private IEnumerator ApplyShortSlowMotion(FinisherCameraVfxProfile profile)

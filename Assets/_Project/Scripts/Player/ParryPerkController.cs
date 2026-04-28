@@ -443,8 +443,35 @@ public class ParryPerkController : MonoBehaviour
         var enemyBase = owner.GetComponent<EnemyBase>();
         if (enemyBase != null)
         {
+            if (enemyBase.CombatClass == EnemyCombatClass.MiniBoss || enemyBase.CombatClass == EnemyCombatClass.Boss)
+            {
+                float pressureDamage = enemyBase.MaxHealth * (enemyBase.CombatClass == EnemyCombatClass.Boss ? 0.08f : 0.14f);
+                EnemyDamageUtility.ApplyDamage(
+                    enemyBase,
+                    pressureDamage,
+                    EnemyDamageSource.ParryCounter,
+                    gameObject,
+                    EnemyDamageUtility.DirectionFromInstigator(enemyBase, gameObject),
+                    1f,
+                    isParryCounter: true,
+                    isCritical: true,
+                    isPerfectTiming: true);
+                enemyBase.Stun(enemyBase.CombatClass == EnemyCombatClass.Boss ? 0.25f : 0.45f);
+                EmitEnemyControlFeedback(owner, EnemyControlFeedbackType.Stagger, 0.35f, enemyBase.CombatClass == EnemyCombatClass.Boss);
+                return;
+            }
+
             float lethal = Mathf.Max(enemyBase.CurrentHealth, enemyBase.MaxHealth) + 1f;
-            enemyBase.TakeDamage(lethal);
+            EnemyDamageUtility.ApplyDamage(
+                enemyBase,
+                lethal,
+                EnemyDamageSource.ParryCounter,
+                gameObject,
+                EnemyDamageUtility.DirectionFromInstigator(enemyBase, gameObject),
+                1f,
+                isParryCounter: true,
+                isCritical: true,
+                isPerfectTiming: true);
         }
         else
         {
@@ -531,6 +558,10 @@ public class ParryPerkController : MonoBehaviour
 
         if (Vector2.Distance(transform.position, owner.transform.position) > closeExecuteRange)
             return false;
+
+        EnemyBase enemyBase = owner.GetComponent<EnemyBase>();
+        if (enemyBase != null && (enemyBase.CombatClass == EnemyCombatClass.MiniBoss || enemyBase.CombatClass == EnemyCombatClass.Boss))
+            return true;
 
         if (owner.GetComponent<EnemyBoss>() != null)
             return false;

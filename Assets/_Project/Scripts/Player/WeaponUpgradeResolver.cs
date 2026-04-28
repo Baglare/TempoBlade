@@ -19,6 +19,7 @@ public static class WeaponUpgradeResolver
         WeaponAttackRhythmProfile rhythm = WeaponArchetypeDefaults.GetAttackRhythmProfile(weapon);
         WeaponRangeProfile rangeProfile = WeaponArchetypeDefaults.GetRangeProfile(weapon);
         WeaponStaggerProfile stagger = WeaponArchetypeDefaults.GetStaggerProfile(weapon);
+        WeaponStabilityProfile stability = WeaponArchetypeDefaults.GetStabilityProfile(weapon);
         WeaponRecoveryProfile recovery = WeaponArchetypeDefaults.GetRecoveryProfile(weapon);
         WeaponTempoGainStyle tempo = WeaponArchetypeDefaults.GetTempoGainStyle(weapon);
         WeaponRiskProfile risk = WeaponArchetypeDefaults.GetRiskProfile(weapon);
@@ -37,6 +38,10 @@ public static class WeaponUpgradeResolver
         stats.extraStaggerOnHeavyHit = Mathf.Max(0f, stagger.extraStaggerOnHeavyHit);
         stats.heavyHitThreshold = Mathf.Max(1f, stagger.heavyHitThreshold);
         stats.finisherPressureBonus = Mathf.Max(0f, stagger.finisherPressureBonus);
+        stats.stabilityDamageMultiplier = Mathf.Max(0f, stability.stabilityDamageMultiplier);
+        stats.dashAttackStabilityMultiplier = Mathf.Max(0f, stability.dashAttackStabilityMultiplier);
+        stats.counterStabilityMultiplier = Mathf.Max(0f, stability.counterStabilityMultiplier);
+        stats.finisherStabilityMultiplier = Mathf.Max(0f, stability.finisherStabilityMultiplier);
         stats.counterBonusMultiplier = Mathf.Max(0.1f, risk.counterBonusMultiplier);
 
         stats.range *= Mathf.Max(0.2f, rangeProfile.rangeMultiplier);
@@ -151,6 +156,7 @@ public static class WeaponUpgradeResolver
         stats.attackRate = Mathf.Max(0.05f, stats.attackRate - bonus.attackRateReduction);
         stats.range += bonus.flatRangeBonus;
         stats.extraStaggerOnHit += bonus.extraStaggerOnHit;
+        stats.stabilityDamageMultiplier = Mathf.Max(0f, stats.stabilityDamageMultiplier + bonus.stabilityDamageMultiplierBonus);
         stats.tempoGainOnHit += bonus.tempoGainOnHitBonus;
         stats.whiffPenalty += bonus.whiffPenaltyDelta;
         stats.comboWindowMultiplier += bonus.comboWindowMultiplierBonus;
@@ -166,6 +172,7 @@ public static class WeaponUpgradeResolver
         stats.attackRate = Mathf.Max(0.05f, stats.attackRate - specialization.attackRateReduction);
         stats.range += specialization.flatRangeBonus;
         stats.extraStaggerOnHit += specialization.extraStaggerOnHit;
+        stats.stabilityDamageMultiplier = Mathf.Max(0f, stats.stabilityDamageMultiplier + specialization.stabilityDamageMultiplierBonus);
         stats.tempoGainOnHit += specialization.tempoGainOnHitBonus;
         stats.whiffPenalty += specialization.whiffPenaltyDelta;
         stats.comboWindowMultiplier += specialization.comboWindowMultiplierBonus;

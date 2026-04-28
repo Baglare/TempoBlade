@@ -18,8 +18,12 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     protected SpriteRenderer stunSpriteRenderer;
     protected Color stunOriginalColor = Color.white;
     protected EnemySupportBuffReceiver supportBuffReceiver;
+    protected EnemyDefenseController defenseController;
     private Coroutine stunRoutine;
     private float stunEndTime;
+    private bool hasPendingDamagePayload;
+    private EnemyDamagePayload pendingDamagePayload;
+    private EnemyDamageResult lastDamageResult;
     private bool suppressDeathRewards;
     private bool tempoSubscribed;
     private bool startInitialized;
@@ -41,11 +45,15 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public TempoManager.TempoTier CurrentTempoTier => currentTempoTier;
     public bool IsElite => isElite && eliteProfile != null;
     public EliteProfileSO ActiveEliteProfile => eliteProfile;
+    public EnemyDefenseController Defense => EnsureDefenseController();
+    public EnemyCombatClass CombatClass => ResolveCombatClass();
+    public virtual bool IsDefenseGuardActive => false;
 
     public event Action<float> OnDamageTaken;
     public event Action<float> OnStunned;
     public event Action<EnemyBase, float> OnDamageTakenDetailed;
     public event Action<EnemyBase, float> OnStunnedDetailed;
+    public event Action<EnemyDamageResult> OnDamageResolved;
 
     protected virtual void Awake()
     {
@@ -82,6 +90,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         if (GetComponent<EnemyStateFeedback>() == null)
             gameObject.AddComponent<EnemyStateFeedback>();
 
+        EnsureDefenseController();
+
         if (GetComponent<EnemySupportBuffReceiver>() == null)
             gameObject.AddComponent<EnemySupportBuffReceiver>();
 
@@ -99,22 +109,68 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         SubscribeTempo();
     }
 
+    public EnemyDamageResult TakeDamage(EnemyDamagePayload payload)
+    {
+        hasPendingDamagePayload = true;
+        pendingDamagePayload = payload;
+        lastDamageResult = EnemyDamageResult.Ignored(payload, CombatClass);
+
+        try
+        {
+            TakeDamage(payload.healthDamage);
+            return lastDamageResult;
+        }
+        finally
+        {
+            hasPendingDamagePayload = false;
+            pendingDamagePayload = default;
+        }
+    }
+
     public virtual void TakeDamage(float damageAmount)
     {
-        if (supportBuffReceiver != null)
-            damageAmount = supportBuffReceiver.ModifyIncomingDamage(damageAmount);
+        EnemyDamageResult result = ResolveIncomingDamage(damageAmount);
+        ApplyResolvedDamage(result, true);
+    }
 
-        if (damageAmount <= 0f)
+    protected EnemyDamageResult ResolveIncomingDamage(float damageAmount)
+    {
+        EnemyDamagePayload payload = hasPendingDamagePayload
+            ? pendingDamagePayload
+            : EnemyDamagePayload.FromHealthDamage(damageAmount);
+
+        payload.healthDamage = damageAmount;
+        if (supportBuffReceiver != null)
+            payload.healthDamage = supportBuffReceiver.ModifyIncomingDamage(payload.healthDamage);
+
+        bool hasAnyDamage = payload.healthDamage > 0f ||
+                            (payload.hasExplicitStabilityDamage && payload.stabilityDamage > 0f);
+        if (!hasAnyDamage)
+        {
+            lastDamageResult = EnemyDamageResult.Ignored(payload, CombatClass);
+            return lastDamageResult;
+        }
+
+        lastDamageResult = EnsureDefenseController().ResolveDamage(payload);
+        OnDamageResolved?.Invoke(lastDamageResult);
+        return lastDamageResult;
+    }
+
+    protected virtual void ApplyResolvedDamage(EnemyDamageResult result, bool applyDefaultHitStun)
+    {
+        if (result.ignored)
             return;
 
-        currentHealth -= damageAmount;
-        OnDamageTaken?.Invoke(damageAmount);
-        OnDamageTakenDetailed?.Invoke(this, damageAmount);
-        AudioManager.Play(AudioEventId.EnemyHurt, gameObject);
+        float damageAmount = result.appliedHealthDamage;
+        if (damageAmount > 0f)
+        {
+            currentHealth -= damageAmount;
+            OnDamageTaken?.Invoke(damageAmount);
+            OnDamageTakenDetailed?.Invoke(this, damageAmount);
+            AudioManager.Play(AudioEventId.EnemyHurt, gameObject);
+        }
 
-
-        // Hasar Yazisi (Visual Feedback)
-        if (DamagePopupManager.Instance != null)
+        if (DamagePopupManager.Instance != null && damageAmount > 0f)
         {
              // Hafif varyasyonlu pozisyon (ustuste binmesin diye)
              Vector3 randomOffset = new Vector3(UnityEngine.Random.Range(-0.3f, 0.3f), 0.5f, 0);
@@ -128,7 +184,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         var flash = GetComponent<HitFlash>();
         if (flash != null) flash.Flash();
 
-        Stun(0.2f); // Her vurus hafif sersemletir (Micro-stun)
+        if (applyDefaultHitStun && result.shouldInterrupt && !result.didBreak && result.interruptDuration > 0f)
+            Stun(result.interruptDuration);
 
         if (currentHealth <= 0)
         {
@@ -284,6 +341,31 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         suppressDeathRewards = suppress;
     }
 
+    public void SetDefenseGuarding(bool active)
+    {
+        EnsureDefenseController().SetGuarding(active);
+    }
+
+    public void SetDefenseArmorActive(bool active)
+    {
+        EnsureDefenseController().SetArmorActive(active);
+    }
+
+    public virtual Vector2 GetDefenseForward()
+    {
+        return transform.localScale.x >= 0f ? Vector2.right : Vector2.left;
+    }
+
+    public virtual void HandleDefenseBrokenStarted(EnemyDamageResult result)
+    {
+        if (result.interruptDuration > 0f)
+            Stun(result.interruptDuration);
+    }
+
+    public virtual void HandleDefenseBrokenEnded(EnemyDamageResult result)
+    {
+    }
+
     protected virtual void OnTempoTierChanged(TempoManager.TempoTier tier) { }
 
     private void SubscribeTempo()
@@ -336,6 +418,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             float healthRatio = oldMaxHealth > 0f ? currentHealth / oldMaxHealth : 1f;
             currentHealth = Mathf.Clamp01(healthRatio) * MaxHealth;
             RefreshElitePresentation();
+            if (defenseController != null)
+                defenseController.RefreshFromOwnerData(false);
         }
     }
 
@@ -399,6 +483,8 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
         float healthRatio = oldMaxHealth > 0f ? currentHealth / oldMaxHealth : 1f;
         currentHealth = Mathf.Clamp01(healthRatio) * MaxHealth;
+        if (defenseController != null)
+            defenseController.RefreshFromOwnerData(false);
     }
 
     protected void PlayEliteCue(Vector3 worldPosition, bool spawnVfx = true, bool playAudio = true)
@@ -445,6 +531,33 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
         }
 
         SetPerkMarker(false, Color.clear);
+    }
+
+    protected EnemyDefenseController EnsureDefenseController()
+    {
+        if (defenseController != null)
+            return defenseController;
+
+        defenseController = GetComponent<EnemyDefenseController>();
+        if (defenseController == null)
+            defenseController = gameObject.AddComponent<EnemyDefenseController>();
+
+        defenseController.Initialize(this);
+        return defenseController;
+    }
+
+    private EnemyCombatClass ResolveCombatClass()
+    {
+        if (this is EnemyBoss || (enemyData != null && enemyData.combatClass == EnemyCombatClass.Boss))
+            return EnemyCombatClass.Boss;
+
+        if (enemyData != null && enemyData.combatClass == EnemyCombatClass.MiniBoss)
+            return EnemyCombatClass.MiniBoss;
+
+        if (IsElite)
+            return EnemyCombatClass.Elite;
+
+        return enemyData != null ? enemyData.combatClass : EnemyCombatClass.Normal;
     }
 
     protected void EmitCombatAction(EnemyCombatActionType actionType, float weight = 1f)

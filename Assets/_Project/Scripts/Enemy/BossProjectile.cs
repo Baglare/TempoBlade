@@ -127,7 +127,23 @@ public class BossProjectile : MonoBehaviour, IDeflectable
         if (!hitTargets.Add(targetId))
             return;
 
-        damageable.TakeDamage(damage);
+        EnemyBase enemyTarget = other.GetComponent<EnemyBase>();
+        if (hasBeenDeflected && isHittingEnemy && enemyTarget != null)
+        {
+            EnemyDamageUtility.ApplyDamage(
+                enemyTarget,
+                damage,
+                EnemyDamageSource.ProjectileDeflect,
+                owner,
+                rb != null && rb.linearVelocity.sqrMagnitude > 0.001f ? rb.linearVelocity.normalized : Vector2.zero,
+                0.8f,
+                isParryCounter: true,
+                isPerfectTiming: true);
+        }
+        else
+        {
+            damageable.TakeDamage(damage);
+        }
 
         if (hasBeenDeflected && isHittingEnemy)
         {

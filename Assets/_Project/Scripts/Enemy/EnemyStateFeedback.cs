@@ -22,6 +22,9 @@ public class EnemyStateFeedback : MonoBehaviour
     [SerializeField] private Color stunColor = new Color(1f, 0.55f, 0.15f, 1f);
     [SerializeField] private Color staggerColor = new Color(1f, 0.72f, 0.18f, 1f);
     [SerializeField] private Color guardBreakColor = new Color(1f, 0.28f, 0.18f, 1f);
+    [SerializeField] private Color brokenColor = new Color(1f, 0.35f, 0.1f, 1f);
+    [SerializeField] private Color armorColor = new Color(0.75f, 0.75f, 0.85f, 1f);
+    [SerializeField] private Color guardColor = new Color(0.15f, 0.9f, 1f, 1f);
     [SerializeField] private Color executeReadyColor = new Color(1f, 0.2f, 0.2f, 1f);
     [SerializeField] private Color executedColor = new Color(1f, 0.1f, 0.1f, 1f);
 
@@ -180,6 +183,12 @@ public class EnemyStateFeedback : MonoBehaviour
                 return staggerColor;
             case EnemyStateFeedbackType.GuardBreak:
                 return guardBreakColor;
+            case EnemyStateFeedbackType.Broken:
+                return brokenColor;
+            case EnemyStateFeedbackType.Armor:
+                return armorColor;
+            case EnemyStateFeedbackType.Guard:
+                return guardColor;
             case EnemyStateFeedbackType.ExecuteReady:
                 return executeReadyColor;
             case EnemyStateFeedbackType.Executed:

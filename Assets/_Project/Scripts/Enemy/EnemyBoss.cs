@@ -376,7 +376,15 @@ public class EnemyBoss : EnemyBase, IParryReactive
     public override void TakeDamage(float damageAmount)
     {
         if (currentState == BossState.PhaseTransition || currentState == BossState.Intro || currentState == BossState.Dead) return;
-        
+
+        EnemyDamageResult defenseResult = ResolveIncomingDamage(damageAmount);
+        if (defenseResult.ignored)
+            return;
+
+        damageAmount = defenseResult.appliedHealthDamage;
+        if (damageAmount <= 0f)
+            return;
+
         // Hasari Uygula 
         currentHealth -= damageAmount;
         
@@ -413,6 +421,18 @@ public class EnemyBoss : EnemyBase, IParryReactive
         
         // Eger yasiyorsa ve fazi degismemisse ufak sarsinti
         Stun(0.1f);
+    }
+
+    public override void HandleDefenseBrokenStarted(EnemyDamageResult result)
+    {
+        if (currentState == BossState.Dead || currentState == BossState.Intro || currentState == BossState.PhaseTransition)
+            return;
+
+        if (parryInterruptRoutine != null)
+            StopCoroutine(parryInterruptRoutine);
+
+        StopAllCoroutines();
+        parryInterruptRoutine = StartCoroutine(ParryInterruptRoutine(Mathf.Max(0.05f, result.interruptDuration)));
     }
 
     protected override System.Collections.IEnumerator StunRoutine(float duration)

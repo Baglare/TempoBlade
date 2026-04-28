@@ -89,6 +89,7 @@ public sealed class PlayerWeaponRuntime
         string debug = "\n\n<b>--- Weapon Debug ---</b>";
         debug += "\nType: " + stats.weaponTypeLabel;
         debug += "\nUpgrade: +" + CurrentWeaponLevel;
+        debug += "\nStability: x" + stats.stabilityDamageMultiplier.ToString("F2");
         debug += "\nMilestone: " + stats.milestoneLabel;
         debug += "\nSpecialization: " + (string.IsNullOrWhiteSpace(stats.specializationName) ? "Yok" : stats.specializationName);
         debug += "\nFinisher: " + (finisher != null ? finisher.displayName : "Eksik");

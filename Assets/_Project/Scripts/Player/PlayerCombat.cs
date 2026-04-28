@@ -277,14 +277,14 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         switch (step.type)
         {
             case ComboStepType.Normal:
-                PerformHit(step.damageMultiplier, step.rangeBonus);
+                PerformHit(step.damageMultiplier, step.rangeBonus, step.type, step.stabilityDamageMultiplier);
                 break;
 
             case ComboStepType.MultiHit:
                 float damagePerHit = step.damageMultiplier / Mathf.Max(1, step.hitCount);
                 for (int i = 0; i < step.hitCount; i++)
                 {
-                    PerformHit(damagePerHit, step.rangeBonus);
+                    PerformHit(damagePerHit, step.rangeBonus, step.type, step.stabilityDamageMultiplier);
                     if (i < step.hitCount - 1)
                         yield return new WaitForSeconds(step.timeBetweenHits);
                 }
@@ -297,7 +297,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 if (playerController != null)
                     playerController.StartExternalDash(currentAimDir, step.dashSpeed, step.dashDuration);
                 yield return new WaitForSeconds(step.dashDuration);
-                PerformHit(step.damageMultiplier, step.rangeBonus);
+                PerformHit(step.damageMultiplier, step.rangeBonus, step.type, step.stabilityDamageMultiplier);
                 break;
         }
 
@@ -314,7 +314,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         isExecutingComboStep = false;
     }
 
-    private void PerformHit(float multiplier, float rangeBonus)
+    private void PerformHit(float multiplier, float rangeBonus, ComboStepType stepType = ComboStepType.Normal, float stabilityStepMultiplier = 1f)
     {
         WeaponResolvedStats stats = GetResolvedWeaponStats();
 
@@ -364,7 +364,25 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 }
 
                 float beforeHealth = enemy != null ? enemy.CurrentHealth : 0f;
-                damageable.TakeDamage(targetDamage);
+                float appliedHealthDamage = targetDamage;
+                if (enemy != null)
+                {
+                    EnemyDamagePayload payload = BuildEnemyDamagePayload(
+                        enemy,
+                        targetDamage,
+                        stats,
+                        multiplier,
+                        counterBonus,
+                        dashCounterBonus,
+                        stepType,
+                        stabilityStepMultiplier);
+                    EnemyDamageResult damageResult = enemy.TakeDamage(payload);
+                    appliedHealthDamage = damageResult.ignored ? 0f : damageResult.appliedHealthDamage;
+                }
+                else
+                {
+                    damageable.TakeDamage(targetDamage);
+                }
 
                 if (TempoManager.Instance != null)
                 {
@@ -382,13 +400,13 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 }
 
                 bool killed = enemy != null && beforeHealth > 0f && enemy.CurrentHealth <= 0f;
-                _telemetry?.RecordHit(enemy, killed, multiplier, totalCounter, targetDamage);
+                _telemetry?.RecordHit(enemy, killed, multiplier, totalCounter, appliedHealthDamage);
                 if (_overdrivePerks != null)
                     _overdrivePerks.NotifyEnemyHit(enemy, killed, multiplier, totalCounter);
                 if (_cadencePerks != null)
                     _cadencePerks.NotifyEnemyHit(enemy, killed, multiplier, totalCounter);
                 if (_cadencePerks != null)
-                    _cadencePerks.TryWaveBounce(enemy, targetDamage);
+                    _cadencePerks.TryWaveBounce(enemy, appliedHealthDamage);
 
                 if (enemy != null)
                 {
@@ -495,6 +513,49 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 TempoManager.Instance.AddTempo(whiffPenalty);
             }
         }
+    }
+
+    private EnemyDamagePayload BuildEnemyDamagePayload(
+        EnemyBase enemy,
+        float healthDamage,
+        WeaponResolvedStats stats,
+        float attackMultiplier,
+        float parryCounterBonus,
+        float dashCounterBonus,
+        ComboStepType stepType,
+        float stabilityStepMultiplier)
+    {
+        bool isDashAttack = stepType == ComboStepType.DashStrike || dashCounterBonus > 0f;
+        bool isParryCounter = parryCounterBonus > 0f;
+        float stabilityMultiplier = stats.stabilityDamageMultiplier * Mathf.Max(0f, stabilityStepMultiplier);
+
+        if (isDashAttack)
+            stabilityMultiplier *= Mathf.Max(0f, stats.dashAttackStabilityMultiplier);
+        if (isParryCounter)
+            stabilityMultiplier *= Mathf.Max(0f, stats.counterStabilityMultiplier);
+
+        Vector2 hitDirection = Vector2.zero;
+        if (enemy != null)
+        {
+            hitDirection = (Vector2)enemy.transform.position - (Vector2)transform.position;
+            if (hitDirection.sqrMagnitude > 0.001f)
+                hitDirection.Normalize();
+        }
+
+        return new EnemyDamagePayload
+        {
+            healthDamage = healthDamage,
+            stabilityDamage = healthDamage * stabilityMultiplier,
+            hasExplicitStabilityDamage = true,
+            damageSource = isParryCounter ? EnemyDamageSource.ParryCounter : (isDashAttack ? EnemyDamageSource.DashAttack : EnemyDamageSource.PlayerAttack),
+            hitDirection = hitDirection,
+            instigator = gameObject,
+            isFinisher = false,
+            isParryCounter = isParryCounter,
+            isDashAttack = isDashAttack,
+            isCritical = attackMultiplier >= stats.heavyHitThreshold,
+            isPerfectTiming = isParryCounter
+        };
     }
 
     private void Attack()

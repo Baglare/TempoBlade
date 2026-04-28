@@ -162,7 +162,23 @@ public class Projectile : MonoBehaviour, IDeflectable
         }
 
         burstOnImpact?.RegisterDirectHit(other);
-        damageable.TakeDamage(damage);
+        EnemyBase enemyTarget = other.GetComponent<EnemyBase>();
+        if (hasBeenDeflected && isHittingEnemy && enemyTarget != null)
+        {
+            EnemyDamageUtility.ApplyDamage(
+                enemyTarget,
+                damage,
+                EnemyDamageSource.ProjectileDeflect,
+                owner,
+                CurrentVelocity.sqrMagnitude > 0.001f ? CurrentVelocity.normalized : Vector2.zero,
+                0.8f,
+                isParryCounter: true,
+                isPerfectTiming: true);
+        }
+        else
+        {
+            damageable.TakeDamage(damage);
+        }
         AudioManager.Play(AudioEventId.ProjectileHit, gameObject, other.transform.position);
 
         if (other.CompareTag("Player") && !hasBeenDeflected)
@@ -174,7 +190,7 @@ public class Projectile : MonoBehaviour, IDeflectable
 
         if (hasBeenDeflected && isHittingEnemy)
         {
-            EnemyBase enemy = other.GetComponent<EnemyBase>();
+            EnemyBase enemy = enemyTarget != null ? enemyTarget : other.GetComponent<EnemyBase>();
             owner?.GetComponent<CombatTelemetryHub>()?.RecordDeflectHit(enemy, damage);
             owner?.GetComponent<ParryPerkController>()?.HandleProjectileHitReaction(other.gameObject);
 

@@ -38,6 +38,10 @@ public class EnemySO : ScriptableObject
     [Header("Combat Class")]
     [Tooltip("Finisher gibi sistemlerin bu dusmani nasil yorumlayacagini belirler. Elite durumu runtime'da ayri da yukselebilir.")]
     public EnemyCombatClass combatClass = EnemyCombatClass.Normal;
+
+    [Header("Defense V1")]
+    [Tooltip("HP'ye ek olarak Stability, Broken, Armor/Guard ve ilerideki special defense hook ayarlari.")]
+    public EnemyDefenseSettings defense = new EnemyDefenseSettings();
 }
 
 public enum WardenProtectPriority

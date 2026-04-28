@@ -97,16 +97,7 @@ public sealed class FinisherTargetResolver
         if (enemy == null)
             return EnemyCombatClass.Normal;
 
-        if (enemy is EnemyBoss || (enemy.enemyData != null && enemy.enemyData.combatClass == EnemyCombatClass.Boss))
-            return EnemyCombatClass.Boss;
-
-        if (enemy.enemyData != null && enemy.enemyData.combatClass == EnemyCombatClass.MiniBoss)
-            return EnemyCombatClass.MiniBoss;
-
-        if (enemy.IsElite)
-            return EnemyCombatClass.Elite;
-
-        return enemy.enemyData != null ? enemy.enemyData.combatClass : EnemyCombatClass.Normal;
+        return enemy.CombatClass;
     }
 }
 

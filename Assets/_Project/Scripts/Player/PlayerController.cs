@@ -556,7 +556,14 @@ public class PlayerController : MonoBehaviour
                         var enemy = hit.GetComponent<EnemyBase>();
                         if (enemy != null)
                         {
-                            enemy.TakeDamage(5f); // Ufak chip damage
+                            EnemyDamageUtility.ApplyDamage(
+                                enemy,
+                                5f,
+                                EnemyDamageSource.DashAttack,
+                                gameObject,
+                                EnemyDamageUtility.DirectionFromInstigator(enemy, gameObject),
+                                0.6f,
+                                isDashAttack: true); // Ufak chip damage
                             enemy.Stun(0.5f);     // Sendeletici şok dalgası
                             
                             if (DamagePopupManager.Instance != null)

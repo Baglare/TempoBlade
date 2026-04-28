@@ -473,7 +473,14 @@ public class CadencePerkController : MonoBehaviour
         if (best == null)
             return;
 
-        best.TakeDamage(sourceDamage * waveBounceDamageRatio);
+        EnemyDamageUtility.ApplyDamage(
+            best,
+            sourceDamage * waveBounceDamageRatio,
+            EnemyDamageSource.Skill,
+            gameObject,
+            EnemyDamageUtility.DirectionFromInstigator(best, gameObject),
+            0.55f,
+            isPerfectTiming: true);
         waveBounceUsedThisAttack = true;
         waveBounceCooldownTimer = waveBounceCooldown;
 

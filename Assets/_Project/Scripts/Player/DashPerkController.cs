@@ -986,7 +986,14 @@ public class DashPerkController : MonoBehaviour
             float dist = Vector2.Distance(hitTarget.transform.position, kv.Key.transform.position);
             if (dist > chainBounceRange) continue;
 
-            kv.Key.TakeDamage(currentDamage);
+            EnemyDamageUtility.ApplyDamage(
+                kv.Key,
+                currentDamage,
+                EnemyDamageSource.DashAttack,
+                gameObject,
+                EnemyDamageUtility.DirectionFromInstigator(kv.Key, gameObject),
+                0.7f,
+                isDashAttack: true);
             alreadyHit.Add(kv.Key);
             bounces++;
             currentDamage *= (1f - chainFalloffPerBounce);
@@ -1009,7 +1016,15 @@ public class DashPerkController : MonoBehaviour
         // Ana hedef hasarı
         float mainDmg = baseDamage * burstMainMultiplier;
         mainDmg += _flowMarkedTargets.Count * burstPerMarkBonus * baseDamage;
-        mainTarget.TakeDamage(mainDmg);
+        EnemyDamageUtility.ApplyDamage(
+            mainTarget,
+            mainDmg,
+            EnemyDamageSource.DashAttack,
+            gameObject,
+            EnemyDamageUtility.DirectionFromInstigator(mainTarget, gameObject),
+            0.8f,
+            isDashAttack: true,
+            isCritical: true);
 
         // Popup
         if (DamagePopupManager.Instance != null)
@@ -1022,7 +1037,14 @@ public class DashPerkController : MonoBehaviour
         foreach (var kv in _flowMarkedTargets)
         {
             if (kv.Key == null || kv.Key == mainTarget) continue;
-            kv.Key.TakeDamage(splashDmg);
+            EnemyDamageUtility.ApplyDamage(
+                kv.Key,
+                splashDmg,
+                EnemyDamageSource.DashAttack,
+                gameObject,
+                EnemyDamageUtility.DirectionFromInstigator(kv.Key, gameObject),
+                0.55f,
+                isDashAttack: true);
         }
 
         // İşaretleri temizle
@@ -1116,8 +1138,44 @@ public class DashPerkController : MonoBehaviour
         if (rearAngle > executeRearConeAngle * 0.5f)
             return false;
 
+        if (_currentHuntTarget.CombatClass == EnemyCombatClass.MiniBoss || _currentHuntTarget.CombatClass == EnemyCombatClass.Boss)
+        {
+            float pressureDamage = _currentHuntTarget.MaxHealth * (_currentHuntTarget.CombatClass == EnemyCombatClass.Boss ? 0.08f : 0.14f);
+            EnemyDamageUtility.ApplyDamage(
+                _currentHuntTarget,
+                pressureDamage,
+                EnemyDamageSource.DashAttack,
+                gameObject,
+                EnemyDamageUtility.DirectionFromInstigator(_currentHuntTarget, gameObject),
+                1f,
+                isDashAttack: true,
+                isCritical: true,
+                isPerfectTiming: true);
+            _currentHuntTarget.Stun(_currentHuntTarget.CombatClass == EnemyCombatClass.Boss ? 0.25f : 0.45f);
+
+            if (DamagePopupManager.Instance != null)
+                DamagePopupManager.Instance.CreateText(
+                    _currentHuntTarget.transform.position + Vector3.up * 2f,
+                    "PRESSURE!",
+                    new Color(1f, 0.55f, 0.2f),
+                    7f);
+
+            _currentHuntTarget.SetPerkMarker(false, Color.red);
+            _currentHuntTarget = null;
+            return true;
+        }
+
         float lethalDamage = Mathf.Max(_currentHuntTarget.CurrentHealth, _currentHuntTarget.MaxHealth) + 1f;
-        _currentHuntTarget.TakeDamage(lethalDamage);
+        EnemyDamageUtility.ApplyDamage(
+            _currentHuntTarget,
+            lethalDamage,
+            EnemyDamageSource.DashAttack,
+            gameObject,
+            EnemyDamageUtility.DirectionFromInstigator(_currentHuntTarget, gameObject),
+            1f,
+            isDashAttack: true,
+            isCritical: true,
+            isPerfectTiming: true);
 
         if (DamagePopupManager.Instance != null)
             DamagePopupManager.Instance.CreateText(
