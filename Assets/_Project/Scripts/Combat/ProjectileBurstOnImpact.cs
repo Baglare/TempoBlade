@@ -55,6 +55,10 @@ public class ProjectileBurstOnImpact : MonoBehaviour
     {
         projectile = GetComponent<Projectile>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+        if (spriteRenderer != null)
+            WorldSortingUtility.ApplySorting(spriteRenderer, WorldSortingLayers.Projectiles, spriteRenderer.sortingOrder);
     }
 
     public void ConfigurePrimary(CasterBurstOrbSettings settings, AudioEventId audioEvent, Color fallbackCueColor)

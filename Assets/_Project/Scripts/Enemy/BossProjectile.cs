@@ -40,7 +40,10 @@ public class BossProjectile : MonoBehaviour, IDeflectable
         remainingLife = lifeTime;
 
         if (sr != null)
+        {
+            WorldSortingUtility.ApplySorting(sr, WorldSortingLayers.Projectiles, sr.sortingOrder);
             sr.color = normalColor;
+        }
     }
 
     private void Update()

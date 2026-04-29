@@ -14,6 +14,13 @@ using UnityEngine;
 ///   Kılıç, karakter merkezinden <range> birim uzağa (saldırı yönünde) konumlandırılır.
 ///   Bu, "attack range 3 ise kılıç ucu 3 birim uzakta" demektir.
 /// </summary>
+public enum WeaponArcPresentationMode
+{
+    DebugOnly,
+    PresentationOnly,
+    DebugAndPresentation
+}
+
 public class WeaponArcVisual : MonoBehaviour
 {
     [Header("Kılıç Transform")]
@@ -58,6 +65,10 @@ public class WeaponArcVisual : MonoBehaviour
     [Tooltip("LineRenderer için materyal. Atanmazsa Sprites/Default kullanılır. URP'de çalışmıyorsa Inspector'dan URP uyumlu bir materyal ata.")]
     public Material arcMaterial;
 
+    [Header("Presentation Hooks")]
+    public WeaponArcPresentationMode presentationMode = WeaponArcPresentationMode.DebugAndPresentation;
+    public AttackVFXPresenter attackVfxPresenter;
+
     // ------------------------------------------------------------------ //
     private LineRenderer lr;
     private Vector2 lastDirection = Vector2.right;
@@ -101,7 +112,7 @@ public class WeaponArcVisual : MonoBehaviour
             target.material = runtimeMaterial;
         }
 
-        target.sortingLayerName = "Default";
+        target.sortingLayerName = WorldSortingUtility.ResolveLayerName(WorldSortingLayers.CharacterVFX);
         target.sortingOrder = sortingOrder;
         target.enabled = false;
     }
@@ -134,10 +145,28 @@ public class WeaponArcVisual : MonoBehaviour
         if (dir.sqrMagnitude > 0.0001f)
             lastDirection = dir.normalized;
 
-        bool isVisible = isAttacking || isParrying;
-        lr.enabled = isVisible;
-        if (isVisible)
+        bool isActive = isAttacking || isParrying;
+        bool showDebugArc = presentationMode != WeaponArcPresentationMode.PresentationOnly;
+        lr.enabled = isActive && showDebugArc;
+        if (isActive && showDebugArc)
             DrawArc(origin, range, isAttacking, isParrying, isPerfectWindow);
+
+        if (attackVfxPresenter == null)
+            attackVfxPresenter = GetComponent<AttackVFXPresenter>();
+
+        if (attackVfxPresenter != null && presentationMode != WeaponArcPresentationMode.DebugOnly)
+        {
+            attackVfxPresenter.UpdatePresentation(new AttackPresentationContext
+            {
+                origin = origin,
+                direction = lastDirection,
+                range = range,
+                arcAngle = arcAngle,
+                isAttacking = isAttacking,
+                isParrying = isParrying,
+                isPerfectWindow = isPerfectWindow
+            });
+        }
         
         // Eğer parry yapılıyorsa silahı ileri fırlatma (PositionWeapon'ı atla), sadece saldırıda silahı konumlandır
         if (isAttacking)

@@ -49,6 +49,10 @@ public class Projectile : MonoBehaviour, IDeflectable
         rb = GetComponent<Rigidbody2D>();
         projectileCollider = GetComponent<Collider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(true);
+        if (spriteRenderer != null)
+            WorldSortingUtility.ApplySorting(spriteRenderer, WorldSortingLayers.Projectiles, spriteRenderer.sortingOrder);
         burstOnImpact = GetComponent<ProjectileBurstOnImpact>();
         remainingLife = lifeTime;
         lastTrackedPosition = transform.position;

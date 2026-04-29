@@ -17,22 +17,39 @@ MonoBehaviour:
   waves:
   - waveDelay: 1
     enemyGroups:
-    - enemyType: {fileID: 11400000, guid: a24a2a7ba6c38874f9e0e75d74efe521, type: 2}
-      eliteSpawnMode: 2
-      eliteChance: 0.15
-      isElite: 1
-      eliteProfile: {fileID: 11400000, guid: 54d2b9286cb2c8440accbb2b7e456a44, type: 2}
-      count: 1
-      spawnDelay: 0.1
-    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
-      eliteSpawnMode: 2
+    - enemyType: {fileID: 11400000, guid: 3f788deb4bb1a8741bc5cc8299315635, type: 2}
+      eliteSpawnMode: 0
       eliteChance: 0.15
       isElite: 1
       eliteProfile: {fileID: 0}
-      count: 3
+      count: 1
       spawnDelay: 0.1
   isBossRoom: 0
   encounterType: 1
   difficulty: 1
+  miniBossEncounter: {fileID: 0}
+  eliteSpawnConfig:
+    enableEliteConversion: 1
+    basePressure: 0.18
+    waveIndexPressureStep: 0.12
+    runProgressPressureStep: 0.24
+    easyDifficultyModifier: -0.08
+    normalDifficultyModifier: 0
+    hardDifficultyModifier: 0.14
+    eliteEncounterModifier: 0.1
+    miniBossEncounterModifier: 0.16
+    bossEncounterModifier: 0.2
+    baseEliteBudget: 0.85
+    budgetPerPressure: 1.75
+    candidateScanBase: 0.45
+    candidateScanPressureScale: 0.28
+    conversionChanceBase: 0.12
+    conversionChancePerPressure: 0.26
+    maxConversionChance: 0.9
+    repeatDampingPerOccurrence: 0.12
+    minimumRepeatWeight: 0.55
+    repeatHistoryDepth: 8
+    enableAdaptiveModifier: 1
+    adaptivePressureMagnitude: 0.18
   goldReward: 0
   possibleWeaponDrop: {fileID: 11400000, guid: b3ee56d4fe9b9e3439e42c99ae2954da, type: 2}

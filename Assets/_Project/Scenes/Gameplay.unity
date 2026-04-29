@@ -564,27 +564,19 @@ MonoBehaviour:
   parryAxis: {fileID: 11400000, guid: 45dd7e8d8a27a664fb0078d3b30bf859, type: 2}
   overdriveAxis: {fileID: 11400000, guid: 46ec3a734bde5e646b8485b74b694097, type: 2}
   cadenceAxis: {fileID: 11400000, guid: ca465996726c97345b308a07759ef7bd, type: 2}
+  overlayColor: {r: 0.03, g: 0.04, b: 0.07, a: 0.92}
+  panelColor: {r: 0.08, g: 0.1, b: 0.15, a: 0.98}
+  cardColor: {r: 0.11, g: 0.14, b: 0.2, a: 0.98}
+  cardAltColor: {r: 0.09, g: 0.12, b: 0.17, a: 0.98}
   lockedColor: {r: 0.3, g: 0.3, b: 0.35, a: 1}
+  unlockableColor: {r: 0.92, g: 0.74, b: 0.26, a: 1}
   unlockedColor: {r: 0.15, g: 0.85, b: 0.55, a: 1}
-  commitmentColor: {r: 1, g: 0.65, b: 0.15, a: 1}
-  dashT1Color: {r: 0.4, g: 0.75, b: 1, a: 1}
-  hunterColor: {r: 0.9, g: 0.35, b: 0.2, a: 1}
-  flowColor: {r: 0.3, g: 0.55, b: 1, a: 1}
-  parryT1Color: {r: 1, g: 0.55, b: 0.2, a: 1}
-  ballisticColor: {r: 1, g: 0.78, b: 0.28, a: 1}
-  perfectionistColor: {r: 1, g: 0.32, b: 0.32, a: 1}
-  overdriveT1Color: {r: 1, g: 0.24, b: 0.16, a: 1}
-  burstColor: {r: 1, g: 0.45, b: 0.08, a: 1}
-  predatorColor: {r: 0.95, g: 0.08, b: 0.08, a: 1}
-  cadenceT1Color: {r: 0.35, g: 0.95, b: 0.78, a: 1}
-  measuredCadenceColor: {r: 0.3, g: 0.75, b: 1, a: 1}
-  flowCadenceColor: {r: 0.55, g: 0.95, b: 0.45, a: 1}
-  panelBg: {r: 0.08, g: 0.08, b: 0.12, a: 0.96}
-  nodeBg: {r: 0.15, g: 0.15, b: 0.2, a: 1}
-  lineColor: {r: 0.4, g: 0.4, b: 0.5, a: 0.6}
+  selectedColor: {r: 0.35, g: 0.72, b: 1, a: 1}
+  lineLockedColor: {r: 0.35, g: 0.39, b: 0.48, a: 0.55}
   lineUnlockedColor: {r: 0.15, g: 0.85, b: 0.55, a: 0.8}
-  nodeWidth: 180
-  nodeHeight: 55
+  textPrimary: {r: 0.96, g: 0.97, b: 1, a: 1}
+  textSecondary: {r: 0.74, g: 0.8, b: 0.9, a: 1}
+  nodeSize: {x: 82, y: 70}
   horizontalSpacing: 50
   verticalSpacing: 90
   lineWidth: 2.5
@@ -928,15 +920,24 @@ MonoBehaviour:
     bonusMaxHealth: 0
     bonusDamageMultiplier: 0
     bonusTempoGain: 0
-    bonusParryWindow: 0
-    bonusParryRecovery: 0
     unlockedWeapons:
     - Weapon_Starter
     equippedWeaponName: Weapon_Starter
     weaponUpgrades: []
+    weaponSpecializations: []
+    persistentResourceWallet:
+      entries: []
+    coreProgressionState:
+      entries: []
+    weaponProgressionState:
+      entries: []
+    pactContractState:
+      unlockedContractIds: []
+      activeContractIds: []
     unlockedSkillNodeIds: []
     formAffinities: []
     axisCommitments: []
+    treeProgressions: []
 --- !u!1 &206417559
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,6 +974,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 055e24dca5d72e94eb0667eb31686784, type: 2}
   - {fileID: 11400000, guid: 56f6c940c803b61499610789145890a2, type: 2}
   - {fileID: 11400000, guid: dd75c4ddb93adc94d90cfe8a19192791, type: 2}
+  eliteSpawnDebugOverrides:
+    enablePressureOverride: 0
+    pressureOverride: 1
+    pressurePreset: 0
+    forceEliteEnemyType: {fileID: 0}
+    forceEliteProfileOverride: {fileID: 0}
+  forceMiniBossEncounterForDebug: 0
+  forcedMiniBossEncounter: {fileID: 0}
+  logMiniBossEvents: 1
   isRoomActive: 0
   currentWaveIndex: 0
   activeEnemies: []
@@ -1816,6 +1826,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AxisProgressionManager
   database: {fileID: 11400000, guid: e181b6bd1782eb042a3bb7ac8ec4063d, type: 2}
+  progressionConfig: {fileID: 0}
+  enableDebugLogs: 0
 --- !u!1 &813974534
 GameObject:
   m_ObjectHideFlags: 0
@@ -2059,6 +2071,7 @@ MonoBehaviour:
   visualConfig: {fileID: 11400000, guid: 19b0734e61090304db7d03fa74df5c64, type: 2}
   flashOverlay: {fileID: 487727932}
   shakeDuration: 0.15
+  minTransitionInterval: 0.12
 --- !u!1 &852342828
 GameObject:
   m_ObjectHideFlags: 0
@@ -3631,6 +3644,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::RunManager
   roomsCleared: 0
   pendingReward: {fileID: 0}
+  pendingRewardContext:
+    roomIndex: 0
+    rewardChoiceIndex: -1
+    rewardType: 0
+    rarity: 0
+    runModifierContext:
+      elitePressureBonus: 0
+      enemyPowerMultiplier: 1
+      healModifier: 1
+      tempoDecayMultiplier: 1
+      rewardWeightMultiplier: 1
   lastDoorDirection: -1
   roomSequence:
   - {fileID: 11400000, guid: 8c3c022fa0a1bb04d9066e700d726791, type: 2}

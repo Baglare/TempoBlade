@@ -18,6 +18,34 @@ MonoBehaviour:
   damage: 15
   moveSpeed: 3.5
   goldDrop: 3
+  countsForProgression: 1
+  eliteEligible: 1
+  eliteCostMultiplier: 1
+  wardenProtectPriority: 0
   detectionRange: 8
   attackRange: 3
   attackCooldown: 2
+  combatClass: 0
+  defense:
+    maxStability: 0
+    stabilityRecoveryMode: 1
+    stabilityRecoveryDelay: 1.25
+    stabilityRecoveryRate: 18
+    brokenDuration: 0.9
+    brokenDamageMultiplier: 1.2
+    stabilityDamageTakenMultiplier: 1
+    brokenRecoveryStabilityPercent: 1
+    poiseLevel: 0
+    interruptResistance: 0
+    hasArmor: 1
+    armorDamageReduction: 0.25
+    armorStabilityMultiplier: 1
+    hasGuard: 1
+    guardDamageReduction: 0.65
+    guardStabilityMultiplier: 1.25
+    guardArcAngle: 150
+    counterEnabled: 0
+    hasCounterWindow: 0
+    specialDefenseType: 0
+    logDebug: 1
+    showDebugStabilityMeter: 1

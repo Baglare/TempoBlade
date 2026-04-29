@@ -33,6 +33,87 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4153608933709824703}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &720200000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7309550567315125130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a4f0be54b584fae9c0c9e16b85c6e32, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::YSortByPosition
+  sortingLayerName: Characters
+  applySortingLayer: 0
+  baseOrder: 0
+  orderOffset: 0
+  unitsPerOrder: 100
+  staticMode: 0
+  includeChildRenderers: 1
+  debugLog: 0
+--- !u!114 &720200000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7309550567315125130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c75b4e8ed8fa4e65bcf47d217c89d2a0, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::IsoVisualRoot
+  visualRoot: {fileID: 0}
+  shadowRoot: {fileID: 0}
+  vfxRoot: {fileID: 0}
+  worldUIRoot: {fileID: 0}
+  bodyRenderer: {fileID: 0}
+  weaponRenderer: {fileID: 0}
+  autoResolveOnAwake: 1
+  applySortingLayers: 1
+  warnWhenMissingVisualRoot: 1
+--- !u!114 &720200000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7309550567315125130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1ef688ffbd54e4f877b9c72cf67411f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::GroundShadow
+  followRoot: {fileID: 0}
+  localOffset: {x: 0, y: -0.18}
+  scale: {x: 0.9, y: 0.32}
+  opacity: 0.35
+  sortingOffset: -20
+--- !u!114 &720200000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7309550567315125130}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbe9f0d2b3e84b529a42c345e2f94321, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::IsoFacingController
+  preferAimDirection: 0
+  useEightWayFacing: 1
+  movingThreshold: 0.05
+  body: {fileID: 0}
+  playerCombat: {fileID: 0}
+  animator: {fileID: 0}
+  spriteFlipTarget: {fileID: 0}
+  applySpriteFlip: 0
+  currentDirection: {x: 1, y: 0}
+  facingIndex: 0
+  isMoving: 0
 --- !u!212 &4237830005758445717
 SpriteRenderer:
   serializedVersion: 2
@@ -141,6 +222,37 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4153608933709824703}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &720200000000000100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 720200000000000101}
+  m_Layer: 6
+  m_Name: IsoGroundShadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &720200000000000101
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 720200000000000100}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.18, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -269,6 +381,10 @@ GameObject:
   - component: {fileID: 289517883545682294}
   - component: {fileID: 112826284138843250}
   - component: {fileID: 8889998660676216322}
+  - component: {fileID: 720200000000000001}
+  - component: {fileID: 720200000000000002}
+  - component: {fileID: 720200000000000003}
+  - component: {fileID: 720200000000000004}
   m_Layer: 6
   m_Name: Enemy_Caster
   m_TagString: Enemy
@@ -292,6 +408,7 @@ Transform:
   - {fileID: 8468957897817977799}
   - {fileID: 7668337865752291698}
   - {fileID: 7523278836238113080}
+  - {fileID: 720200000000000101}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &375217926363585684

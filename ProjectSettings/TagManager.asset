@@ -39,8 +39,35 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Floor
+    uniqueID: 1084812361
+    locked: 0
+  - name: GroundVFX
+    uniqueID: 1029846137
+    locked: 0
+  - name: PropsBack
+    uniqueID: 1820419654
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Characters
+    uniqueID: 1394528015
+    locked: 0
+  - name: CharacterVFX
+    uniqueID: 1662083974
+    locked: 0
+  - name: PropsFront
+    uniqueID: 1904812376
+    locked: 0
+  - name: Projectiles
+    uniqueID: 1773709345
+    locked: 0
+  - name: WorldUI
+    uniqueID: 1428903518
+    locked: 0
+  - name: ScreenUI
+    uniqueID: 1197354062
     locked: 0
   m_RenderingLayers:
   - Default

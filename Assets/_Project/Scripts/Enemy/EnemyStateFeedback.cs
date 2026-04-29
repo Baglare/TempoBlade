@@ -124,6 +124,7 @@ public class EnemyStateFeedback : MonoBehaviour
         ringRenderer.receiveShadows = false;
         ringRenderer.textureMode = LineTextureMode.Stretch;
         ringRenderer.alignment = LineAlignment.TransformZ;
+        ringRenderer.sortingLayerName = WorldSortingUtility.ResolveLayerName(WorldSortingLayers.WorldUI);
         ringRenderer.sortingOrder = 100;
 
         Shader shader = Shader.Find("Sprites/Default");

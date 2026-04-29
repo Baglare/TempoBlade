@@ -27,6 +27,7 @@ public static class SupportPulseVisualUtility
             lineRenderer.receiveShadows = false;
             lineRenderer.textureMode = LineTextureMode.Stretch;
             lineRenderer.alignment = LineAlignment.TransformZ;
+            lineRenderer.sortingLayerName = WorldSortingUtility.ResolveLayerName(WorldSortingLayers.GroundVFX);
             lineRenderer.sortingOrder = 98;
 
             Shader shader = Shader.Find("Sprites/Default");

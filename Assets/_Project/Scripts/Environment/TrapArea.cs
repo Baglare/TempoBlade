@@ -62,6 +62,7 @@ public class TrapArea : MonoBehaviour
         lr.startColor = indicatorColor;
         lr.endColor = indicatorColor;
         lr.material = new Material(Shader.Find("Sprites/Default"));
+        lr.sortingLayerName = WorldSortingUtility.ResolveLayerName(WorldSortingLayers.GroundVFX);
         lr.sortingOrder = -1;
 
         DrawCircle(triggerRadius);

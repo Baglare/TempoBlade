@@ -15,9 +15,7 @@ public class GhostTrail : MonoBehaviour
 
         sr.sprite = sprite;
         
-        // Sorting layer'i oyuncunun bir tik arkasina at (Ornegin: Default ama -1 order)
-        sr.sortingLayerName = "Default"; 
-        sr.sortingOrder = -1;
+        WorldSortingUtility.ApplySorting(sr, WorldSortingLayers.CharacterVFX, -1);
 
         color = ghostColor;
         sr.color = color;
