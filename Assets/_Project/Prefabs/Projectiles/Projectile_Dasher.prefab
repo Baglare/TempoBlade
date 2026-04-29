@@ -114,6 +114,7 @@ MonoBehaviour:
   speed: 10
   damage: 10
   lifeTime: 5
+  maxTravelDistance: 18
   owner: {fileID: 0}
 --- !u!1 &4308033480215703046
 GameObject:
@@ -192,8 +193,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1773709345
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300032, guid: 8aeb9e233fbb8f14db39770841b78b94, type: 3}

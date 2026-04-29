@@ -80,8 +80,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1773709345
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
@@ -175,3 +175,4 @@ MonoBehaviour:
   isDeflectable: 1
   normalColor: {r: 0, g: 1, b: 1, a: 1}
   deflectedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  owner: {fileID: 0}
