@@ -59,6 +59,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public Transform AttackPoint => attackPoint;
     public LayerMask EnemyLayers => enemyLayers;
     public Vector2 CurrentAimDirection => currentAimDir;
+    public bool IsSwinging => isSwinging;
     public bool IsFinisherActive => finisherActive;
 
     public int CurrentWeaponLevel

@@ -5,6 +5,7 @@ public class IsoFacingController : MonoBehaviour
 {
     [Header("Input")]
     public bool preferAimDirection = true;
+    public DirectionalFacingPriority facingPriority = DirectionalFacingPriority.PreferAimDirection;
     public bool useEightWayFacing = true;
     public float movingThreshold = 0.05f;
 
@@ -79,11 +80,22 @@ public class IsoFacingController : MonoBehaviour
 
     private Vector2 ResolveDirection()
     {
-        if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
-            return playerCombat.CurrentAimDirection;
+        if (facingPriority == DirectionalFacingPriority.PreferAimDirection)
+        {
+            if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
+                return playerCombat.CurrentAimDirection;
 
-        if (body != null && body.linearVelocity.sqrMagnitude > movingThreshold * movingThreshold)
-            return body.linearVelocity;
+            if (body != null && body.linearVelocity.sqrMagnitude > movingThreshold * movingThreshold)
+                return body.linearVelocity;
+        }
+        else
+        {
+            if (body != null && body.linearVelocity.sqrMagnitude > movingThreshold * movingThreshold)
+                return body.linearVelocity;
+
+            if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
+                return playerCombat.CurrentAimDirection;
+        }
 
         return currentDirection;
     }

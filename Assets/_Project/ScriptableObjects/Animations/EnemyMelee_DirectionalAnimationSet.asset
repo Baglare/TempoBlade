@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d901b2e3c84be5b4ef4b88a91d6342, type: 3}
+  m_Name: EnemyMelee_DirectionalAnimationSet
+  m_EditorClassIdentifier: Assembly-CSharp::DirectionalAnimationSetSO
+  characterId: Enemy_Melee
+  displayName: Enemy Melee
+  supportsEightDirections: 0
+  defaultFacingMode: 0
+  defaultFacing: 0
+  downRightFallback: 2
+  upRightFallback: 2
+  upLeftFallback: 6
+  downLeftFallback: 6
+  defaultClip: {fileID: 0}
+  stateFallbacks:
+  - state: 3
+    fallbackState: 1
+  - state: 4
+    fallbackState: 2
+  - state: 2
+    fallbackState: 0
+  - state: 5
+    fallbackState: 0
+  - state: 7
+    fallbackState: 2
+  - state: 8
+    fallbackState: 1
+  - state: 9
+    fallbackState: 10
+  - state: 10
+    fallbackState: 5
+  - state: 11
+    fallbackState: 2
+  - state: 12
+    fallbackState: 0
+  directionFallbacks: []
+  useSpriteFlip: 1
+  leftRightClipsAreSeparate: 0
+  flipWhenFacingLeft: 1
+  clips: []
