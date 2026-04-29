@@ -592,6 +592,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::IsoFacingController
   preferAimDirection: 0
+  facingPriority: 0
   useEightWayFacing: 1
   movingThreshold: 0.05
   body: {fileID: 0}
