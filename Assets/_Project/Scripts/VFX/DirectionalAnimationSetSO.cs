@@ -63,8 +63,8 @@ public class DirectionalAnimationSetSO : ScriptableObject
                 {
                     resolution.clip = clip;
                     resolution.resolvedState = state;
-                    resolution.resolvedDirection = lookupDirection;
-                    resolution.usedFallback = state != requestedState || lookupDirection != requestedDirection;
+                    resolution.resolvedDirection = direction;
+                    resolution.usedFallback = state != requestedState || direction != requestedDirection || lookupDirection != direction;
                     resolution.shouldFlipX = ShouldFlip(requestedDirection, lookupDirection);
                     return resolution;
                 }

@@ -8,9 +8,11 @@ public class IsoFacingController : MonoBehaviour
     public DirectionalFacingPriority facingPriority = DirectionalFacingPriority.PreferAimDirection;
     public bool useEightWayFacing = true;
     public float movingThreshold = 0.05f;
+    public float movementInputDeadzone = 0.01f;
 
     [Header("References")]
     public Rigidbody2D body;
+    public PlayerController playerController;
     public PlayerCombat playerCombat;
     public Animator animator;
     public SpriteRenderer spriteFlipTarget;
@@ -20,6 +22,14 @@ public class IsoFacingController : MonoBehaviour
 
     [Header("Debug")]
     [SerializeField] private Vector2 currentDirection = Vector2.right;
+    [SerializeField] private Vector2 movementFacingDirection = Vector2.right;
+    [SerializeField] private Vector2 aimDirection = Vector2.right;
+    [SerializeField] private Vector2 actionFacingDirection = Vector2.right;
+    [SerializeField] private Vector2 currentVisualFacingDirection = Vector2.right;
+    [SerializeField] private bool actionFacingOverrideActive;
+    [SerializeField] private IsoFacingSource chosenFacingSource = IsoFacingSource.LastMovement;
+    [SerializeField] private Vector2 rawMoveInput;
+    [SerializeField] private bool hasMoveInput;
     [SerializeField] private int facingIndex;
     [SerializeField] private bool isMoving;
 
@@ -29,8 +39,18 @@ public class IsoFacingController : MonoBehaviour
     private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
 
     public Vector2 CurrentDirection => currentDirection;
+    public Vector2 MovementFacingDirection => movementFacingDirection;
+    public Vector2 AimDirection => aimDirection;
+    public Vector2 ActionFacingDirection => actionFacingDirection;
+    public Vector2 CurrentVisualFacingDirection => currentVisualFacingDirection;
+    public bool ActionFacingOverrideActive => actionFacingOverrideActive;
+    public IsoFacingSource ChosenFacingSource => chosenFacingSource;
+    public Vector2 RawMoveInput => rawMoveInput;
+    public bool HasMoveInput => hasMoveInput;
     public int FacingIndex => facingIndex;
     public bool IsMoving => isMoving;
+
+    private float actionFacingOverrideUntil;
 
     private void Awake()
     {
@@ -40,6 +60,7 @@ public class IsoFacingController : MonoBehaviour
     private void OnValidate()
     {
         movingThreshold = Mathf.Max(0.001f, movingThreshold);
+        movementInputDeadzone = Mathf.Max(0.001f, movementInputDeadzone);
         ResolveReferences();
     }
 
@@ -52,9 +73,26 @@ public class IsoFacingController : MonoBehaviour
     public void ResolveReferences()
     {
         body ??= GetComponent<Rigidbody2D>();
+        playerController ??= GetComponent<PlayerController>();
         playerCombat ??= GetComponent<PlayerCombat>();
         animator ??= GetComponentInChildren<Animator>(true);
         spriteFlipTarget ??= GetComponentInChildren<SpriteRenderer>(true);
+    }
+
+    public void SetActionFacingOverride(Vector2 direction, float duration)
+    {
+        if (direction.sqrMagnitude <= 0.001f || duration <= 0f)
+            return;
+
+        actionFacingDirection = direction.normalized;
+        actionFacingOverrideActive = true;
+        actionFacingOverrideUntil = Mathf.Max(actionFacingOverrideUntil, Time.time + duration);
+    }
+
+    public void ClearActionFacingOverride()
+    {
+        actionFacingOverrideActive = false;
+        actionFacingOverrideUntil = 0f;
     }
 
     public void UpdateFacing()
@@ -63,7 +101,8 @@ public class IsoFacingController : MonoBehaviour
         if (direction.sqrMagnitude > 0.001f)
             currentDirection = direction.normalized;
 
-        isMoving = body != null && body.linearVelocity.sqrMagnitude >= movingThreshold * movingThreshold;
+        currentVisualFacingDirection = currentDirection;
+        isMoving = hasMoveInput || (body != null && body.linearVelocity.sqrMagnitude >= movingThreshold * movingThreshold);
         facingIndex = useEightWayFacing ? DirectionToEightWayIndex(currentDirection) : DirectionToFourWayIndex(currentDirection);
 
         if (applySpriteFlip && spriteFlipTarget != null && Mathf.Abs(currentDirection.x) > 0.05f)
@@ -80,24 +119,75 @@ public class IsoFacingController : MonoBehaviour
 
     private Vector2 ResolveDirection()
     {
-        if (facingPriority == DirectionalFacingPriority.PreferAimDirection)
-        {
-            if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
-                return playerCombat.CurrentAimDirection;
+        if (actionFacingOverrideActive && Time.time >= actionFacingOverrideUntil)
+            ClearActionFacingOverride();
 
-            if (body != null && body.linearVelocity.sqrMagnitude > movingThreshold * movingThreshold)
-                return body.linearVelocity;
+        if (playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
+            aimDirection = playerCombat.CurrentAimDirection.normalized;
+
+        if (actionFacingOverrideActive)
+        {
+            chosenFacingSource = IsoFacingSource.AimAction;
+            return actionFacingDirection;
+        }
+
+        if (playerController != null)
+        {
+            rawMoveInput = playerController.CurrentMoveInput;
+            hasMoveInput = rawMoveInput.sqrMagnitude > movementInputDeadzone * movementInputDeadzone;
+            if (hasMoveInput)
+            {
+                movementFacingDirection = rawMoveInput.normalized;
+                chosenFacingSource = IsoFacingSource.Movement;
+                return movementFacingDirection;
+            }
+
+            if (playerController.LastMovementFacing.sqrMagnitude > 0.001f)
+            {
+                movementFacingDirection = playerController.LastMovementFacing.normalized;
+                chosenFacingSource = IsoFacingSource.LastMovement;
+                return movementFacingDirection;
+            }
         }
         else
         {
-            if (body != null && body.linearVelocity.sqrMagnitude > movingThreshold * movingThreshold)
-                return body.linearVelocity;
-
-            if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
-                return playerCombat.CurrentAimDirection;
+            rawMoveInput = Vector2.zero;
+            hasMoveInput = false;
         }
 
-        return currentDirection;
+        if (body != null && body.linearVelocity.sqrMagnitude > movingThreshold * movingThreshold)
+        {
+            movementFacingDirection = body.linearVelocity.normalized;
+            chosenFacingSource = IsoFacingSource.VelocityFallback;
+            return movementFacingDirection;
+        }
+
+        if (playerController == null)
+        {
+            // Non-player users, such as enemies, keep the previous configurable behavior.
+            if (facingPriority == DirectionalFacingPriority.PreferAimDirection)
+            {
+                if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
+                {
+                    chosenFacingSource = IsoFacingSource.AimFallback;
+                    return playerCombat.CurrentAimDirection;
+                }
+            }
+            else
+            {
+                if (preferAimDirection && playerCombat != null && playerCombat.CurrentAimDirection.sqrMagnitude > 0.001f)
+                {
+                    chosenFacingSource = IsoFacingSource.AimFallback;
+                    return playerCombat.CurrentAimDirection;
+                }
+            }
+
+            chosenFacingSource = IsoFacingSource.LastMovement;
+            return currentDirection;
+        }
+
+        chosenFacingSource = IsoFacingSource.LastMovement;
+        return movementFacingDirection.sqrMagnitude > 0.001f ? movementFacingDirection : currentDirection;
     }
 
     private static int DirectionToFourWayIndex(Vector2 direction)

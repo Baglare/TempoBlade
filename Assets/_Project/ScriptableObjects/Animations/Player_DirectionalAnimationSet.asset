@@ -52,25 +52,25 @@ MonoBehaviour:
     direction: 0
     clip: {fileID: 7400000, guid: bc46a7943e596c64f94d5a5e65c1a158, type: 2}
   - state: 0
-    direction: 0
+    direction: 7
     clip: {fileID: 7400000, guid: a4f52b39c322c204a8daf59bd8c454f2, type: 2}
   - state: 0
-    direction: 0
+    direction: 1
     clip: {fileID: 7400000, guid: aeb0afa5817ad364594497f727ec872e, type: 2}
   - state: 0
-    direction: 0
+    direction: 6
     clip: {fileID: 7400000, guid: d2be4b9b4cb9d4748bf525480c8991fc, type: 2}
   - state: 0
-    direction: 0
+    direction: 2
     clip: {fileID: 7400000, guid: 2a14c1af3549f424594dbfe6d1761915, type: 2}
   - state: 0
-    direction: 0
+    direction: 4
     clip: {fileID: 7400000, guid: 1e885b459c542324ab656e73f18407f4, type: 2}
   - state: 0
-    direction: 0
+    direction: 5
     clip: {fileID: 7400000, guid: ecaf745cfec92594ba3586599d133177, type: 2}
   - state: 0
-    direction: 0
+    direction: 3
     clip: {fileID: 7400000, guid: 0c1233c11e37fa241aaea7fff2cd6fe3, type: 2}
   - state: 1
     direction: 0
@@ -78,7 +78,7 @@ MonoBehaviour:
   - state: 1
     direction: 7
     clip: {fileID: 7400000, guid: 6e38dadc5a2e2e246b065a1d98056857, type: 2}
-  - state: 0
+  - state: 1
     direction: 1
     clip: {fileID: 7400000, guid: 7682f3346703f0c44905240fbb911b4e, type: 2}
   - state: 1

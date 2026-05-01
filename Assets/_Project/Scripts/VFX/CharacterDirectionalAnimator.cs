@@ -208,8 +208,8 @@ public class CharacterDirectionalAnimator : MonoBehaviour
         selectedClipName = resolution.ClipName;
         fallbackUsed = resolution.usedFallback;
 
-        if (bodyRenderer != null && animationSet.useSpriteFlip)
-            bodyRenderer.flipX = resolution.shouldFlipX;
+        if (bodyRenderer != null)
+            bodyRenderer.flipX = animationSet.useSpriteFlip && resolution.shouldFlipX;
 
         if (resolution.clip == null)
         {

@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     
     [Header("Movement")]
     public float moveSpeed = 6f;
+    public float movementInputDeadzone = 0.01f;
+    public bool legacyRootFlipByMovement = false;
     [HideInInspector] public float speedMultiplier = 1.0f; // Tuzak vb. dış etkenler için
 
     [Header("Dodge")]
@@ -78,6 +80,9 @@ public class PlayerController : MonoBehaviour
     public PlayerState currentState { get; private set; } = PlayerState.Idle;
     public bool IsExternallyStaggered => externalStaggerTimer > 0f;
     public bool IsMovementLocked => movementLockTimer > 0f;
+    public Vector2 CurrentMoveInput => moveInput;
+    public Vector2 LastMovementFacing => lastNonZeroMove;
+    public bool HasMoveInput => moveInput.sqrMagnitude > movementInputDeadzone * movementInputDeadzone;
 
     [Header("Tempo Debug (Sadece Test Icin)")]
     [Tooltip("Tempoyu istediginiz degere getirmek icin degeri ayarlayip alttaki butonu isaretleyin.")]
@@ -215,20 +220,22 @@ public class PlayerController : MonoBehaviour
             currentState == PlayerState.Parrying)
             return;
 
-        if (moveInput.sqrMagnitude > 0.01f)
+        if (HasMoveInput)
             lastNonZeroMove = moveInput.normalized;
         float tempoSpeedBonus = TempoManager.Instance != null ? TempoManager.Instance.GetSpeedMultiplier() : 1.0f;
         rb.linearVelocity = moveInput * (moveSpeed * tempoSpeedBonus * speedMultiplier);
 
-        if (moveInput.sqrMagnitude > 0.01f)
+        if (HasMoveInput)
         {
             currentState = PlayerState.Moving;
-            
-            // Yone gore donme (Sprite flip)
-            if (moveInput.x > 0)
-                transform.localScale = new Vector3(1, 1, 1);
-            else if (moveInput.x < 0)
-                transform.localScale = new Vector3(-1, 1, 1);
+
+            if (legacyRootFlipByMovement)
+            {
+                if (moveInput.x > 0)
+                    transform.localScale = new Vector3(1, 1, 1);
+                else if (moveInput.x < 0)
+                    transform.localScale = new Vector3(-1, 1, 1);
+            }
         }
         else
         {
@@ -265,7 +272,7 @@ public class PlayerController : MonoBehaviour
         if (currentState == PlayerState.Dodging) return;
         if (dodgeCooldownTimer > 0f) return;
 
-        dodgeDir = (moveInput.sqrMagnitude > 0.01f) ? moveInput.normalized : lastNonZeroMove;
+        dodgeDir = HasMoveInput ? moveInput.normalized : lastNonZeroMove;
         StartDodge(dodgeDir);
     }
 
@@ -382,7 +389,7 @@ public class PlayerController : MonoBehaviour
 
         rb.linearVelocity = Vector2.zero;
 
-        currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
+        currentState = HasMoveInput ? PlayerState.Moving : PlayerState.Idle;
         
         OnDodgeEnded?.Invoke();
     }
@@ -422,7 +429,7 @@ public class PlayerController : MonoBehaviour
         {
             IsInvulnerable    = false;
             rb.linearVelocity = Vector2.zero;
-            currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
+            currentState = HasMoveInput ? PlayerState.Moving : PlayerState.Idle;
 
             // Dash bitti, trail'leri fade'e al
             foreach (var trail in activeTrails)
@@ -448,7 +455,7 @@ public class PlayerController : MonoBehaviour
         externalStaggerTimer = 0f;
         externalStaggerVelocity = Vector2.zero;
         rb.linearVelocity = Vector2.zero;
-        currentState = (moveInput.sqrMagnitude > 0.01f) ? PlayerState.Moving : PlayerState.Idle;
+        currentState = HasMoveInput ? PlayerState.Moving : PlayerState.Idle;
     }
 
     public void ApplyExternalStagger(float duration, Vector2 knockbackVelocity)
@@ -477,6 +484,12 @@ public class PlayerController : MonoBehaviour
         dodgeTimer = 0f;
         rb.linearVelocity = Vector2.zero;
         currentState = PlayerState.Idle;
+    }
+
+    public void StopMovementVelocity()
+    {
+        if (rb != null)
+            rb.linearVelocity = Vector2.zero;
     }
 
     private void PerformDashStep(Vector2 desiredVelocity, float deltaTime, bool endNormalDodgeOnBlock)

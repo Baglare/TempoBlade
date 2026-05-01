@@ -45,6 +45,8 @@ public class WeaponArcVisual : MonoBehaviour
 
     [Tooltip("Pasif (hedef almak) hâlinde yay rengi.")]
     public Color arcColorIdle = new Color(1f, 0.5f, 0f, 0.35f);
+    public bool showPreviewWhenInactive = false;
+    [Range(0f, 1f)] public float previewOpacity = 0.18f;
 
     [Tooltip("Aktif saldırı anında yay rengi.")]
     public Color arcColorActive = new Color(1f, 0.2f, 0f, 0.9f);
@@ -146,10 +148,11 @@ public class WeaponArcVisual : MonoBehaviour
             lastDirection = dir.normalized;
 
         bool isActive = isAttacking || isParrying;
+        bool showPreview = showPreviewWhenInactive && !isActive;
         bool showDebugArc = presentationMode != WeaponArcPresentationMode.PresentationOnly;
-        lr.enabled = isActive && showDebugArc;
-        if (isActive && showDebugArc)
-            DrawArc(origin, range, isAttacking, isParrying, isPerfectWindow);
+        lr.enabled = (isActive || showPreview) && showDebugArc;
+        if ((isActive || showPreview) && showDebugArc)
+            DrawArc(origin, range, isAttacking, isParrying, isPerfectWindow, showPreview);
 
         if (attackVfxPresenter == null)
             attackVfxPresenter = GetComponent<AttackVFXPresenter>();
@@ -207,11 +210,12 @@ public class WeaponArcVisual : MonoBehaviour
         weaponTransform.rotation = Quaternion.Euler(0f, 0f, angle + weaponRotationOffset);
     }
 
-    private void DrawArc(Vector2 origin, float range, bool isAttacking, bool isParrying, bool isPerfectWindow)
+    private void DrawArc(Vector2 origin, float range, bool isAttacking, bool isParrying, bool isPerfectWindow, bool isPreview = false)
     {
         Color c = arcColorIdle;
         if (isAttacking) c = arcColorActive;
         else if (isParrying) c = isPerfectWindow ? arcColorPerfectParry : arcColorParry;
+        else if (isPreview) c.a = previewOpacity;
 
         lr.startColor = c;
         lr.endColor = c;

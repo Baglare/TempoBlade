@@ -49,6 +49,11 @@ public class ParrySystem : MonoBehaviour
     [Tooltip("Cone: tum koni icindeki projectile'lar. EdgeLine: sadece en on cizgiye yakin projectile'lar.")]
     public ProjectileParryMode projectileParryMode = ProjectileParryMode.Cone;
 
+    [Header("Action Facing / Movement Lock")]
+    public bool lockMovementDuringParry = true;
+    public float parryMovementLockDuration = 0.12f;
+    public bool actionFacingDuringParry = true;
+
     public bool IsParryActive { get; private set; }
     public bool IsCounterWindowActive { get; private set; }
     public bool IsOnCooldown { get; private set; }
@@ -71,6 +76,8 @@ public class ParrySystem : MonoBehaviour
     private float recoveryCooldownTimer;
     private float pendingRecoveryReduction;
     private PlayerCombat playerCombat;
+    private PlayerController playerController;
+    private IsoFacingController facingController;
     private ParryPerkController parryPerkController;
 
     // Dash/Parry commitment carpanlari
@@ -100,6 +107,8 @@ public class ParrySystem : MonoBehaviour
     private void Awake()
     {
         playerCombat = GetComponent<PlayerCombat>();
+        playerController = GetComponent<PlayerController>();
+        facingController = GetComponent<IsoFacingController>();
         parryPerkController = GetComponent<ParryPerkController>();
     }
 
@@ -149,6 +158,15 @@ public class ParrySystem : MonoBehaviour
         currentPerfectWindow = enablePerfectParry ? perfectWindowDuration / Mathf.Max(0.01f, tempoSpeed) : 0f;
         currentProjectileWindowExtensionMultiplier = Mathf.Max(1f, projectileWindowExtensionMultiplier);
         currentProjectileMaxWindowBonus = (projectileMaxWindowBonus * externalWindowMultiplier * normalWindowMultiplier) / Mathf.Max(0.01f, tempoSpeed);
+
+        if (actionFacingDuringParry)
+            facingController?.SetActionFacingOverride(parryDirection, Mathf.Max(timer, parryMovementLockDuration));
+
+        if (lockMovementDuringParry)
+        {
+            playerController?.ApplyMovementLock(parryMovementLockDuration, false);
+            playerController?.StopMovementVelocity();
+        }
 
         AudioManager.Play(AudioEventId.PlayerParryStart, gameObject);
         OnParryStarted?.Invoke(parryDirection);

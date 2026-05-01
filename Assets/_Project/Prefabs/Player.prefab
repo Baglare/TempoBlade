@@ -486,6 +486,8 @@ MonoBehaviour:
   arcAngle: 20
   arcSegments: 30
   arcColorIdle: {r: 1, g: 0.5, b: 0, a: 0.35}
+  showPreviewWhenInactive: 1
+  previewOpacity: 0.18
   arcColorActive: {r: 1, g: 0.2, b: 0, a: 0.9}
   arcColorParry: {r: 0, g: 0.8, b: 1, a: 0.6}
   arcColorPerfectParry: {r: 1, g: 0.9, b: 0.25, a: 0.95}
@@ -1035,6 +1037,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   moveSpeed: 6
+  movementInputDeadzone: 0.01
+  legacyRootFlipByMovement: 0
   speedMultiplier: 1
   dodgeSpeed: 16
   dodgeDuration: 0.22
@@ -1068,6 +1072,9 @@ MonoBehaviour:
   weaponSpriteRenderer: {fileID: 4325753304612021626}
   weaponArcVisual: {fileID: 3529139165156650250}
   damageMultiplier: 1
+  lockMovementDuringAttack: 1
+  attackActionLockDuration: 0.18
+  actionFacingDuringAttack: 1
   upgradeConfig: {fileID: 11400000, guid: dc5f1d2cf8b276c48a318959b5b2f878, type: 2}
 --- !u!114 &8247960365471509671
 MonoBehaviour:
@@ -1105,6 +1112,9 @@ MonoBehaviour:
   projectileMaxWindowBonus: 0
   omniProjectileDeflectWhileActive: 0
   projectileParryMode: 1
+  lockMovementDuringParry: 1
+  parryMovementLockDuration: 0.12
+  actionFacingDuringParry: 1
 --- !u!114 &2833685781671096526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1618,12 +1628,22 @@ MonoBehaviour:
   facingPriority: 0
   useEightWayFacing: 1
   movingThreshold: 0.05
+  movementInputDeadzone: 0.01
   body: {fileID: 0}
+  playerController: {fileID: 5523464536280839676}
   playerCombat: {fileID: 4383232655725613031}
   animator: {fileID: 0}
   spriteFlipTarget: {fileID: 0}
   applySpriteFlip: 0
   currentDirection: {x: 1, y: 0}
+  movementFacingDirection: {x: 1, y: 0}
+  aimDirection: {x: 1, y: 0}
+  actionFacingDirection: {x: 1, y: 0}
+  currentVisualFacingDirection: {x: 1, y: 0}
+  actionFacingOverrideActive: 0
+  chosenFacingSource: 0
+  rawMoveInput: {x: 0, y: 0}
+  hasMoveInput: 0
   facingIndex: 0
   isMoving: 0
 --- !u!114 &730100000000000001
@@ -1681,7 +1701,10 @@ MonoBehaviour:
   hitPulseDuration: 0.16
   staggerPulseDuration: 0.35
   deathPulseDuration: 1
+  movementInputDeadzone: 0.01
   requestedState: 0
+  rawMoveInput: {x: 0, y: 0}
+  hasMoveInput: 0
   isMoving: 0
 --- !u!1 &7431630693877334261
 GameObject:

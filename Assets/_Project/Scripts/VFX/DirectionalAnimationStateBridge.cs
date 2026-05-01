@@ -28,9 +28,12 @@ public class DirectionalAnimationStateBridge : MonoBehaviour
     public float hitPulseDuration = 0.16f;
     public float staggerPulseDuration = 0.35f;
     public float deathPulseDuration = 1f;
+    public float movementInputDeadzone = 0.01f;
 
     [Header("Debug")]
     [SerializeField] private DirectionalAnimationState requestedState = DirectionalAnimationState.Idle;
+    [SerializeField] private Vector2 rawMoveInput;
+    [SerializeField] private bool hasMoveInput;
     [SerializeField] private bool isMoving;
 
     private Vector3 lastPosition;
@@ -172,10 +175,12 @@ public class DirectionalAnimationStateBridge : MonoBehaviour
                 return DirectionalAnimationState.Dash;
         }
 
-        if (playerCombat != null && playerCombat.IsSwinging)
+        if (playerCombat != null && playerCombat.IsAttackActionActive)
             return DirectionalAnimationState.Attack;
 
-        isMoving = IsMovingByPositionDelta();
+        rawMoveInput = playerController != null ? playerController.CurrentMoveInput : Vector2.zero;
+        hasMoveInput = rawMoveInput.sqrMagnitude > movementInputDeadzone * movementInputDeadzone;
+        isMoving = hasMoveInput;
         return isMoving ? DirectionalAnimationState.Move : DirectionalAnimationState.Idle;
     }
 

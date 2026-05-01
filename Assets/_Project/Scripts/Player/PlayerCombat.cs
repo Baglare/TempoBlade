@@ -26,6 +26,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     [Header("Run Modifiers")]
     public float damageMultiplier = 1.0f;
 
+    [Header("Action Facing / Movement Lock")]
+    public bool lockMovementDuringAttack = true;
+    public float attackActionLockDuration = 0.18f;
+    public bool actionFacingDuringAttack = true;
+
     [Header("Upgrade Config")]
     [Tooltip("Hub yukseltme config'i - bonus can/hasar hesaplamak icin gerekli")]
     public UpgradeConfigSO upgradeConfig;
@@ -34,6 +39,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private float nextDamageTime;
     private bool isSwinging;
     private float swingEndTime;
+    private float attackActionEndTime;
     private bool finisherDamageImmune;
     private bool finisherActive;
 
@@ -46,6 +52,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private PlayerWeaponRuntime weaponRuntime;
     private PlayerFinisherController finisherController;
+    private PlayerController playerController;
+    private IsoFacingController facingController;
 
     private Vector2 currentAimDir = Vector2.right;
     private int comboIndex;
@@ -60,6 +68,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public LayerMask EnemyLayers => enemyLayers;
     public Vector2 CurrentAimDirection => currentAimDir;
     public bool IsSwinging => isSwinging;
+    public bool IsAttackActionActive => isSwinging || Time.time < attackActionEndTime;
     public bool IsFinisherActive => finisherActive;
 
     public int CurrentWeaponLevel
@@ -95,6 +104,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     {
         weaponRuntime = new PlayerWeaponRuntime(this);
         finisherController = new PlayerFinisherController(this, weaponRuntime);
+        playerController = GetComponent<PlayerController>();
+        facingController = GetComponent<IsoFacingController>();
     }
 
     private void Start()
@@ -144,22 +155,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void Update()
     {
-        Vector2 aimDir = Vector2.right;
+        Vector2 aimDir = ReadMouseAimDirection(currentAimDir.sqrMagnitude > 0.001f ? currentAimDir : Vector2.right);
 
         if (attackPoint != null && Camera.main != null && UnityEngine.InputSystem.Mouse.current != null)
         {
-            Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.InputSystem.Mouse.current.position.ReadValue());
-            Vector3 dir = mousePos - transform.position;
-            dir.z = 0f;
-
-            if (dir.sqrMagnitude > 0.0001f)
-                aimDir = new Vector2(dir.x, dir.y).normalized;
-
-            float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-            attackPoint.rotation = Quaternion.Euler(0f, 0f, angle);
-
-            float offset = currentWeapon != null ? GetResolvedWeaponStats().attackOffset : 1.0f;
-            attackPoint.position = transform.position + (Vector3)(aimDir * offset);
+            UpdateAttackPointTransform(aimDir);
         }
 
         currentAimDir = aimDir;
@@ -244,6 +244,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         WeaponResolvedStats stats = GetResolvedWeaponStats();
         ComboStepData step = steps[comboIndex];
         int firedIndex = comboIndex;
+        BeginActionFacing(CalculateComboStepActionDuration(step, stats), step.type != ComboStepType.DashStrike);
 
         comboIndex++;
         bool isLastStep = comboIndex >= steps.Length;
@@ -569,7 +570,79 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             effectiveCooldown *= _cadencePerks.GetAttackCooldownMultiplier();
 
         nextAttackTime = Time.time + effectiveCooldown;
+        BeginActionFacing(attackActionLockDuration, true);
         PerformHit(1f, 0f);
+    }
+
+    private Vector2 ReadMouseAimDirection(Vector2 fallback)
+    {
+        if (Camera.main == null || UnityEngine.InputSystem.Mouse.current == null)
+            return fallback.sqrMagnitude > 0.001f ? fallback.normalized : Vector2.right;
+
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.InputSystem.Mouse.current.position.ReadValue());
+        Vector3 dir = mousePos - transform.position;
+        dir.z = 0f;
+
+        Vector2 aimDir = new Vector2(dir.x, dir.y);
+        if (aimDir.sqrMagnitude <= 0.0001f)
+            return fallback.sqrMagnitude > 0.001f ? fallback.normalized : Vector2.right;
+
+        return aimDir.normalized;
+    }
+
+    private void BeginActionFacing(float duration, bool allowMovementLock)
+    {
+        float lockDuration = Mathf.Max(0.01f, duration);
+        currentAimDir = ReadMouseAimDirection(currentAimDir);
+        UpdateAttackPointTransform(currentAimDir);
+        attackActionEndTime = Mathf.Max(attackActionEndTime, Time.time + lockDuration);
+
+        if (actionFacingDuringAttack)
+        {
+            facingController ??= GetComponent<IsoFacingController>();
+            facingController?.SetActionFacingOverride(currentAimDir, lockDuration);
+        }
+
+        if (allowMovementLock && lockMovementDuringAttack)
+        {
+            playerController ??= GetComponent<PlayerController>();
+            playerController?.ApplyMovementLock(lockDuration, false);
+            playerController?.StopMovementVelocity();
+        }
+    }
+
+    private float CalculateComboStepActionDuration(ComboStepData step, WeaponResolvedStats stats)
+    {
+        if (step == null)
+            return attackActionLockDuration;
+
+        float duration = Mathf.Max(0f, step.windupTime * stats.windupMultiplier);
+        switch (step.type)
+        {
+            case ComboStepType.MultiHit:
+                duration += Mathf.Max(attackActionLockDuration, Mathf.Max(1, step.hitCount) * Mathf.Max(0.01f, step.timeBetweenHits));
+                break;
+            case ComboStepType.DashStrike:
+                duration += Mathf.Max(attackActionLockDuration, step.dashDuration);
+                break;
+            default:
+                duration += attackActionLockDuration;
+                break;
+        }
+
+        return Mathf.Max(attackActionLockDuration, duration);
+    }
+
+    private void UpdateAttackPointTransform(Vector2 aimDir)
+    {
+        if (attackPoint == null)
+            return;
+
+        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
+        attackPoint.rotation = Quaternion.Euler(0f, 0f, angle);
+
+        float offset = currentWeapon != null ? GetResolvedWeaponStats().attackOffset : 1.0f;
+        attackPoint.position = transform.position + (Vector3)(aimDir * offset);
     }
 
     public void TakeDamage(float amount)

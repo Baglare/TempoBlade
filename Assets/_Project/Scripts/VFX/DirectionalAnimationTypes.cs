@@ -42,6 +42,15 @@ public enum DirectionalFacingPriority
     PreferMovementDirection = 1
 }
 
+public enum IsoFacingSource
+{
+    LastMovement = 0,
+    Movement = 1,
+    AimAction = 2,
+    AimFallback = 3,
+    VelocityFallback = 4
+}
+
 [Serializable]
 public struct DirectionalAnimationClipSlot
 {
