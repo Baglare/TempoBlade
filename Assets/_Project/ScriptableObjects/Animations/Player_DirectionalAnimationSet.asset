@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DirectionalAnimationSetSO
   characterId: Player
   displayName: Player
-  supportsEightDirections: 0
-  defaultFacingMode: 0
+  supportsEightDirections: 1
+  defaultFacingMode: 1
   defaultFacing: 0
   downRightFallback: 2
   upRightFallback: 2
   upLeftFallback: 6
   downLeftFallback: 6
-  defaultClip: {fileID: 0}
+  defaultClip: {fileID: 7400000, guid: bc46a7943e596c64f94d5a5e65c1a158, type: 2}
   stateFallbacks:
   - state: 3
     fallbackState: 1
@@ -44,7 +44,55 @@ MonoBehaviour:
   - state: 12
     fallbackState: 0
   directionFallbacks: []
-  useSpriteFlip: 1
-  leftRightClipsAreSeparate: 0
-  flipWhenFacingLeft: 1
-  clips: []
+  useSpriteFlip: 0
+  leftRightClipsAreSeparate: 1
+  flipWhenFacingLeft: 0
+  clips:
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: bc46a7943e596c64f94d5a5e65c1a158, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: a4f52b39c322c204a8daf59bd8c454f2, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: aeb0afa5817ad364594497f727ec872e, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: d2be4b9b4cb9d4748bf525480c8991fc, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: 2a14c1af3549f424594dbfe6d1761915, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: 1e885b459c542324ab656e73f18407f4, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: ecaf745cfec92594ba3586599d133177, type: 2}
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: 0c1233c11e37fa241aaea7fff2cd6fe3, type: 2}
+  - state: 1
+    direction: 0
+    clip: {fileID: 7400000, guid: d079747f924829c409dd170d4bc2a3d7, type: 2}
+  - state: 1
+    direction: 7
+    clip: {fileID: 7400000, guid: 6e38dadc5a2e2e246b065a1d98056857, type: 2}
+  - state: 0
+    direction: 1
+    clip: {fileID: 7400000, guid: 7682f3346703f0c44905240fbb911b4e, type: 2}
+  - state: 1
+    direction: 6
+    clip: {fileID: 7400000, guid: 2ccf912f060df84458f93b4882c121a2, type: 2}
+  - state: 1
+    direction: 2
+    clip: {fileID: 7400000, guid: f0451f6e3bc2ea84f848c5af24ee86de, type: 2}
+  - state: 1
+    direction: 4
+    clip: {fileID: 7400000, guid: 66ce4789ffd2d3f438fe099fa0cdbcbd, type: 2}
+  - state: 1
+    direction: 5
+    clip: {fileID: 7400000, guid: 1b02456cb6826184d9f4a7cc926f3a8d, type: 2}
+  - state: 1
+    direction: 3
+    clip: {fileID: 7400000, guid: 3c34e0a033caede4f80649b49a3f45dd, type: 2}
