@@ -48,7 +48,8 @@ public enum IsoFacingSource
     Movement = 1,
     AimAction = 2,
     AimFallback = 3,
-    VelocityFallback = 4
+    VelocityFallback = 4,
+    LastAction = 5
 }
 
 [Serializable]

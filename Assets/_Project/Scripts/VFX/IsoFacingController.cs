@@ -25,8 +25,10 @@ public class IsoFacingController : MonoBehaviour
     [SerializeField] private Vector2 movementFacingDirection = Vector2.right;
     [SerializeField] private Vector2 aimDirection = Vector2.right;
     [SerializeField] private Vector2 actionFacingDirection = Vector2.right;
+    [SerializeField] private Vector2 storedIdleFacingDirection = Vector2.right;
     [SerializeField] private Vector2 currentVisualFacingDirection = Vector2.right;
     [SerializeField] private bool actionFacingOverrideActive;
+    [SerializeField] private bool hasStoredActionFacing;
     [SerializeField] private IsoFacingSource chosenFacingSource = IsoFacingSource.LastMovement;
     [SerializeField] private Vector2 rawMoveInput;
     [SerializeField] private bool hasMoveInput;
@@ -85,6 +87,8 @@ public class IsoFacingController : MonoBehaviour
             return;
 
         actionFacingDirection = direction.normalized;
+        storedIdleFacingDirection = actionFacingDirection;
+        hasStoredActionFacing = true;
         actionFacingOverrideActive = true;
         actionFacingOverrideUntil = Mathf.Max(actionFacingOverrideUntil, Time.time + duration);
     }
@@ -138,13 +142,22 @@ public class IsoFacingController : MonoBehaviour
             if (hasMoveInput)
             {
                 movementFacingDirection = rawMoveInput.normalized;
+                storedIdleFacingDirection = movementFacingDirection;
+                hasStoredActionFacing = false;
                 chosenFacingSource = IsoFacingSource.Movement;
                 return movementFacingDirection;
+            }
+
+            if (hasStoredActionFacing && storedIdleFacingDirection.sqrMagnitude > 0.001f)
+            {
+                chosenFacingSource = IsoFacingSource.LastAction;
+                return storedIdleFacingDirection.normalized;
             }
 
             if (playerController.LastMovementFacing.sqrMagnitude > 0.001f)
             {
                 movementFacingDirection = playerController.LastMovementFacing.normalized;
+                storedIdleFacingDirection = movementFacingDirection;
                 chosenFacingSource = IsoFacingSource.LastMovement;
                 return movementFacingDirection;
             }
