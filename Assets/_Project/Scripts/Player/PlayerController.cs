@@ -492,6 +492,40 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = Vector2.zero;
     }
 
+    public void EnterDeathState()
+    {
+        canMove = false;
+        moveInput = Vector2.zero;
+        IsInvulnerable = true;
+        externalDashTimer = 0f;
+        dodgeTimer = 0f;
+        dodgeCooldownTimer = 0f;
+        externalStaggerTimer = 0f;
+        externalStaggerVelocity = Vector2.zero;
+        movementLockTimer = float.MaxValue;
+        currentState = PlayerState.Idle;
+
+        foreach (var trail in activeTrails)
+        {
+            if (trail != null)
+                trail.isFading = true;
+        }
+        activeTrails.Clear();
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.simulated = false;
+        }
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i] != null)
+                colliders[i].enabled = false;
+        }
+    }
+
     private void PerformDashStep(Vector2 desiredVelocity, float deltaTime, bool endNormalDodgeOnBlock)
     {
         if (rb == null)

@@ -1076,6 +1076,7 @@ MonoBehaviour:
   attackActionLockDuration: 0.18
   actionFacingDuringAttack: 1
   upgradeConfig: {fileID: 11400000, guid: dc5f1d2cf8b276c48a318959b5b2f878, type: 2}
+  deathTargetLossDelay: 0.7
 --- !u!114 &8247960365471509671
 MonoBehaviour:
   m_ObjectHideFlags: 0

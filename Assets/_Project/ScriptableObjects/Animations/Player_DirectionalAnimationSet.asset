@@ -120,3 +120,99 @@ MonoBehaviour:
   - state: 2
     direction: 3
     clip: {fileID: 7400000, guid: 76340e263fbb1d84295d77ffc76adc2e, type: 2}
+  - state: 3
+    direction: 0
+    clip: {fileID: 7400000, guid: 553bcfba2c4e7f6488da17347d375587, type: 2}
+  - state: 3
+    direction: 7
+    clip: {fileID: 7400000, guid: 8abf6c196502ec04683db53afb835bcc, type: 2}
+  - state: 3
+    direction: 1
+    clip: {fileID: 7400000, guid: f5c4cac0141a21545a03d6c2bd9a2b4a, type: 2}
+  - state: 3
+    direction: 6
+    clip: {fileID: 7400000, guid: 14b6b0e7ba6c3d84abb0869e28cf2c2d, type: 2}
+  - state: 3
+    direction: 2
+    clip: {fileID: 7400000, guid: be285b1bc39e0d049923a8110db2c939, type: 2}
+  - state: 3
+    direction: 4
+    clip: {fileID: 7400000, guid: 44be9affad8505e42afe1d510123efa9, type: 2}
+  - state: 3
+    direction: 5
+    clip: {fileID: 7400000, guid: 18370df5a82c11841a0e54931bc005ed, type: 2}
+  - state: 3
+    direction: 3
+    clip: {fileID: 7400000, guid: c9d76c460ede4b244936a628475c0ccf, type: 2}
+  - state: 6
+    direction: 0
+    clip: {fileID: 7400000, guid: d140872ba06c09c4497792ccf251eda3, type: 2}
+  - state: 6
+    direction: 7
+    clip: {fileID: 7400000, guid: 5586544033a2ef141b342a0049006bb6, type: 2}
+  - state: 6
+    direction: 1
+    clip: {fileID: 7400000, guid: 4cece6a66651a12498f7b29289a987a1, type: 2}
+  - state: 6
+    direction: 6
+    clip: {fileID: 7400000, guid: f3457e9df794f714f90a4d6ebdda5ea7, type: 2}
+  - state: 6
+    direction: 2
+    clip: {fileID: 7400000, guid: 43e23badc107f274c8c1f8af93ab1f08, type: 2}
+  - state: 6
+    direction: 4
+    clip: {fileID: 7400000, guid: 6fdd8ade74a6e594cab59f2eefee012c, type: 2}
+  - state: 6
+    direction: 5
+    clip: {fileID: 7400000, guid: 6a50f9fdd9e736a4cb98091ac87b4885, type: 2}
+  - state: 6
+    direction: 3
+    clip: {fileID: 7400000, guid: 62f4a47ae37641447bed60ed85751194, type: 2}
+  - state: 5
+    direction: 0
+    clip: {fileID: 7400000, guid: 80eae5c48dca15942aa2f9d9fbf94771, type: 2}
+  - state: 5
+    direction: 7
+    clip: {fileID: 7400000, guid: 593b81f67b874264fb47a3d37e7436c9, type: 2}
+  - state: 5
+    direction: 1
+    clip: {fileID: 7400000, guid: 7c6558d550688c449b221e28050c70b2, type: 2}
+  - state: 5
+    direction: 6
+    clip: {fileID: 7400000, guid: a1179b75425f72c40b69f8c91dd99040, type: 2}
+  - state: 5
+    direction: 2
+    clip: {fileID: 7400000, guid: 4ba61cb1f8929aa42a151256df093dce, type: 2}
+  - state: 5
+    direction: 4
+    clip: {fileID: 7400000, guid: a34616b989760654c875bd797c29aadd, type: 2}
+  - state: 5
+    direction: 5
+    clip: {fileID: 7400000, guid: 4423d82819f4fb042917f4c53cb39768, type: 2}
+  - state: 5
+    direction: 3
+    clip: {fileID: 7400000, guid: c86c68d9d624a894aa2ad5deb2b5b5b8, type: 2}
+  - state: 4
+    direction: 0
+    clip: {fileID: 7400000, guid: 6c050220f1324df4a9d0b0890e456546, type: 2}
+  - state: 4
+    direction: 7
+    clip: {fileID: 7400000, guid: 4bbcd1933af46ba48a5f3d3afaa7c326, type: 2}
+  - state: 4
+    direction: 1
+    clip: {fileID: 7400000, guid: e3b0139ae9b94184aa0ae7f59a6b7f2e, type: 2}
+  - state: 4
+    direction: 6
+    clip: {fileID: 7400000, guid: 86c0edca1122de147824a26cde77f44a, type: 2}
+  - state: 4
+    direction: 2
+    clip: {fileID: 7400000, guid: 1a15b0bd179c5b445bbc4799d0d1de89, type: 2}
+  - state: 4
+    direction: 4
+    clip: {fileID: 7400000, guid: afc16a7bc5894164ca09dba9e417c891, type: 2}
+  - state: 4
+    direction: 5
+    clip: {fileID: 7400000, guid: 84b7b85471e73d642b3c133c6daf762a, type: 2}
+  - state: 4
+    direction: 3
+    clip: {fileID: 7400000, guid: 19d440825f5ab094d91a03655285f437, type: 2}

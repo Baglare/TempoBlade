@@ -41,8 +41,7 @@ public class GameManager : MonoBehaviour
                 Time.timeScale = 0f;
                 break;
             case GameState.GameOver:
-                // Trigger Game Over UI
-                Time.timeScale = 0.5f; // Slow motion finish?
+                Time.timeScale = 1f;
                 break;
         }
     }

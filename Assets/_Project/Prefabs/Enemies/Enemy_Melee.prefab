@@ -706,12 +706,22 @@ MonoBehaviour:
   facingPriority: 1
   useEightWayFacing: 1
   movingThreshold: 0.05
+  movementInputDeadzone: 0.01
   body: {fileID: 0}
+  playerController: {fileID: 0}
   playerCombat: {fileID: 0}
   animator: {fileID: 0}
   spriteFlipTarget: {fileID: 0}
   applySpriteFlip: 0
   currentDirection: {x: 1, y: 0}
+  movementFacingDirection: {x: 1, y: 0}
+  aimDirection: {x: 1, y: 0}
+  actionFacingDirection: {x: 1, y: 0}
+  currentVisualFacingDirection: {x: 1, y: 0}
+  actionFacingOverrideActive: 0
+  chosenFacingSource: 0
+  rawMoveInput: {x: 0, y: 0}
+  hasMoveInput: 0
   facingIndex: 0
   isMoving: 0
 --- !u!114 &730200000000000001
@@ -769,5 +779,8 @@ MonoBehaviour:
   hitPulseDuration: 0.16
   staggerPulseDuration: 0.35
   deathPulseDuration: 1
+  movementInputDeadzone: 0.01
   requestedState: 0
+  rawMoveInput: {x: 0, y: 0}
+  hasMoveInput: 0
   isMoving: 0

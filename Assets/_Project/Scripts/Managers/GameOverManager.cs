@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro; // Eger TextMeshPro kullaniyorsan, metinler icin
 using UnityEngine.UI;
+using System.Collections;
 
 public class GameOverManager : MonoBehaviour
 {
@@ -14,8 +15,10 @@ public class GameOverManager : MonoBehaviour
     [Header("Settings")]
     public string mainMenuSceneName = "MainMenu";
     public string hubSceneName = "Scene_Hub";
+    public float gameOverScreenDelay = 2f;
 
     private bool isGameOverTriggered = false;
+    private Coroutine gameOverDelayRoutine;
 
     private void Start()
     {
@@ -43,9 +46,21 @@ public class GameOverManager : MonoBehaviour
             if (!isGameOverTriggered)
             {
                 isGameOverTriggered = true;
-                ShowGameOverScreen();
+                if (gameOverDelayRoutine != null)
+                    StopCoroutine(gameOverDelayRoutine);
+                gameOverDelayRoutine = StartCoroutine(ShowGameOverScreenAfterDelay());
             }
         }
+    }
+
+    private IEnumerator ShowGameOverScreenAfterDelay()
+    {
+        float delay = Mathf.Max(0f, gameOverScreenDelay);
+        if (delay > 0f)
+            yield return new WaitForSecondsRealtime(delay);
+
+        gameOverDelayRoutine = null;
+        ShowGameOverScreen();
     }
 
     private void ShowGameOverScreen()
@@ -124,6 +139,11 @@ public class GameOverManager : MonoBehaviour
         Time.timeScale = 1f;
 
         isGameOverTriggered = false;
+        if (gameOverDelayRoutine != null)
+        {
+            StopCoroutine(gameOverDelayRoutine);
+            gameOverDelayRoutine = null;
+        }
         gameOverPanel = null;
         statsText = null;
 
@@ -173,6 +193,11 @@ public class GameOverManager : MonoBehaviour
         Time.timeScale = 1f;
 
         isGameOverTriggered = false;
+        if (gameOverDelayRoutine != null)
+        {
+            StopCoroutine(gameOverDelayRoutine);
+            gameOverDelayRoutine = null;
+        }
         gameOverPanel = null;
         statsText = null;
 

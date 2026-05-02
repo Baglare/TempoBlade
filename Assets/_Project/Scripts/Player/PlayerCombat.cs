@@ -35,6 +35,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     [Tooltip("Hub yukseltme config'i - bonus can/hasar hesaplamak icin gerekli")]
     public UpgradeConfigSO upgradeConfig;
 
+    [Header("Death")]
+    public float deathTargetLossDelay = 0.7f;
+
     private float nextAttackTime;
     private float nextDamageTime;
     private bool isSwinging;
@@ -42,6 +45,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private float attackActionEndTime;
     private bool finisherDamageImmune;
     private bool finisherActive;
+    private Coroutine deathRoutine;
 
     private DashPerkController _dashPerks;
     private OverdrivePerkController _overdrivePerks;
@@ -70,6 +74,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public bool IsSwinging => isSwinging;
     public bool IsAttackActionActive => isSwinging || Time.time < attackActionEndTime;
     public bool IsFinisherActive => finisherActive;
+    public bool IsDead { get; private set; }
 
     public int CurrentWeaponLevel
     {
@@ -650,6 +655,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         if (finisherDamageImmune)
             return;
 
+        if (IsDead)
+            return;
+
         if (Time.time < nextDamageTime)
             return;
 
@@ -674,10 +682,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             DamagePopupManager.Instance.Create(transform.position + Vector3.up, (int)amount, false);
             DamagePopupManager.Instance.CreateHitParticle(transform.position);
         }
-
-        HitFlash flash = GetComponent<HitFlash>();
-        if (flash != null)
-            flash.Flash();
 
         if (CameraShakeManager.Instance != null && amount > 0f)
             CameraShakeManager.Instance.ShakeCamera(6f, 0.25f);
@@ -723,6 +727,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private bool CanAcceptCombatInput()
     {
+        if (IsDead)
+            return false;
+
         if (ModalUIManager.HasOpenModal)
             return false;
 
@@ -737,9 +744,50 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private void Die()
     {
+        if (IsDead)
+            return;
+
+        IsDead = true;
+        currentHealth = 0f;
+        nextDamageTime = float.PositiveInfinity;
+        finisherDamageImmune = true;
+        isSwinging = false;
+        swingEndTime = 0f;
+        attackActionEndTime = 0f;
+        ResetComboState();
+
         AudioManager.Play(AudioEventId.PlayerDeath, gameObject);
+        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+
+        playerController ??= GetComponent<PlayerController>();
+        playerController?.EnterDeathState();
+
+        DirectionalAnimationStateBridge bridge = GetComponent<DirectionalAnimationStateBridge>();
+        if (bridge != null)
+        {
+            bridge.ResolveReferences();
+            if (bridge.directionalAnimator != null)
+            {
+                bridge.directionalAnimator.SetBaseState(DirectionalAnimationState.Death);
+                bridge.directionalAnimator.RequestState(DirectionalAnimationState.Death, 1f, 1000);
+            }
+        }
+
         if (GameManager.Instance != null)
             GameManager.Instance.SetState(GameManager.GameState.GameOver);
+
+        if (deathRoutine != null)
+            StopCoroutine(deathRoutine);
+        deathRoutine = StartCoroutine(DeathCleanupRoutine());
+    }
+
+    private IEnumerator DeathCleanupRoutine()
+    {
+        float delay = Mathf.Max(0.05f, deathTargetLossDelay);
+        yield return new WaitForSecondsRealtime(delay);
+
+        if (this != null && gameObject != null)
+            Destroy(gameObject);
     }
 
     public void GrantExternalCounterBonus(float bonus, CounterFeedbackSource source)

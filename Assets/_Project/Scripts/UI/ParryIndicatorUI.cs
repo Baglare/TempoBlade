@@ -37,7 +37,6 @@ public class ParryIndicatorUI : MonoBehaviour
 
 
     // ── Internal State ──────────────────────────────────────────────────
-    private Color     originalSpriteColor = Color.white;
     private Vector3   baseSelfScale;
     private Vector3   parrySliderBaseScale = Vector3.one;
     private Vector3   counterSliderBaseScale = Vector3.one;
@@ -75,9 +74,6 @@ public class ParryIndicatorUI : MonoBehaviour
             var pc = GetComponentInParent<PlayerCombat>();
             if (pc != null) playerSprite = pc.GetComponentInChildren<SpriteRenderer>();
         }
-
-        if (playerSprite != null)
-            originalSpriteColor = playerSprite.color;
 
         if (parrySlider != null)
         {
@@ -178,15 +174,11 @@ public class ParryIndicatorUI : MonoBehaviour
         SetParrySliderVisible(false);
         SetCounterSliderVisible(true);
         ApplyCounterWindowVisuals(1f);
-        if (playerSprite != null)
-            playerSprite.color = counterGlowColor;
     }
 
     private void HideCounterSlider()
     {
         SetCounterSliderVisible(false);
-        if (playerSprite != null)
-            playerSprite.color = originalSpriteColor;
 
         if (counterFillImage != null)
             counterFillImage.color = counterNormalColor;
