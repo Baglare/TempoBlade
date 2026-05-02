@@ -48,6 +48,18 @@ public class WeaponArcVisual : MonoBehaviour
     public bool showPreviewWhenInactive = false;
     [Range(0f, 1f)] public float previewOpacity = 0.18f;
 
+    [Header("Preview / Active Feel")]
+    [Tooltip("Mouse aim preview arc'i. Karakter facing'ini degistirmez.")]
+    public bool previewEnabled = false;
+    [Range(0f, 1f)] public float previewAlpha = 0.18f;
+    [Range(0f, 1f)] public float activeAlpha = 0.9f;
+    [Tooltip("0'dan buyukse attack/parry sinyali bittikten sonra active arc'i bu sure kadar tutar.")]
+    public float activeDurationOverride = -1f;
+    public Color arcColor = new Color(1f, 0.2f, 0f, 1f);
+    public Color parryArcColor = new Color(0f, 0.8f, 1f, 1f);
+    [Tooltip("V1 hook. Su an alpha dogrudan uygulanir, fade ayari ileride presentation tarafinda kullanilabilir.")]
+    public float fadeSpeed = 20f;
+
     [Tooltip("Aktif saldırı anında yay rengi.")]
     public Color arcColorActive = new Color(1f, 0.2f, 0f, 0.9f);
 
@@ -75,6 +87,7 @@ public class WeaponArcVisual : MonoBehaviour
     private LineRenderer lr;
     private Vector2 lastDirection = Vector2.right;
     private Material runtimeMaterial;
+    private float activeUntil = -999f;
     private float baseArcAngle; // Inspector'dan girilen orijinal acı
 
     // ------------------------------------------------------------------ //
@@ -148,11 +161,15 @@ public class WeaponArcVisual : MonoBehaviour
             lastDirection = dir.normalized;
 
         bool isActive = isAttacking || isParrying;
-        bool showPreview = showPreviewWhenInactive && !isActive;
+        if (isActive && activeDurationOverride > 0f)
+            activeUntil = Mathf.Max(activeUntil, Time.time + activeDurationOverride);
+
+        bool showActiveArc = isActive || Time.time < activeUntil;
+        bool showPreview = (previewEnabled || showPreviewWhenInactive) && !showActiveArc;
         bool showDebugArc = presentationMode != WeaponArcPresentationMode.PresentationOnly;
-        lr.enabled = (isActive || showPreview) && showDebugArc;
-        if ((isActive || showPreview) && showDebugArc)
-            DrawArc(origin, range, isAttacking, isParrying, isPerfectWindow, showPreview);
+        lr.enabled = (showActiveArc || showPreview) && showDebugArc;
+        if ((showActiveArc || showPreview) && showDebugArc)
+            DrawArc(origin, range, isAttacking || (showActiveArc && !isParrying), isParrying, isPerfectWindow, showPreview);
 
         if (attackVfxPresenter == null)
             attackVfxPresenter = GetComponent<AttackVFXPresenter>();
@@ -213,9 +230,20 @@ public class WeaponArcVisual : MonoBehaviour
     private void DrawArc(Vector2 origin, float range, bool isAttacking, bool isParrying, bool isPerfectWindow, bool isPreview = false)
     {
         Color c = arcColorIdle;
-        if (isAttacking) c = arcColorActive;
-        else if (isParrying) c = isPerfectWindow ? arcColorPerfectParry : arcColorParry;
-        else if (isPreview) c.a = previewOpacity;
+        if (isAttacking)
+        {
+            c = arcColor;
+            c.a = activeAlpha;
+        }
+        else if (isParrying)
+        {
+            c = isPerfectWindow ? arcColorPerfectParry : parryArcColor;
+            c.a = activeAlpha;
+        }
+        else if (isPreview)
+        {
+            c.a = previewEnabled ? previewAlpha : previewOpacity;
+        }
 
         lr.startColor = c;
         lr.endColor = c;

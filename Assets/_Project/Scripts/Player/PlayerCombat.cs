@@ -43,6 +43,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private bool isSwinging;
     private float swingEndTime;
     private float attackActionEndTime;
+    private bool wasAttackActionActive;
     private bool finisherDamageImmune;
     private bool finisherActive;
     private Coroutine deathRoutine;
@@ -67,6 +68,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public event System.Action<int, int> OnComboChanged;
     public event System.Action<float, float> OnHealthChanged;
     public event System.Action<CounterFeedbackData> OnCounterFeedback;
+    public event System.Action<PlayerAttackFeedbackData> OnAttackStarted;
+    public event System.Action<PlayerAttackHitFeedbackData> OnAttackHit;
+    public event System.Action<PlayerAttackFeedbackData> OnAttackEnded;
 
     public Transform AttackPoint => attackPoint;
     public LayerMask EnemyLayers => enemyLayers;
@@ -177,6 +181,8 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         if (isParrying)
             aimDir = parrySystem.CurrentParryDirection;
 
+        bool isAttackActive = IsAttackActionActive;
+
         if (weaponArcVisual != null)
         {
             float attackOffset = currentWeapon != null ? GetResolvedWeaponStats().attackOffset : 1.0f;
@@ -189,7 +195,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             weaponArcVisual.UpdateVisuals(
                 transform.position,
                 aimDir,
-                isSwinging,
+                isAttackActive,
                 isParrying,
                 overrideAngle,
                 -1f,
@@ -197,6 +203,10 @@ public class PlayerCombat : MonoBehaviour, IDamageable
                 isPerfectWindow);
         }
 
+        if (wasAttackActionActive && !isAttackActive)
+            OnAttackEnded?.Invoke(BuildAttackFeedbackData(0f, ComboStepType.Normal));
+
+        wasAttackActionActive = isAttackActive;
         comboWindowTimer -= Time.deltaTime;
     }
 
@@ -249,7 +259,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         WeaponResolvedStats stats = GetResolvedWeaponStats();
         ComboStepData step = steps[comboIndex];
         int firedIndex = comboIndex;
-        BeginActionFacing(CalculateComboStepActionDuration(step, stats), step.type != ComboStepType.DashStrike);
+        BeginActionFacing(CalculateComboStepActionDuration(step, stats), step.type != ComboStepType.DashStrike, step.type);
 
         comboIndex++;
         bool isLastStep = comboIndex >= steps.Length;
@@ -408,6 +418,23 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
                 bool killed = enemy != null && beforeHealth > 0f && enemy.CurrentHealth <= 0f;
                 _telemetry?.RecordHit(enemy, killed, multiplier, totalCounter, appliedHealthDamage);
+                OnAttackHit?.Invoke(new PlayerAttackHitFeedbackData
+                {
+                    attacker = gameObject,
+                    enemy = enemy,
+                    hitCollider = hit,
+                    hitPoint = ResolveHitFeedbackPoint(hit, currentAimDir),
+                    direction = ResolveFeedbackDirection(enemy, currentAimDir),
+                    healthDamage = appliedHealthDamage,
+                    attackMultiplier = multiplier,
+                    totalCounterMultiplier = totalCounter,
+                    killed = killed,
+                    isHeavyHit = multiplier >= stats.heavyHitThreshold,
+                    isParryCounter = counterBonus > 0f,
+                    isDashAttack = stepType == ComboStepType.DashStrike || dashCounterBonus > 0f,
+                    targetClass = enemy != null ? enemy.CombatClass : EnemyCombatClass.Normal
+                });
+
                 if (_overdrivePerks != null)
                     _overdrivePerks.NotifyEnemyHit(enemy, killed, multiplier, totalCounter);
                 if (_cadencePerks != null)
@@ -451,19 +478,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         if (hitAny)
         {
-            if (CameraShakeManager.Instance != null)
-                CameraShakeManager.Instance.ShakeCamera(2f, 0.1f);
-
-            if (HitStopManager.Instance != null)
-            {
-                if (multiplier >= 1.5f)
-                    HitStopManager.Instance.PlayHeavyHitStop();
-                else if (multiplier >= 1.2f)
-                    HitStopManager.Instance.PlayHitStop(0.08f, 0.10f);
-                else
-                    HitStopManager.Instance.PlayHitStop(0.04f, 0.15f);
-            }
-
             if (counterBonus > 0f && parrySystem != null)
             {
                 parrySystem.ConsumeCounter();
@@ -575,7 +589,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             effectiveCooldown *= _cadencePerks.GetAttackCooldownMultiplier();
 
         nextAttackTime = Time.time + effectiveCooldown;
-        BeginActionFacing(attackActionLockDuration, true);
+        BeginActionFacing(attackActionLockDuration, true, ComboStepType.Normal);
         PerformHit(1f, 0f);
     }
 
@@ -595,12 +609,13 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         return aimDir.normalized;
     }
 
-    private void BeginActionFacing(float duration, bool allowMovementLock)
+    private void BeginActionFacing(float duration, bool allowMovementLock, ComboStepType stepType = ComboStepType.Normal)
     {
         float lockDuration = Mathf.Max(0.01f, duration);
         currentAimDir = ReadMouseAimDirection(currentAimDir);
         UpdateAttackPointTransform(currentAimDir);
         attackActionEndTime = Mathf.Max(attackActionEndTime, Time.time + lockDuration);
+        OnAttackStarted?.Invoke(BuildAttackFeedbackData(lockDuration, stepType));
 
         if (actionFacingDuringAttack)
         {
@@ -614,6 +629,50 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             playerController?.ApplyMovementLock(lockDuration, false);
             playerController?.StopMovementVelocity();
         }
+    }
+
+    private PlayerAttackFeedbackData BuildAttackFeedbackData(float duration, ComboStepType stepType)
+    {
+        WeaponResolvedStats stats = GetResolvedWeaponStats();
+        float attackOffset = currentWeapon != null ? stats.attackOffset : 1f;
+        Vector2 direction = currentAimDir.sqrMagnitude > 0.001f ? currentAimDir.normalized : Vector2.right;
+
+        return new PlayerAttackFeedbackData
+        {
+            attacker = gameObject,
+            attackPoint = attackPoint,
+            origin = transform.position,
+            direction = direction,
+            range = stats.range + attackOffset,
+            arcAngle = weaponArcVisual != null ? weaponArcVisual.arcAngle : 70f,
+            duration = duration,
+            isDashAttack = stepType == ComboStepType.DashStrike
+        };
+    }
+
+    private Vector3 ResolveHitFeedbackPoint(Collider2D hit, Vector2 direction)
+    {
+        if (hit == null)
+            return transform.position + (Vector3)(direction.normalized * Mathf.Max(0.35f, GetEffectiveRange() * 0.5f));
+
+        Vector2 referencePoint = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
+        Vector2 point = hit.ClosestPoint(referencePoint);
+        if (((Vector2)hit.transform.position - point).sqrMagnitude < 0.0001f && direction.sqrMagnitude > 0.001f)
+            point = (Vector2)hit.transform.position - direction.normalized * 0.2f;
+
+        return new Vector3(point.x, point.y, hit.transform.position.z);
+    }
+
+    private Vector2 ResolveFeedbackDirection(EnemyBase enemy, Vector2 fallback)
+    {
+        if (enemy != null)
+        {
+            Vector2 direction = (Vector2)enemy.transform.position - (Vector2)transform.position;
+            if (direction.sqrMagnitude > 0.001f)
+                return direction.normalized;
+        }
+
+        return fallback.sqrMagnitude > 0.001f ? fallback.normalized : Vector2.right;
     }
 
     private float CalculateComboStepActionDuration(ComboStepData step, WeaponResolvedStats stats)
@@ -857,4 +916,33 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
         Gizmos.DrawWireSphere(attackPoint.position, currentWeapon != null ? GetEffectiveRange() : 0.5f);
     }
+}
+
+public struct PlayerAttackFeedbackData
+{
+    public GameObject attacker;
+    public Transform attackPoint;
+    public Vector3 origin;
+    public Vector2 direction;
+    public float range;
+    public float arcAngle;
+    public float duration;
+    public bool isDashAttack;
+}
+
+public struct PlayerAttackHitFeedbackData
+{
+    public GameObject attacker;
+    public EnemyBase enemy;
+    public Collider2D hitCollider;
+    public Vector3 hitPoint;
+    public Vector2 direction;
+    public float healthDamage;
+    public float attackMultiplier;
+    public float totalCounterMultiplier;
+    public bool killed;
+    public bool isHeavyHit;
+    public bool isParryCounter;
+    public bool isDashAttack;
+    public EnemyCombatClass targetClass;
 }
