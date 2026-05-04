@@ -55,6 +55,7 @@ public class EnemyMelee : EnemyBase
     private CharacterDirectionalAnimator directionalAnimator;
     private Rigidbody2D cachedBody;
     private Collider2D rootCollider;
+    private Collider2D[] eliteRendHitBuffer = new Collider2D[16];
 
     protected override void Start()
     {
@@ -273,32 +274,29 @@ public class EnemyMelee : EnemyBase
     {
         Vector2 strikeOrigin = (Vector2)transform.position + eliteLockedDirection * Mathf.Max(0.6f, enemyData.attackRange * 0.55f);
         float strikeRadius = Mathf.Max(0.6f, enemyData.attackRange * 0.65f);
-        Collider2D[] hits = Physics2D.OverlapCircleAll(strikeOrigin, strikeRadius);
-        for (int i = 0; i < hits.Length; i++)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(strikeOrigin, strikeRadius, ref eliteRendHitBuffer, 16);
+        for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = hits[i];
-            if (!hit.CompareTag("Player"))
+            Collider2D hit = eliteRendHitBuffer[i];
+            EnemyPlayerHitResult hitResult = EnemyPlayerHitUtility.ApplyMeleeHit(
+                this,
+                hit,
+                strikeOrigin,
+                GetEffectiveDamageFromData(enemyData != null ? enemyData.damage : 10f) * damageMultiplier);
+
+            if (!hitResult.isPlayer)
                 continue;
 
-            ParrySystem parry = hit.GetComponent<ParrySystem>();
-            if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
+            if (hitResult.parried)
             {
                 Stun(0.45f);
                 return;
             }
 
-            PlayerController playerController = hit.GetComponent<PlayerController>();
-            if (playerController != null && playerController.IsInvulnerable)
-            {
-                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+            if (hitResult.dodged)
                 continue;
-            }
 
-            PlayerCombat playerCombat = hit.GetComponent<PlayerCombat>();
-            if (playerCombat != null)
-                playerCombat.TakeDamage(GetEffectiveDamageFromData(enemyData != null ? enemyData.damage : 10f) * damageMultiplier);
-
-            playerController?.ApplyExternalStagger(staggerDuration, eliteLockedDirection * knockback);
+            hitResult.playerController?.ApplyExternalStagger(staggerDuration, eliteLockedDirection * knockback);
         }
     }
 

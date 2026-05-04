@@ -8,8 +8,10 @@ public class DamagePopupManager : MonoBehaviour
     [SerializeField] private Transform damagePopupPrefab;
     [SerializeField] private GameObject hitParticlePrefab;
     [SerializeField] private int maxPooledDamagePopups = 32;
+    [SerializeField] private int maxPooledHitParticles = 32;
 
     private readonly Queue<DamagePopup> popupPool = new Queue<DamagePopup>();
+    private readonly Queue<HitParticle> hitParticlePool = new Queue<HitParticle>();
 
     private void Awake()
     {
@@ -54,7 +56,10 @@ public class DamagePopupManager : MonoBehaviour
     public void CreateHitParticle(Vector3 position)
     {
         if (hitParticlePrefab == null) return;
-        Instantiate(hitParticlePrefab, position, Quaternion.identity);
+
+        HitParticle particle = GetHitParticle(position);
+        if (particle != null)
+            particle.Play(this, position);
     }
 
     public void Recycle(DamagePopup popup)
@@ -71,6 +76,22 @@ public class DamagePopupManager : MonoBehaviour
         popup.gameObject.SetActive(false);
         popup.transform.SetParent(transform, false);
         popupPool.Enqueue(popup);
+    }
+
+    public void Recycle(HitParticle particle)
+    {
+        if (particle == null)
+            return;
+
+        if (hitParticlePool.Count >= Mathf.Max(0, maxPooledHitParticles))
+        {
+            Destroy(particle.gameObject);
+            return;
+        }
+
+        particle.gameObject.SetActive(false);
+        particle.transform.SetParent(transform, false);
+        hitParticlePool.Enqueue(particle);
     }
 
     private DamagePopup GetDamagePopup(Vector3 position)
@@ -94,5 +115,28 @@ public class DamagePopupManager : MonoBehaviour
             Destroy(damagePopupTransform.gameObject);
 
         return popup;
+    }
+
+    private HitParticle GetHitParticle(Vector3 position)
+    {
+        HitParticle particle = null;
+        while (hitParticlePool.Count > 0 && particle == null)
+            particle = hitParticlePool.Dequeue();
+
+        if (particle != null)
+        {
+            Transform particleTransform = particle.transform;
+            particleTransform.SetParent(null, true);
+            particleTransform.SetPositionAndRotation(position, Quaternion.identity);
+            particle.gameObject.SetActive(true);
+            return particle;
+        }
+
+        GameObject instance = Instantiate(hitParticlePrefab, position, Quaternion.identity);
+        particle = instance.GetComponent<HitParticle>();
+        if (particle == null)
+            Destroy(instance, 0.25f);
+
+        return particle;
     }
 }

@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour, IDamageable
 {
-    private const int InitialAttackHitBufferSize = 64;
-
     [Header("Stats")]
     public float maxHealth = 100f;
     public float currentHealth;
@@ -62,7 +60,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private PlayerController playerController;
     private ParrySystem parrySystem;
     private IsoFacingController facingController;
-    private Collider2D[] attackHitBuffer = new Collider2D[InitialAttackHitBufferSize];
+    private Collider2D[] attackHitBuffer = new Collider2D[CombatPhysicsQueryUtility.DefaultBufferSize];
 
     private Vector2 currentAimDir = Vector2.right;
     private int comboIndex;
@@ -590,14 +588,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
 
     private int QueryAttackHits(Vector2 center, float radius)
     {
-        int hitCount = Physics2D.OverlapCircleNonAlloc(center, radius, attackHitBuffer, enemyLayers);
-        while (hitCount >= attackHitBuffer.Length)
-        {
-            System.Array.Resize(ref attackHitBuffer, attackHitBuffer.Length * 2);
-            hitCount = Physics2D.OverlapCircleNonAlloc(center, radius, attackHitBuffer, enemyLayers);
-        }
-
-        return hitCount;
+        return CombatPhysicsQueryUtility.OverlapCircle(center, radius, enemyLayers, ref attackHitBuffer);
     }
 
     private void Attack()

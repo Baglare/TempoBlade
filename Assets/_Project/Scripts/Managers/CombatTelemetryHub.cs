@@ -348,13 +348,13 @@ public class CombatTelemetryHub : MonoBehaviour
         NearbyEnemyCount = 0;
         IsUnderThreat = false;
 
-        EnemyBase[] enemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> enemies = EnemyBase.ActiveEnemies;
         float nearestDist = float.MaxValue;
         EnemyBase nearest = null;
 
         float nearRadius = GetNearEnemyRadius();
         float threatRadius = GetThreatRadius();
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy.HealthPercent <= 0f)

@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Collider2D dashProbeCollider;
+    private Collider2D[] parryShockwaveHitBuffer = new Collider2D[32];
     private Vector2 moveInput;
 
     public PlayerState currentState { get; private set; } = PlayerState.Idle;
@@ -595,9 +596,13 @@ public class PlayerController : MonoBehaviour
             if (tier == TempoManager.TempoTier.T2 || tier == TempoManager.TempoTier.T3)
             {
                 // Çevredeki düşmanları sersemlet ve küçük hasar ver
-                Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, 3f);
-                foreach(var hit in hits)
+                int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, 3f, ref parryShockwaveHitBuffer, 32);
+                for (int i = 0; i < hitCount; i++)
                 {
+                    Collider2D hit = parryShockwaveHitBuffer[i];
+                    if (hit == null)
+                        continue;
+
                     if (hit.CompareTag("Enemy"))
                     {
                         var enemy = hit.GetComponent<EnemyBase>();

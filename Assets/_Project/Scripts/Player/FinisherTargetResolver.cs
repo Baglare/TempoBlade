@@ -3,11 +3,9 @@ using UnityEngine;
 
 public sealed class FinisherTargetResolver
 {
-    private const int InitialTargetBufferSize = 64;
-
     private readonly PlayerCombat owner;
     private readonly List<FinisherResolvedTarget> targets = new();
-    private Collider2D[] hitBuffer = new Collider2D[InitialTargetBufferSize];
+    private Collider2D[] hitBuffer = new Collider2D[CombatPhysicsQueryUtility.DefaultBufferSize];
 
     public FinisherTargetResolver(PlayerCombat owner)
     {
@@ -97,14 +95,7 @@ public sealed class FinisherTargetResolver
 
     private int QueryTargets(Vector2 center, float queryRange)
     {
-        int hitCount = Physics2D.OverlapCircleNonAlloc(center, queryRange, hitBuffer, owner.EnemyLayers);
-        while (hitCount >= hitBuffer.Length)
-        {
-            System.Array.Resize(ref hitBuffer, hitBuffer.Length * 2);
-            hitCount = Physics2D.OverlapCircleNonAlloc(center, queryRange, hitBuffer, owner.EnemyLayers);
-        }
-
-        return hitCount;
+        return CombatPhysicsQueryUtility.OverlapCircle(center, queryRange, owner.EnemyLayers, ref hitBuffer);
     }
 
     public static EnemyCombatClass ResolveCombatClass(EnemyBase enemy)

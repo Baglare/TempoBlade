@@ -64,6 +64,7 @@ public class OverdrivePerkController : MonoBehaviour
     public float executePressureStun = 0.75f;
 
     private readonly Dictionary<EnemyBase, MarkPressure> pressure = new Dictionary<EnemyBase, MarkPressure>();
+    private Collider2D[] preyTransferHitBuffer = new Collider2D[32];
 
     private PlayerCombat playerCombat;
     private CadencePerkController cadencePerks;
@@ -451,12 +452,16 @@ public class OverdrivePerkController : MonoBehaviour
 
     private void TransferPrey(Vector3 origin)
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(origin, preyMarkerRange);
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(origin, preyMarkerRange, ref preyTransferHitBuffer, 32);
         EnemyBase best = null;
         float bestDist = float.MaxValue;
 
-        foreach (var hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = preyTransferHitBuffer[i];
+            if (hit == null)
+                continue;
+
             var enemy = hit.GetComponent<EnemyBase>();
             if (enemy == null)
                 continue;

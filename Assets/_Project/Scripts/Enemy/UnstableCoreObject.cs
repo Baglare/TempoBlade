@@ -13,6 +13,7 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
     private EnemyOverheadMeter overheadMeter;
     private LineRenderer ringRenderer;
     private CircleCollider2D hitCollider;
+    private Collider2D[] explosionHitBuffer = new Collider2D[16];
     private const int RingSegments = 28;
 
     public void Configure(EliteKamikazeUnstableCoreSettings coreSettings, float sourceDamage)
@@ -103,10 +104,10 @@ public class UnstableCoreObject : MonoBehaviour, IDamageable
             radius = settings.fullExplosionRadius;
             damage = baseDamage * settings.fullExplosionDamageMultiplier;
         }
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius);
-        for (int i = 0; i < hits.Length; i++)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, radius, ref explosionHitBuffer, 16);
+        for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = hits[i];
+            Collider2D hit = explosionHitBuffer[i];
             if (!hit.CompareTag("Player"))
                 continue;
 

@@ -78,6 +78,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     private float guardDebtExpireTime;
     private float nextGuardDebtTime;
     private EnemyOverheadMeter overheadMeter;
+    private Collider2D[] attackHitBuffer = new Collider2D[16];
 
     public bool AllowParryExecute => true;
 
@@ -368,26 +369,20 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (attackPoint == null)
             return;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRadius);
-        foreach (Collider2D hit in hits)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(attackPoint.position, attackRadius, ref attackHitBuffer, 16);
+        for (int i = 0; i < hitCount; i++)
         {
-            if (!hit.CompareTag("Player"))
+            Collider2D hit = attackHitBuffer[i];
+            if (hit == null)
                 continue;
 
-            ParrySystem parry = hit.GetComponent<ParrySystem>();
             Vector2 strikeOrigin = attackPoint != null ? (Vector2)attackPoint.position : (Vector2)transform.position;
-            if (parry != null && parry.TryBlockMelee(strikeOrigin, gameObject))
+            EnemyPlayerHitResult hitResult = EnemyPlayerHitUtility.ApplyMeleeHit(this, hit, strikeOrigin, GetEffectiveDamage(damage));
+            if (!hitResult.isPlayer)
                 continue;
 
-            IDamageable damageable = hit.GetComponent<IDamageable>();
-            PlayerController controller = hit.GetComponent<PlayerController>();
-            if (controller != null && controller.IsInvulnerable)
-            {
-                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
+            if (hitResult.parried || hitResult.dodged)
                 continue;
-            }
-
-            damageable?.TakeDamage(GetEffectiveDamage(damage));
         }
     }
 
@@ -590,25 +585,21 @@ public class EnemyDuelist : EnemyBase, IParryReactive
         if (attackPoint == null)
             return;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, settings.cleaveRange);
-        for (int i = 0; i < hits.Length; i++)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(attackPoint.position, settings.cleaveRange, ref attackHitBuffer, 16);
+        for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = hits[i];
-            if (!hit.CompareTag("Player"))
+            Collider2D hit = attackHitBuffer[i];
+            EnemyPlayerHitResult hitResult = EnemyPlayerHitUtility.ApplyMeleeHit(
+                this,
+                hit,
+                attackPoint.position,
+                GetEffectiveDamage(damage) * settings.cleaveDamageMultiplier);
+
+            if (!hitResult.isPlayer)
                 continue;
 
-            ParrySystem parry = hit.GetComponent<ParrySystem>();
-            if (parry != null && parry.TryBlockMelee(attackPoint.position, gameObject))
+            if (hitResult.parried || hitResult.dodged)
                 continue;
-
-            PlayerController controller = hit.GetComponent<PlayerController>();
-            if (controller != null && controller.IsInvulnerable)
-            {
-                hit.GetComponent<DashPerkController>()?.NotifyMeleeDodged(this);
-                continue;
-            }
-
-            hit.GetComponent<IDamageable>()?.TakeDamage(GetEffectiveDamage(damage) * settings.cleaveDamageMultiplier);
         }
     }
 

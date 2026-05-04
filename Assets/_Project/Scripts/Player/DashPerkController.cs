@@ -211,6 +211,7 @@ public class DashPerkController : MonoBehaviour
     // -- Tempo Gain --
     private float _tempoGainCooldownTimer;
     private readonly HashSet<int> _aggressiveZoneIds = new HashSet<int>();
+    private readonly HashSet<int> _aggressiveZoneScratchIds = new HashSet<int>();
     private float _tempoGainedThisDash;
 
     // -- Attack Speed --
@@ -223,6 +224,7 @@ public class DashPerkController : MonoBehaviour
     private float _huntMarkTimer;
     private float _lastCombatTime;
     private float _huntKillBonusAccumulated;
+    private Collider2D[] dashPerkHitBuffer = new Collider2D[64];
 
     // -- Avcı: Kör Nokta --
     private bool _blindSpotTriggered;
@@ -650,15 +652,19 @@ public class DashPerkController : MonoBehaviour
         if (!_hasTempoGain) return;
         if (_tempoGainCooldownTimer > 0f) return;
 
-        Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, aggressiveDashDetectRange);
-        HashSet<int> insideNow = new HashSet<int>();
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, aggressiveDashDetectRange, ref dashPerkHitBuffer, 64);
+        _aggressiveZoneScratchIds.Clear();
 
-        foreach (var col in nearby)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D col = dashPerkHitBuffer[i];
+            if (col == null)
+                continue;
+
             if (col.CompareTag("Enemy"))
             {
                 int id = col.gameObject.GetInstanceID();
-                insideNow.Add(id);
+                _aggressiveZoneScratchIds.Add(id);
 
                 if (!_aggressiveZoneIds.Contains(id))
                     GrantAggressiveDashTempo();
@@ -666,7 +672,7 @@ public class DashPerkController : MonoBehaviour
         }
 
         _aggressiveZoneIds.Clear();
-        foreach (int id in insideNow)
+        foreach (int id in _aggressiveZoneScratchIds)
             _aggressiveZoneIds.Add(id);
     }
 
@@ -674,9 +680,13 @@ public class DashPerkController : MonoBehaviour
     {
         _aggressiveZoneIds.Clear();
 
-        Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, aggressiveDashDetectRange);
-        foreach (var col in nearby)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, aggressiveDashDetectRange, ref dashPerkHitBuffer, 64);
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D col = dashPerkHitBuffer[i];
+            if (col == null)
+                continue;
+
             if (col.CompareTag("Enemy"))
                 _aggressiveZoneIds.Add(col.gameObject.GetInstanceID());
         }
@@ -754,12 +764,16 @@ public class DashPerkController : MonoBehaviour
 
     private void SelectNewHuntTarget()
     {
-        Collider2D[] nearby = Physics2D.OverlapCircleAll(transform.position, randomTargetRange);
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, randomTargetRange, ref dashPerkHitBuffer, 64);
         EnemyBase closest = null;
         float closestDist = float.MaxValue;
 
-        foreach (var col in nearby)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D col = dashPerkHitBuffer[i];
+            if (col == null)
+                continue;
+
             if (!col.CompareTag("Enemy")) continue;
             var enemy = col.GetComponent<EnemyBase>();
             if (enemy == null) continue;

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -47,6 +48,7 @@ public class EnemyKamikaze : EnemyBase
     private bool chainPrimed;
     private GameObject indicatorObj;
     private bool spawnedUnstableCore;
+    private Collider2D[] explosionHitBuffer = new Collider2D[16];
 
     protected override void Start()
     {
@@ -174,8 +176,8 @@ public class EnemyKamikaze : EnemyBase
         if (CurrentTempoTier < TempoManager.TempoTier.T2)
             return playerPosition;
 
-        EnemyBase[] allEnemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
-        for (int i = 0; i < allEnemies.Length; i++)
+        IReadOnlyList<EnemyBase> allEnemies = EnemyBase.ActiveEnemies;
+        for (int i = 0; i < allEnemies.Count; i++)
         {
             EnemyBase enemy = allEnemies[i];
             if (enemy == null || enemy == this || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
@@ -274,9 +276,13 @@ public class EnemyKamikaze : EnemyBase
         PlayerController pc = playerObj != null ? playerObj.GetComponent<PlayerController>() : null;
         bool playerInvulnerable = pc != null && pc.IsInvulnerable;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-        foreach (Collider2D hit in hits)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, explosionRadius, ref explosionHitBuffer, 16);
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = explosionHitBuffer[i];
+            if (hit == null)
+                continue;
+
             if (!hit.CompareTag("Player"))
                 continue;
 
@@ -298,9 +304,13 @@ public class EnemyKamikaze : EnemyBase
         if (CurrentTempoTier != TempoManager.TempoTier.T3)
             return;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, tempoConfig.t3ChainReactionRadius);
-        foreach (Collider2D hit in hits)
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, tempoConfig.t3ChainReactionRadius, ref explosionHitBuffer, 16);
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = explosionHitBuffer[i];
+            if (hit == null)
+                continue;
+
             EnemyKamikaze other = hit.GetComponent<EnemyKamikaze>();
             if (other == null || other == this)
                 continue;

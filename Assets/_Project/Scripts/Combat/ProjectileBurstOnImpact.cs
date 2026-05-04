@@ -27,6 +27,7 @@ public class ProjectileBurstOnImpact : MonoBehaviour
     private float fragmentExplosionDamageMultiplier;
     private Color burstCueColor = Color.white;
     private AudioEventId impactAudioEvent = AudioEventId.None;
+    private Collider2D[] explosionHitBuffer = new Collider2D[32];
     private const float FragmentSpawnOffsetMultiplier = 0.65f;
     private const float MaxVisualFragmentSpread = 56f;
     private int burstFamilyId;
@@ -137,11 +138,11 @@ public class ProjectileBurstOnImpact : MonoBehaviour
         if (explosionRadius <= 0f || explosionDamageMultiplier <= 0f)
             return;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, explosionRadius, ref explosionHitBuffer, 32);
         float explosionDamage = projectile.damage * explosionDamageMultiplier;
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = hits[i];
+            Collider2D hit = explosionHitBuffer[i];
             if (hit == null || hit == directHit)
                 continue;
 

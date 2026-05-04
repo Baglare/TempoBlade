@@ -34,6 +34,7 @@ public class TrapArea : MonoBehaviour
     private CircleCollider2D triggerCol;
     private LineRenderer lr;
     private TrapRuntimeSettings runtimeSettings;
+    private Collider2D[] explosionHitBuffer = new Collider2D[16];
 
     private void Start()
     {
@@ -112,13 +113,17 @@ public class TrapArea : MonoBehaviour
             yield return null;
         }
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, explosionRadius, ref explosionHitBuffer, 16);
         bool hitPlayer = false;
         PlayerController player = null;
         IDamageable playerDmg = null;
 
-        foreach (var hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = explosionHitBuffer[i];
+            if (hit == null)
+                continue;
+
             if (!hit.CompareTag("Player"))
                 continue;
 

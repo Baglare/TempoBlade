@@ -3,9 +3,11 @@ using UnityEngine;
 
 public static class EnemySupportUtility
 {
+    private static CombatTelemetryHub cachedTelemetry;
+
     public static bool IsPlayerRepeatingBasicAttacks(float window, int requiredCount)
     {
-        CombatTelemetryHub telemetry = Object.FindFirstObjectByType<CombatTelemetryHub>();
+        CombatTelemetryHub telemetry = ResolveTelemetry();
         if (telemetry == null)
             return false;
 
@@ -196,5 +198,14 @@ public static class EnemySupportUtility
             return 50f;
 
         return 30f;
+    }
+
+    private static CombatTelemetryHub ResolveTelemetry()
+    {
+        if (cachedTelemetry != null)
+            return cachedTelemetry;
+
+        cachedTelemetry = Object.FindFirstObjectByType<CombatTelemetryHub>();
+        return cachedTelemetry;
     }
 }

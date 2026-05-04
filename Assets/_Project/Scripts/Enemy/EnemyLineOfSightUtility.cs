@@ -2,6 +2,8 @@ using UnityEngine;
 
 public static class EnemyLineOfSightUtility
 {
+    private static Collider2D[] overlapBuffer = new Collider2D[32];
+
     public static bool HasLineOfSight(Vector2 origin, Transform target, LayerMask obstacleMask, Transform ignoreRoot = null)
     {
         if (target == null)
@@ -69,10 +71,10 @@ public static class EnemyLineOfSightUtility
 
     public static bool IsPointNavigable(Vector2 point, float radius, Transform ignoreRoot = null)
     {
-        Collider2D[] overlaps = Physics2D.OverlapCircleAll(point, radius);
-        for (int i = 0; i < overlaps.Length; i++)
+        int overlapCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(point, radius, ref overlapBuffer, 32);
+        for (int i = 0; i < overlapCount; i++)
         {
-            Collider2D col = overlaps[i];
+            Collider2D col = overlapBuffer[i];
             if (!IsRelevantSolid(col))
                 continue;
             if (ignoreRoot != null && col.transform.root == ignoreRoot.root)
@@ -85,11 +87,11 @@ public static class EnemyLineOfSightUtility
 
     public static float GetObstacleDensity(Vector2 point, float radius, Transform ignoreRoot = null)
     {
-        Collider2D[] overlaps = Physics2D.OverlapCircleAll(point, radius);
+        int overlapCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(point, radius, ref overlapBuffer, 32);
         float density = 0f;
-        for (int i = 0; i < overlaps.Length; i++)
+        for (int i = 0; i < overlapCount; i++)
         {
-            Collider2D col = overlaps[i];
+            Collider2D col = overlapBuffer[i];
             if (!IsRelevantSolid(col))
                 continue;
             if (ignoreRoot != null && col.transform.root == ignoreRoot.root)

@@ -152,6 +152,7 @@ public class CadencePerkController : MonoBehaviour
     private bool waveBounceUsedThisAttack;
     private EnemyBase lastHitEnemy;
     private float targetSwitchTimer;
+    private Collider2D[] waveBounceHitBuffer = new Collider2D[32];
 
     private void Awake()
     {
@@ -452,12 +453,16 @@ public class CadencePerkController : MonoBehaviour
         if (flowStacks < waveBounceMinStacks)
             return;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(source.transform.position, waveBounceRange);
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(source.transform.position, waveBounceRange, ref waveBounceHitBuffer, 32);
         EnemyBase best = null;
         float bestDist = float.MaxValue;
 
-        foreach (var hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = waveBounceHitBuffer[i];
+            if (hit == null)
+                continue;
+
             var enemy = hit.GetComponent<EnemyBase>();
             if (enemy == null || enemy == source)
                 continue;
