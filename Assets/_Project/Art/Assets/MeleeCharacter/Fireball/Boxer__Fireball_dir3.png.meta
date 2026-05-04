@@ -1,0 +1,1365 @@
+fileFormatVersion: 2
+guid: 05e3986a68457c14488bc605fe080b1f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2027796300107212974
+    second: Boxer__Fireball_dir3_0
+  - first:
+      213: -7827983282773370176
+    second: Boxer__Fireball_dir3_1
+  - first:
+      213: 224193532401453362
+    second: Boxer__Fireball_dir3_2
+  - first:
+      213: 707865841733400543
+    second: Boxer__Fireball_dir3_3
+  - first:
+      213: -6458650849610797788
+    second: Boxer__Fireball_dir3_4
+  - first:
+      213: -5031478897985039229
+    second: Boxer__Fireball_dir3_5
+  - first:
+      213: 5060786974618682196
+    second: Boxer__Fireball_dir3_6
+  - first:
+      213: 7047954074782810899
+    second: Boxer__Fireball_dir3_7
+  - first:
+      213: -5880697424459755276
+    second: Boxer__Fireball_dir3_8
+  - first:
+      213: 3423200033627547766
+    second: Boxer__Fireball_dir3_9
+  - first:
+      213: -2402953156888629815
+    second: Boxer__Fireball_dir3_10
+  - first:
+      213: -1864065386756936498
+    second: Boxer__Fireball_dir3_11
+  - first:
+      213: -1721186590461479174
+    second: Boxer__Fireball_dir3_12
+  - first:
+      213: -6226359297088565978
+    second: Boxer__Fireball_dir3_13
+  - first:
+      213: 3345711782858242070
+    second: Boxer__Fireball_dir3_14
+  - first:
+      213: -6950291103215509535
+    second: Boxer__Fireball_dir3_15
+  - first:
+      213: -6774581760698453981
+    second: Boxer__Fireball_dir3_16
+  - first:
+      213: 7110857844850281048
+    second: Boxer__Fireball_dir3_17
+  - first:
+      213: -2629255834571860367
+    second: Boxer__Fireball_dir3_18
+  - first:
+      213: -884604194398302632
+    second: Boxer__Fireball_dir3_19
+  - first:
+      213: -2266414237670055662
+    second: Boxer__Fireball_dir3_20
+  - first:
+      213: 491113464730777250
+    second: Boxer__Fireball_dir3_21
+  - first:
+      213: 3245817015962967525
+    second: Boxer__Fireball_dir3_22
+  - first:
+      213: -3062419934100784854
+    second: Boxer__Fireball_dir3_23
+  - first:
+      213: -9212564313975513434
+    second: Boxer__Fireball_dir3_24
+  - first:
+      213: -1223207556051814837
+    second: Boxer__Fireball_dir3_25
+  - first:
+      213: 5848070161136302136
+    second: Boxer__Fireball_dir3_26
+  - first:
+      213: -6932712444515923558
+    second: Boxer__Fireball_dir3_27
+  - first:
+      213: 8317258640119235104
+    second: Boxer__Fireball_dir3_28
+  - first:
+      213: -8669180147439319856
+    second: Boxer__Fireball_dir3_29
+  - first:
+      213: 7679722216542592465
+    second: Boxer__Fireball_dir3_30
+  - first:
+      213: 5912817942001348696
+    second: Boxer__Fireball_dir3_31
+  - first:
+      213: -8911985351361087777
+    second: Boxer__Fireball_dir3_32
+  - first:
+      213: 6064742815343003636
+    second: Boxer__Fireball_dir3_33
+  - first:
+      213: -6862025900660275603
+    second: Boxer__Fireball_dir3_34
+  - first:
+      213: -4565584226997770379
+    second: Boxer__Fireball_dir3_35
+  - first:
+      213: -2438430012023117670
+    second: Boxer__Fireball_dir3_36
+  - first:
+      213: 107773098278781612
+    second: Boxer__Fireball_dir3_37
+  - first:
+      213: 425848875212267511
+    second: Boxer__Fireball_dir3_38
+  - first:
+      213: -8593487719288466832
+    second: Boxer__Fireball_dir3_39
+  - first:
+      213: 8386572194368467180
+    second: Boxer__Fireball_dir3_40
+  - first:
+      213: -1836967177241476365
+    second: Boxer__Fireball_dir3_41
+  - first:
+      213: 228186878562594457
+    second: Boxer__Fireball_dir3_42
+  - first:
+      213: 3453347578338331846
+    second: Boxer__Fireball_dir3_43
+  - first:
+      213: 4509657454800425241
+    second: Boxer__Fireball_dir3_44
+  - first:
+      213: -8980559607037761060
+    second: Boxer__Fireball_dir3_45
+  - first:
+      213: 2210177276218291362
+    second: Boxer__Fireball_dir3_46
+  - first:
+      213: -7840947507799436632
+    second: Boxer__Fireball_dir3_47
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_0
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 811
+        width: 46
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 257124f3202dbd3e0800000000000000
+      internalID: -2027796300107212974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_1
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 811
+        width: 46
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cad892cdaa6d5390800000000000000
+      internalID: -7827983282773370176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_2
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 811
+        width: 46
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2398ab374de7c1300800000000000000
+      internalID: 224193532401453362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_3
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 811
+        width: 46
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd7f62d8b38d2d900800000000000000
+      internalID: 707865841733400543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_4
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 811
+        width: 45
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42d6cac85434e56a0800000000000000
+      internalID: -6458650849610797788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_5
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 811
+        width: 45
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3845ab6a9989c2ab0800000000000000
+      internalID: -5031478897985039229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_6
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 811
+        width: 45
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4530212b0f68b3640800000000000000
+      internalID: 5060786974618682196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_7
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 679
+        width: 46
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31342bca3ec5fc160800000000000000
+      internalID: 7047954074782810899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_8
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 679
+        width: 46
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f0958789d0936ea0800000000000000
+      internalID: -5880697424459755276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_9
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 680
+        width: 46
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 678a97f2b46a18f20800000000000000
+      internalID: 3423200033627547766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_10
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 680
+        width: 45
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cdefbfc5def6aed0800000000000000
+      internalID: -2402953156888629815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_11
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 680
+        width: 42
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecc604038628126e0800000000000000
+      internalID: -1864065386756936498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_12
+      rect:
+        serializedVersion: 2
+        x: 675
+        y: 680
+        width: 41
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af6b06b4aed1d18e0800000000000000
+      internalID: -1721186590461479174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_13
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 680
+        width: 40
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62dc51d35378799a0800000000000000
+      internalID: -6226359297088565978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_14
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 548
+        width: 39
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 618ba12e32b5e6e20800000000000000
+      internalID: 3345711782858242070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_15
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 548
+        width: 41
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ef184bd01b9b8f90800000000000000
+      internalID: -6950291103215509535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_16
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 548
+        width: 40
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3207abb28c9dbf1a0800000000000000
+      internalID: -6774581760698453981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_17
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 547
+        width: 40
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85ac992f887dea260800000000000000
+      internalID: 7110857844850281048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_18
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 547
+        width: 40
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17698b4bfb1038bd0800000000000000
+      internalID: -2629255834571860367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_19
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 547
+        width: 41
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85e811a0c2149b3f0800000000000000
+      internalID: -884604194398302632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_20
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 547
+        width: 42
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 211e9c142441c80e0800000000000000
+      internalID: -2266414237670055662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_21
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 415
+        width: 41
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a670b91819c0d600800000000000000
+      internalID: 491113464730777250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_22
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 415
+        width: 41
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ed146201657b0d20800000000000000
+      internalID: 3245817015962967525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_23
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 415
+        width: 41
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a29f8da9b491085d0800000000000000
+      internalID: -3062419934100784854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_24
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 415
+        width: 43
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ae9c031195662080800000000000000
+      internalID: -9212564313975513434
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_25
+      rect:
+        serializedVersion: 2
+        x: 552
+        y: 415
+        width: 46
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4635f6653b460fe0800000000000000
+      internalID: -1223207556051814837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_26
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 415
+        width: 44
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8383710c3d4882150800000000000000
+      internalID: 5848070161136302136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_27
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 415
+        width: 45
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a99c2b643ce0acf90800000000000000
+      internalID: -6932712444515923558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_28
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 284
+        width: 46
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0220b5d9aa6dc6370800000000000000
+      internalID: 8317258640119235104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_29
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 284
+        width: 48
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d4c2025692e0b780800000000000000
+      internalID: -8669180147439319856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_30
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 284
+        width: 50
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dd52b2caaad39a60800000000000000
+      internalID: 7679722216542592465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_31
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 284
+        width: 52
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 850fb8e379c8e0250800000000000000
+      internalID: 5912817942001348696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_32
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 283
+        width: 53
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd633a86a84425480800000000000000
+      internalID: -8911985351361087777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_33
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 283
+        width: 54
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f74f9a457b4a2450800000000000000
+      internalID: 6064742815343003636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_34
+      rect:
+        serializedVersion: 2
+        x: 791
+        y: 283
+        width: 54
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d664d97cccf25c0a0800000000000000
+      internalID: -6862025900660275603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_35
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 151
+        width: 54
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 577eba5c559c3a0c0800000000000000
+      internalID: -4565584226997770379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_36
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 151
+        width: 54
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a98e5bbc2d4f82ed0800000000000000
+      internalID: -2438430012023117670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_37
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 151
+        width: 53
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca20047df03ee7100800000000000000
+      internalID: 107773098278781612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_38
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 151
+        width: 53
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ffd607bb4be8e500800000000000000
+      internalID: 425848875212267511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_39
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 151
+        width: 50
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0721126137ccdb880800000000000000
+      internalID: -8593487719288466832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_40
+      rect:
+        serializedVersion: 2
+        x: 668
+        y: 151
+        width: 49
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce030801af6136470800000000000000
+      internalID: 8386572194368467180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_41
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 152
+        width: 48
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f24870c518c186e0800000000000000
+      internalID: -1836967177241476365
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_42
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 20
+        width: 47
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99ee02fc1ceaa2300800000000000000
+      internalID: 228186878562594457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_43
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 20
+        width: 46
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cccfcc6351ccef20800000000000000
+      internalID: 3453347578338331846
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_44
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 20
+        width: 46
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 911521cdf85859e30800000000000000
+      internalID: 4509657454800425241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_45
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 20
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd9ea425e94ae5380800000000000000
+      internalID: -8980559607037761060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_46
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 19
+        width: 46
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a4b1afc5802cae10800000000000000
+      internalID: 2210177276218291362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Fireball_dir3_47
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 20
+        width: 46
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a25127e8cb5f2390800000000000000
+      internalID: -7840947507799436632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__Fireball_dir3_0: -2027796300107212974
+      Boxer__Fireball_dir3_1: -7827983282773370176
+      Boxer__Fireball_dir3_10: -2402953156888629815
+      Boxer__Fireball_dir3_11: -1864065386756936498
+      Boxer__Fireball_dir3_12: -1721186590461479174
+      Boxer__Fireball_dir3_13: -6226359297088565978
+      Boxer__Fireball_dir3_14: 3345711782858242070
+      Boxer__Fireball_dir3_15: -6950291103215509535
+      Boxer__Fireball_dir3_16: -6774581760698453981
+      Boxer__Fireball_dir3_17: 7110857844850281048
+      Boxer__Fireball_dir3_18: -2629255834571860367
+      Boxer__Fireball_dir3_19: -884604194398302632
+      Boxer__Fireball_dir3_2: 224193532401453362
+      Boxer__Fireball_dir3_20: -2266414237670055662
+      Boxer__Fireball_dir3_21: 491113464730777250
+      Boxer__Fireball_dir3_22: 3245817015962967525
+      Boxer__Fireball_dir3_23: -3062419934100784854
+      Boxer__Fireball_dir3_24: -9212564313975513434
+      Boxer__Fireball_dir3_25: -1223207556051814837
+      Boxer__Fireball_dir3_26: 5848070161136302136
+      Boxer__Fireball_dir3_27: -6932712444515923558
+      Boxer__Fireball_dir3_28: 8317258640119235104
+      Boxer__Fireball_dir3_29: -8669180147439319856
+      Boxer__Fireball_dir3_3: 707865841733400543
+      Boxer__Fireball_dir3_30: 7679722216542592465
+      Boxer__Fireball_dir3_31: 5912817942001348696
+      Boxer__Fireball_dir3_32: -8911985351361087777
+      Boxer__Fireball_dir3_33: 6064742815343003636
+      Boxer__Fireball_dir3_34: -6862025900660275603
+      Boxer__Fireball_dir3_35: -4565584226997770379
+      Boxer__Fireball_dir3_36: -2438430012023117670
+      Boxer__Fireball_dir3_37: 107773098278781612
+      Boxer__Fireball_dir3_38: 425848875212267511
+      Boxer__Fireball_dir3_39: -8593487719288466832
+      Boxer__Fireball_dir3_4: -6458650849610797788
+      Boxer__Fireball_dir3_40: 8386572194368467180
+      Boxer__Fireball_dir3_41: -1836967177241476365
+      Boxer__Fireball_dir3_42: 228186878562594457
+      Boxer__Fireball_dir3_43: 3453347578338331846
+      Boxer__Fireball_dir3_44: 4509657454800425241
+      Boxer__Fireball_dir3_45: -8980559607037761060
+      Boxer__Fireball_dir3_46: 2210177276218291362
+      Boxer__Fireball_dir3_47: -7840947507799436632
+      Boxer__Fireball_dir3_5: -5031478897985039229
+      Boxer__Fireball_dir3_6: 5060786974618682196
+      Boxer__Fireball_dir3_7: 7047954074782810899
+      Boxer__Fireball_dir3_8: -5880697424459755276
+      Boxer__Fireball_dir3_9: 3423200033627547766
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

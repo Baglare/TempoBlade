@@ -39,6 +39,7 @@ public class IsoFacingController : MonoBehaviour
     private static readonly int FacingYHash = Animator.StringToHash("FacingY");
     private static readonly int FacingIndexHash = Animator.StringToHash("FacingIndex");
     private static readonly int IsMovingHash = Animator.StringToHash("IsMoving");
+    private Vector3 lastWorldPosition;
 
     public Vector2 CurrentDirection => currentDirection;
     public Vector2 MovementFacingDirection => movementFacingDirection;
@@ -57,6 +58,12 @@ public class IsoFacingController : MonoBehaviour
     private void Awake()
     {
         ResolveReferences();
+        lastWorldPosition = transform.position;
+    }
+
+    private void OnEnable()
+    {
+        lastWorldPosition = transform.position;
     }
 
     private void OnValidate()
@@ -114,11 +121,20 @@ public class IsoFacingController : MonoBehaviour
 
         if (animator != null)
         {
-            animator.SetFloat(FacingXHash, currentDirection.x);
-            animator.SetFloat(FacingYHash, currentDirection.y);
-            animator.SetInteger(FacingIndexHash, facingIndex);
-            animator.SetBool(IsMovingHash, isMoving);
+            if (HasAnimatorParameter(animator, FacingXHash, AnimatorControllerParameterType.Float))
+                animator.SetFloat(FacingXHash, currentDirection.x);
+
+            if (HasAnimatorParameter(animator, FacingYHash, AnimatorControllerParameterType.Float))
+                animator.SetFloat(FacingYHash, currentDirection.y);
+
+            if (HasAnimatorParameter(animator, FacingIndexHash, AnimatorControllerParameterType.Int))
+                animator.SetInteger(FacingIndexHash, facingIndex);
+
+            if (HasAnimatorParameter(animator, IsMovingHash, AnimatorControllerParameterType.Bool))
+                animator.SetBool(IsMovingHash, isMoving);
         }
+
+        lastWorldPosition = transform.position;
     }
 
     private Vector2 ResolveDirection()
@@ -177,6 +193,14 @@ public class IsoFacingController : MonoBehaviour
 
         if (playerController == null)
         {
+            Vector2 worldDelta = (Vector2)(transform.position - lastWorldPosition);
+            if (worldDelta.sqrMagnitude > movingThreshold * movingThreshold * Time.deltaTime * Time.deltaTime)
+            {
+                movementFacingDirection = worldDelta.normalized;
+                chosenFacingSource = IsoFacingSource.VelocityFallback;
+                return movementFacingDirection;
+            }
+
             // Non-player users, such as enemies, keep the previous configurable behavior.
             if (facingPriority == DirectionalFacingPriority.PreferAimDirection)
             {
@@ -218,5 +242,20 @@ public class IsoFacingController : MonoBehaviour
             angle += 360f;
 
         return Mathf.RoundToInt(angle / 45f) % 8;
+    }
+
+    private static bool HasAnimatorParameter(Animator targetAnimator, int hash, AnimatorControllerParameterType type)
+    {
+        if (targetAnimator == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = targetAnimator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].nameHash == hash && parameters[i].type == type)
+                return true;
+        }
+
+        return false;
     }
 }

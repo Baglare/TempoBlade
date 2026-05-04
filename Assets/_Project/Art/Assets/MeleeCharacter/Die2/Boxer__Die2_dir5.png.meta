@@ -1,0 +1,1755 @@
+fileFormatVersion: 2
+guid: e15c1f161ce77f24da700257169cdb61
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8964382648267365211
+    second: Boxer__Die2_dir5_0
+  - first:
+      213: 8604290051130083305
+    second: Boxer__Die2_dir5_1
+  - first:
+      213: 2792717461920913310
+    second: Boxer__Die2_dir5_2
+  - first:
+      213: -8838554936299724399
+    second: Boxer__Die2_dir5_3
+  - first:
+      213: -8117985431012598309
+    second: Boxer__Die2_dir5_4
+  - first:
+      213: -5249428601442598086
+    second: Boxer__Die2_dir5_5
+  - first:
+      213: -606097221969261899
+    second: Boxer__Die2_dir5_6
+  - first:
+      213: -753130387657098826
+    second: Boxer__Die2_dir5_7
+  - first:
+      213: 4349039392636530113
+    second: Boxer__Die2_dir5_8
+  - first:
+      213: 1955560545889708512
+    second: Boxer__Die2_dir5_9
+  - first:
+      213: 3616903825609821140
+    second: Boxer__Die2_dir5_10
+  - first:
+      213: -7908309975356338809
+    second: Boxer__Die2_dir5_11
+  - first:
+      213: 4320813360273598777
+    second: Boxer__Die2_dir5_12
+  - first:
+      213: -2881247010910996528
+    second: Boxer__Die2_dir5_13
+  - first:
+      213: 1009606182270262237
+    second: Boxer__Die2_dir5_14
+  - first:
+      213: -7161346101240278398
+    second: Boxer__Die2_dir5_15
+  - first:
+      213: -8755360999904623664
+    second: Boxer__Die2_dir5_16
+  - first:
+      213: -8372718719749372790
+    second: Boxer__Die2_dir5_17
+  - first:
+      213: 2815641269088852319
+    second: Boxer__Die2_dir5_18
+  - first:
+      213: 6595357289258848723
+    second: Boxer__Die2_dir5_19
+  - first:
+      213: 697228908223114876
+    second: Boxer__Die2_dir5_20
+  - first:
+      213: 4429309341810292194
+    second: Boxer__Die2_dir5_21
+  - first:
+      213: 955546684224254913
+    second: Boxer__Die2_dir5_22
+  - first:
+      213: -5530519612739357617
+    second: Boxer__Die2_dir5_23
+  - first:
+      213: -3186545857416706812
+    second: Boxer__Die2_dir5_24
+  - first:
+      213: 720426965631251289
+    second: Boxer__Die2_dir5_25
+  - first:
+      213: 1528517719513437921
+    second: Boxer__Die2_dir5_26
+  - first:
+      213: -5618225688259392026
+    second: Boxer__Die2_dir5_27
+  - first:
+      213: -2792727215245891477
+    second: Boxer__Die2_dir5_28
+  - first:
+      213: -1534328714337767401
+    second: Boxer__Die2_dir5_29
+  - first:
+      213: 1656105996012620229
+    second: Boxer__Die2_dir5_30
+  - first:
+      213: -3640570598811947012
+    second: Boxer__Die2_dir5_31
+  - first:
+      213: 7617152489665382216
+    second: Boxer__Die2_dir5_32
+  - first:
+      213: -8890664701141782288
+    second: Boxer__Die2_dir5_33
+  - first:
+      213: -1174484457159406312
+    second: Boxer__Die2_dir5_34
+  - first:
+      213: 4015497645740872469
+    second: Boxer__Die2_dir5_35
+  - first:
+      213: 906387252258632260
+    second: Boxer__Die2_dir5_36
+  - first:
+      213: -36115982826834319
+    second: Boxer__Die2_dir5_37
+  - first:
+      213: -263775566536485626
+    second: Boxer__Die2_dir5_38
+  - first:
+      213: -6787761410664595727
+    second: Boxer__Die2_dir5_39
+  - first:
+      213: -4854496857109395215
+    second: Boxer__Die2_dir5_40
+  - first:
+      213: 2934701541689254227
+    second: Boxer__Die2_dir5_41
+  - first:
+      213: 5183372051776200071
+    second: Boxer__Die2_dir5_42
+  - first:
+      213: 6325908439552306882
+    second: Boxer__Die2_dir5_43
+  - first:
+      213: -8806189945646261241
+    second: Boxer__Die2_dir5_44
+  - first:
+      213: 1243594801473183656
+    second: Boxer__Die2_dir5_45
+  - first:
+      213: 5679739667418868931
+    second: Boxer__Die2_dir5_46
+  - first:
+      213: -7128264688618314515
+    second: Boxer__Die2_dir5_47
+  - first:
+      213: 5946117439457777146
+    second: Boxer__Die2_dir5_48
+  - first:
+      213: -1220416828227974450
+    second: Boxer__Die2_dir5_49
+  - first:
+      213: 7226223123489234373
+    second: Boxer__Die2_dir5_50
+  - first:
+      213: 1477501427693493666
+    second: Boxer__Die2_dir5_51
+  - first:
+      213: 7869737678588402863
+    second: Boxer__Die2_dir5_52
+  - first:
+      213: 7721915643505493998
+    second: Boxer__Die2_dir5_53
+  - first:
+      213: 7159054989997981710
+    second: Boxer__Die2_dir5_54
+  - first:
+      213: -8583948378021309046
+    second: Boxer__Die2_dir5_55
+  - first:
+      213: 6994889787068122888
+    second: Boxer__Die2_dir5_56
+  - first:
+      213: 6663500022496284645
+    second: Boxer__Die2_dir5_57
+  - first:
+      213: -2299267129620691359
+    second: Boxer__Die2_dir5_58
+  - first:
+      213: 5184631649664091090
+    second: Boxer__Die2_dir5_59
+  - first:
+      213: -6382335112005150355
+    second: Boxer__Die2_dir5_60
+  - first:
+      213: -5114039530837819992
+    second: Boxer__Die2_dir5_61
+  - first:
+      213: -7123318448115256496
+    second: Boxer__Die2_dir5_62
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_0
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 939
+        width: 38
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5bd6a4f582e76c70800000000000000
+      internalID: 8964382648267365211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_1
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 939
+        width: 41
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e7490ac634986770800000000000000
+      internalID: 8604290051130083305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_2
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 940
+        width: 44
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9793d33cb9b1c620800000000000000
+      internalID: 2792717461920913310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_3
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 939
+        width: 42
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19164163d15275580800000000000000
+      internalID: -8838554936299724399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_4
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 939
+        width: 43
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdd92bce24f175f80800000000000000
+      internalID: -8117985431012598309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_5
+      rect:
+        serializedVersion: 2
+        x: 668
+        y: 938
+        width: 42
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a330d39ef784627b0800000000000000
+      internalID: -5249428601442598086
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_6
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 938
+        width: 41
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bacb21b9c5b697f0800000000000000
+      internalID: -606097221969261899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_7
+      rect:
+        serializedVersion: 2
+        x: 920
+        y: 938
+        width: 44
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b9752617e75c85f0800000000000000
+      internalID: -753130387657098826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_8
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 805
+        width: 45
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cde7401944ea5c30800000000000000
+      internalID: 4349039392636530113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_9
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 805
+        width: 45
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e9668a94fb832b10800000000000000
+      internalID: 1955560545889708512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_10
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 805
+        width: 45
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4db8930cdd2d13230800000000000000
+      internalID: 3616903825609821140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_11
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 805
+        width: 45
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78d05393af9004290800000000000000
+      internalID: -7908309975356338809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_12
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 804
+        width: 44
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 939aed7cbdc96fb30800000000000000
+      internalID: 4320813360273598777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_13
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 805
+        width: 43
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d77e7ceb11c308d0800000000000000
+      internalID: -2881247010910996528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_14
+      rect:
+        serializedVersion: 2
+        x: 798
+        y: 805
+        width: 42
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddbd1414977d20e00800000000000000
+      internalID: 1009606182270262237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_15
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 806
+        width: 42
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 282d1f1d9a9cd9c90800000000000000
+      internalID: -7161346101240278398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_16
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 674
+        width: 42
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d34068fe85be7680800000000000000
+      internalID: -8755360999904623664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_17
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 673
+        width: 44
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8443195fa02ecb80800000000000000
+      internalID: -8372718719749372790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_18
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 672
+        width: 45
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5998faf0da231720800000000000000
+      internalID: 2815641269088852319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_19
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 672
+        width: 46
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d19e09c28a678b50800000000000000
+      internalID: 6595357289258848723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_20
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 672
+        width: 48
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7ea5c97ffd0da900800000000000000
+      internalID: 697228908223114876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_21
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 674
+        width: 47
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e5fbeef061187d30800000000000000
+      internalID: 4429309341810292194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_22
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 675
+        width: 42
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c33d7785a8c24d00800000000000000
+      internalID: 955546684224254913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_23
+      rect:
+        serializedVersion: 2
+        x: 926
+        y: 673
+        width: 37
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f44f653d6b5af33b0800000000000000
+      internalID: -5530519612739357617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_24
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 541
+        width: 34
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4054f2cfc6d17c3d0800000000000000
+      internalID: -3186545857416706812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_25
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 540
+        width: 37
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 953301d12887ff900800000000000000
+      internalID: 720426965631251289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_26
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 540
+        width: 39
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e61d7874c2663510800000000000000
+      internalID: 1528517719513437921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_27
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 540
+        width: 40
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ed035fc08d0802b0800000000000000
+      internalID: -5618225688259392026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_28
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 540
+        width: 40
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b68e3bce46d3e39d0800000000000000
+      internalID: -2792727215245891477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_29
+      rect:
+        serializedVersion: 2
+        x: 669
+        y: 540
+        width: 41
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 710373dd928f4bae0800000000000000
+      internalID: -1534328714337767401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_30
+      rect:
+        serializedVersion: 2
+        x: 794
+        y: 540
+        width: 46
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c90ab201ababf610800000000000000
+      internalID: 1656105996012620229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_31
+      rect:
+        serializedVersion: 2
+        x: 918
+        y: 539
+        width: 50
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cff251634581a7dc0800000000000000
+      internalID: -3640570598811947012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_32
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 407
+        width: 53
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 847cc7af4df85b960800000000000000
+      internalID: 7617152489665382216
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_33
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 407
+        width: 55
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f0f65f1f830e9480800000000000000
+      internalID: -8890664701141782288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_34
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 408
+        width: 59
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81dcbc0eb9463bfe0800000000000000
+      internalID: -1174484457159406312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_35
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 410
+        width: 61
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5135dc275d9e9b730800000000000000
+      internalID: 4015497645740872469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_36
+      rect:
+        serializedVersion: 2
+        x: 533
+        y: 412
+        width: 62
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44271d75762249c00800000000000000
+      internalID: 906387252258632260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_37
+      rect:
+        serializedVersion: 2
+        x: 658
+        y: 413
+        width: 63
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17674e874b0bf7ff0800000000000000
+      internalID: -36115982826834319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_38
+      rect:
+        serializedVersion: 2
+        x: 783
+        y: 414
+        width: 60
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6055a201581e65cf0800000000000000
+      internalID: -263775566536485626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_39
+      rect:
+        serializedVersion: 2
+        x: 909
+        y: 411
+        width: 58
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fe7b39c5f60dc1a0800000000000000
+      internalID: -6787761410664595727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_40
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 277
+        width: 60
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f88eb424dc51acb0800000000000000
+      internalID: -4854496857109395215
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_41
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 276
+        width: 61
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 351ed22e0872ab820800000000000000
+      internalID: 2934701541689254227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_42
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 275
+        width: 67
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78ddecc1b690fe740800000000000000
+      internalID: 5183372051776200071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_43
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 275
+        width: 70
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ce292da5342ac750800000000000000
+      internalID: 6325908439552306882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_44
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 274
+        width: 70
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70c5321d6e02ac580800000000000000
+      internalID: -8806189945646261241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_45
+      rect:
+        serializedVersion: 2
+        x: 661
+        y: 273
+        width: 69
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8afd45212e2224110800000000000000
+      internalID: 1243594801473183656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_46
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 274
+        width: 70
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cc623d822d72de40800000000000000
+      internalID: 5679739667418868931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_47
+      rect:
+        serializedVersion: 2
+        x: 910
+        y: 273
+        width: 71
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de4e1f96801531d90800000000000000
+      internalID: -7128264688618314515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_48
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 141
+        width: 70
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af5d2abae4ad48250800000000000000
+      internalID: 5946117439457777146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_49
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 141
+        width: 73
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eca009b5c55301fe0800000000000000
+      internalID: -1220416828227974450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_50
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 141
+        width: 77
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cd1a4705a3b84460800000000000000
+      internalID: 7226223123489234373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_51
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 140
+        width: 80
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ad9dc868b3218410800000000000000
+      internalID: 1477501427693493666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_52
+      rect:
+        serializedVersion: 2
+        x: 523
+        y: 136
+        width: 80
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: facd4c719bce63d60800000000000000
+      internalID: 7869737678588402863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_53
+      rect:
+        serializedVersion: 2
+        x: 649
+        y: 139
+        width: 80
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee74da48d51c92b60800000000000000
+      internalID: 7721915643505493998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_54
+      rect:
+        serializedVersion: 2
+        x: 775
+        y: 140
+        width: 80
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e00415645921a5360800000000000000
+      internalID: 7159054989997981710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_55
+      rect:
+        serializedVersion: 2
+        x: 902
+        y: 141
+        width: 79
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a85dfbd0e60bfd880800000000000000
+      internalID: -8583948378021309046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_56
+      rect:
+        serializedVersion: 2
+        x: 21
+        y: 6
+        width: 79
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80704396337d21160800000000000000
+      internalID: 6994889787068122888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_57
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 2
+        width: 78
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5efc2b937f1897c50800000000000000
+      internalID: 6663500022496284645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_58
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 3
+        width: 78
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1660a374abc5710e0800000000000000
+      internalID: -2299267129620691359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_59
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 3
+        width: 79
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d3c979140383f740800000000000000
+      internalID: 5184631649664091090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_60
+      rect:
+        serializedVersion: 2
+        x: 525
+        y: 3
+        width: 79
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d691e6bd7046d67a0800000000000000
+      internalID: -6382335112005150355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_61
+      rect:
+        serializedVersion: 2
+        x: 651
+        y: 3
+        width: 79
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ad3b1d54284709b0800000000000000
+      internalID: -5114039530837819992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Die2_dir5_62
+      rect:
+        serializedVersion: 2
+        x: 777
+        y: 3
+        width: 79
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0537a16cc93e42d90800000000000000
+      internalID: -7123318448115256496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__Die2_dir5_0: 8964382648267365211
+      Boxer__Die2_dir5_1: 8604290051130083305
+      Boxer__Die2_dir5_10: 3616903825609821140
+      Boxer__Die2_dir5_11: -7908309975356338809
+      Boxer__Die2_dir5_12: 4320813360273598777
+      Boxer__Die2_dir5_13: -2881247010910996528
+      Boxer__Die2_dir5_14: 1009606182270262237
+      Boxer__Die2_dir5_15: -7161346101240278398
+      Boxer__Die2_dir5_16: -8755360999904623664
+      Boxer__Die2_dir5_17: -8372718719749372790
+      Boxer__Die2_dir5_18: 2815641269088852319
+      Boxer__Die2_dir5_19: 6595357289258848723
+      Boxer__Die2_dir5_2: 2792717461920913310
+      Boxer__Die2_dir5_20: 697228908223114876
+      Boxer__Die2_dir5_21: 4429309341810292194
+      Boxer__Die2_dir5_22: 955546684224254913
+      Boxer__Die2_dir5_23: -5530519612739357617
+      Boxer__Die2_dir5_24: -3186545857416706812
+      Boxer__Die2_dir5_25: 720426965631251289
+      Boxer__Die2_dir5_26: 1528517719513437921
+      Boxer__Die2_dir5_27: -5618225688259392026
+      Boxer__Die2_dir5_28: -2792727215245891477
+      Boxer__Die2_dir5_29: -1534328714337767401
+      Boxer__Die2_dir5_3: -8838554936299724399
+      Boxer__Die2_dir5_30: 1656105996012620229
+      Boxer__Die2_dir5_31: -3640570598811947012
+      Boxer__Die2_dir5_32: 7617152489665382216
+      Boxer__Die2_dir5_33: -8890664701141782288
+      Boxer__Die2_dir5_34: -1174484457159406312
+      Boxer__Die2_dir5_35: 4015497645740872469
+      Boxer__Die2_dir5_36: 906387252258632260
+      Boxer__Die2_dir5_37: -36115982826834319
+      Boxer__Die2_dir5_38: -263775566536485626
+      Boxer__Die2_dir5_39: -6787761410664595727
+      Boxer__Die2_dir5_4: -8117985431012598309
+      Boxer__Die2_dir5_40: -4854496857109395215
+      Boxer__Die2_dir5_41: 2934701541689254227
+      Boxer__Die2_dir5_42: 5183372051776200071
+      Boxer__Die2_dir5_43: 6325908439552306882
+      Boxer__Die2_dir5_44: -8806189945646261241
+      Boxer__Die2_dir5_45: 1243594801473183656
+      Boxer__Die2_dir5_46: 5679739667418868931
+      Boxer__Die2_dir5_47: -7128264688618314515
+      Boxer__Die2_dir5_48: 5946117439457777146
+      Boxer__Die2_dir5_49: -1220416828227974450
+      Boxer__Die2_dir5_5: -5249428601442598086
+      Boxer__Die2_dir5_50: 7226223123489234373
+      Boxer__Die2_dir5_51: 1477501427693493666
+      Boxer__Die2_dir5_52: 7869737678588402863
+      Boxer__Die2_dir5_53: 7721915643505493998
+      Boxer__Die2_dir5_54: 7159054989997981710
+      Boxer__Die2_dir5_55: -8583948378021309046
+      Boxer__Die2_dir5_56: 6994889787068122888
+      Boxer__Die2_dir5_57: 6663500022496284645
+      Boxer__Die2_dir5_58: -2299267129620691359
+      Boxer__Die2_dir5_59: 5184631649664091090
+      Boxer__Die2_dir5_6: -606097221969261899
+      Boxer__Die2_dir5_60: -6382335112005150355
+      Boxer__Die2_dir5_61: -5114039530837819992
+      Boxer__Die2_dir5_62: -7123318448115256496
+      Boxer__Die2_dir5_7: -753130387657098826
+      Boxer__Die2_dir5_8: 4349039392636530113
+      Boxer__Die2_dir5_9: 1955560545889708512
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

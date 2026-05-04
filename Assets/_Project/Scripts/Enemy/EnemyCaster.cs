@@ -64,7 +64,7 @@ public class EnemyCaster : EnemyBase, IParryReactive
         if (castCircleTelegraph == null)
             castCircleTelegraph = gameObject.AddComponent<EnemyCastCircleTelegraph>();
         castCircleTelegraph.Configure(new Color(0.95f, 0.2f, 1f, 0.9f), 0.42f, 0.05f, 1.4f, 42);
-        deathDelay = deathAnimDuration;
+        deathDelay = ResolveDeathAnimationDelay(deathAnimDuration);
     }
 
     private void Update()

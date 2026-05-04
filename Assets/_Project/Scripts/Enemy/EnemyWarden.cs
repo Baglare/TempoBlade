@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyWarden : EnemyBase, IParryReactive
@@ -124,7 +125,7 @@ public class EnemyWarden : EnemyBase, IParryReactive
     protected override void Start()
     {
         base.Start();
-        deathDelay = deathAnimDuration;
+        deathDelay = ResolveDeathAnimationDelay(deathAnimDuration);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -525,19 +526,19 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
         lastProtectTargetRefreshTime = Time.time;
 
-        EnemyBase[] allEnemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> allEnemies = EnemyBase.ActiveEnemies;
         EnemyBase bestPriorityTarget = null;
         float bestPriorityDistance = float.MaxValue;
         EnemyBase bestFallbackTarget = null;
         float bestFallbackDistance = float.MaxValue;
 
-        for (int i = 0; i < allEnemies.Length; i++)
+        TemporaryEnemySummon temporarySummon = GetComponent<TemporaryEnemySummon>();
+        for (int i = 0; i < allEnemies.Count; i++)
         {
             EnemyBase enemy = allEnemies[i];
             if (enemy == null || enemy == this || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
                 continue;
 
-            TemporaryEnemySummon temporarySummon = GetComponent<TemporaryEnemySummon>();
             if (temporarySummon != null && enemy == temporarySummon.Summoner)
                 continue;
 
@@ -564,7 +565,6 @@ public class EnemyWarden : EnemyBase, IParryReactive
         protectTarget = bestPriorityTarget != null ? bestPriorityTarget : bestFallbackTarget;
         if (protectTarget == null)
         {
-            TemporaryEnemySummon temporarySummon = GetComponent<TemporaryEnemySummon>();
             if (temporarySummon != null && temporarySummon.Summoner != null && temporarySummon.Summoner.CurrentHealth > 0f && temporarySummon.Summoner.gameObject.activeInHierarchy)
                 protectTarget = temporarySummon.Summoner;
         }
@@ -589,9 +589,9 @@ public class EnemyWarden : EnemyBase, IParryReactive
 
     private int CountOtherLivingEnemies()
     {
-        EnemyBase[] allEnemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> allEnemies = EnemyBase.ActiveEnemies;
         int count = 0;
-        for (int i = 0; i < allEnemies.Length; i++)
+        for (int i = 0; i < allEnemies.Count; i++)
         {
             EnemyBase enemy = allEnemies[i];
             if (enemy == null || enemy == this || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)

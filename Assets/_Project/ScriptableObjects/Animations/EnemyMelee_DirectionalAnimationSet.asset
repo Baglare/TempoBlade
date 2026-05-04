@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d901b2e3c84be5b4ef4b88a91d6342, type: 3}
   m_Name: EnemyMelee_DirectionalAnimationSet
   m_EditorClassIdentifier: Assembly-CSharp::DirectionalAnimationSetSO
-  characterId: Enemy_Melee
+  characterId: EnemyMelee
   displayName: Enemy Melee
-  supportsEightDirections: 0
-  defaultFacingMode: 0
+  supportsEightDirections: 1
+  defaultFacingMode: 1
   defaultFacing: 0
   downRightFallback: 2
   upRightFallback: 2
   upLeftFallback: 6
   downLeftFallback: 6
-  defaultClip: {fileID: 0}
+  defaultClip: {fileID: 7400000, guid: be84bbbbd5706244f92e26be2415dbb3, type: 2}
   stateFallbacks:
   - state: 3
     fallbackState: 1
@@ -44,7 +44,127 @@ MonoBehaviour:
   - state: 12
     fallbackState: 0
   directionFallbacks: []
-  useSpriteFlip: 1
-  leftRightClipsAreSeparate: 0
-  flipWhenFacingLeft: 1
-  clips: []
+  useSpriteFlip: 0
+  leftRightClipsAreSeparate: 1
+  flipWhenFacingLeft: 0
+  clips:
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: be84bbbbd5706244f92e26be2415dbb3, type: 2}
+  - state: 0
+    direction: 7
+    clip: {fileID: 7400000, guid: 26b97ed0ba09fe84691c2d9bc7e20476, type: 2}
+  - state: 0
+    direction: 1
+    clip: {fileID: 7400000, guid: 6106a0c8f3a19454cbb94ebdfafcb199, type: 2}
+  - state: 0
+    direction: 6
+    clip: {fileID: 7400000, guid: 0218e3304bb400a4e92a9fa2c0a07219, type: 2}
+  - state: 0
+    direction: 2
+    clip: {fileID: 7400000, guid: cbc77092a3e86b34dbd7de8c20475677, type: 2}
+  - state: 0
+    direction: 4
+    clip: {fileID: 7400000, guid: a03c602bedc1f7e4eb495086158ac9e3, type: 2}
+  - state: 0
+    direction: 5
+    clip: {fileID: 7400000, guid: 61b93d72f8a551f418a972bd56abf87f, type: 2}
+  - state: 0
+    direction: 3
+    clip: {fileID: 7400000, guid: 9aae283e2afa6464dbee5a69c1425c42, type: 2}
+  - state: 1
+    direction: 0
+    clip: {fileID: 7400000, guid: 900256decdfc9124c88adc072ecc9da9, type: 2}
+  - state: 1
+    direction: 7
+    clip: {fileID: 7400000, guid: 7903886343a0b1747962b2f20a8d595c, type: 2}
+  - state: 1
+    direction: 1
+    clip: {fileID: 7400000, guid: 8f8d548e2b6f9c842bc50fcd710c8103, type: 2}
+  - state: 1
+    direction: 6
+    clip: {fileID: 7400000, guid: 9de9dda5fc96bb247b967c377f1ada42, type: 2}
+  - state: 1
+    direction: 2
+    clip: {fileID: 7400000, guid: 1efc1fdb881f8bc4ea0b91a0448610d4, type: 2}
+  - state: 1
+    direction: 4
+    clip: {fileID: 7400000, guid: 7ccb4b64c2881864f94badd3f6bcafcd, type: 2}
+  - state: 1
+    direction: 5
+    clip: {fileID: 7400000, guid: 15114a072a85e74459b20bfb08afb71c, type: 2}
+  - state: 1
+    direction: 3
+    clip: {fileID: 7400000, guid: fbe1f8258047dab4dbe2976408d97b1c, type: 2}
+  - state: 2
+    direction: 0
+    clip: {fileID: 7400000, guid: 9d24df2ac782b24489ee8242b559e3a2, type: 2}
+  - state: 2
+    direction: 7
+    clip: {fileID: 7400000, guid: 5448f067f5858f24c8e6eeccfeb9db94, type: 2}
+  - state: 2
+    direction: 1
+    clip: {fileID: 7400000, guid: b478983f00e68bd4588c18f06092fc11, type: 2}
+  - state: 2
+    direction: 6
+    clip: {fileID: 7400000, guid: 5659dbc814d313347ae460a3194a5e58, type: 2}
+  - state: 2
+    direction: 2
+    clip: {fileID: 7400000, guid: d35ed2701056cab4ebf0c26c39f0a540, type: 2}
+  - state: 2
+    direction: 4
+    clip: {fileID: 7400000, guid: 0e3a38b8ee6de0e439533267562d547c, type: 2}
+  - state: 2
+    direction: 5
+    clip: {fileID: 7400000, guid: 747d80f2fa08e2e40a730cc09f3afd9e, type: 2}
+  - state: 2
+    direction: 3
+    clip: {fileID: 7400000, guid: 88ada170652268c409bc5cdd7507231d, type: 2}
+  - state: 5
+    direction: 0
+    clip: {fileID: 7400000, guid: a98162a25d1b8ac44b79b9fefd701253, type: 2}
+  - state: 5
+    direction: 7
+    clip: {fileID: 7400000, guid: dfe1b154df666dc4a8d10f05675b7aca, type: 2}
+  - state: 5
+    direction: 1
+    clip: {fileID: 7400000, guid: 4ea8e713384e0d24bbdcd7d99ced6095, type: 2}
+  - state: 5
+    direction: 6
+    clip: {fileID: 7400000, guid: 1b4c94b6184a74c4e8271a02bed73219, type: 2}
+  - state: 5
+    direction: 2
+    clip: {fileID: 7400000, guid: 86f3f33bc103bf742a39cf12d386db3b, type: 2}
+  - state: 5
+    direction: 4
+    clip: {fileID: 7400000, guid: 3edcf6f59e8349a4f88121df32ea0480, type: 2}
+  - state: 5
+    direction: 5
+    clip: {fileID: 7400000, guid: 1caef8814e0669f428e8ecc72e4fbf98, type: 2}
+  - state: 5
+    direction: 3
+    clip: {fileID: 7400000, guid: 1f68872072654114e826e70858363b96, type: 2}
+  - state: 6
+    direction: 3
+    clip: {fileID: 7400000, guid: 00b0532cc5927f54996fb177a1735afb, type: 2}
+  - state: 6
+    direction: 5
+    clip: {fileID: 7400000, guid: 61fadde6efbb88f469023219e433aa39, type: 2}
+  - state: 6
+    direction: 4
+    clip: {fileID: 7400000, guid: d136f0f190143b940b48a1810d5d7388, type: 2}
+  - state: 6
+    direction: 2
+    clip: {fileID: 7400000, guid: 63af915c8023aa74aa666c3b4f356f24, type: 2}
+  - state: 6
+    direction: 6
+    clip: {fileID: 7400000, guid: c707a99bedf3ef24a8e7cbb080d9b9f7, type: 2}
+  - state: 6
+    direction: 1
+    clip: {fileID: 7400000, guid: c9bb4f0bafb959e43ab0a135e7ad43cd, type: 2}
+  - state: 6
+    direction: 7
+    clip: {fileID: 7400000, guid: bd01e93209d382a468cb9b2d9e1f17ab, type: 2}
+  - state: 6
+    direction: 0
+    clip: {fileID: 7400000, guid: 40ad8300e7da98f48839478094d6ba12, type: 2}

@@ -67,6 +67,10 @@ public class AxisProgressionManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        if (transform.parent != null)
+            transform.SetParent(null);
+
         DontDestroyOnLoad(gameObject);
 
         if (progressionConfig == null)

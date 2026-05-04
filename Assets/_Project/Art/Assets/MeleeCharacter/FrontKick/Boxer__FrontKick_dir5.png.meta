@@ -1,0 +1,871 @@
+fileFormatVersion: 2
+guid: f1f01b2574b1515428d1906af301dc35
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8678156563955678962
+    second: Boxer__FrontKick_dir5_0
+  - first:
+      213: -6690003140684203221
+    second: Boxer__FrontKick_dir5_1
+  - first:
+      213: 8185860531392942905
+    second: Boxer__FrontKick_dir5_2
+  - first:
+      213: 6796233446357478076
+    second: Boxer__FrontKick_dir5_3
+  - first:
+      213: 6452685008184628974
+    second: Boxer__FrontKick_dir5_4
+  - first:
+      213: -8112459225295205849
+    second: Boxer__FrontKick_dir5_5
+  - first:
+      213: -2014456629269726005
+    second: Boxer__FrontKick_dir5_6
+  - first:
+      213: 6999101948482476618
+    second: Boxer__FrontKick_dir5_7
+  - first:
+      213: 6853059363294729099
+    second: Boxer__FrontKick_dir5_8
+  - first:
+      213: 175140744055546296
+    second: Boxer__FrontKick_dir5_9
+  - first:
+      213: -8656174130675176173
+    second: Boxer__FrontKick_dir5_10
+  - first:
+      213: 8627039919781009652
+    second: Boxer__FrontKick_dir5_11
+  - first:
+      213: -7767674818369351898
+    second: Boxer__FrontKick_dir5_12
+  - first:
+      213: 3114920426287383916
+    second: Boxer__FrontKick_dir5_13
+  - first:
+      213: 6104093760277639469
+    second: Boxer__FrontKick_dir5_14
+  - first:
+      213: -2898499647003262655
+    second: Boxer__FrontKick_dir5_15
+  - first:
+      213: 1022600669145470764
+    second: Boxer__FrontKick_dir5_16
+  - first:
+      213: 50973149075806667
+    second: Boxer__FrontKick_dir5_17
+  - first:
+      213: 6431247349847752342
+    second: Boxer__FrontKick_dir5_18
+  - first:
+      213: 3907551967211305334
+    second: Boxer__FrontKick_dir5_19
+  - first:
+      213: -5443449852119670432
+    second: Boxer__FrontKick_dir5_20
+  - first:
+      213: 4681083588561494159
+    second: Boxer__FrontKick_dir5_21
+  - first:
+      213: 2169708024470185277
+    second: Boxer__FrontKick_dir5_22
+  - first:
+      213: 1493964631523002523
+    second: Boxer__FrontKick_dir5_23
+  - first:
+      213: -9094663619548083359
+    second: Boxer__FrontKick_dir5_24
+  - first:
+      213: 5633977925379627206
+    second: Boxer__FrontKick_dir5_25
+  - first:
+      213: -1893185153515071185
+    second: Boxer__FrontKick_dir5_26
+  - first:
+      213: 6302960141267899089
+    second: Boxer__FrontKick_dir5_27
+  - first:
+      213: -8228751208590062239
+    second: Boxer__FrontKick_dir5_28
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_0
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 546
+        width: 44
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fe7dc38a610f6870800000000000000
+      internalID: 8678156563955678962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_1
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 546
+        width: 44
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2b3545b6955823a0800000000000000
+      internalID: -6690003140684203221
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_2
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 546
+        width: 43
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 933119268c40a9170800000000000000
+      internalID: 8185860531392942905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_3
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 546
+        width: 38
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cba24ccbf42115e50800000000000000
+      internalID: 6796233446357478076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_4
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 546
+        width: 39
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee65550c3da8c8950800000000000000
+      internalID: 6452685008184628974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_5
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 545
+        width: 42
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72a4075f051ca6f80800000000000000
+      internalID: -8112459225295205849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_6
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 413
+        width: 55
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcc72f46e563b04e0800000000000000
+      internalID: -2014456629269726005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_7
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 413
+        width: 70
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4ada0aa32ec12160800000000000000
+      internalID: 6999101948482476618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_8
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 415
+        width: 77
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b83d8dd8e25fa1f50800000000000000
+      internalID: 6853059363294729099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_9
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 425
+        width: 69
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b1e02b24993e6200800000000000000
+      internalID: 175140744055546296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_10
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 426
+        width: 60
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31d2e239d771fd780800000000000000
+      internalID: -8656174130675176173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_11
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 426
+        width: 55
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f859a9591769b770800000000000000
+      internalID: 8627039919781009652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_12
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 294
+        width: 52
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62f095858eca33490800000000000000
+      internalID: -7767674818369351898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_13
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 293
+        width: 54
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c65c778cf9b6a3b20800000000000000
+      internalID: 3114920426287383916
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_14
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 293
+        width: 57
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d21f6012fe816b450800000000000000
+      internalID: 6104093760277639469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_15
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 293
+        width: 57
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14186ce8de576c7d0800000000000000
+      internalID: -2898499647003262655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_16
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 293
+        width: 53
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c271e7ff3e1013e00800000000000000
+      internalID: 1022600669145470764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_17
+      rect:
+        serializedVersion: 2
+        x: 671
+        y: 293
+        width: 54
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc91fbb1fc715b000800000000000000
+      internalID: 50973149075806667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_18
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 157
+        width: 54
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69ef856f361604950800000000000000
+      internalID: 6431247349847752342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_19
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 154
+        width: 55
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6793203afc96a3630800000000000000
+      internalID: 3907551967211305334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_20
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 152
+        width: 54
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06121cb333bf474b0800000000000000
+      internalID: -5443449852119670432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_21
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 150
+        width: 51
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f806e1ce8bc86f040800000000000000
+      internalID: 4681083588561494159
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_22
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 150
+        width: 47
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d352cd0e3f95c1e10800000000000000
+      internalID: 2169708024470185277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_23
+      rect:
+        serializedVersion: 2
+        x: 676
+        y: 149
+        width: 42
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b980de0cae0abb410800000000000000
+      internalID: 1493964631523002523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_24
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 18
+        width: 45
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16b0b25af9349c180800000000000000
+      internalID: -9094663619548083359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_25
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 18
+        width: 47
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c815a2b219ef2e40800000000000000
+      internalID: 5633977925379627206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_26
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 18
+        width: 47
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f29d0b6222e0ab5e0800000000000000
+      internalID: -1893185153515071185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_27
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 18
+        width: 47
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d218bd9adc987750800000000000000
+      internalID: 6302960141267899089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FrontKick_dir5_28
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 18
+        width: 46
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16d4ce2af5a9dcd80800000000000000
+      internalID: -8228751208590062239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__FrontKick_dir5_0: 8678156563955678962
+      Boxer__FrontKick_dir5_1: -6690003140684203221
+      Boxer__FrontKick_dir5_10: -8656174130675176173
+      Boxer__FrontKick_dir5_11: 8627039919781009652
+      Boxer__FrontKick_dir5_12: -7767674818369351898
+      Boxer__FrontKick_dir5_13: 3114920426287383916
+      Boxer__FrontKick_dir5_14: 6104093760277639469
+      Boxer__FrontKick_dir5_15: -2898499647003262655
+      Boxer__FrontKick_dir5_16: 1022600669145470764
+      Boxer__FrontKick_dir5_17: 50973149075806667
+      Boxer__FrontKick_dir5_18: 6431247349847752342
+      Boxer__FrontKick_dir5_19: 3907551967211305334
+      Boxer__FrontKick_dir5_2: 8185860531392942905
+      Boxer__FrontKick_dir5_20: -5443449852119670432
+      Boxer__FrontKick_dir5_21: 4681083588561494159
+      Boxer__FrontKick_dir5_22: 2169708024470185277
+      Boxer__FrontKick_dir5_23: 1493964631523002523
+      Boxer__FrontKick_dir5_24: -9094663619548083359
+      Boxer__FrontKick_dir5_25: 5633977925379627206
+      Boxer__FrontKick_dir5_26: -1893185153515071185
+      Boxer__FrontKick_dir5_27: 6302960141267899089
+      Boxer__FrontKick_dir5_28: -8228751208590062239
+      Boxer__FrontKick_dir5_3: 6796233446357478076
+      Boxer__FrontKick_dir5_4: 6452685008184628974
+      Boxer__FrontKick_dir5_5: -8112459225295205849
+      Boxer__FrontKick_dir5_6: -2014456629269726005
+      Boxer__FrontKick_dir5_7: 6999101948482476618
+      Boxer__FrontKick_dir5_8: 6853059363294729099
+      Boxer__FrontKick_dir5_9: 175140744055546296
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

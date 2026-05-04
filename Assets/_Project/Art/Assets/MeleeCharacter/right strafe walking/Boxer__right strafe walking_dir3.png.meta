@@ -1,0 +1,585 @@
+fileFormatVersion: 2
+guid: 7553028538b264443803e39dd244f7fe
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6394896471575784025
+    second: Boxer__right strafe walking_dir3_0
+  - first:
+      213: -6826764176050446241
+    second: Boxer__right strafe walking_dir3_1
+  - first:
+      213: -6254112705190342814
+    second: Boxer__right strafe walking_dir3_2
+  - first:
+      213: 5109753999952586572
+    second: Boxer__right strafe walking_dir3_3
+  - first:
+      213: -6738442350254799264
+    second: Boxer__right strafe walking_dir3_4
+  - first:
+      213: -8579569653811490077
+    second: Boxer__right strafe walking_dir3_5
+  - first:
+      213: 5826453874132253179
+    second: Boxer__right strafe walking_dir3_6
+  - first:
+      213: -1199467282277583569
+    second: Boxer__right strafe walking_dir3_7
+  - first:
+      213: 6437994935259062382
+    second: Boxer__right strafe walking_dir3_8
+  - first:
+      213: -4579608829120027963
+    second: Boxer__right strafe walking_dir3_9
+  - first:
+      213: -6017639019453311282
+    second: Boxer__right strafe walking_dir3_10
+  - first:
+      213: -2086188969170520190
+    second: Boxer__right strafe walking_dir3_11
+  - first:
+      213: 3178637910414964283
+    second: Boxer__right strafe walking_dir3_12
+  - first:
+      213: -6582320257033738251
+    second: Boxer__right strafe walking_dir3_13
+  - first:
+      213: 860165523478598690
+    second: Boxer__right strafe walking_dir3_14
+  - first:
+      213: 6362827008020133112
+    second: Boxer__right strafe walking_dir3_15
+  - first:
+      213: 5848321562099421399
+    second: Boxer__right strafe walking_dir3_16
+  - first:
+      213: -8672865502559793195
+    second: Boxer__right strafe walking_dir3_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_0
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 418
+        width: 41
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a5935c6a83c047a0800000000000000
+      internalID: -6394896471575784025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_1
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 416
+        width: 43
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f50a621d6267241a0800000000000000
+      internalID: -6826764176050446241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_2
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 415
+        width: 43
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26f4fdd51ade439a0800000000000000
+      internalID: -6254112705190342814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_3
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 413
+        width: 43
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c472ec8b03e79e640800000000000000
+      internalID: 5109753999952586572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_4
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 413
+        width: 42
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0664d9d526e3c72a0800000000000000
+      internalID: -6738442350254799264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_5
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 282
+        width: 41
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e258da3bde3fe880800000000000000
+      internalID: -8579569653811490077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_6
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 283
+        width: 40
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf9f9dbbde8bbd050800000000000000
+      internalID: 5826453874132253179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_7
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 285
+        width: 40
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f253420acd2aa5fe0800000000000000
+      internalID: -1199467282277583569
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_8
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 287
+        width: 41
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6061ed984a585950800000000000000
+      internalID: 6437994935259062382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_9
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 289
+        width: 43
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c2ee02a806f170c0800000000000000
+      internalID: -4579608829120027963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_10
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 157
+        width: 44
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec694f2d13d0d7ca0800000000000000
+      internalID: -6017639019453311282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_11
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 156
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 287b0468f2e5c03e0800000000000000
+      internalID: -2086188969170520190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_12
+      rect:
+        serializedVersion: 2
+        x: 295
+        y: 154
+        width: 49
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b36bfdf965acc1c20800000000000000
+      internalID: 3178637910414964283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_13
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 154
+        width: 52
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f765a1d996e6a4a0800000000000000
+      internalID: -6582320257033738251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_14
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 154
+        width: 51
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 224dafa7cfbefeb00800000000000000
+      internalID: 860165523478598690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_15
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 24
+        width: 49
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f43d4cb37d4d4850800000000000000
+      internalID: 6362827008020133112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_16
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 24
+        width: 45
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d091399979692150800000000000000
+      internalID: 5848321562099421399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__right strafe walking_dir3_17
+      rect:
+        serializedVersion: 2
+        x: 294
+        y: 25
+        width: 43
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5df0f27b6cac3a780800000000000000
+      internalID: -8672865502559793195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__right strafe walking_dir3_0: -6394896471575784025
+      Boxer__right strafe walking_dir3_1: -6826764176050446241
+      Boxer__right strafe walking_dir3_10: -6017639019453311282
+      Boxer__right strafe walking_dir3_11: -2086188969170520190
+      Boxer__right strafe walking_dir3_12: 3178637910414964283
+      Boxer__right strafe walking_dir3_13: -6582320257033738251
+      Boxer__right strafe walking_dir3_14: 860165523478598690
+      Boxer__right strafe walking_dir3_15: 6362827008020133112
+      Boxer__right strafe walking_dir3_16: 5848321562099421399
+      Boxer__right strafe walking_dir3_17: -8672865502559793195
+      Boxer__right strafe walking_dir3_2: -6254112705190342814
+      Boxer__right strafe walking_dir3_3: 5109753999952586572
+      Boxer__right strafe walking_dir3_4: -6738442350254799264
+      Boxer__right strafe walking_dir3_5: -8579569653811490077
+      Boxer__right strafe walking_dir3_6: 5826453874132253179
+      Boxer__right strafe walking_dir3_7: -1199467282277583569
+      Boxer__right strafe walking_dir3_8: 6437994935259062382
+      Boxer__right strafe walking_dir3_9: -4579608829120027963
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

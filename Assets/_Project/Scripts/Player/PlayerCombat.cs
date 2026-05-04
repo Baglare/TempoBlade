@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour, IDamageable
 {
+    private const int InitialAttackHitBufferSize = 64;
+
     [Header("Stats")]
     public float maxHealth = 100f;
     public float currentHealth;
@@ -58,7 +60,9 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     private PlayerWeaponRuntime weaponRuntime;
     private PlayerFinisherController finisherController;
     private PlayerController playerController;
+    private ParrySystem parrySystem;
     private IsoFacingController facingController;
+    private Collider2D[] attackHitBuffer = new Collider2D[InitialAttackHitBufferSize];
 
     private Vector2 currentAimDir = Vector2.right;
     private int comboIndex;
@@ -114,6 +118,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         weaponRuntime = new PlayerWeaponRuntime(this);
         finisherController = new PlayerFinisherController(this, weaponRuntime);
         playerController = GetComponent<PlayerController>();
+        parrySystem = GetComponent<ParrySystem>();
         facingController = GetComponent<IsoFacingController>();
     }
 
@@ -176,7 +181,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         if (isSwinging && Time.time >= swingEndTime)
             isSwinging = false;
 
-        ParrySystem parrySystem = GetComponent<ParrySystem>();
+        parrySystem ??= GetComponent<ParrySystem>();
         bool isParrying = parrySystem != null && parrySystem.IsParryActive;
         if (isParrying)
             aimDir = parrySystem.CurrentParryDirection;
@@ -234,7 +239,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             usedDashRecoveryBypass = true;
         }
 
-        ParrySystem parrySystem = GetComponent<ParrySystem>();
+        parrySystem ??= GetComponent<ParrySystem>();
         if (parrySystem != null && parrySystem.IsParryActive)
             return;
 
@@ -338,7 +343,7 @@ public class PlayerCombat : MonoBehaviour, IDamageable
         isSwinging = true;
         swingEndTime = Time.time + 0.15f;
 
-        ParrySystem parrySystem = GetComponent<ParrySystem>();
+        parrySystem ??= GetComponent<ParrySystem>();
         float counterBonus = parrySystem != null ? parrySystem.GetCounterMultiplier() : 0f;
         float dashCounterBonus = _dashPerks != null ? _dashPerks.GetCounterMultiplier() : 0f;
 
@@ -361,13 +366,17 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             * (1f + huntBonus)
             * (1f + overdriveGlobalBonus + cadenceGlobalBonus);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, stats.range + rangeBonus, enemyLayers);
+        int hitCount = QueryAttackHits(attackPoint.position, stats.range + rangeBonus);
         bool hitAny = false;
         bool flowMarkAppliedThisAttack = false;
         bool perkTempoBonusApplied = false;
 
-        foreach (Collider2D hit in hits)
+        for (int i = 0; i < hitCount; i++)
         {
+            Collider2D hit = attackHitBuffer[i];
+            if (hit == null)
+                continue;
+
             IDamageable damageable = hit.GetComponent<IDamageable>();
             if (damageable != null)
             {
@@ -577,6 +586,18 @@ public class PlayerCombat : MonoBehaviour, IDamageable
             isCritical = attackMultiplier >= stats.heavyHitThreshold,
             isPerfectTiming = isParryCounter
         };
+    }
+
+    private int QueryAttackHits(Vector2 center, float radius)
+    {
+        int hitCount = Physics2D.OverlapCircleNonAlloc(center, radius, attackHitBuffer, enemyLayers);
+        while (hitCount >= attackHitBuffer.Length)
+        {
+            System.Array.Resize(ref attackHitBuffer, attackHitBuffer.Length * 2);
+            hitCount = Physics2D.OverlapCircleNonAlloc(center, radius, attackHitBuffer, enemyLayers);
+        }
+
+        return hitCount;
     }
 
     private void Attack()

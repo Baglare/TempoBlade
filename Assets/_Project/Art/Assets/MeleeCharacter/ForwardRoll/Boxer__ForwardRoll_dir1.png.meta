@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: bb72680be3f4d3e48980cfa39d0dff83
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2024525067401700602
+    second: Boxer__ForwardRoll_dir1_0
+  - first:
+      213: -7995633380177423225
+    second: Boxer__ForwardRoll_dir1_1
+  - first:
+      213: -7317297997664405848
+    second: Boxer__ForwardRoll_dir1_2
+  - first:
+      213: 7278698595726419416
+    second: Boxer__ForwardRoll_dir1_3
+  - first:
+      213: -2057473603454975985
+    second: Boxer__ForwardRoll_dir1_4
+  - first:
+      213: 2229614793935019342
+    second: Boxer__ForwardRoll_dir1_5
+  - first:
+      213: -1059461618117044788
+    second: Boxer__ForwardRoll_dir1_6
+  - first:
+      213: -6601798381937696630
+    second: Boxer__ForwardRoll_dir1_7
+  - first:
+      213: -2435870074676817736
+    second: Boxer__ForwardRoll_dir1_8
+  - first:
+      213: 382162271046806426
+    second: Boxer__ForwardRoll_dir1_9
+  - first:
+      213: 5212274754179374092
+    second: Boxer__ForwardRoll_dir1_10
+  - first:
+      213: -2468304794663366778
+    second: Boxer__ForwardRoll_dir1_11
+  - first:
+      213: 6632395337763254955
+    second: Boxer__ForwardRoll_dir1_12
+  - first:
+      213: 735234143522296320
+    second: Boxer__ForwardRoll_dir1_13
+  - first:
+      213: 2461311365825953811
+    second: Boxer__ForwardRoll_dir1_14
+  - first:
+      213: -6931267270977492459
+    second: Boxer__ForwardRoll_dir1_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_0
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 426
+        width: 43
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60bd5a67d2177e3e0800000000000000
+      internalID: -2024525067401700602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_1
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 418
+        width: 49
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 784d44cadcdc90190800000000000000
+      internalID: -7995633380177423225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_2
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 423
+        width: 59
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a639856d3cb37a90800000000000000
+      internalID: -7317297997664405848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_3
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 407
+        width: 69
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d568610fc1230560800000000000000
+      internalID: 7278698595726419416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_4
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 266
+        width: 70
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f00c25b98a26273e0800000000000000
+      internalID: -2057473603454975985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_5
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 270
+        width: 66
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4dd37297de21fe10800000000000000
+      internalID: 2229614793935019342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_6
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 268
+        width: 58
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc519f685490c41f0800000000000000
+      internalID: -1059461618117044788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_7
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 278
+        width: 53
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a80ead57953b164a0800000000000000
+      internalID: -6601798381937696630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_8
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 140
+        width: 48
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b052e7a21d023ed0800000000000000
+      internalID: -2435870074676817736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_9
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 150
+        width: 48
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9b2d4c8f86bd4500800000000000000
+      internalID: 382162271046806426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_10
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 154
+        width: 63
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0c199ae548b55840800000000000000
+      internalID: 5212274754179374092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_11
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 150
+        width: 69
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68f42bcedd1debdd0800000000000000
+      internalID: -2468304794663366778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_12
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 11
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba2f5557b600b0c50800000000000000
+      internalID: 6632395337763254955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_13
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 14
+        width: 61
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 002926fde83143a00800000000000000
+      internalID: 735234143522296320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_14
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 18
+        width: 57
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31000b985a5582220800000000000000
+      internalID: 2461311365825953811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ForwardRoll_dir1_15
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 22
+        width: 53
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51a6816f3213fcf90800000000000000
+      internalID: -6931267270977492459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__ForwardRoll_dir1_0: -2024525067401700602
+      Boxer__ForwardRoll_dir1_1: -7995633380177423225
+      Boxer__ForwardRoll_dir1_10: 5212274754179374092
+      Boxer__ForwardRoll_dir1_11: -2468304794663366778
+      Boxer__ForwardRoll_dir1_12: 6632395337763254955
+      Boxer__ForwardRoll_dir1_13: 735234143522296320
+      Boxer__ForwardRoll_dir1_14: 2461311365825953811
+      Boxer__ForwardRoll_dir1_15: -6931267270977492459
+      Boxer__ForwardRoll_dir1_2: -7317297997664405848
+      Boxer__ForwardRoll_dir1_3: 7278698595726419416
+      Boxer__ForwardRoll_dir1_4: -2057473603454975985
+      Boxer__ForwardRoll_dir1_5: 2229614793935019342
+      Boxer__ForwardRoll_dir1_6: -1059461618117044788
+      Boxer__ForwardRoll_dir1_7: -6601798381937696630
+      Boxer__ForwardRoll_dir1_8: -2435870074676817736
+      Boxer__ForwardRoll_dir1_9: 382162271046806426
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

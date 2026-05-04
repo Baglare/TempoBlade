@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: a99b1e256b108ed4cacf01c80766d485
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2275937608274484532
+    second: Boxer__LeftJab_dir6_0
+  - first:
+      213: -6046153346369455943
+    second: Boxer__LeftJab_dir6_1
+  - first:
+      213: 6220674572662738143
+    second: Boxer__LeftJab_dir6_2
+  - first:
+      213: 8235145783751413994
+    second: Boxer__LeftJab_dir6_3
+  - first:
+      213: 923294179037252488
+    second: Boxer__LeftJab_dir6_4
+  - first:
+      213: -1546295364037942659
+    second: Boxer__LeftJab_dir6_5
+  - first:
+      213: 6560281227986147399
+    second: Boxer__LeftJab_dir6_6
+  - first:
+      213: -8895280282064866950
+    second: Boxer__LeftJab_dir6_7
+  - first:
+      213: -2690529729072164228
+    second: Boxer__LeftJab_dir6_8
+  - first:
+      213: 3978290163869602181
+    second: Boxer__LeftJab_dir6_9
+  - first:
+      213: -7980688549067918269
+    second: Boxer__LeftJab_dir6_10
+  - first:
+      213: -7037759106188370127
+    second: Boxer__LeftJab_dir6_11
+  - first:
+      213: -4601243955465335108
+    second: Boxer__LeftJab_dir6_12
+  - first:
+      213: -412673053085301334
+    second: Boxer__LeftJab_dir6_13
+  - first:
+      213: 3312232263658376524
+    second: Boxer__LeftJab_dir6_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_0
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 412
+        width: 42
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43d17204231c59f10800000000000000
+      internalID: 2275937608274484532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_1
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 412
+        width: 43
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b8fb1cb09fb71ca0800000000000000
+      internalID: -6046153346369455943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_2
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 412
+        width: 42
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdc0ed6b096445650800000000000000
+      internalID: 6220674572662738143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_3
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 412
+        width: 43
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae01f0a657d194270800000000000000
+      internalID: 8235145783751413994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_4
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 280
+        width: 43
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88b83bcf92330dc00800000000000000
+      internalID: 923294179037252488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_5
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 280
+        width: 44
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d726fac1f847a8ae0800000000000000
+      internalID: -1546295364037942659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_6
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 279
+        width: 45
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74817ccd40dca0b50800000000000000
+      internalID: 6560281227986147399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_7
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 279
+        width: 58
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a71bcf176bd9d8480800000000000000
+      internalID: -8895280282064866950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_8
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 147
+        width: 65
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c729609677159aad0800000000000000
+      internalID: -2690529729072164228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_9
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 148
+        width: 63
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 581d0ee73d9b53730800000000000000
+      internalID: 3978290163869602181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_10
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 148
+        width: 54
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34477c15c06ee3190800000000000000
+      internalID: -7980688549067918269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_11
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 148
+        width: 47
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13f1fdc616bd45e90800000000000000
+      internalID: -7037759106188370127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_12
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 16
+        width: 44
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbe439d30091520c0800000000000000
+      internalID: -4601243955465335108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_13
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 16
+        width: 42
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa5897e6b04e54af0800000000000000
+      internalID: -412673053085301334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__LeftJab_dir6_14
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 16
+        width: 43
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4d02f0e1b967fd20800000000000000
+      internalID: 3312232263658376524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__LeftJab_dir6_0: 2275937608274484532
+      Boxer__LeftJab_dir6_1: -6046153346369455943
+      Boxer__LeftJab_dir6_10: -7980688549067918269
+      Boxer__LeftJab_dir6_11: -7037759106188370127
+      Boxer__LeftJab_dir6_12: -4601243955465335108
+      Boxer__LeftJab_dir6_13: -412673053085301334
+      Boxer__LeftJab_dir6_14: 3312232263658376524
+      Boxer__LeftJab_dir6_2: 6220674572662738143
+      Boxer__LeftJab_dir6_3: 8235145783751413994
+      Boxer__LeftJab_dir6_4: 923294179037252488
+      Boxer__LeftJab_dir6_5: -1546295364037942659
+      Boxer__LeftJab_dir6_6: 6560281227986147399
+      Boxer__LeftJab_dir6_7: -8895280282064866950
+      Boxer__LeftJab_dir6_8: -2690529729072164228
+      Boxer__LeftJab_dir6_9: 3978290163869602181
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

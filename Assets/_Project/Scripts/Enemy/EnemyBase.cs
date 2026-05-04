@@ -1,9 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour, IDamageable
 {
     public static event Action<EnemyCombatActionEvent> OnEnemyCombatAction;
+    private static readonly List<EnemyBase> activeEnemies = new List<EnemyBase>();
 
     [Header("Base Settings")]
     public EnemySO enemyData;
@@ -48,6 +50,7 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public EnemyDefenseController Defense => EnsureDefenseController();
     public EnemyCombatClass CombatClass => ResolveCombatClass();
     public virtual bool IsDefenseGuardActive => false;
+    public static IReadOnlyList<EnemyBase> ActiveEnemies => activeEnemies;
 
     public event Action<float> OnDamageTaken;
     public event Action<float> OnStunned;
@@ -62,12 +65,14 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
 
     protected virtual void OnEnable()
     {
+        RegisterActiveEnemy(this);
         SubscribeTempo();
     }
 
     protected virtual void OnDisable()
     {
         UnsubscribeTempo();
+        UnregisterActiveEnemy(this);
     }
 
     protected virtual void Start()
@@ -570,6 +575,76 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
             time = Time.time,
             worldPosition = transform.position
         });
+    }
+
+    private static void RegisterActiveEnemy(EnemyBase enemy)
+    {
+        if (enemy == null || activeEnemies.Contains(enemy))
+            return;
+
+        activeEnemies.Add(enemy);
+    }
+
+    private static void UnregisterActiveEnemy(EnemyBase enemy)
+    {
+        if (enemy == null)
+            return;
+
+        activeEnemies.Remove(enemy);
+    }
+
+    protected float ResolveDirectionalClipLength(DirectionalAnimationState state, float fallback)
+    {
+        CharacterDirectionalAnimator directionalAnimator = GetComponent<CharacterDirectionalAnimator>();
+        if (directionalAnimator == null || directionalAnimator.animationSet == null)
+            return fallback;
+
+        DirectionalClipResolution resolution = directionalAnimator.animationSet.ResolveClip(state, directionalAnimator.CurrentDirection);
+        if (resolution.clip == null || resolution.clip.length <= 0.01f)
+            return fallback;
+
+        return resolution.clip.length;
+    }
+
+    protected float ResolveAnimatorClipLength(string[] clipNameTokens, float fallback)
+    {
+        Animator targetAnimator = GetComponentInChildren<Animator>(true);
+        RuntimeAnimatorController controller = targetAnimator != null ? targetAnimator.runtimeAnimatorController : null;
+        if (controller == null || clipNameTokens == null || clipNameTokens.Length == 0)
+            return fallback;
+
+        float bestLength = 0f;
+        AnimationClip[] clips = controller.animationClips;
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AnimationClip clip = clips[i];
+            if (clip == null || string.IsNullOrEmpty(clip.name))
+                continue;
+
+            for (int j = 0; j < clipNameTokens.Length; j++)
+            {
+                string token = clipNameTokens[j];
+                if (string.IsNullOrEmpty(token))
+                    continue;
+
+                if (clip.name.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    bestLength = Mathf.Max(bestLength, clip.length);
+                    break;
+                }
+            }
+        }
+
+        return bestLength > 0.01f ? bestLength : fallback;
+    }
+
+    protected float ResolveDeathAnimationDelay(float fallback)
+    {
+        float directionalDelay = ResolveDirectionalClipLength(DirectionalAnimationState.Death, -1f);
+        if (directionalDelay > 0.01f)
+            return directionalDelay;
+
+        return ResolveAnimatorClipLength(new[] { "Death", "Die" }, fallback);
     }
 
     protected void UpdateSpriteFacing(SpriteRenderer targetRenderer, float targetX)

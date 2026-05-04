@@ -488,6 +488,13 @@ MonoBehaviour:
   arcColorIdle: {r: 1, g: 0.5, b: 0, a: 0.35}
   showPreviewWhenInactive: 1
   previewOpacity: 0.18
+  previewEnabled: 0
+  previewAlpha: 0.18
+  activeAlpha: 0.9
+  activeDurationOverride: -1
+  arcColor: {r: 1, g: 0.2, b: 0, a: 1}
+  parryArcColor: {r: 0, g: 0.8, b: 1, a: 1}
+  fadeSpeed: 20
   arcColorActive: {r: 1, g: 0.2, b: 0, a: 0.9}
   arcColorParry: {r: 0, g: 0.8, b: 1, a: 0.6}
   arcColorPerfectParry: {r: 1, g: 0.9, b: 0.25, a: 0.95}
@@ -1640,8 +1647,10 @@ MonoBehaviour:
   movementFacingDirection: {x: 1, y: 0}
   aimDirection: {x: 1, y: 0}
   actionFacingDirection: {x: 1, y: 0}
+  storedIdleFacingDirection: {x: 1, y: 0}
   currentVisualFacingDirection: {x: 1, y: 0}
   actionFacingOverrideActive: 0
+  hasStoredActionFacing: 0
   chosenFacingSource: 0
   rawMoveInput: {x: 0, y: 0}
   hasMoveInput: 0

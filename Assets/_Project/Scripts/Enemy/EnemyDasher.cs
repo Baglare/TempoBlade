@@ -54,7 +54,7 @@ public class EnemyDasher : EnemyBase
     protected override void Start()
     {
         base.Start();
-        deathDelay = deathAnimDuration;
+        deathDelay = ResolveDeathAnimationDelay(deathAnimDuration);
 
         rb = GetComponent<Rigidbody2D>();
 

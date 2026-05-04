@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 49bae4d99cbcb7e44a4c5fef8cf462c9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8247706664922491395
+    second: Boxer__WalkBack_dir5_0
+  - first:
+      213: 8780816038328187599
+    second: Boxer__WalkBack_dir5_1
+  - first:
+      213: 5359736858431157779
+    second: Boxer__WalkBack_dir5_2
+  - first:
+      213: -216904961337089808
+    second: Boxer__WalkBack_dir5_3
+  - first:
+      213: -6605631480655110644
+    second: Boxer__WalkBack_dir5_4
+  - first:
+      213: 547515343615529370
+    second: Boxer__WalkBack_dir5_5
+  - first:
+      213: 2068656758340943035
+    second: Boxer__WalkBack_dir5_6
+  - first:
+      213: 3844842674000974448
+    second: Boxer__WalkBack_dir5_7
+  - first:
+      213: 7898358598428064386
+    second: Boxer__WalkBack_dir5_8
+  - first:
+      213: 2577672442597589368
+    second: Boxer__WalkBack_dir5_9
+  - first:
+      213: -6118042018563524460
+    second: Boxer__WalkBack_dir5_10
+  - first:
+      213: -1266202474266100702
+    second: Boxer__WalkBack_dir5_11
+  - first:
+      213: -1518278375169226632
+    second: Boxer__WalkBack_dir5_12
+  - first:
+      213: -4450063608840846400
+    second: Boxer__WalkBack_dir5_13
+  - first:
+      213: 1253736656385845985
+    second: Boxer__WalkBack_dir5_14
+  - first:
+      213: 5726397961250554550
+    second: Boxer__WalkBack_dir5_15
+  - first:
+      213: -5553573952892883553
+    second: Boxer__WalkBack_dir5_16
+  - first:
+      213: -3799008060420236138
+    second: Boxer__WalkBack_dir5_17
+  - first:
+      213: -2608096671833963188
+    second: Boxer__WalkBack_dir5_18
+  - first:
+      213: -7234507325967652890
+    second: Boxer__WalkBack_dir5_19
+  - first:
+      213: 7241613546723994066
+    second: Boxer__WalkBack_dir5_20
+  - first:
+      213: -2531581403165283581
+    second: Boxer__WalkBack_dir5_21
+  - first:
+      213: 4463814744315158437
+    second: Boxer__WalkBack_dir5_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_0
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 549
+        width: 32
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30aa356738db57270800000000000000
+      internalID: 8247706664922491395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_1
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 550
+        width: 31
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcaba920aa9bbd970800000000000000
+      internalID: 8780816038328187599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_2
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 550
+        width: 35
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3167b50964c916a40800000000000000
+      internalID: 5359736858431157779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_3
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 551
+        width: 41
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f0ab7d36166dfcf0800000000000000
+      internalID: -216904961337089808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_4
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 551
+        width: 45
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0e1a6e9a251454a0800000000000000
+      internalID: -6605631480655110644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_5
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 420
+        width: 47
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a91974ddd4a299700800000000000000
+      internalID: 547515343615529370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_6
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 421
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbc7f1b8c5855bc10800000000000000
+      internalID: 2068656758340943035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_7
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 420
+        width: 48
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07257198a00ab5530800000000000000
+      internalID: 3844842674000974448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_8
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 421
+        width: 47
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28af4f74c4b9c9d60800000000000000
+      internalID: 7898358598428064386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_9
+      rect:
+        serializedVersion: 2
+        x: 552
+        y: 422
+        width: 44
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 871c750fd6bb5c320800000000000000
+      internalID: 2577672442597589368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_10
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 289
+        width: 41
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4987b9ae239581ba0800000000000000
+      internalID: -6118042018563524460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_11
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 288
+        width: 37
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22cf5abee8b8d6ee0800000000000000
+      internalID: -1266202474266100702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_12
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 286
+        width: 41
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87881e9acddfdeae0800000000000000
+      internalID: -1518278375169226632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_13
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 285
+        width: 47
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c30627a9b23e32c0800000000000000
+      internalID: -4450063608840846400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_14
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 285
+        width: 52
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1eaa3cda8da266110800000000000000
+      internalID: 1253736656385845985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_15
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 152
+        width: 55
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b24cd22b90487f40800000000000000
+      internalID: 5726397961250554550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_16
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 152
+        width: 57
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9d25f7f9edbde2b0800000000000000
+      internalID: -5553573952892883553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_17
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 151
+        width: 57
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69c5ecb0c46374bc0800000000000000
+      internalID: -3799008060420236138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_18
+      rect:
+        serializedVersion: 2
+        x: 414
+        y: 151
+        width: 56
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c45457f25ed2ecbd0800000000000000
+      internalID: -2608096671833963188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_19
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 151
+        width: 52
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e7acb6caedd99b90800000000000000
+      internalID: -7234507325967652890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_20
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 19
+        width: 48
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d9e32d27216f7460800000000000000
+      internalID: 7241613546723994066
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_21
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 20
+        width: 42
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30b295070240edcd0800000000000000
+      internalID: -2531581403165283581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__WalkBack_dir5_22
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 21
+        width: 37
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5af5e021cd7a2fd30800000000000000
+      internalID: 4463814744315158437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__WalkBack_dir5_0: 8247706664922491395
+      Boxer__WalkBack_dir5_1: 8780816038328187599
+      Boxer__WalkBack_dir5_10: -6118042018563524460
+      Boxer__WalkBack_dir5_11: -1266202474266100702
+      Boxer__WalkBack_dir5_12: -1518278375169226632
+      Boxer__WalkBack_dir5_13: -4450063608840846400
+      Boxer__WalkBack_dir5_14: 1253736656385845985
+      Boxer__WalkBack_dir5_15: 5726397961250554550
+      Boxer__WalkBack_dir5_16: -5553573952892883553
+      Boxer__WalkBack_dir5_17: -3799008060420236138
+      Boxer__WalkBack_dir5_18: -2608096671833963188
+      Boxer__WalkBack_dir5_19: -7234507325967652890
+      Boxer__WalkBack_dir5_2: 5359736858431157779
+      Boxer__WalkBack_dir5_20: 7241613546723994066
+      Boxer__WalkBack_dir5_21: -2531581403165283581
+      Boxer__WalkBack_dir5_22: 4463814744315158437
+      Boxer__WalkBack_dir5_3: -216904961337089808
+      Boxer__WalkBack_dir5_4: -6605631480655110644
+      Boxer__WalkBack_dir5_5: 547515343615529370
+      Boxer__WalkBack_dir5_6: 2068656758340943035
+      Boxer__WalkBack_dir5_7: 3844842674000974448
+      Boxer__WalkBack_dir5_8: 7898358598428064386
+      Boxer__WalkBack_dir5_9: 2577672442597589368
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

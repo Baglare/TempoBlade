@@ -3,8 +3,11 @@ using UnityEngine;
 
 public sealed class FinisherTargetResolver
 {
+    private const int InitialTargetBufferSize = 64;
+
     private readonly PlayerCombat owner;
     private readonly List<FinisherResolvedTarget> targets = new();
+    private Collider2D[] hitBuffer = new Collider2D[InitialTargetBufferSize];
 
     public FinisherTargetResolver(PlayerCombat owner)
     {
@@ -26,14 +29,14 @@ public sealed class FinisherTargetResolver
         float baseRange = owner.GetEffectiveRange();
         float queryRange = Mathf.Max(0.8f, baseRange * finisher.damageProfile.rangeMultiplier + finisher.damageProfile.radiusBonus);
         Vector2 center = owner.AttackPoint.position;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(center, queryRange, owner.EnemyLayers);
+        int hitCount = QueryTargets(center, queryRange);
 
         EnemyBase bestFrontTarget = null;
         float bestFrontScore = float.MinValue;
 
-        for (int i = 0; i < hits.Length; i++)
+        for (int i = 0; i < hitCount; i++)
         {
-            Collider2D hit = hits[i];
+            Collider2D hit = hitBuffer[i];
             if (hit == null)
                 continue;
 
@@ -90,6 +93,18 @@ public sealed class FinisherTargetResolver
         result.hitCenter = center;
         result.queryRange = queryRange;
         return result;
+    }
+
+    private int QueryTargets(Vector2 center, float queryRange)
+    {
+        int hitCount = Physics2D.OverlapCircleNonAlloc(center, queryRange, hitBuffer, owner.EnemyLayers);
+        while (hitCount >= hitBuffer.Length)
+        {
+            System.Array.Resize(ref hitBuffer, hitBuffer.Length * 2);
+            hitCount = Physics2D.OverlapCircleNonAlloc(center, queryRange, hitBuffer, owner.EnemyLayers);
+        }
+
+        return hitCount;
     }
 
     public static EnemyCombatClass ResolveCombatClass(EnemyBase enemy)

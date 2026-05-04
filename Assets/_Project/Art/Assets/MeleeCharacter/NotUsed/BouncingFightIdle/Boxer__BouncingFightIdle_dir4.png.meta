@@ -1,0 +1,1209 @@
+fileFormatVersion: 2
+guid: 5dea6d570c7e53049b07764e3cd9e6d4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2708680204845319269
+    second: Boxer__BouncingFightIdle_dir4_0
+  - first:
+      213: 1174158161708330364
+    second: Boxer__BouncingFightIdle_dir4_1
+  - first:
+      213: -2783432834227757837
+    second: Boxer__BouncingFightIdle_dir4_2
+  - first:
+      213: -2260824216817989433
+    second: Boxer__BouncingFightIdle_dir4_3
+  - first:
+      213: -8993002810327373014
+    second: Boxer__BouncingFightIdle_dir4_4
+  - first:
+      213: 4454807313097746344
+    second: Boxer__BouncingFightIdle_dir4_5
+  - first:
+      213: -7194016690517516091
+    second: Boxer__BouncingFightIdle_dir4_6
+  - first:
+      213: -1866684891184368863
+    second: Boxer__BouncingFightIdle_dir4_7
+  - first:
+      213: 2233205315699467435
+    second: Boxer__BouncingFightIdle_dir4_8
+  - first:
+      213: -2613443460854314776
+    second: Boxer__BouncingFightIdle_dir4_9
+  - first:
+      213: -8846565401572022209
+    second: Boxer__BouncingFightIdle_dir4_10
+  - first:
+      213: -7791547203633861405
+    second: Boxer__BouncingFightIdle_dir4_11
+  - first:
+      213: 402329347391467320
+    second: Boxer__BouncingFightIdle_dir4_12
+  - first:
+      213: 8289120989480392671
+    second: Boxer__BouncingFightIdle_dir4_13
+  - first:
+      213: 5343523091452136674
+    second: Boxer__BouncingFightIdle_dir4_14
+  - first:
+      213: -1124799086989026331
+    second: Boxer__BouncingFightIdle_dir4_15
+  - first:
+      213: -4323151015623044070
+    second: Boxer__BouncingFightIdle_dir4_16
+  - first:
+      213: -4460083625202544166
+    second: Boxer__BouncingFightIdle_dir4_17
+  - first:
+      213: -5747363298139889341
+    second: Boxer__BouncingFightIdle_dir4_18
+  - first:
+      213: -7241775923947183832
+    second: Boxer__BouncingFightIdle_dir4_19
+  - first:
+      213: 5582380507365239636
+    second: Boxer__BouncingFightIdle_dir4_20
+  - first:
+      213: -6104415997293257266
+    second: Boxer__BouncingFightIdle_dir4_21
+  - first:
+      213: -1971192026344769977
+    second: Boxer__BouncingFightIdle_dir4_22
+  - first:
+      213: -8089244556413756394
+    second: Boxer__BouncingFightIdle_dir4_23
+  - first:
+      213: 4594070925897656638
+    second: Boxer__BouncingFightIdle_dir4_24
+  - first:
+      213: 8851776548238548686
+    second: Boxer__BouncingFightIdle_dir4_25
+  - first:
+      213: -8112246070026687690
+    second: Boxer__BouncingFightIdle_dir4_26
+  - first:
+      213: -189410449106368707
+    second: Boxer__BouncingFightIdle_dir4_27
+  - first:
+      213: -1248071126217630253
+    second: Boxer__BouncingFightIdle_dir4_28
+  - first:
+      213: 8584106568261620013
+    second: Boxer__BouncingFightIdle_dir4_29
+  - first:
+      213: -5856422910587910068
+    second: Boxer__BouncingFightIdle_dir4_30
+  - first:
+      213: -3172661523929014600
+    second: Boxer__BouncingFightIdle_dir4_31
+  - first:
+      213: 4142520139915755971
+    second: Boxer__BouncingFightIdle_dir4_32
+  - first:
+      213: -2318199877219885848
+    second: Boxer__BouncingFightIdle_dir4_33
+  - first:
+      213: -6636883393653897925
+    second: Boxer__BouncingFightIdle_dir4_34
+  - first:
+      213: 3667807475642678298
+    second: Boxer__BouncingFightIdle_dir4_35
+  - first:
+      213: -2493705278588764687
+    second: Boxer__BouncingFightIdle_dir4_36
+  - first:
+      213: -3643841571014896527
+    second: Boxer__BouncingFightIdle_dir4_37
+  - first:
+      213: -5027008210351141994
+    second: Boxer__BouncingFightIdle_dir4_38
+  - first:
+      213: 7722875442087754235
+    second: Boxer__BouncingFightIdle_dir4_39
+  - first:
+      213: 8726585199621451724
+    second: Boxer__BouncingFightIdle_dir4_40
+  - first:
+      213: 8419201243971333350
+    second: Boxer__BouncingFightIdle_dir4_41
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_0
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 678
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9bff0474b5d86ad0800000000000000
+      internalID: -2708680204845319269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_1
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 678
+        width: 37
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7d20ca80a27b4010800000000000000
+      internalID: 1174158161708330364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_2
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 678
+        width: 38
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fc12b3a5924f59d0800000000000000
+      internalID: -2783432834227757837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_3
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 678
+        width: 38
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c886f86a50ff90e0800000000000000
+      internalID: -2260824216817989433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_4
+      rect:
+        serializedVersion: 2
+        x: 552
+        y: 678
+        width: 38
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2be85a479f623380800000000000000
+      internalID: -8993002810327373014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_5
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 678
+        width: 38
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a7e00016a7a2dd30800000000000000
+      internalID: 4454807313097746344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_6
+      rect:
+        serializedVersion: 2
+        x: 804
+        y: 678
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c0e87d7fe7b92c90800000000000000
+      internalID: -7194016690517516091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_7
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 546
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 123fd594bf33816e0800000000000000
+      internalID: -1866684891184368863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_8
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 546
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba4e7c01760fdfe10800000000000000
+      internalID: 2233205315699467435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_9
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 546
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e8063bd40f2bbbd0800000000000000
+      internalID: -2613443460854314776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_10
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 546
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f38e90d63afaa3580800000000000000
+      internalID: -8846565401572022209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_11
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 547
+        width: 36
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ec27b4891dded390800000000000000
+      internalID: -7791547203633861405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_12
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 546
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83fabf9e86c559500800000000000000
+      internalID: 402329347391467320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_13
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 546
+        width: 36
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd7963e4f9fd80370800000000000000
+      internalID: 8289120989480392671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 414
+        width: 36
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ec0a13c0f1082a40800000000000000
+      internalID: 5343523091452136674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_15
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 414
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ebd5589039e360f0800000000000000
+      internalID: -1124799086989026331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_16
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 414
+        width: 35
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a145b6b6e051104c0800000000000000
+      internalID: -4323151015623044070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_17
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 414
+        width: 35
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad1144bc2999a12c0800000000000000
+      internalID: -4460083625202544166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_18
+      rect:
+        serializedVersion: 2
+        x: 554
+        y: 414
+        width: 35
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 341214bf7834d30b0800000000000000
+      internalID: -5747363298139889341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_19
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 414
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 821e62e6a2b008b90800000000000000
+      internalID: -7241775923947183832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_20
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 414
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45be196ae79987d40800000000000000
+      internalID: 5582380507365239636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_21
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 282
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecd9f183ef1c84ba0800000000000000
+      internalID: -6104415997293257266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_22
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 282
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74633adbb4be4a4e0800000000000000
+      internalID: -1971192026344769977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_23
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 282
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61c12b14fea3dbf80800000000000000
+      internalID: -8089244556413756394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_24
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 282
+        width: 36
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e39641baa2b61cf30800000000000000
+      internalID: 4594070925897656638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_25
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 282
+        width: 36
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ece54e43fd3d7da70800000000000000
+      internalID: 8851776548238548686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_26
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 282
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63b20890e238b6f80800000000000000
+      internalID: -8112246070026687690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_27
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 282
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d37844833341f5df0800000000000000
+      internalID: -189410449106368707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_28
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 150
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3dd506b5ce5fdaee0800000000000000
+      internalID: -1248071126217630253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_29
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 150
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d21d45b717fd02770800000000000000
+      internalID: 8584106568261620013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_30
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 150
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c48c2f7346ec9bea0800000000000000
+      internalID: -5856422910587910068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_31
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 150
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8be59a9472178f3d0800000000000000
+      internalID: -3172661523929014600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_32
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 150
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c184968e103d7930800000000000000
+      internalID: 4142520139915755971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_33
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 150
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ec54f77e7914dfd0800000000000000
+      internalID: -2318199877219885848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_34
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 150
+        width: 36
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b35029997bd05e3a0800000000000000
+      internalID: -6636883393653897925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_35
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 18
+        width: 36
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1c343a577ba6e230800000000000000
+      internalID: 3667807475642678298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_36
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 18
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fd3337e244946dd0800000000000000
+      internalID: -2493705278588764687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_37
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 18
+        width: 37
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1741bd5a5697e6dc0800000000000000
+      internalID: -3643841571014896527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_38
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 18
+        width: 36
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69b4c0bbaaa7c3ab0800000000000000
+      internalID: -5027008210351141994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_39
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 18
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf97a3a0c4a2d2b60800000000000000
+      internalID: 7722875442087754235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_40
+      rect:
+        serializedVersion: 2
+        x: 679
+        y: 18
+        width: 37
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccf2e9de00f0b1970800000000000000
+      internalID: 8726585199621451724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__BouncingFightIdle_dir4_41
+      rect:
+        serializedVersion: 2
+        x: 804
+        y: 18
+        width: 38
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ec207face207d470800000000000000
+      internalID: 8419201243971333350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__BouncingFightIdle_dir4_0: -2708680204845319269
+      Boxer__BouncingFightIdle_dir4_1: 1174158161708330364
+      Boxer__BouncingFightIdle_dir4_10: -8846565401572022209
+      Boxer__BouncingFightIdle_dir4_11: -7791547203633861405
+      Boxer__BouncingFightIdle_dir4_12: 402329347391467320
+      Boxer__BouncingFightIdle_dir4_13: 8289120989480392671
+      Boxer__BouncingFightIdle_dir4_14: 5343523091452136674
+      Boxer__BouncingFightIdle_dir4_15: -1124799086989026331
+      Boxer__BouncingFightIdle_dir4_16: -4323151015623044070
+      Boxer__BouncingFightIdle_dir4_17: -4460083625202544166
+      Boxer__BouncingFightIdle_dir4_18: -5747363298139889341
+      Boxer__BouncingFightIdle_dir4_19: -7241775923947183832
+      Boxer__BouncingFightIdle_dir4_2: -2783432834227757837
+      Boxer__BouncingFightIdle_dir4_20: 5582380507365239636
+      Boxer__BouncingFightIdle_dir4_21: -6104415997293257266
+      Boxer__BouncingFightIdle_dir4_22: -1971192026344769977
+      Boxer__BouncingFightIdle_dir4_23: -8089244556413756394
+      Boxer__BouncingFightIdle_dir4_24: 4594070925897656638
+      Boxer__BouncingFightIdle_dir4_25: 8851776548238548686
+      Boxer__BouncingFightIdle_dir4_26: -8112246070026687690
+      Boxer__BouncingFightIdle_dir4_27: -189410449106368707
+      Boxer__BouncingFightIdle_dir4_28: -1248071126217630253
+      Boxer__BouncingFightIdle_dir4_29: 8584106568261620013
+      Boxer__BouncingFightIdle_dir4_3: -2260824216817989433
+      Boxer__BouncingFightIdle_dir4_30: -5856422910587910068
+      Boxer__BouncingFightIdle_dir4_31: -3172661523929014600
+      Boxer__BouncingFightIdle_dir4_32: 4142520139915755971
+      Boxer__BouncingFightIdle_dir4_33: -2318199877219885848
+      Boxer__BouncingFightIdle_dir4_34: -6636883393653897925
+      Boxer__BouncingFightIdle_dir4_35: 3667807475642678298
+      Boxer__BouncingFightIdle_dir4_36: -2493705278588764687
+      Boxer__BouncingFightIdle_dir4_37: -3643841571014896527
+      Boxer__BouncingFightIdle_dir4_38: -5027008210351141994
+      Boxer__BouncingFightIdle_dir4_39: 7722875442087754235
+      Boxer__BouncingFightIdle_dir4_4: -8993002810327373014
+      Boxer__BouncingFightIdle_dir4_40: 8726585199621451724
+      Boxer__BouncingFightIdle_dir4_41: 8419201243971333350
+      Boxer__BouncingFightIdle_dir4_5: 4454807313097746344
+      Boxer__BouncingFightIdle_dir4_6: -7194016690517516091
+      Boxer__BouncingFightIdle_dir4_7: -1866684891184368863
+      Boxer__BouncingFightIdle_dir4_8: 2233205315699467435
+      Boxer__BouncingFightIdle_dir4_9: -2613443460854314776
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

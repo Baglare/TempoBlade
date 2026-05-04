@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: 9ccb4651e25a6084c8068ae20ee319a4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -6750026613788549361
+    second: Boxer__RunningSlide_dir5_0
+  - first:
+      213: -9046664273553830053
+    second: Boxer__RunningSlide_dir5_1
+  - first:
+      213: -5849301809594745018
+    second: Boxer__RunningSlide_dir5_2
+  - first:
+      213: 7334766614258657933
+    second: Boxer__RunningSlide_dir5_3
+  - first:
+      213: -1420290502337699161
+    second: Boxer__RunningSlide_dir5_4
+  - first:
+      213: 4535272980948357548
+    second: Boxer__RunningSlide_dir5_5
+  - first:
+      213: -2768760602370018602
+    second: Boxer__RunningSlide_dir5_6
+  - first:
+      213: 1286309821459545686
+    second: Boxer__RunningSlide_dir5_7
+  - first:
+      213: -5128718274547101450
+    second: Boxer__RunningSlide_dir5_8
+  - first:
+      213: 4796773293983895739
+    second: Boxer__RunningSlide_dir5_9
+  - first:
+      213: 1546404653608025073
+    second: Boxer__RunningSlide_dir5_10
+  - first:
+      213: -6170010218787153093
+    second: Boxer__RunningSlide_dir5_11
+  - first:
+      213: 3810600655002920668
+    second: Boxer__RunningSlide_dir5_12
+  - first:
+      213: -8545068760788525119
+    second: Boxer__RunningSlide_dir5_13
+  - first:
+      213: -6633503566133570346
+    second: Boxer__RunningSlide_dir5_14
+  - first:
+      213: -4087559734672278856
+    second: Boxer__RunningSlide_dir5_15
+  - first:
+      213: 3682263821956597240
+    second: Boxer__RunningSlide_dir5_16
+  - first:
+      213: 755048861528565400
+    second: Boxer__RunningSlide_dir5_17
+  - first:
+      213: -2572704448556107563
+    second: Boxer__RunningSlide_dir5_18
+  - first:
+      213: 4880681146770557813
+    second: Boxer__RunningSlide_dir5_19
+  - first:
+      213: 7671474099701653382
+    second: Boxer__RunningSlide_dir5_20
+  - first:
+      213: -7059832106847514806
+    second: Boxer__RunningSlide_dir5_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_0
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 549
+        width: 41
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0f53b4de861352a0800000000000000
+      internalID: -6750026613788549361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_1
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 545
+        width: 52
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5f4b9446cac37280800000000000000
+      internalID: -9046664273553830053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_2
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 550
+        width: 58
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64f3e0fbefa13dea0800000000000000
+      internalID: -5849301809594745018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_3
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 552
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8a2849df535ac560800000000000000
+      internalID: 7334766614258657933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_4
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 544
+        width: 64
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a2ec4a205d1a4ce0800000000000000
+      internalID: -1420290502337699161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_5
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 401
+        width: 57
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca19adc4fb680fe30800000000000000
+      internalID: 4535272980948357548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_6
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 399
+        width: 51
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d273a3d6e26399d0800000000000000
+      internalID: -2768760602370018602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_7
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 398
+        width: 52
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65e313ba7f3e9d110800000000000000
+      internalID: 1286309821459545686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_8
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 397
+        width: 56
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f0d09407e123d8b0800000000000000
+      internalID: -5128718274547101450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_9
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 397
+        width: 59
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb09dff75ef819240800000000000000
+      internalID: 4796773293983895739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_10
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 267
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fb3159d6dee57510800000000000000
+      internalID: 1546404653608025073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_11
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 270
+        width: 62
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3b59a86568bf5aa0800000000000000
+      internalID: -6170010218787153093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_12
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 273
+        width: 56
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd6e1563b19f1e430800000000000000
+      internalID: 3810600655002920668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_13
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 281
+        width: 46
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cf99eb5c31d96980800000000000000
+      internalID: -8545068760788525119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_14
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 282
+        width: 48
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d4525407af01f3a0800000000000000
+      internalID: -6633503566133570346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_15
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 154
+        width: 51
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ba3ba004121647c0800000000000000
+      internalID: -4087559734672278856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_16
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 154
+        width: 55
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f5cef4cf670a1330800000000000000
+      internalID: 3682263821956597240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_17
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 151
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 896297b60f87a7a00800000000000000
+      internalID: 755048861528565400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_18
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 154
+        width: 49
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d8febf4feaeb4cd0800000000000000
+      internalID: -2572704448556107563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_19
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 152
+        width: 48
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57b843fd4a9abb340800000000000000
+      internalID: 4880681146770557813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_20
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 20
+        width: 48
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68f93586c0d867a60800000000000000
+      internalID: 7671474099701653382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningSlide_dir5_21
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 24
+        width: 37
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4fc4797a10760e90800000000000000
+      internalID: -7059832106847514806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__RunningSlide_dir5_0: -6750026613788549361
+      Boxer__RunningSlide_dir5_1: -9046664273553830053
+      Boxer__RunningSlide_dir5_10: 1546404653608025073
+      Boxer__RunningSlide_dir5_11: -6170010218787153093
+      Boxer__RunningSlide_dir5_12: 3810600655002920668
+      Boxer__RunningSlide_dir5_13: -8545068760788525119
+      Boxer__RunningSlide_dir5_14: -6633503566133570346
+      Boxer__RunningSlide_dir5_15: -4087559734672278856
+      Boxer__RunningSlide_dir5_16: 3682263821956597240
+      Boxer__RunningSlide_dir5_17: 755048861528565400
+      Boxer__RunningSlide_dir5_18: -2572704448556107563
+      Boxer__RunningSlide_dir5_19: 4880681146770557813
+      Boxer__RunningSlide_dir5_2: -5849301809594745018
+      Boxer__RunningSlide_dir5_20: 7671474099701653382
+      Boxer__RunningSlide_dir5_21: -7059832106847514806
+      Boxer__RunningSlide_dir5_3: 7334766614258657933
+      Boxer__RunningSlide_dir5_4: -1420290502337699161
+      Boxer__RunningSlide_dir5_5: 4535272980948357548
+      Boxer__RunningSlide_dir5_6: -2768760602370018602
+      Boxer__RunningSlide_dir5_7: 1286309821459545686
+      Boxer__RunningSlide_dir5_8: -5128718274547101450
+      Boxer__RunningSlide_dir5_9: 4796773293983895739
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -70,7 +70,7 @@ public class EnemyTrapper : EnemyBase
         PickNewRoamPosition();
         lastPosition = transform.position;
         nextTrapTime = Time.time + 2f;
-        deathDelay = 1.0f;
+        deathDelay = ResolveDeathAnimationDelay(1.0f);
     }
 
     private void Update()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class DamagePopupManager : MonoBehaviour
@@ -6,6 +7,9 @@ public class DamagePopupManager : MonoBehaviour
 
     [SerializeField] private Transform damagePopupPrefab;
     [SerializeField] private GameObject hitParticlePrefab;
+    [SerializeField] private int maxPooledDamagePopups = 32;
+
+    private readonly Queue<DamagePopup> popupPool = new Queue<DamagePopup>();
 
     private void Awake()
     {
@@ -25,11 +29,11 @@ public class DamagePopupManager : MonoBehaviour
             return;
         }
 
-        Transform damagePopupTransform = Instantiate(damagePopupPrefab, position, Quaternion.identity);
-        DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+        DamagePopup damagePopup = GetDamagePopup(position);
         
         if (damagePopup != null)
         {
+            damagePopup.SetOwner(this);
             damagePopup.Setup(damageAmount, isCriticalHit);
         }
     }
@@ -38,11 +42,11 @@ public class DamagePopupManager : MonoBehaviour
     {
         if (damagePopupPrefab == null) return;
 
-        Transform damagePopupTransform = Instantiate(damagePopupPrefab, position, Quaternion.identity);
-        DamagePopup damagePopup = damagePopupTransform.GetComponent<DamagePopup>();
+        DamagePopup damagePopup = GetDamagePopup(position);
         
         if (damagePopup != null)
         {
+            damagePopup.SetOwner(this);
             damagePopup.Setup(text, color, size);
         }
     }
@@ -51,5 +55,44 @@ public class DamagePopupManager : MonoBehaviour
     {
         if (hitParticlePrefab == null) return;
         Instantiate(hitParticlePrefab, position, Quaternion.identity);
+    }
+
+    public void Recycle(DamagePopup popup)
+    {
+        if (popup == null)
+            return;
+
+        if (popupPool.Count >= Mathf.Max(0, maxPooledDamagePopups))
+        {
+            Destroy(popup.gameObject);
+            return;
+        }
+
+        popup.gameObject.SetActive(false);
+        popup.transform.SetParent(transform, false);
+        popupPool.Enqueue(popup);
+    }
+
+    private DamagePopup GetDamagePopup(Vector3 position)
+    {
+        DamagePopup popup = null;
+        while (popupPool.Count > 0 && popup == null)
+            popup = popupPool.Dequeue();
+
+        if (popup != null)
+        {
+            Transform popupTransform = popup.transform;
+            popupTransform.SetParent(null, true);
+            popupTransform.SetPositionAndRotation(position, Quaternion.identity);
+            popup.gameObject.SetActive(true);
+            return popup;
+        }
+
+        Transform damagePopupTransform = Instantiate(damagePopupPrefab, position, Quaternion.identity);
+        popup = damagePopupTransform.GetComponent<DamagePopup>();
+        if (popup == null)
+            Destroy(damagePopupTransform.gameObject);
+
+        return popup;
     }
 }

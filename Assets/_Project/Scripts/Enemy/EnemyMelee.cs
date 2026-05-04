@@ -19,6 +19,16 @@ public class EnemyMelee : EnemyBase
         public float comboStepGap = 0.12f;
     }
 
+    [System.Serializable]
+    public class MeleeAttackTimingProfile
+    {
+        [Range(0.05f, 0.95f)] public float hitOpenNormalizedTime = 0.42f;
+        [Range(0.1f, 1f)] public float hitCloseNormalizedTime = 0.66f;
+        public float minimumHitOpenDelay = 0.04f;
+        public float minimumActiveDuration = 0.05f;
+        public float attackStatePadding = 0.02f;
+    }
+
     [Header("Melee Settings")]
     public AttackHitbox hitboxScript;
     public Collider2D hitboxCollider;
@@ -30,6 +40,9 @@ public class EnemyMelee : EnemyBase
     [Header("Tempo")]
     public MeleeTempoConfig tempoConfig = new MeleeTempoConfig();
 
+    [Header("Attack Timing")]
+    public MeleeAttackTimingProfile attackTiming = new MeleeAttackTimingProfile();
+
     private Transform player;
     private bool isAttacking;
     private float baseArcAngle;
@@ -39,10 +52,18 @@ public class EnemyMelee : EnemyBase
     private float pursueUntilTime;
     private float nextEliteRendTime;
     private float recoveryLockUntilTime;
+    private CharacterDirectionalAnimator directionalAnimator;
+    private Rigidbody2D cachedBody;
+    private Collider2D rootCollider;
 
     protected override void Start()
     {
         base.Start();
+        directionalAnimator = GetComponent<CharacterDirectionalAnimator>();
+        cachedBody = GetComponent<Rigidbody2D>();
+        rootCollider = GetComponent<Collider2D>();
+        deathDelay = ResolveDeathAnimationDelay(0.8f);
+
         var p = FindFirstObjectByType<PlayerController>();
         if (p != null)
             player = p.transform;
@@ -156,8 +177,14 @@ public class EnemyMelee : EnemyBase
                 sr.color = Color.yellow;
 
             AlignAttackToPlayer();
+            float attackClipLength = GetDirectionalClipLength(DirectionalAnimationState.Attack, tempoConfig.windupTime + tempoConfig.activeFrames);
+            float normalizedOpen = Mathf.Clamp01(attackTiming.hitOpenNormalizedTime);
+            float normalizedClose = Mathf.Clamp(attackTiming.hitCloseNormalizedTime, normalizedOpen + 0.01f, 1f);
+            float attackWindup = Mathf.Max(attackTiming.minimumHitOpenDelay, attackClipLength * normalizedOpen);
+            float attackActiveDuration = Mathf.Max(attackTiming.minimumActiveDuration, attackClipLength * (normalizedClose - normalizedOpen));
+            directionalAnimator?.RequestState(DirectionalAnimationState.Attack, attackClipLength + Mathf.Max(0f, attackTiming.attackStatePadding), 80);
 
-            yield return new WaitForSeconds(tempoConfig.windupTime / attackSpeedMultiplier);
+            yield return new WaitForSeconds(attackWindup);
 
             if (isStunned)
                 break;
@@ -168,7 +195,7 @@ public class EnemyMelee : EnemyBase
             if (hitboxCollider != null)
                 hitboxCollider.enabled = true;
 
-            yield return new WaitForSeconds(tempoConfig.activeFrames);
+            yield return new WaitForSeconds(attackActiveDuration);
 
             if (hitboxCollider != null)
                 hitboxCollider.enabled = false;
@@ -341,5 +368,27 @@ public class EnemyMelee : EnemyBase
     {
         wanderTarget = (Vector2)transform.position + Random.insideUnitCircle.normalized * Random.Range(1.5f, 3.5f);
         wanderTimer = Random.Range(1.25f, 2.4f);
+    }
+
+    protected override void OnDeathAnimationStart()
+    {
+        StopAllCoroutines();
+        isAttacking = false;
+
+        if (hitboxCollider != null)
+            hitboxCollider.enabled = false;
+
+        if (rootCollider != null)
+            rootCollider.enabled = false;
+
+        if (cachedBody != null)
+            cachedBody.linearVelocity = Vector2.zero;
+
+        directionalAnimator?.RequestState(DirectionalAnimationState.Death, Mathf.Max(0.1f, deathDelay), 100);
+    }
+
+    private float GetDirectionalClipLength(DirectionalAnimationState state, float fallback)
+    {
+        return ResolveDirectionalClipLength(state, fallback);
     }
 }

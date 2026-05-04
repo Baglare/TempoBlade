@@ -84,7 +84,7 @@ public class EnemyDuelist : EnemyBase, IParryReactive
     protected override void Start()
     {
         base.Start();
-        deathDelay = deathAnimDuration;
+        deathDelay = ResolveDeathAnimationDelay(deathAnimDuration);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)

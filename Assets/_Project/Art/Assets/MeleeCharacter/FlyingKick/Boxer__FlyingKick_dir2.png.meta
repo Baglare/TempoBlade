@@ -1,0 +1,1365 @@
+fileFormatVersion: 2
+guid: b0a6a55b339ea9a4fa152f4b6f601cbc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2386825612432848797
+    second: Boxer__FlyingKick_dir2_0
+  - first:
+      213: 1708679010308290112
+    second: Boxer__FlyingKick_dir2_1
+  - first:
+      213: -4345892809596700315
+    second: Boxer__FlyingKick_dir2_2
+  - first:
+      213: 5843085050156652002
+    second: Boxer__FlyingKick_dir2_3
+  - first:
+      213: 4091545756883306452
+    second: Boxer__FlyingKick_dir2_4
+  - first:
+      213: -5276178760069984596
+    second: Boxer__FlyingKick_dir2_5
+  - first:
+      213: 590413986596206919
+    second: Boxer__FlyingKick_dir2_6
+  - first:
+      213: 5194964741701465790
+    second: Boxer__FlyingKick_dir2_7
+  - first:
+      213: -7860141666965528801
+    second: Boxer__FlyingKick_dir2_8
+  - first:
+      213: -1214856900309608176
+    second: Boxer__FlyingKick_dir2_9
+  - first:
+      213: 1425532534452357354
+    second: Boxer__FlyingKick_dir2_10
+  - first:
+      213: -7636580681185783413
+    second: Boxer__FlyingKick_dir2_11
+  - first:
+      213: -8291296058160709561
+    second: Boxer__FlyingKick_dir2_12
+  - first:
+      213: -4768128487087153645
+    second: Boxer__FlyingKick_dir2_13
+  - first:
+      213: 6682207691349548426
+    second: Boxer__FlyingKick_dir2_14
+  - first:
+      213: -1767309708137273431
+    second: Boxer__FlyingKick_dir2_15
+  - first:
+      213: -4343579976420826895
+    second: Boxer__FlyingKick_dir2_16
+  - first:
+      213: 9144536990305767310
+    second: Boxer__FlyingKick_dir2_17
+  - first:
+      213: 1390859078081138750
+    second: Boxer__FlyingKick_dir2_18
+  - first:
+      213: -1696180685681702604
+    second: Boxer__FlyingKick_dir2_19
+  - first:
+      213: 3709510365269841426
+    second: Boxer__FlyingKick_dir2_20
+  - first:
+      213: 8474092294602900390
+    second: Boxer__FlyingKick_dir2_21
+  - first:
+      213: 6358898436891004533
+    second: Boxer__FlyingKick_dir2_22
+  - first:
+      213: -1226773602580843487
+    second: Boxer__FlyingKick_dir2_23
+  - first:
+      213: -8634156242575563431
+    second: Boxer__FlyingKick_dir2_24
+  - first:
+      213: -7590388258129149532
+    second: Boxer__FlyingKick_dir2_25
+  - first:
+      213: 8387533781677152895
+    second: Boxer__FlyingKick_dir2_26
+  - first:
+      213: 1828594484337249179
+    second: Boxer__FlyingKick_dir2_27
+  - first:
+      213: -5848707974735758119
+    second: Boxer__FlyingKick_dir2_28
+  - first:
+      213: -550575423355549439
+    second: Boxer__FlyingKick_dir2_29
+  - first:
+      213: 7215155263108098187
+    second: Boxer__FlyingKick_dir2_30
+  - first:
+      213: -3593376053731989466
+    second: Boxer__FlyingKick_dir2_31
+  - first:
+      213: -350318467454257436
+    second: Boxer__FlyingKick_dir2_32
+  - first:
+      213: 3403270540172382366
+    second: Boxer__FlyingKick_dir2_33
+  - first:
+      213: 1891754491767913565
+    second: Boxer__FlyingKick_dir2_34
+  - first:
+      213: 6680429594840107773
+    second: Boxer__FlyingKick_dir2_35
+  - first:
+      213: 5166858160167600886
+    second: Boxer__FlyingKick_dir2_36
+  - first:
+      213: 8948970606822276028
+    second: Boxer__FlyingKick_dir2_37
+  - first:
+      213: 1037586625522502975
+    second: Boxer__FlyingKick_dir2_38
+  - first:
+      213: -7538999437760840291
+    second: Boxer__FlyingKick_dir2_39
+  - first:
+      213: -2152586586152268154
+    second: Boxer__FlyingKick_dir2_40
+  - first:
+      213: -2883219384014878317
+    second: Boxer__FlyingKick_dir2_41
+  - first:
+      213: -6344851167922841565
+    second: Boxer__FlyingKick_dir2_42
+  - first:
+      213: -8166128450814108623
+    second: Boxer__FlyingKick_dir2_43
+  - first:
+      213: 7591232802360653826
+    second: Boxer__FlyingKick_dir2_44
+  - first:
+      213: 8455572894777128415
+    second: Boxer__FlyingKick_dir2_45
+  - first:
+      213: 3961332469525169750
+    second: Boxer__FlyingKick_dir2_46
+  - first:
+      213: -8259414223758986582
+    second: Boxer__FlyingKick_dir2_47
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_0
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 813
+        width: 59
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d973dd1af35bf1120800000000000000
+      internalID: 2386825612432848797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_1
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 813
+        width: 59
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0467794c18276b710800000000000000
+      internalID: 1708679010308290112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_2
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 813
+        width: 59
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5697014e38940b3c0800000000000000
+      internalID: -4345892809596700315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_3
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 813
+        width: 59
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e59bf625eec61150800000000000000
+      internalID: 5843085050156652002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_4
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 813
+        width: 59
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d7494d103718c830800000000000000
+      internalID: 4091545756883306452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_5
+      rect:
+        serializedVersion: 2
+        x: 655
+        y: 813
+        width: 59
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cae41924f5f37c6b0800000000000000
+      internalID: -5276178760069984596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_6
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 813
+        width: 60
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7493d758462913800800000000000000
+      internalID: 590413986596206919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_7
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 681
+        width: 59
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb67bc198e8381840800000000000000
+      internalID: 5194964741701465790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_8
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 681
+        width: 58
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f1fd5487cca2be290800000000000000
+      internalID: -7860141666965528801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_9
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 681
+        width: 57
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0191d14f516f32fe0800000000000000
+      internalID: -1214856900309608176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_10
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 680
+        width: 55
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae88bcb894288c310800000000000000
+      internalID: 1425532534452357354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_11
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 680
+        width: 52
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b819f4fa45a650690800000000000000
+      internalID: -7636580681185783413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_12
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 680
+        width: 51
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7400cbd0a266fec80800000000000000
+      internalID: -8291296058160709561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_13
+      rect:
+        serializedVersion: 2
+        x: 789
+        y: 680
+        width: 58
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31edfb3576434ddb0800000000000000
+      internalID: -4768128487087153645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_14
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 548
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8dd54ecd78fbbc50800000000000000
+      internalID: 6682207691349548426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_15
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 548
+        width: 70
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a7e06e1f214977e0800000000000000
+      internalID: -1767309708137273431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_16
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 548
+        width: 72
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f0efe3560188b3c0800000000000000
+      internalID: -4343579976420826895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_17
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 549
+        width: 65
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8f489e51fbe7ee70800000000000000
+      internalID: 9144536990305767310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_18
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 548
+        width: 55
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3057a166f25d4310800000000000000
+      internalID: 1390859078081138750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_19
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 546
+        width: 42
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 439401337a4f578e0800000000000000
+      internalID: -1696180685681702604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_20
+      rect:
+        serializedVersion: 2
+        x: 777
+        y: 554
+        width: 59
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 216d98cf504da7330800000000000000
+      internalID: 3709510365269841426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_21
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 428
+        width: 49
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a34ea55b060a9570800000000000000
+      internalID: 8474092294602900390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_22
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 431
+        width: 42
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57eccadff685f3850800000000000000
+      internalID: 6358898436891004533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_23
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 431
+        width: 48
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 124b75e78ef99fee0800000000000000
+      internalID: -1226773602580843487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_24
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 430
+        width: 57
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 955ef02a4a05d2880800000000000000
+      internalID: -8634156242575563431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_25
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 437
+        width: 58
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a18ae6481689a690800000000000000
+      internalID: -7590388258129149532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_26
+      rect:
+        serializedVersion: 2
+        x: 663
+        y: 432
+        width: 69
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7a947e0981866470800000000000000
+      internalID: 8387533781677152895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_27
+      rect:
+        serializedVersion: 2
+        x: 777
+        y: 421
+        width: 85
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9b0925cef8706910800000000000000
+      internalID: 1828594484337249179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_28
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 286
+        width: 94
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dc71e2b51735dea0800000000000000
+      internalID: -5848707974735758119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_29
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 285
+        width: 79
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10905dcc196fb58f0800000000000000
+      internalID: -550575423355549439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_30
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 284
+        width: 61
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8829d8fb71612460800000000000000
+      internalID: 7215155263108098187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_31
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 282
+        width: 63
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 628e8e48483c12ec0800000000000000
+      internalID: -3593376053731989466
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_32
+      rect:
+        serializedVersion: 2
+        x: 533
+        y: 281
+        width: 65
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e6312db53b632bf0800000000000000
+      internalID: -350318467454257436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_33
+      rect:
+        serializedVersion: 2
+        x: 658
+        y: 281
+        width: 67
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e90d6856688da3f20800000000000000
+      internalID: 3403270540172382366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_34
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 280
+        width: 69
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5c7314ffacd04a10800000000000000
+      internalID: 1891754491767913565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_35
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 148
+        width: 71
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfa83737257a5bc50800000000000000
+      internalID: 6680429594840107773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_36
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 148
+        width: 72
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f24e991f1e54b740800000000000000
+      internalID: 5166858160167600886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_37
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 148
+        width: 72
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbbbd0d6a51213c70800000000000000
+      internalID: 8948970606822276028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_38
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 148
+        width: 71
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3d07fdd98f366e00800000000000000
+      internalID: 1037586625522502975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_39
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 148
+        width: 71
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9d356664f7106790800000000000000
+      internalID: -7538999437760840291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_40
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 148
+        width: 71
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68e8f10a7e97022e0800000000000000
+      internalID: -2152586586152268154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_41
+      rect:
+        serializedVersion: 2
+        x: 780
+        y: 148
+        width: 71
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 399c5460f3fbcf7d0800000000000000
+      internalID: -2883219384014878317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_42
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 16
+        width: 71
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3289c3faa7f82f7a0800000000000000
+      internalID: -6344851167922841565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_43
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 16
+        width: 71
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13c9303a0751cae80800000000000000
+      internalID: -8166128450814108623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_44
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 16
+        width: 72
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 208ffff730a795960800000000000000
+      internalID: 7591232802360653826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_45
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 16
+        width: 72
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd5bc9d8fba385570800000000000000
+      internalID: 8455572894777128415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_46
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 17
+        width: 72
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 656c44b94ea79f630800000000000000
+      internalID: 3961332469525169750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__FlyingKick_dir2_47
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 17
+        width: 72
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa27904168aa06d80800000000000000
+      internalID: -8259414223758986582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__FlyingKick_dir2_0: 2386825612432848797
+      Boxer__FlyingKick_dir2_1: 1708679010308290112
+      Boxer__FlyingKick_dir2_10: 1425532534452357354
+      Boxer__FlyingKick_dir2_11: -7636580681185783413
+      Boxer__FlyingKick_dir2_12: -8291296058160709561
+      Boxer__FlyingKick_dir2_13: -4768128487087153645
+      Boxer__FlyingKick_dir2_14: 6682207691349548426
+      Boxer__FlyingKick_dir2_15: -1767309708137273431
+      Boxer__FlyingKick_dir2_16: -4343579976420826895
+      Boxer__FlyingKick_dir2_17: 9144536990305767310
+      Boxer__FlyingKick_dir2_18: 1390859078081138750
+      Boxer__FlyingKick_dir2_19: -1696180685681702604
+      Boxer__FlyingKick_dir2_2: -4345892809596700315
+      Boxer__FlyingKick_dir2_20: 3709510365269841426
+      Boxer__FlyingKick_dir2_21: 8474092294602900390
+      Boxer__FlyingKick_dir2_22: 6358898436891004533
+      Boxer__FlyingKick_dir2_23: -1226773602580843487
+      Boxer__FlyingKick_dir2_24: -8634156242575563431
+      Boxer__FlyingKick_dir2_25: -7590388258129149532
+      Boxer__FlyingKick_dir2_26: 8387533781677152895
+      Boxer__FlyingKick_dir2_27: 1828594484337249179
+      Boxer__FlyingKick_dir2_28: -5848707974735758119
+      Boxer__FlyingKick_dir2_29: -550575423355549439
+      Boxer__FlyingKick_dir2_3: 5843085050156652002
+      Boxer__FlyingKick_dir2_30: 7215155263108098187
+      Boxer__FlyingKick_dir2_31: -3593376053731989466
+      Boxer__FlyingKick_dir2_32: -350318467454257436
+      Boxer__FlyingKick_dir2_33: 3403270540172382366
+      Boxer__FlyingKick_dir2_34: 1891754491767913565
+      Boxer__FlyingKick_dir2_35: 6680429594840107773
+      Boxer__FlyingKick_dir2_36: 5166858160167600886
+      Boxer__FlyingKick_dir2_37: 8948970606822276028
+      Boxer__FlyingKick_dir2_38: 1037586625522502975
+      Boxer__FlyingKick_dir2_39: -7538999437760840291
+      Boxer__FlyingKick_dir2_4: 4091545756883306452
+      Boxer__FlyingKick_dir2_40: -2152586586152268154
+      Boxer__FlyingKick_dir2_41: -2883219384014878317
+      Boxer__FlyingKick_dir2_42: -6344851167922841565
+      Boxer__FlyingKick_dir2_43: -8166128450814108623
+      Boxer__FlyingKick_dir2_44: 7591232802360653826
+      Boxer__FlyingKick_dir2_45: 8455572894777128415
+      Boxer__FlyingKick_dir2_46: 3961332469525169750
+      Boxer__FlyingKick_dir2_47: -8259414223758986582
+      Boxer__FlyingKick_dir2_5: -5276178760069984596
+      Boxer__FlyingKick_dir2_6: 590413986596206919
+      Boxer__FlyingKick_dir2_7: 5194964741701465790
+      Boxer__FlyingKick_dir2_8: -7860141666965528801
+      Boxer__FlyingKick_dir2_9: -1214856900309608176
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

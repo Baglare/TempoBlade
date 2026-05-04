@@ -1,0 +1,975 @@
+fileFormatVersion: 2
+guid: 52f23e81406809e459af5025bc484368
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5333214791468736560
+    second: Boxer__StandRoll_dir1_0
+  - first:
+      213: 1981494832862264348
+    second: Boxer__StandRoll_dir1_1
+  - first:
+      213: 2804803599052554445
+    second: Boxer__StandRoll_dir1_2
+  - first:
+      213: -8292824694179923736
+    second: Boxer__StandRoll_dir1_3
+  - first:
+      213: 8389953616545995344
+    second: Boxer__StandRoll_dir1_4
+  - first:
+      213: 7859089774656790790
+    second: Boxer__StandRoll_dir1_5
+  - first:
+      213: -4501778233324953545
+    second: Boxer__StandRoll_dir1_6
+  - first:
+      213: -4727202546219365229
+    second: Boxer__StandRoll_dir1_7
+  - first:
+      213: -5654339668922951523
+    second: Boxer__StandRoll_dir1_8
+  - first:
+      213: -4450693969288337609
+    second: Boxer__StandRoll_dir1_9
+  - first:
+      213: 3456568216941908345
+    second: Boxer__StandRoll_dir1_10
+  - first:
+      213: 6847580809892226286
+    second: Boxer__StandRoll_dir1_11
+  - first:
+      213: -5113549301939198525
+    second: Boxer__StandRoll_dir1_12
+  - first:
+      213: 7722934937432770334
+    second: Boxer__StandRoll_dir1_13
+  - first:
+      213: -4076780238156862252
+    second: Boxer__StandRoll_dir1_14
+  - first:
+      213: 3985950105728996930
+    second: Boxer__StandRoll_dir1_15
+  - first:
+      213: 62872707683798651
+    second: Boxer__StandRoll_dir1_16
+  - first:
+      213: 6871645491281225610
+    second: Boxer__StandRoll_dir1_17
+  - first:
+      213: -25311353469858881
+    second: Boxer__StandRoll_dir1_18
+  - first:
+      213: -3448736004470119239
+    second: Boxer__StandRoll_dir1_19
+  - first:
+      213: 5191441525326478427
+    second: Boxer__StandRoll_dir1_20
+  - first:
+      213: 6738956145826215744
+    second: Boxer__StandRoll_dir1_21
+  - first:
+      213: -2669028520727140093
+    second: Boxer__StandRoll_dir1_22
+  - first:
+      213: 7555935468305678718
+    second: Boxer__StandRoll_dir1_23
+  - first:
+      213: -3920939104763148691
+    second: Boxer__StandRoll_dir1_24
+  - first:
+      213: -6487040753723772966
+    second: Boxer__StandRoll_dir1_25
+  - first:
+      213: -6988425726660766390
+    second: Boxer__StandRoll_dir1_26
+  - first:
+      213: -429608007290280661
+    second: Boxer__StandRoll_dir1_27
+  - first:
+      213: 8154965571126473359
+    second: Boxer__StandRoll_dir1_28
+  - first:
+      213: -5238711986532767536
+    second: Boxer__StandRoll_dir1_29
+  - first:
+      213: -4174678852677274133
+    second: Boxer__StandRoll_dir1_30
+  - first:
+      213: 2967441250161421406
+    second: Boxer__StandRoll_dir1_31
+  - first:
+      213: -4938253029306305406
+    second: Boxer__StandRoll_dir1_32
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_0
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 679
+        width: 32
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0306a54a892630a40800000000000000
+      internalID: 5333214791468736560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_1
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 679
+        width: 32
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1cf6055d0faf7b10800000000000000
+      internalID: 1981494832862264348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_2
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 681
+        width: 35
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc0c34a430aace620800000000000000
+      internalID: 2804803599052554445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_3
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 681
+        width: 38
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e871deb0e7f9ec80800000000000000
+      internalID: -8292824694179923736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_4
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 682
+        width: 39
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05a5a34cc5a1f6470800000000000000
+      internalID: 8389953616545995344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_5
+      rect:
+        serializedVersion: 2
+        x: 667
+        y: 683
+        width: 38
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 601a254c288111d60800000000000000
+      internalID: 7859089774656790790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_6
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 548
+        width: 40
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 730a4195c887681c0800000000000000
+      internalID: -4501778233324953545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_7
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 543
+        width: 45
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39cc54b745a956eb0800000000000000
+      internalID: -4727202546219365229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_8
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 541
+        width: 57
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9892727700c781b0800000000000000
+      internalID: -5654339668922951523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_9
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 542
+        width: 70
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 737689c6a65fb32c0800000000000000
+      internalID: -4450693969288337609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_10
+      rect:
+        serializedVersion: 2
+        x: 523
+        y: 541
+        width: 74
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9715ab8ca7238ff20800000000000000
+      internalID: 3456568216941908345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_11
+      rect:
+        serializedVersion: 2
+        x: 653
+        y: 541
+        width: 73
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee46860777e770f50800000000000000
+      internalID: 6847580809892226286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_12
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 412
+        width: 72
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c5a77ca0060909b0800000000000000
+      internalID: -5113549301939198525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_13
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 416
+        width: 70
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e17422168606d2b60800000000000000
+      internalID: 7722934937432770334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_14
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 420
+        width: 68
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dce35d19fd5c67c0800000000000000
+      internalID: -4076780238156862252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_15
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 423
+        width: 62
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2465860b080f05730800000000000000
+      internalID: 3985950105728996930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_16
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 425
+        width: 50
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7e4f8ff46e5fd000800000000000000
+      internalID: 62872707683798651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_17
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 425
+        width: 42
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a876b32ba2dfc5f50800000000000000
+      internalID: 6871645491281225610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_18
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 291
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbb05a7457316aff0800000000000000
+      internalID: -25311353469858881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_19
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 283
+        width: 37
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b4657940e0a320d0800000000000000
+      internalID: -3448736004470119239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_20
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 277
+        width: 36
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5cfb45df84bb0840800000000000000
+      internalID: 5191441525326478427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_21
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 280
+        width: 40
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04738ecf8e4958d50800000000000000
+      internalID: 6738956145826215744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_22
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 279
+        width: 41
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3092ca693b4b5fad0800000000000000
+      internalID: -2669028520727140093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_23
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 281
+        width: 38
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e71822e76431cd860800000000000000
+      internalID: 7555935468305678718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_24
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 150
+        width: 39
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6687a288a60699c0800000000000000
+      internalID: -3920939104763148691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_25
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 150
+        width: 39
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adfefc6edc669f5a0800000000000000
+      internalID: -6487040753723772966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_26
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 151
+        width: 38
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a451f2fe3df140f90800000000000000
+      internalID: -6988425726660766390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_27
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 151
+        width: 38
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b25acc42bc9b90af0800000000000000
+      internalID: -429608007290280661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_28
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 151
+        width: 35
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f82b886eaf14c2170800000000000000
+      internalID: 8154965571126473359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_29
+      rect:
+        serializedVersion: 2
+        x: 674
+        y: 151
+        width: 33
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d82222443b5c47b0800000000000000
+      internalID: -5238711986532767536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_30
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 19
+        width: 32
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be5f5dea3bf8016c0800000000000000
+      internalID: -4174678852677274133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_31
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 19
+        width: 32
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5c66b748187e2920800000000000000
+      internalID: 2967441250161421406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__StandRoll_dir1_32
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 19
+        width: 32
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2847339a80dc77bb0800000000000000
+      internalID: -4938253029306305406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__StandRoll_dir1_0: 5333214791468736560
+      Boxer__StandRoll_dir1_1: 1981494832862264348
+      Boxer__StandRoll_dir1_10: 3456568216941908345
+      Boxer__StandRoll_dir1_11: 6847580809892226286
+      Boxer__StandRoll_dir1_12: -5113549301939198525
+      Boxer__StandRoll_dir1_13: 7722934937432770334
+      Boxer__StandRoll_dir1_14: -4076780238156862252
+      Boxer__StandRoll_dir1_15: 3985950105728996930
+      Boxer__StandRoll_dir1_16: 62872707683798651
+      Boxer__StandRoll_dir1_17: 6871645491281225610
+      Boxer__StandRoll_dir1_18: -25311353469858881
+      Boxer__StandRoll_dir1_19: -3448736004470119239
+      Boxer__StandRoll_dir1_2: 2804803599052554445
+      Boxer__StandRoll_dir1_20: 5191441525326478427
+      Boxer__StandRoll_dir1_21: 6738956145826215744
+      Boxer__StandRoll_dir1_22: -2669028520727140093
+      Boxer__StandRoll_dir1_23: 7555935468305678718
+      Boxer__StandRoll_dir1_24: -3920939104763148691
+      Boxer__StandRoll_dir1_25: -6487040753723772966
+      Boxer__StandRoll_dir1_26: -6988425726660766390
+      Boxer__StandRoll_dir1_27: -429608007290280661
+      Boxer__StandRoll_dir1_28: 8154965571126473359
+      Boxer__StandRoll_dir1_29: -5238711986532767536
+      Boxer__StandRoll_dir1_3: -8292824694179923736
+      Boxer__StandRoll_dir1_30: -4174678852677274133
+      Boxer__StandRoll_dir1_31: 2967441250161421406
+      Boxer__StandRoll_dir1_32: -4938253029306305406
+      Boxer__StandRoll_dir1_4: 8389953616545995344
+      Boxer__StandRoll_dir1_5: 7859089774656790790
+      Boxer__StandRoll_dir1_6: -4501778233324953545
+      Boxer__StandRoll_dir1_7: -4727202546219365229
+      Boxer__StandRoll_dir1_8: -5654339668922951523
+      Boxer__StandRoll_dir1_9: -4450693969288337609
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

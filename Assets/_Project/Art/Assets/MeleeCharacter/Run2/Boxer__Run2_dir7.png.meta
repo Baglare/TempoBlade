@@ -1,0 +1,689 @@
+fileFormatVersion: 2
+guid: ccd5d077ce390d94dbe0e8d7cfee40ef
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1750426429366249297
+    second: Boxer__Run2_dir7_0
+  - first:
+      213: -4632026625232217398
+    second: Boxer__Run2_dir7_1
+  - first:
+      213: -2246577262754543245
+    second: Boxer__Run2_dir7_2
+  - first:
+      213: 5857768633986711238
+    second: Boxer__Run2_dir7_3
+  - first:
+      213: -4697861277609609758
+    second: Boxer__Run2_dir7_4
+  - first:
+      213: 8256165216627101285
+    second: Boxer__Run2_dir7_5
+  - first:
+      213: -2026060761163400462
+    second: Boxer__Run2_dir7_6
+  - first:
+      213: -3712918948286051615
+    second: Boxer__Run2_dir7_7
+  - first:
+      213: 7741378818512805683
+    second: Boxer__Run2_dir7_8
+  - first:
+      213: -8238931096766382639
+    second: Boxer__Run2_dir7_9
+  - first:
+      213: -3906159515991834208
+    second: Boxer__Run2_dir7_10
+  - first:
+      213: -4854324084986952424
+    second: Boxer__Run2_dir7_11
+  - first:
+      213: -2130497677334505367
+    second: Boxer__Run2_dir7_12
+  - first:
+      213: 5001831199593630379
+    second: Boxer__Run2_dir7_13
+  - first:
+      213: 5514269646559800982
+    second: Boxer__Run2_dir7_14
+  - first:
+      213: -8939109605056380109
+    second: Boxer__Run2_dir7_15
+  - first:
+      213: 7370964836880504996
+    second: Boxer__Run2_dir7_16
+  - first:
+      213: -1019075019519712376
+    second: Boxer__Run2_dir7_17
+  - first:
+      213: 1984785423817766998
+    second: Boxer__Run2_dir7_18
+  - first:
+      213: 170677797294104192
+    second: Boxer__Run2_dir7_19
+  - first:
+      213: -8980599671803904748
+    second: Boxer__Run2_dir7_20
+  - first:
+      213: -8883930340861498987
+    second: Boxer__Run2_dir7_21
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_0
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 553
+        width: 42
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 157a4d73093ca4810800000000000000
+      internalID: 1750426429366249297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_1
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 555
+        width: 47
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acad1ec635cb7bfb0800000000000000
+      internalID: -4632026625232217398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_2
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 556
+        width: 49
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 379cb05e1ed82d0e0800000000000000
+      internalID: -2246577262754543245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_3
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 554
+        width: 55
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cef33d6989fa4150800000000000000
+      internalID: 5857768633986711238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_4
+      rect:
+        serializedVersion: 2
+        x: 534
+        y: 553
+        width: 58
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e53400fe08ddceb0800000000000000
+      internalID: -4697861277609609758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_5
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 421
+        width: 59
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56e8eff758ac39270800000000000000
+      internalID: 8256165216627101285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_6
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 420
+        width: 57
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fa7f75e87cf1e3e0800000000000000
+      internalID: -2026060761163400462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_7
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 420
+        width: 53
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1eac79f63ef097cc0800000000000000
+      internalID: -3712918948286051615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_8
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 422
+        width: 45
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33f50351507ee6b60800000000000000
+      internalID: 7741378818512805683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_9
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 424
+        width: 44
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ddf158b1df69ad80800000000000000
+      internalID: -8238931096766382639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_10
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 294
+        width: 48
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a18b4dad988ac9c0800000000000000
+      internalID: -3906159515991834208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_11
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 297
+        width: 54
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 815cab9c6f9f1acb0800000000000000
+      internalID: -4854324084986952424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_12
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 293
+        width: 57
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9689eab76a3fe62e0800000000000000
+      internalID: -2130497677334505367
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_13
+      rect:
+        serializedVersion: 2
+        x: 414
+        y: 289
+        width: 57
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baa8e36a9f21a6540800000000000000
+      internalID: 5001831199593630379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_14
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 287
+        width: 56
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69e6ae6170f968c40800000000000000
+      internalID: 5514269646559800982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_15
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 153
+        width: 55
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3330556fc27e1f380800000000000000
+      internalID: -8939109605056380109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_16
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 152
+        width: 52
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a85822577dea4660800000000000000
+      internalID: 7370964836880504996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_17
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 150
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 883ad064ba48bd1f0800000000000000
+      internalID: -1019075019519712376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_18
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 149
+        width: 43
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 658f70eb3df5b8b10800000000000000
+      internalID: 1984785423817766998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_19
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 150
+        width: 37
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08ed2c66d8e5e5200800000000000000
+      internalID: 170677797294104192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_20
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 20
+        width: 33
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41d73240e208e5380800000000000000
+      internalID: -8980599671803904748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Run2_dir7_21
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 22
+        width: 35
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 599a2af8c60f5b480800000000000000
+      internalID: -8883930340861498987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__Run2_dir7_0: 1750426429366249297
+      Boxer__Run2_dir7_1: -4632026625232217398
+      Boxer__Run2_dir7_10: -3906159515991834208
+      Boxer__Run2_dir7_11: -4854324084986952424
+      Boxer__Run2_dir7_12: -2130497677334505367
+      Boxer__Run2_dir7_13: 5001831199593630379
+      Boxer__Run2_dir7_14: 5514269646559800982
+      Boxer__Run2_dir7_15: -8939109605056380109
+      Boxer__Run2_dir7_16: 7370964836880504996
+      Boxer__Run2_dir7_17: -1019075019519712376
+      Boxer__Run2_dir7_18: 1984785423817766998
+      Boxer__Run2_dir7_19: 170677797294104192
+      Boxer__Run2_dir7_2: -2246577262754543245
+      Boxer__Run2_dir7_20: -8980599671803904748
+      Boxer__Run2_dir7_21: -8883930340861498987
+      Boxer__Run2_dir7_3: 5857768633986711238
+      Boxer__Run2_dir7_4: -4697861277609609758
+      Boxer__Run2_dir7_5: 8256165216627101285
+      Boxer__Run2_dir7_6: -2026060761163400462
+      Boxer__Run2_dir7_7: -3712918948286051615
+      Boxer__Run2_dir7_8: 7741378818512805683
+      Boxer__Run2_dir7_9: -8238931096766382639
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

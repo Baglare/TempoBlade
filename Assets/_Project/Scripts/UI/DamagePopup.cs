@@ -7,6 +7,7 @@ public class DamagePopup : MonoBehaviour
     private float disappearTimer;
     private Color textColor;
     private Vector3 moveVector;
+    private DamagePopupManager owner;
 
     private const float DISAPPEAR_TIMER_MAX = 1f;
 
@@ -15,9 +16,15 @@ public class DamagePopup : MonoBehaviour
         textMesh = GetComponent<TextMeshPro>();
     }
 
+    public void SetOwner(DamagePopupManager popupOwner)
+    {
+        owner = popupOwner;
+    }
+
     public void Setup(int damageAmount, bool isCriticalHit)
     {
         textMesh.SetText(damageAmount.ToString());
+        transform.localScale = Vector3.one;
         
         if (!isCriticalHit)
         {
@@ -43,6 +50,7 @@ public class DamagePopup : MonoBehaviour
     public void Setup(string text, Color color, float size = 5f)
     {
         textMesh.SetText(text);
+        transform.localScale = Vector3.one;
         textMesh.fontSize = size;
         textColor = color;
         textMesh.color = textColor;
@@ -81,7 +89,10 @@ public class DamagePopup : MonoBehaviour
             
             if (textColor.a < 0)
             {
-                Destroy(gameObject);
+                if (owner != null)
+                    owner.Recycle(this);
+                else
+                    Destroy(gameObject);
             }
         }
     }

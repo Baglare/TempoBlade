@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: 73ef887918f009a4c88b7549d9e55533
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4807313914506307494
+    second: Boxer__ElbowPunching_dir2_0
+  - first:
+      213: 8480976650709904412
+    second: Boxer__ElbowPunching_dir2_1
+  - first:
+      213: 5115831678340215139
+    second: Boxer__ElbowPunching_dir2_2
+  - first:
+      213: -4051936309350516180
+    second: Boxer__ElbowPunching_dir2_3
+  - first:
+      213: -3852692073446556604
+    second: Boxer__ElbowPunching_dir2_4
+  - first:
+      213: 6815755638836123697
+    second: Boxer__ElbowPunching_dir2_5
+  - first:
+      213: 6393641529063633314
+    second: Boxer__ElbowPunching_dir2_6
+  - first:
+      213: 1096890654925708128
+    second: Boxer__ElbowPunching_dir2_7
+  - first:
+      213: 2985388443339387204
+    second: Boxer__ElbowPunching_dir2_8
+  - first:
+      213: -7529952020532425279
+    second: Boxer__ElbowPunching_dir2_9
+  - first:
+      213: -6096327979706906460
+    second: Boxer__ElbowPunching_dir2_10
+  - first:
+      213: -5476031484199501402
+    second: Boxer__ElbowPunching_dir2_11
+  - first:
+      213: -8751861513718323419
+    second: Boxer__ElbowPunching_dir2_12
+  - first:
+      213: -8940478885266195188
+    second: Boxer__ElbowPunching_dir2_13
+  - first:
+      213: -2456506636424609173
+    second: Boxer__ElbowPunching_dir2_14
+  - first:
+      213: -1923356572521076273
+    second: Boxer__ElbowPunching_dir2_15
+  - first:
+      213: -6490410801477896455
+    second: Boxer__ElbowPunching_dir2_16
+  - first:
+      213: -180900761322249304
+    second: Boxer__ElbowPunching_dir2_17
+  - first:
+      213: 5141586019602486745
+    second: Boxer__ElbowPunching_dir2_18
+  - first:
+      213: 1318836821523585727
+    second: Boxer__ElbowPunching_dir2_19
+  - first:
+      213: 1746993722667138764
+    second: Boxer__ElbowPunching_dir2_20
+  - first:
+      213: 9128223257506607483
+    second: Boxer__ElbowPunching_dir2_21
+  - first:
+      213: 8826392230645315016
+    second: Boxer__ElbowPunching_dir2_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_0
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 549
+        width: 45
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a7e0f5f88207b240800000000000000
+      internalID: 4807313914506307494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_1
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 549
+        width: 45
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1c22f5645b72b570800000000000000
+      internalID: 8480976650709904412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_2
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 549
+        width: 44
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 361b82e7ec51ff640800000000000000
+      internalID: 5115831678340215139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_3
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 550
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2ab7ac0561a4c7c0800000000000000
+      internalID: -4051936309350516180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_4
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 550
+        width: 48
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44c314db8fc788ac0800000000000000
+      internalID: -3852692073446556604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_5
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 418
+        width: 52
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13851b064ad669e50800000000000000
+      internalID: 6815755638836123697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_6
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 417
+        width: 54
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a1f5018817cab850800000000000000
+      internalID: 6393641529063633314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_7
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 417
+        width: 51
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06bda443d30f83f00800000000000000
+      internalID: 1096890654925708128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_8
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 417
+        width: 49
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 441fcc1d8fa3e6920800000000000000
+      internalID: 2985388443339387204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_9
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 416
+        width: 47
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cd0e60688c308790800000000000000
+      internalID: -7529952020532425279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_10
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 284
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a88b4f800e756ba0800000000000000
+      internalID: -6096327979706906460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_11
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 284
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a10f6dd06a3104b0800000000000000
+      internalID: -5476031484199501402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_12
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 284
+        width: 45
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 527286792542b8680800000000000000
+      internalID: -8751861513718323419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_13
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 284
+        width: 46
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0df3d192d90de380800000000000000
+      internalID: -8940478885266195188
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_14
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 285
+        width: 46
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b628583ba3cb8edd0800000000000000
+      internalID: -2456506636424609173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_15
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 153
+        width: 48
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc9e77e336dde45e0800000000000000
+      internalID: -1923356572521076273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_16
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 153
+        width: 48
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f63d8383cd6de5a0800000000000000
+      internalID: -6490410801477896455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_17
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 154
+        width: 50
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a32acd47bf4d7df0800000000000000
+      internalID: -180900761322249304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_18
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 154
+        width: 52
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d555885e359a5740800000000000000
+      internalID: 5141586019602486745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_19
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 154
+        width: 53
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fba5e970a137d4210800000000000000
+      internalID: 1318836821523585727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_20
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 22
+        width: 52
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cce7968e8819e3810800000000000000
+      internalID: 1746993722667138764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_21
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 22
+        width: 50
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b71f32670b6fdae70800000000000000
+      internalID: 9128223257506607483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__ElbowPunching_dir2_22
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 22
+        width: 48
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c5b1e338f4ad7a70800000000000000
+      internalID: 8826392230645315016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__ElbowPunching_dir2_0: 4807313914506307494
+      Boxer__ElbowPunching_dir2_1: 8480976650709904412
+      Boxer__ElbowPunching_dir2_10: -6096327979706906460
+      Boxer__ElbowPunching_dir2_11: -5476031484199501402
+      Boxer__ElbowPunching_dir2_12: -8751861513718323419
+      Boxer__ElbowPunching_dir2_13: -8940478885266195188
+      Boxer__ElbowPunching_dir2_14: -2456506636424609173
+      Boxer__ElbowPunching_dir2_15: -1923356572521076273
+      Boxer__ElbowPunching_dir2_16: -6490410801477896455
+      Boxer__ElbowPunching_dir2_17: -180900761322249304
+      Boxer__ElbowPunching_dir2_18: 5141586019602486745
+      Boxer__ElbowPunching_dir2_19: 1318836821523585727
+      Boxer__ElbowPunching_dir2_2: 5115831678340215139
+      Boxer__ElbowPunching_dir2_20: 1746993722667138764
+      Boxer__ElbowPunching_dir2_21: 9128223257506607483
+      Boxer__ElbowPunching_dir2_22: 8826392230645315016
+      Boxer__ElbowPunching_dir2_3: -4051936309350516180
+      Boxer__ElbowPunching_dir2_4: -3852692073446556604
+      Boxer__ElbowPunching_dir2_5: 6815755638836123697
+      Boxer__ElbowPunching_dir2_6: 6393641529063633314
+      Boxer__ElbowPunching_dir2_7: 1096890654925708128
+      Boxer__ElbowPunching_dir2_8: 2985388443339387204
+      Boxer__ElbowPunching_dir2_9: -7529952020532425279
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

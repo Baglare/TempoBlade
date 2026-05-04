@@ -79,7 +79,7 @@ public class EnemyWardenLinker : EnemyBase
     protected override void Start()
     {
         base.Start();
-        deathDelay = deathAnimDuration;
+        deathDelay = ResolveDeathAnimationDelay(deathAnimDuration);
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
@@ -511,8 +511,8 @@ public class EnemyWardenLinker : EnemyBase
 
         EliteWardenLinkerMultipleLinkSettings settings = ActiveEliteProfile.wardenLinkerMultipleLink;
         List<EnemyBase> candidates = new List<EnemyBase>();
-        EnemyBase[] enemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
-        for (int i = 0; i < enemies.Length; i++)
+        IReadOnlyList<EnemyBase> enemies = EnemyBase.ActiveEnemies;
+        for (int i = 0; i < enemies.Count; i++)
         {
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy == this || enemy == primaryTarget || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)

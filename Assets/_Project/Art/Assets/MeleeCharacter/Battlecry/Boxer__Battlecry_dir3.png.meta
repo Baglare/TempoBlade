@@ -1,0 +1,1443 @@
+fileFormatVersion: 2
+guid: 2448c1df16a7cb640a4889d2e31e72e3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4486564605111359248
+    second: Boxer__Battlecry_dir3_0
+  - first:
+      213: -8695625174089265119
+    second: Boxer__Battlecry_dir3_1
+  - first:
+      213: 2989488519463432859
+    second: Boxer__Battlecry_dir3_2
+  - first:
+      213: -3181170140983707173
+    second: Boxer__Battlecry_dir3_3
+  - first:
+      213: -4744485864277298050
+    second: Boxer__Battlecry_dir3_4
+  - first:
+      213: 750076510517212881
+    second: Boxer__Battlecry_dir3_5
+  - first:
+      213: -7014680819812555018
+    second: Boxer__Battlecry_dir3_6
+  - first:
+      213: -8905843973118475406
+    second: Boxer__Battlecry_dir3_7
+  - first:
+      213: 2576550142386207167
+    second: Boxer__Battlecry_dir3_8
+  - first:
+      213: 1019969046978963910
+    second: Boxer__Battlecry_dir3_9
+  - first:
+      213: 2835707152418050321
+    second: Boxer__Battlecry_dir3_10
+  - first:
+      213: 5155293372217275035
+    second: Boxer__Battlecry_dir3_11
+  - first:
+      213: 931177724184782052
+    second: Boxer__Battlecry_dir3_12
+  - first:
+      213: -5253521219114155546
+    second: Boxer__Battlecry_dir3_13
+  - first:
+      213: -4640038184332247386
+    second: Boxer__Battlecry_dir3_14
+  - first:
+      213: -2599856841328416289
+    second: Boxer__Battlecry_dir3_15
+  - first:
+      213: 8684814816468432258
+    second: Boxer__Battlecry_dir3_16
+  - first:
+      213: 1983920290384038009
+    second: Boxer__Battlecry_dir3_17
+  - first:
+      213: -30293265167235319
+    second: Boxer__Battlecry_dir3_18
+  - first:
+      213: -3875038586204036463
+    second: Boxer__Battlecry_dir3_19
+  - first:
+      213: -2390870606979466839
+    second: Boxer__Battlecry_dir3_20
+  - first:
+      213: 3498045887911626432
+    second: Boxer__Battlecry_dir3_21
+  - first:
+      213: -7323444488768932020
+    second: Boxer__Battlecry_dir3_22
+  - first:
+      213: 7973824501722424781
+    second: Boxer__Battlecry_dir3_23
+  - first:
+      213: 2779015015925941169
+    second: Boxer__Battlecry_dir3_24
+  - first:
+      213: -6897594409011057174
+    second: Boxer__Battlecry_dir3_25
+  - first:
+      213: 3130055371743364793
+    second: Boxer__Battlecry_dir3_26
+  - first:
+      213: -9128929177598627992
+    second: Boxer__Battlecry_dir3_27
+  - first:
+      213: 1597112090247073883
+    second: Boxer__Battlecry_dir3_28
+  - first:
+      213: -7757184943081508908
+    second: Boxer__Battlecry_dir3_29
+  - first:
+      213: 5347504404523375085
+    second: Boxer__Battlecry_dir3_30
+  - first:
+      213: -741215686121534304
+    second: Boxer__Battlecry_dir3_31
+  - first:
+      213: -936472765780195229
+    second: Boxer__Battlecry_dir3_32
+  - first:
+      213: -1036103464422064907
+    second: Boxer__Battlecry_dir3_33
+  - first:
+      213: 6610823798281222956
+    second: Boxer__Battlecry_dir3_34
+  - first:
+      213: -2186130195835025602
+    second: Boxer__Battlecry_dir3_35
+  - first:
+      213: 3800658286100113031
+    second: Boxer__Battlecry_dir3_36
+  - first:
+      213: -7384331304447853080
+    second: Boxer__Battlecry_dir3_37
+  - first:
+      213: 131004469137384104
+    second: Boxer__Battlecry_dir3_38
+  - first:
+      213: 6006477586640281478
+    second: Boxer__Battlecry_dir3_39
+  - first:
+      213: 7024203201079473101
+    second: Boxer__Battlecry_dir3_40
+  - first:
+      213: -4704719169236377023
+    second: Boxer__Battlecry_dir3_41
+  - first:
+      213: 1863016657259343258
+    second: Boxer__Battlecry_dir3_42
+  - first:
+      213: 13733863411192536
+    second: Boxer__Battlecry_dir3_43
+  - first:
+      213: -8508734351154719631
+    second: Boxer__Battlecry_dir3_44
+  - first:
+      213: 1102017869511001475
+    second: Boxer__Battlecry_dir3_45
+  - first:
+      213: -415932080715625331
+    second: Boxer__Battlecry_dir3_46
+  - first:
+      213: 3188182743584367843
+    second: Boxer__Battlecry_dir3_47
+  - first:
+      213: -4918731202137602866
+    second: Boxer__Battlecry_dir3_48
+  - first:
+      213: -70531527342489479
+    second: Boxer__Battlecry_dir3_49
+  - first:
+      213: -4512636420755116324
+    second: Boxer__Battlecry_dir3_50
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_0
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 814
+        width: 60
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 017d08dccba734e30800000000000000
+      internalID: 4486564605111359248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_1
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 815
+        width: 53
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 120177eb9fee25780800000000000000
+      internalID: -8695625174089265119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_2
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 815
+        width: 52
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b92f9be28fbcc7920800000000000000
+      internalID: 2989488519463432859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_3
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 816
+        width: 52
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd936908c963ad3d0800000000000000
+      internalID: -3181170140983707173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_4
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 816
+        width: 52
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e74b3e96e33382eb0800000000000000
+      internalID: -4744485864277298050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_5
+      rect:
+        serializedVersion: 2
+        x: 667
+        y: 816
+        width: 52
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d63ebbbc9ec86a00800000000000000
+      internalID: 750076510517212881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_6
+      rect:
+        serializedVersion: 2
+        x: 793
+        y: 816
+        width: 52
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f6a352b5f8d6ae90800000000000000
+      internalID: -7014680819812555018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_7
+      rect:
+        serializedVersion: 2
+        x: 919
+        y: 815
+        width: 53
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27348357716186480800000000000000
+      internalID: -8905843973118475406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_8
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 681
+        width: 55
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb979ee04beb1c320800000000000000
+      internalID: 2576550142386207167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_9
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 681
+        width: 75
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c92317b178a72e00800000000000000
+      internalID: 1019969046978963910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_10
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 681
+        width: 76
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11199e281a47a5720800000000000000
+      internalID: 2835707152418050321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_11
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 681
+        width: 70
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b92bfe312084b8740800000000000000
+      internalID: 5155293372217275035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_12
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 681
+        width: 65
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e46ac0e4353cec00800000000000000
+      internalID: 931177724184782052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_13
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 681
+        width: 67
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e149ba194eb717b0800000000000000
+      internalID: -5253521219114155546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_14
+      rect:
+        serializedVersion: 2
+        x: 789
+        y: 681
+        width: 68
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6aeb0a6fad54b9fb0800000000000000
+      internalID: -4640038184332247386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_15
+      rect:
+        serializedVersion: 2
+        x: 913
+        y: 681
+        width: 69
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd920c93af37bebd0800000000000000
+      internalID: -2599856841328416289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_16
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 549
+        width: 68
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28576abbf09a68870800000000000000
+      internalID: 8684814816468432258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_17
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 549
+        width: 67
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 978c70b2efc488b10800000000000000
+      internalID: 1983920290384038009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_18
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 549
+        width: 65
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 907ce929f60649ff0800000000000000
+      internalID: -30293265167235319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_19
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 550
+        width: 63
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 192606acfe8193ac0800000000000000
+      internalID: -3875038586204036463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_20
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 550
+        width: 63
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a9f01fa9dbe1ded0800000000000000
+      internalID: -2390870606979466839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_21
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 550
+        width: 63
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c60dfc933e8b8030800000000000000
+      internalID: 3498045887911626432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_22
+      rect:
+        serializedVersion: 2
+        x: 789
+        y: 550
+        width: 61
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c47b2aae906ed5a90800000000000000
+      internalID: -7323444488768932020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_23
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 550
+        width: 61
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc5a87e1327b8ae60800000000000000
+      internalID: 7973824501722424781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_24
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 418
+        width: 61
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b30eb1ee6b019620800000000000000
+      internalID: 2779015015925941169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_25
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 418
+        width: 59
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aedec261e62d640a0800000000000000
+      internalID: -6897594409011057174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_26
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 418
+        width: 59
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b60110e6c0307b20800000000000000
+      internalID: 3130055371743364793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_27
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 418
+        width: 60
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86fe885b7478f4180800000000000000
+      internalID: -9128929177598627992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_28
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 417
+        width: 59
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5098a5fbf41a2610800000000000000
+      internalID: 1597112090247073883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_29
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 417
+        width: 59
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4df2e92c461f85490800000000000000
+      internalID: -7757184943081508908
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_30
+      rect:
+        serializedVersion: 2
+        x: 788
+        y: 417
+        width: 60
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de9d3727ce6263a40800000000000000
+      internalID: 5347504404523375085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_31
+      rect:
+        serializedVersion: 2
+        x: 911
+        y: 418
+        width: 62
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ac47c6b24ca6b5f0800000000000000
+      internalID: -741215686121534304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_32
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 286
+        width: 64
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36808dd2bfaf003f0800000000000000
+      internalID: -936472765780195229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_33
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 286
+        width: 65
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fc329c73650f91f0800000000000000
+      internalID: -1036103464422064907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_34
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 286
+        width: 66
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2b3049083d5ebb50800000000000000
+      internalID: 6610823798281222956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_35
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 286
+        width: 66
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e378f746b2e49a1e0800000000000000
+      internalID: -2186130195835025602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_36
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 286
+        width: 67
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78664af0396aeb430800000000000000
+      internalID: 3800658286100113031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_37
+      rect:
+        serializedVersion: 2
+        x: 657
+        y: 286
+        width: 66
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8edb69e6dc5958990800000000000000
+      internalID: -7384331304447853080
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_38
+      rect:
+        serializedVersion: 2
+        x: 785
+        y: 286
+        width: 65
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a22ceededb61d100800000000000000
+      internalID: 131004469137384104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_39
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 286
+        width: 65
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68f1a079a8b4b5350800000000000000
+      internalID: 6006477586640281478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_40
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 154
+        width: 65
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc3f086789bfa7160800000000000000
+      internalID: 7024203201079473101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_41
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 154
+        width: 66
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 142e1bd97da75beb0800000000000000
+      internalID: -4704719169236377023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_42
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 155
+        width: 65
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9d249277c3cad910800000000000000
+      internalID: 1863016657259343258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_43
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 155
+        width: 65
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d2940240eac03000800000000000000
+      internalID: 13733863411192536
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_44
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 155
+        width: 65
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17452475037eae980800000000000000
+      internalID: -8508734351154719631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_45
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 155
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3850650e9672b4f00800000000000000
+      internalID: 1102017869511001475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_46
+      rect:
+        serializedVersion: 2
+        x: 788
+        y: 155
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8c814ee9ff4a3af0800000000000000
+      internalID: -415932080715625331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_47
+      rect:
+        serializedVersion: 2
+        x: 914
+        y: 155
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e460664053be3c20800000000000000
+      internalID: 3188182743584367843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_48
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 23
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec445fe38082dbbb0800000000000000
+      internalID: -4918731202137602866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_49
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 23
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 970094713fb650ff0800000000000000
+      internalID: -70531527342489479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__Battlecry_dir3_50
+      rect:
+        serializedVersion: 2
+        x: 284
+        y: 23
+        width: 64
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdea6649515ef51c0800000000000000
+      internalID: -4512636420755116324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__Battlecry_dir3_0: 4486564605111359248
+      Boxer__Battlecry_dir3_1: -8695625174089265119
+      Boxer__Battlecry_dir3_10: 2835707152418050321
+      Boxer__Battlecry_dir3_11: 5155293372217275035
+      Boxer__Battlecry_dir3_12: 931177724184782052
+      Boxer__Battlecry_dir3_13: -5253521219114155546
+      Boxer__Battlecry_dir3_14: -4640038184332247386
+      Boxer__Battlecry_dir3_15: -2599856841328416289
+      Boxer__Battlecry_dir3_16: 8684814816468432258
+      Boxer__Battlecry_dir3_17: 1983920290384038009
+      Boxer__Battlecry_dir3_18: -30293265167235319
+      Boxer__Battlecry_dir3_19: -3875038586204036463
+      Boxer__Battlecry_dir3_2: 2989488519463432859
+      Boxer__Battlecry_dir3_20: -2390870606979466839
+      Boxer__Battlecry_dir3_21: 3498045887911626432
+      Boxer__Battlecry_dir3_22: -7323444488768932020
+      Boxer__Battlecry_dir3_23: 7973824501722424781
+      Boxer__Battlecry_dir3_24: 2779015015925941169
+      Boxer__Battlecry_dir3_25: -6897594409011057174
+      Boxer__Battlecry_dir3_26: 3130055371743364793
+      Boxer__Battlecry_dir3_27: -9128929177598627992
+      Boxer__Battlecry_dir3_28: 1597112090247073883
+      Boxer__Battlecry_dir3_29: -7757184943081508908
+      Boxer__Battlecry_dir3_3: -3181170140983707173
+      Boxer__Battlecry_dir3_30: 5347504404523375085
+      Boxer__Battlecry_dir3_31: -741215686121534304
+      Boxer__Battlecry_dir3_32: -936472765780195229
+      Boxer__Battlecry_dir3_33: -1036103464422064907
+      Boxer__Battlecry_dir3_34: 6610823798281222956
+      Boxer__Battlecry_dir3_35: -2186130195835025602
+      Boxer__Battlecry_dir3_36: 3800658286100113031
+      Boxer__Battlecry_dir3_37: -7384331304447853080
+      Boxer__Battlecry_dir3_38: 131004469137384104
+      Boxer__Battlecry_dir3_39: 6006477586640281478
+      Boxer__Battlecry_dir3_4: -4744485864277298050
+      Boxer__Battlecry_dir3_40: 7024203201079473101
+      Boxer__Battlecry_dir3_41: -4704719169236377023
+      Boxer__Battlecry_dir3_42: 1863016657259343258
+      Boxer__Battlecry_dir3_43: 13733863411192536
+      Boxer__Battlecry_dir3_44: -8508734351154719631
+      Boxer__Battlecry_dir3_45: 1102017869511001475
+      Boxer__Battlecry_dir3_46: -415932080715625331
+      Boxer__Battlecry_dir3_47: 3188182743584367843
+      Boxer__Battlecry_dir3_48: -4918731202137602866
+      Boxer__Battlecry_dir3_49: -70531527342489479
+      Boxer__Battlecry_dir3_5: 750076510517212881
+      Boxer__Battlecry_dir3_50: -4512636420755116324
+      Boxer__Battlecry_dir3_6: -7014680819812555018
+      Boxer__Battlecry_dir3_7: -8905843973118475406
+      Boxer__Battlecry_dir3_8: 2576550142386207167
+      Boxer__Battlecry_dir3_9: 1019969046978963910
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

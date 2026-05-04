@@ -43,10 +43,10 @@ public static class EnemySupportUtility
         if (origin == null)
             return;
 
-        EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> enemies = EnemyBase.ActiveEnemies;
         float radiusSqr = radius * radius;
 
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy == exclude || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
@@ -66,9 +66,9 @@ public static class EnemySupportUtility
         if (self == null)
             return bestPosition;
 
-        EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> enemies = EnemyBase.ActiveEnemies;
         float bestScore = -1f;
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             EnemyBase candidate = enemies[i];
             if (candidate == null || candidate == exclude || candidate.CurrentHealth <= 0f || !candidate.gameObject.activeInHierarchy)
@@ -93,11 +93,11 @@ public static class EnemySupportUtility
 
     public static EnemyBase SelectGuardianLinkTarget(Transform self, float searchRadius, EnemyBase exclude)
     {
-        EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> enemies = EnemyBase.ActiveEnemies;
         EnemyBase bestTarget = null;
         float bestScore = float.MinValue;
 
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy == exclude || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)
@@ -135,6 +135,7 @@ public static class EnemySupportUtility
         Vector2 best = player.position;
         float bestScore = float.MinValue;
         int clampedSamples = Mathf.Max(4, sampleCount);
+        EnemyBase selfEnemy = self.GetComponent<EnemyBase>();
         for (int i = 0; i < clampedSamples; i++)
         {
             float angle = (360f / clampedSamples) * i;
@@ -148,7 +149,7 @@ public static class EnemySupportUtility
             if (moveDir.sqrMagnitude > 0.001f)
                 score += Mathf.Max(0f, Vector2.Dot((candidate - (Vector2)player.position).normalized, moveDir)) * forwardBias;
 
-            int nearbyAllies = CountAlliesInRadius(candidate, 2.8f, self.GetComponent<EnemyBase>());
+            int nearbyAllies = CountAlliesInRadius(candidate, 2.8f, selfEnemy);
             score += nearbyAllies * 0.45f;
 
             if (score > bestScore)
@@ -163,11 +164,11 @@ public static class EnemySupportUtility
 
     private static int CountAlliesInRadius(Vector2 center, float radius, EnemyBase exclude)
     {
-        EnemyBase[] enemies = Object.FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+        IReadOnlyList<EnemyBase> enemies = EnemyBase.ActiveEnemies;
         int count = 0;
         float radiusSqr = radius * radius;
 
-        for (int i = 0; i < enemies.Length; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             EnemyBase enemy = enemies[i];
             if (enemy == null || enemy == exclude || enemy.CurrentHealth <= 0f || !enemy.gameObject.activeInHierarchy)

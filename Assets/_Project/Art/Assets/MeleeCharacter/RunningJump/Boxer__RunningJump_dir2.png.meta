@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: 7e024d65f02070946af94cff58f20588
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -16674864939448589
+    second: Boxer__RunningJump_dir2_0
+  - first:
+      213: -6403264741978263571
+    second: Boxer__RunningJump_dir2_1
+  - first:
+      213: 8173428105748667975
+    second: Boxer__RunningJump_dir2_2
+  - first:
+      213: -5968123013243403360
+    second: Boxer__RunningJump_dir2_3
+  - first:
+      213: 3307750540140763949
+    second: Boxer__RunningJump_dir2_4
+  - first:
+      213: 4183188107126060764
+    second: Boxer__RunningJump_dir2_5
+  - first:
+      213: -9094442394569629044
+    second: Boxer__RunningJump_dir2_6
+  - first:
+      213: 8256758060106348515
+    second: Boxer__RunningJump_dir2_7
+  - first:
+      213: 4944836367430406209
+    second: Boxer__RunningJump_dir2_8
+  - first:
+      213: -6473859226164932851
+    second: Boxer__RunningJump_dir2_9
+  - first:
+      213: 2934394378639700290
+    second: Boxer__RunningJump_dir2_10
+  - first:
+      213: 4501546685709312139
+    second: Boxer__RunningJump_dir2_11
+  - first:
+      213: -8374847371614076373
+    second: Boxer__RunningJump_dir2_12
+  - first:
+      213: -7165122957404670808
+    second: Boxer__RunningJump_dir2_13
+  - first:
+      213: 550930359648177661
+    second: Boxer__RunningJump_dir2_14
+  - first:
+      213: 2494774836447308553
+    second: Boxer__RunningJump_dir2_15
+  - first:
+      213: 1702657576955167201
+    second: Boxer__RunningJump_dir2_16
+  - first:
+      213: -2344190670137972829
+    second: Boxer__RunningJump_dir2_17
+  - first:
+      213: 3579473970214058020
+    second: Boxer__RunningJump_dir2_18
+  - first:
+      213: 1528601042635839849
+    second: Boxer__RunningJump_dir2_19
+  - first:
+      213: -2602088411709458694
+    second: Boxer__RunningJump_dir2_20
+  - first:
+      213: -4772847478139569662
+    second: Boxer__RunningJump_dir2_21
+  - first:
+      213: -604365138192903627
+    second: Boxer__RunningJump_dir2_22
+  - first:
+      213: 1722322383123367840
+    second: Boxer__RunningJump_dir2_23
+  - first:
+      213: -473853217274098529
+    second: Boxer__RunningJump_dir2_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_0
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 549
+        width: 48
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f64b967c42c4cff0800000000000000
+      internalID: -16674864939448589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_1
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 549
+        width: 62
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: def2a93a4a80327a0800000000000000
+      internalID: -6403264741978263571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_2
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 551
+        width: 62
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74ed758be89dd6170800000000000000
+      internalID: 8173428105748667975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_3
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 551
+        width: 61
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a30bcb6db7fc2da0800000000000000
+      internalID: -5968123013243403360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_4
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 549
+        width: 41
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2b52be479d77ed20800000000000000
+      internalID: 3307750540140763949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_5
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 416
+        width: 43
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd633e18b6bad0a30800000000000000
+      internalID: 4183188107126060764
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_6
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 417
+        width: 50
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c82ac6993dc0ac180800000000000000
+      internalID: -9094442394569629044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_7
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 418
+        width: 48
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e77bf0a5b5e59270800000000000000
+      internalID: 8256758060106348515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_8
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 422
+        width: 42
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1405f113a769f9440800000000000000
+      internalID: 4944836367430406209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_9
+      rect:
+        serializedVersion: 2
+        x: 543
+        y: 431
+        width: 35
+        height: 83
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0fcd82755b3826a0800000000000000
+      internalID: -6473859226164932851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_10
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 308
+        width: 33
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 241f8b9e32019b820800000000000000
+      internalID: 2934394378639700290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_11
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 315
+        width: 36
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b806a854cd4b87e30800000000000000
+      internalID: 4501546685709312139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_12
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 314
+        width: 39
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2244d6ffa096cb80800000000000000
+      internalID: -8374847371614076373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_13
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 313
+        width: 42
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a4f5e7f1ae509c90800000000000000
+      internalID: -7165122957404670808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_14
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 311
+        width: 44
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfdcece3e3c45a700800000000000000
+      internalID: 550930359648177661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_15
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 172
+        width: 47
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90b6601fe783f9220800000000000000
+      internalID: 2494774836447308553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_16
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 166
+        width: 49
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e14a809b0e01a710800000000000000
+      internalID: 1702657576955167201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_17
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 160
+        width: 52
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a724ac6103c77fd0800000000000000
+      internalID: -2344190670137972829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_18
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 155
+        width: 53
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 428bd5d6c98dca130800000000000000
+      internalID: 3579473970214058020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_19
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 154
+        width: 56
+        height: 76
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 969d995ac8ea63510800000000000000
+      internalID: 1528601042635839849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_20
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 22
+        width: 57
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af6b5e1406683ebd0800000000000000
+      internalID: -2602088411709458694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_21
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 23
+        width: 60
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20a3f5a918073cdb0800000000000000
+      internalID: -4772847478139569662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_22
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 23
+        width: 57
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 532d16fdb1ddc97f0800000000000000
+      internalID: -604365138192903627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_23
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 25
+        width: 51
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a7c5ca051be6e710800000000000000
+      internalID: 1722322383123367840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boxer__RunningJump_dir2_24
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 25
+        width: 44
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9c83bc62098c69f0800000000000000
+      internalID: -473853217274098529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boxer__RunningJump_dir2_0: -16674864939448589
+      Boxer__RunningJump_dir2_1: -6403264741978263571
+      Boxer__RunningJump_dir2_10: 2934394378639700290
+      Boxer__RunningJump_dir2_11: 4501546685709312139
+      Boxer__RunningJump_dir2_12: -8374847371614076373
+      Boxer__RunningJump_dir2_13: -7165122957404670808
+      Boxer__RunningJump_dir2_14: 550930359648177661
+      Boxer__RunningJump_dir2_15: 2494774836447308553
+      Boxer__RunningJump_dir2_16: 1702657576955167201
+      Boxer__RunningJump_dir2_17: -2344190670137972829
+      Boxer__RunningJump_dir2_18: 3579473970214058020
+      Boxer__RunningJump_dir2_19: 1528601042635839849
+      Boxer__RunningJump_dir2_2: 8173428105748667975
+      Boxer__RunningJump_dir2_20: -2602088411709458694
+      Boxer__RunningJump_dir2_21: -4772847478139569662
+      Boxer__RunningJump_dir2_22: -604365138192903627
+      Boxer__RunningJump_dir2_23: 1722322383123367840
+      Boxer__RunningJump_dir2_24: -473853217274098529
+      Boxer__RunningJump_dir2_3: -5968123013243403360
+      Boxer__RunningJump_dir2_4: 3307750540140763949
+      Boxer__RunningJump_dir2_5: 4183188107126060764
+      Boxer__RunningJump_dir2_6: -9094442394569629044
+      Boxer__RunningJump_dir2_7: 8256758060106348515
+      Boxer__RunningJump_dir2_8: 4944836367430406209
+      Boxer__RunningJump_dir2_9: -6473859226164932851
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

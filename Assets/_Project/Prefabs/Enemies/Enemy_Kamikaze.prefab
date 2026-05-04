@@ -342,8 +342,10 @@ MonoBehaviour:
   movementFacingDirection: {x: 1, y: 0}
   aimDirection: {x: 1, y: 0}
   actionFacingDirection: {x: 1, y: 0}
+  storedIdleFacingDirection: {x: 1, y: 0}
   currentVisualFacingDirection: {x: 1, y: 0}
   actionFacingOverrideActive: 0
+  hasStoredActionFacing: 0
   chosenFacingSource: 0
   rawMoveInput: {x: 0, y: 0}
   hasMoveInput: 0
