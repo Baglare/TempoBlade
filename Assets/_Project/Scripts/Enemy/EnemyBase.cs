@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EnemyBase : MonoBehaviour, IDamageable
+public abstract class EnemyBase : MonoBehaviour, IDamageable, ICombatTarget
 {
     public static event Action<EnemyCombatActionEvent> OnEnemyCombatAction;
     private static readonly List<EnemyBase> activeEnemies = new List<EnemyBase>();
@@ -44,6 +44,9 @@ public abstract class EnemyBase : MonoBehaviour, IDamageable
     public float CurrentHealth => currentHealth;
     public float MaxHealth => GetEffectiveMaxHealth(enemyData != null ? enemyData.maxHealth : 100f);
     public float HealthPercent => MaxHealth > 0f ? currentHealth / MaxHealth : 0f;
+    public Transform TargetTransform => transform;
+    public GameObject TargetObject => gameObject;
+    public bool IsAlive => currentHealth > 0f;
     public TempoManager.TempoTier CurrentTempoTier => currentTempoTier;
     public bool IsElite => isElite && eliteProfile != null;
     public EliteProfileSO ActiveEliteProfile => eliteProfile;

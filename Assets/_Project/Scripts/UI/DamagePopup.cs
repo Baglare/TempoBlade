@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class DamagePopup : MonoBehaviour
+public class DamagePopup : MonoBehaviour, IRuntimePoolable
 {
     private TextMeshPro textMesh;
     private float disappearTimer;
@@ -19,6 +19,17 @@ public class DamagePopup : MonoBehaviour
     public void SetOwner(DamagePopupManager popupOwner)
     {
         owner = popupOwner;
+    }
+
+    public void OnSpawnedFromPool()
+    {
+        if (textMesh == null)
+            textMesh = GetComponent<TextMeshPro>();
+    }
+
+    public void OnReturnedToPool()
+    {
+        owner = null;
     }
 
     public void Setup(int damageAmount, bool isCriticalHit)

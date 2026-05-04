@@ -75,6 +75,7 @@ public class DamagePopupManager : MonoBehaviour
 
         popup.gameObject.SetActive(false);
         popup.transform.SetParent(transform, false);
+        popup.OnReturnedToPool();
         popupPool.Enqueue(popup);
     }
 
@@ -91,6 +92,7 @@ public class DamagePopupManager : MonoBehaviour
 
         particle.gameObject.SetActive(false);
         particle.transform.SetParent(transform, false);
+        particle.OnReturnedToPool();
         hitParticlePool.Enqueue(particle);
     }
 
@@ -106,6 +108,7 @@ public class DamagePopupManager : MonoBehaviour
             popupTransform.SetParent(null, true);
             popupTransform.SetPositionAndRotation(position, Quaternion.identity);
             popup.gameObject.SetActive(true);
+            popup.OnSpawnedFromPool();
             return popup;
         }
 
@@ -113,6 +116,8 @@ public class DamagePopupManager : MonoBehaviour
         popup = damagePopupTransform.GetComponent<DamagePopup>();
         if (popup == null)
             Destroy(damagePopupTransform.gameObject);
+        else
+            popup.OnSpawnedFromPool();
 
         return popup;
     }
@@ -129,6 +134,7 @@ public class DamagePopupManager : MonoBehaviour
             particleTransform.SetParent(null, true);
             particleTransform.SetPositionAndRotation(position, Quaternion.identity);
             particle.gameObject.SetActive(true);
+            particle.OnSpawnedFromPool();
             return particle;
         }
 
@@ -136,6 +142,8 @@ public class DamagePopupManager : MonoBehaviour
         particle = instance.GetComponent<HitParticle>();
         if (particle == null)
             Destroy(instance, 0.25f);
+        else
+            particle.OnSpawnedFromPool();
 
         return particle;
     }

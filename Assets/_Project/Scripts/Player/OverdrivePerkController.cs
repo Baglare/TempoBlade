@@ -452,27 +452,7 @@ public class OverdrivePerkController : MonoBehaviour
 
     private void TransferPrey(Vector3 origin)
     {
-        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(origin, preyMarkerRange, ref preyTransferHitBuffer, 32);
-        EnemyBase best = null;
-        float bestDist = float.MaxValue;
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            Collider2D hit = preyTransferHitBuffer[i];
-            if (hit == null)
-                continue;
-
-            var enemy = hit.GetComponent<EnemyBase>();
-            if (enemy == null)
-                continue;
-
-            float dist = Vector2.Distance(origin, enemy.transform.position);
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                best = enemy;
-            }
-        }
+        EnemyBase best = DashPerkTargetSelector.SelectClosestEnemy(origin, preyMarkerRange, ref preyTransferHitBuffer, 32);
 
         if (best != null)
             SetPrey(best);

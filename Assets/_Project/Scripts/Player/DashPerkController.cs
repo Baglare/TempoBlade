@@ -764,27 +764,7 @@ public class DashPerkController : MonoBehaviour
 
     private void SelectNewHuntTarget()
     {
-        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(transform.position, randomTargetRange, ref dashPerkHitBuffer, 64);
-        EnemyBase closest = null;
-        float closestDist = float.MaxValue;
-
-        for (int i = 0; i < hitCount; i++)
-        {
-            Collider2D col = dashPerkHitBuffer[i];
-            if (col == null)
-                continue;
-
-            if (!col.CompareTag("Enemy")) continue;
-            var enemy = col.GetComponent<EnemyBase>();
-            if (enemy == null) continue;
-
-            float dist = Vector2.Distance(transform.position, col.transform.position);
-            if (dist < closestDist)
-            {
-                closestDist = dist;
-                closest = enemy;
-            }
-        }
+        EnemyBase closest = DashPerkTargetSelector.SelectClosestEnemy(transform.position, randomTargetRange, ref dashPerkHitBuffer, 64, true);
 
         if (_currentHuntTarget != null && _currentHuntTarget != closest)
             _currentHuntTarget.SetPerkMarker(false, Color.red);
@@ -1357,5 +1337,38 @@ public class DashPerkController : MonoBehaviour
         {
             playerController.IsInvulnerable = false;
         }
+    }
+}
+
+public static class DashPerkTargetSelector
+{
+    public static EnemyBase SelectClosestEnemy(Vector3 origin, float range, ref Collider2D[] hitBuffer, int minimumBufferSize = 64, bool requireEnemyTag = false)
+    {
+        int hitCount = CombatPhysicsQueryUtility.OverlapCircleAllLayers(origin, range, ref hitBuffer, minimumBufferSize);
+        EnemyBase closest = null;
+        float closestSqrDistance = float.MaxValue;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = hitBuffer[i];
+            if (hit == null)
+                continue;
+
+            if (requireEnemyTag && !hit.CompareTag("Enemy"))
+                continue;
+
+            EnemyBase enemy = hit.GetComponent<EnemyBase>();
+            if (enemy == null)
+                continue;
+
+            float sqrDistance = ((Vector2)origin - (Vector2)enemy.transform.position).sqrMagnitude;
+            if (sqrDistance < closestSqrDistance)
+            {
+                closestSqrDistance = sqrDistance;
+                closest = enemy;
+            }
+        }
+
+        return closest;
     }
 }

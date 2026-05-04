@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerCombat : MonoBehaviour, IDamageable
+public class PlayerCombat : MonoBehaviour, IDamageable, ICombatTarget
 {
     [Header("Stats")]
     public float maxHealth = 100f;
@@ -75,6 +75,11 @@ public class PlayerCombat : MonoBehaviour, IDamageable
     public event System.Action<PlayerAttackFeedbackData> OnAttackEnded;
 
     public Transform AttackPoint => attackPoint;
+    public Transform TargetTransform => transform;
+    public GameObject TargetObject => gameObject;
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
+    public bool IsAlive => !IsDead && currentHealth > 0f;
     public LayerMask EnemyLayers => enemyLayers;
     public Vector2 CurrentAimDirection => currentAimDir;
     public bool IsSwinging => isSwinging;

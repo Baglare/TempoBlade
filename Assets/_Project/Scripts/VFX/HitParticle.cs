@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class HitParticle : MonoBehaviour
+public class HitParticle : MonoBehaviour, IRuntimePoolable
 {
     public float lifetime = 0.2f;
     private DamagePopupManager owner;
@@ -28,6 +28,21 @@ public class HitParticle : MonoBehaviour
         transform.localScale = Vector3.one * randomScale;
 
         lifetimeRoutine = StartCoroutine(LifetimeRoutine());
+    }
+
+    public void OnSpawnedFromPool()
+    {
+    }
+
+    public void OnReturnedToPool()
+    {
+        if (lifetimeRoutine != null)
+        {
+            StopCoroutine(lifetimeRoutine);
+            lifetimeRoutine = null;
+        }
+
+        owner = null;
     }
 
     private IEnumerator LifetimeRoutine()

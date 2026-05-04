@@ -727,16 +727,7 @@ public class SkillTreePanelUI : MonoBehaviour
 
     private Vector2 GridToLocal(Vector2Int grid)
     {
-        const float totalCols = 5f;
-        const float totalRows = 7f;
-        float cellWidth = nodeSize.x + horizontalSpacing;
-        float cellHeight = nodeSize.y + verticalSpacing;
-        float totalWidth = totalCols * cellWidth;
-        float totalHeight = totalRows * cellHeight;
-
-        float x = grid.x * cellWidth - totalWidth * 0.5f + cellWidth * 0.5f;
-        float y = -grid.y * cellHeight + totalHeight * 0.5f - cellHeight * 0.5f;
-        return new Vector2(x, y);
+        return SkillTreeLayoutUtility.GridToLocal(grid, nodeSize, horizontalSpacing, verticalSpacing);
     }
 
     private Dictionary<string, Vector2Int> GetCurrentGrid()
@@ -1310,5 +1301,23 @@ public class SkillTreePanelUI : MonoBehaviour
     {
         for (int i = parent.childCount - 1; i >= 0; i--)
             UnityEngine.Object.Destroy(parent.GetChild(i).gameObject);
+    }
+}
+
+public static class SkillTreeLayoutUtility
+{
+    private const float DefaultColumns = 5f;
+    private const float DefaultRows = 7f;
+
+    public static Vector2 GridToLocal(Vector2Int grid, Vector2 nodeSize, float horizontalSpacing, float verticalSpacing)
+    {
+        float cellWidth = nodeSize.x + horizontalSpacing;
+        float cellHeight = nodeSize.y + verticalSpacing;
+        float totalWidth = DefaultColumns * cellWidth;
+        float totalHeight = DefaultRows * cellHeight;
+
+        float x = grid.x * cellWidth - totalWidth * 0.5f + cellWidth * 0.5f;
+        float y = -grid.y * cellHeight + totalHeight * 0.5f - cellHeight * 0.5f;
+        return new Vector2(x, y);
     }
 }

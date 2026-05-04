@@ -706,11 +706,7 @@ public class AxisProgressionManager : MonoBehaviour
 
     private bool HasAnyUnlockedWithPrefix(string prefix)
     {
-        foreach (var id in _unlockedNodeIds)
-        {
-            if (id.Contains(prefix)) return true;
-        }
-        return false;
+        return AxisProgressionRuleUtility.HasAnyUnlockedWithPrefix(_unlockedNodeIds, prefix);
     }
 
     /// <summary>Bu node'u ve bu node'a bağımlı tüm açık node'ları kapatır (cascade).</summary>
@@ -1390,5 +1386,22 @@ internal readonly struct ExclusiveRouteRule
         this.ownPrefix = ownPrefix;
         this.opposingPrefix = opposingPrefix;
         this.reason = reason;
+    }
+}
+
+public static class AxisProgressionRuleUtility
+{
+    public static bool HasAnyUnlockedWithPrefix(IEnumerable<string> unlockedNodeIds, string prefix)
+    {
+        if (unlockedNodeIds == null || string.IsNullOrEmpty(prefix))
+            return false;
+
+        foreach (string id in unlockedNodeIds)
+        {
+            if (!string.IsNullOrEmpty(id) && id.Contains(prefix))
+                return true;
+        }
+
+        return false;
     }
 }
