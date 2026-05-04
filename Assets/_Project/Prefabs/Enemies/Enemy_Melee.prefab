@@ -590,6 +590,12 @@ MonoBehaviour:
     windupTime: 0.35
     activeFrames: 0.18
     comboStepGap: 0.12
+  attackTiming:
+    hitOpenNormalizedTime: 0.42
+    hitCloseNormalizedTime: 0.66
+    minimumHitOpenDelay: 0.04
+    minimumActiveDuration: 0.05
+    attackStatePadding: 0.02
 --- !u!114 &8988460415301037389
 MonoBehaviour:
   m_ObjectHideFlags: 0
