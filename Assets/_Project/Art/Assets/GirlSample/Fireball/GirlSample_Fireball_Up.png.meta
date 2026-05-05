@@ -1,0 +1,715 @@
+fileFormatVersion: 2
+guid: aa29f21235f7995469824d304c05f292
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7797693611798265073
+    second: GirlSample_Fireball_Up_0
+  - first:
+      213: -7277685378327825256
+    second: GirlSample_Fireball_Up_1
+  - first:
+      213: -6814191526932896681
+    second: GirlSample_Fireball_Up_2
+  - first:
+      213: 5090796314849043214
+    second: GirlSample_Fireball_Up_3
+  - first:
+      213: 1441095207610878571
+    second: GirlSample_Fireball_Up_4
+  - first:
+      213: -2056380332667680245
+    second: GirlSample_Fireball_Up_5
+  - first:
+      213: 3445786167749876894
+    second: GirlSample_Fireball_Up_6
+  - first:
+      213: -7598682163298808960
+    second: GirlSample_Fireball_Up_7
+  - first:
+      213: -7566191089956925855
+    second: GirlSample_Fireball_Up_8
+  - first:
+      213: -434024095094622951
+    second: GirlSample_Fireball_Up_9
+  - first:
+      213: 9190954064637974307
+    second: GirlSample_Fireball_Up_10
+  - first:
+      213: 7618459522803644914
+    second: GirlSample_Fireball_Up_11
+  - first:
+      213: -1214788788612665584
+    second: GirlSample_Fireball_Up_12
+  - first:
+      213: 6786657236340348838
+    second: GirlSample_Fireball_Up_13
+  - first:
+      213: 9124432780630259465
+    second: GirlSample_Fireball_Up_14
+  - first:
+      213: 5631407797794755158
+    second: GirlSample_Fireball_Up_15
+  - first:
+      213: 6106925857254117975
+    second: GirlSample_Fireball_Up_16
+  - first:
+      213: 5991600177800429787
+    second: GirlSample_Fireball_Up_17
+  - first:
+      213: -6853709814935167293
+    second: GirlSample_Fireball_Up_18
+  - first:
+      213: -6996625936315117014
+    second: GirlSample_Fireball_Up_19
+  - first:
+      213: 1633444888151989751
+    second: GirlSample_Fireball_Up_20
+  - first:
+      213: -6601153741751498575
+    second: GirlSample_Fireball_Up_21
+  - first:
+      213: 2290382230172512687
+    second: GirlSample_Fireball_Up_22
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_0
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 1371
+        width: 35
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fc7196a609f63c60800000000000000
+      internalID: 7797693611798265073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_1
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 1371
+        width: 36
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89437bd05b7700b90800000000000000
+      internalID: -7277685378327825256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_2
+      rect:
+        serializedVersion: 2
+        x: 626
+        y: 1371
+        width: 36
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75420bdc8e02f61a0800000000000000
+      internalID: -6814191526932896681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_3
+      rect:
+        serializedVersion: 2
+        x: 881
+        y: 1371
+        width: 37
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e03e172b64426a640800000000000000
+      internalID: 5090796314849043214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_4
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 1115
+        width: 36
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6a0a21c47ccff310800000000000000
+      internalID: 1441095207610878571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_5
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 1115
+        width: 38
+        height: 115
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0a4e3c8bf44673e0800000000000000
+      internalID: -2056380332667680245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_6
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 1115
+        width: 37
+        height: 113
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9c9fa45344e1df20800000000000000
+      internalID: 3445786167749876894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_7
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 1115
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08b4a7ff4de0c8690800000000000000
+      internalID: -7598682163298808960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_8
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 859
+        width: 45
+        height: 108
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16e44648a4d7ff690800000000000000
+      internalID: -7566191089956925855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_9
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 859
+        width: 49
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 915bce392690af9f0800000000000000
+      internalID: -434024095094622951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_10
+      rect:
+        serializedVersion: 2
+        x: 613
+        y: 859
+        width: 50
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 327dda9a604dc8f70800000000000000
+      internalID: 9190954064637974307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_11
+      rect:
+        serializedVersion: 2
+        x: 870
+        y: 859
+        width: 53
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f9376852943ab960800000000000000
+      internalID: 7618459522803644914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_12
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 603
+        width: 49
+        height: 107
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01f6d917804342fe0800000000000000
+      internalID: -1214788788612665584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_13
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 604
+        width: 48
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a796689ccc0f2e50800000000000000
+      internalID: 6786657236340348838
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_14
+      rect:
+        serializedVersion: 2
+        x: 620
+        y: 605
+        width: 48
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 907756a454f70ae70800000000000000
+      internalID: 9124432780630259465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_15
+      rect:
+        serializedVersion: 2
+        x: 877
+        y: 606
+        width: 45
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 652dbec3e87c62e40800000000000000
+      internalID: 5631407797794755158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_16
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 349
+        width: 42
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 752974716b820c450800000000000000
+      internalID: 6106925857254117975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_17
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 349
+        width: 42
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd046f9ed90762350800000000000000
+      internalID: 5991600177800429787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_18
+      rect:
+        serializedVersion: 2
+        x: 622
+        y: 349
+        width: 42
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ce5e2f5c3bb2e0a0800000000000000
+      internalID: -6853709814935167293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_19
+      rect:
+        serializedVersion: 2
+        x: 879
+        y: 349
+        width: 43
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2217a7d7cdf6ee90800000000000000
+      internalID: -6996625936315117014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_20
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 92
+        width: 42
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fd1a7ea8792ba610800000000000000
+      internalID: 1633444888151989751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_21
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 92
+        width: 38
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b8492375adf364a0800000000000000
+      internalID: -6601153741751498575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Fireball_Up_22
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 91
+        width: 36
+        height: 118
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa1bc4dd08219cf10800000000000000
+      internalID: 2290382230172512687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GirlSample_Fireball_Up_0: 7797693611798265073
+      GirlSample_Fireball_Up_1: -7277685378327825256
+      GirlSample_Fireball_Up_10: 9190954064637974307
+      GirlSample_Fireball_Up_11: 7618459522803644914
+      GirlSample_Fireball_Up_12: -1214788788612665584
+      GirlSample_Fireball_Up_13: 6786657236340348838
+      GirlSample_Fireball_Up_14: 9124432780630259465
+      GirlSample_Fireball_Up_15: 5631407797794755158
+      GirlSample_Fireball_Up_16: 6106925857254117975
+      GirlSample_Fireball_Up_17: 5991600177800429787
+      GirlSample_Fireball_Up_18: -6853709814935167293
+      GirlSample_Fireball_Up_19: -6996625936315117014
+      GirlSample_Fireball_Up_2: -6814191526932896681
+      GirlSample_Fireball_Up_20: 1633444888151989751
+      GirlSample_Fireball_Up_21: -6601153741751498575
+      GirlSample_Fireball_Up_22: 2290382230172512687
+      GirlSample_Fireball_Up_3: 5090796314849043214
+      GirlSample_Fireball_Up_4: 1441095207610878571
+      GirlSample_Fireball_Up_5: -2056380332667680245
+      GirlSample_Fireball_Up_6: 3445786167749876894
+      GirlSample_Fireball_Up_7: -7598682163298808960
+      GirlSample_Fireball_Up_8: -7566191089956925855
+      GirlSample_Fireball_Up_9: -434024095094622951
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

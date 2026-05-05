@@ -1,0 +1,819 @@
+fileFormatVersion: 2
+guid: 31e6754b57e568a42881fd75cdb8fad8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4846517771991835810
+    second: GirlSample_Death_Down_0
+  - first:
+      213: 2002944264877306576
+    second: GirlSample_Death_Down_1
+  - first:
+      213: 8946595552728824663
+    second: GirlSample_Death_Down_2
+  - first:
+      213: -3725088980825216224
+    second: GirlSample_Death_Down_3
+  - first:
+      213: -7143134933476384538
+    second: GirlSample_Death_Down_4
+  - first:
+      213: -8036024963377089375
+    second: GirlSample_Death_Down_5
+  - first:
+      213: 6416541670853489896
+    second: GirlSample_Death_Down_6
+  - first:
+      213: 5949972648902054735
+    second: GirlSample_Death_Down_7
+  - first:
+      213: 4527311631045696906
+    second: GirlSample_Death_Down_8
+  - first:
+      213: -3009686298298938073
+    second: GirlSample_Death_Down_9
+  - first:
+      213: -3393320516443354127
+    second: GirlSample_Death_Down_10
+  - first:
+      213: -5359926913314657091
+    second: GirlSample_Death_Down_11
+  - first:
+      213: 3852019152820822711
+    second: GirlSample_Death_Down_12
+  - first:
+      213: -8842475115809604525
+    second: GirlSample_Death_Down_13
+  - first:
+      213: -2261166117905835737
+    second: GirlSample_Death_Down_14
+  - first:
+      213: 1560930794584313372
+    second: GirlSample_Death_Down_15
+  - first:
+      213: 8218516060493349927
+    second: GirlSample_Death_Down_16
+  - first:
+      213: -1509267265423257927
+    second: GirlSample_Death_Down_17
+  - first:
+      213: -6771257372158907176
+    second: GirlSample_Death_Down_18
+  - first:
+      213: 9181522925861840706
+    second: GirlSample_Death_Down_19
+  - first:
+      213: -8152951004038509711
+    second: GirlSample_Death_Down_20
+  - first:
+      213: -4587341962963825899
+    second: GirlSample_Death_Down_21
+  - first:
+      213: -805915366952510122
+    second: GirlSample_Death_Down_22
+  - first:
+      213: -3477443998378143366
+    second: GirlSample_Death_Down_23
+  - first:
+      213: 6708948392712219682
+    second: GirlSample_Death_Down_24
+  - first:
+      213: 1906560846587559409
+    second: GirlSample_Death_Down_25
+  - first:
+      213: 4076640196751196112
+    second: GirlSample_Death_Down_26
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_0
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 1647
+        width: 44
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a4e0355c3a424340800000000000000
+      internalID: 4846517771991835810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_1
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 1647
+        width: 44
+        height: 112
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d2fae46233ebcb10800000000000000
+      internalID: 2002944264877306576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_2
+      rect:
+        serializedVersion: 2
+        x: 606
+        y: 1651
+        width: 51
+        height: 100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75bbd7d0141b82c70800000000000000
+      internalID: 8946595552728824663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_3
+      rect:
+        serializedVersion: 2
+        x: 861
+        y: 1655
+        width: 53
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02be03dee43dd4cc0800000000000000
+      internalID: -3725088980825216224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_4
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 1399
+        width: 47
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e0e47bbf9c7edc90800000000000000
+      internalID: -7143134933476384538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_5
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 1399
+        width: 47
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a4bcbb5fdd4a7090800000000000000
+      internalID: -8036024963377089375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_6
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 1399
+        width: 47
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e4b6b147a22c0950800000000000000
+      internalID: 6416541670853489896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_7
+      rect:
+        serializedVersion: 2
+        x: 867
+        y: 1399
+        width: 50
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43d811999c829250800000000000000
+      internalID: 5949972648902054735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_8
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 1143
+        width: 51
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8d19f311fd34de30800000000000000
+      internalID: 4527311631045696906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_9
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 1143
+        width: 50
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72d0888f1427b36d0800000000000000
+      internalID: -3009686298298938073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_10
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 1143
+        width: 49
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fb495808f088e0d0800000000000000
+      internalID: -3393320516443354127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_11
+      rect:
+        serializedVersion: 2
+        x: 867
+        y: 1143
+        width: 49
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbce2d5ded6bd95b0800000000000000
+      internalID: -5359926913314657091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_12
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 881
+        width: 49
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b2e2e7b20f157530800000000000000
+      internalID: 3852019152820822711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_13
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 878
+        width: 45
+        height: 88
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35cffea4bb7394580800000000000000
+      internalID: -8842475115809604525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_14
+      rect:
+        serializedVersion: 2
+        x: 613
+        y: 876
+        width: 45
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 729d21c5569be90e0800000000000000
+      internalID: -2261166117905835737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_15
+      rect:
+        serializedVersion: 2
+        x: 870
+        y: 876
+        width: 45
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1e8a2a994a89a510800000000000000
+      internalID: 1560930794584313372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_16
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 620
+        width: 48
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7248c8e30d80e0270800000000000000
+      internalID: 8218516060493349927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_17
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 620
+        width: 48
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9be42552b610e0be0800000000000000
+      internalID: -1509267265423257927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_18
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 620
+        width: 48
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dc29b1bb49a702a0800000000000000
+      internalID: -6771257372158907176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_19
+      rect:
+        serializedVersion: 2
+        x: 866
+        y: 620
+        width: 48
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 247a91d84725b6f70800000000000000
+      internalID: 9181522925861840706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_20
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 363
+        width: 51
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17bce1d0246eade80800000000000000
+      internalID: -8152951004038509711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_21
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 363
+        width: 56
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51b4c4a1acc7650c0800000000000000
+      internalID: -4587341962963825899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_22
+      rect:
+        serializedVersion: 2
+        x: 591
+        y: 350
+        width: 75
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65d54c16e30d0d4f0800000000000000
+      internalID: -805915366952510122
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_23
+      rect:
+        serializedVersion: 2
+        x: 842
+        y: 327
+        width: 86
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a715b569b13adbfc0800000000000000
+      internalID: -3477443998378143366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_24
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 70
+        width: 88
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22c2a048409fa1d50800000000000000
+      internalID: 6708948392712219682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_25
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 66
+        width: 89
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fdf4831df6757a10800000000000000
+      internalID: 1906560846587559409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Death_Down_26
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 64
+        width: 90
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dffe64f8a2239830800000000000000
+      internalID: 4076640196751196112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GirlSample_Death_Down_0: 4846517771991835810
+      GirlSample_Death_Down_1: 2002944264877306576
+      GirlSample_Death_Down_10: -3393320516443354127
+      GirlSample_Death_Down_11: -5359926913314657091
+      GirlSample_Death_Down_12: 3852019152820822711
+      GirlSample_Death_Down_13: -8842475115809604525
+      GirlSample_Death_Down_14: -2261166117905835737
+      GirlSample_Death_Down_15: 1560930794584313372
+      GirlSample_Death_Down_16: 8218516060493349927
+      GirlSample_Death_Down_17: -1509267265423257927
+      GirlSample_Death_Down_18: -6771257372158907176
+      GirlSample_Death_Down_19: 9181522925861840706
+      GirlSample_Death_Down_2: 8946595552728824663
+      GirlSample_Death_Down_20: -8152951004038509711
+      GirlSample_Death_Down_21: -4587341962963825899
+      GirlSample_Death_Down_22: -805915366952510122
+      GirlSample_Death_Down_23: -3477443998378143366
+      GirlSample_Death_Down_24: 6708948392712219682
+      GirlSample_Death_Down_25: 1906560846587559409
+      GirlSample_Death_Down_26: 4076640196751196112
+      GirlSample_Death_Down_3: -3725088980825216224
+      GirlSample_Death_Down_4: -7143134933476384538
+      GirlSample_Death_Down_5: -8036024963377089375
+      GirlSample_Death_Down_6: 6416541670853489896
+      GirlSample_Death_Down_7: 5949972648902054735
+      GirlSample_Death_Down_8: 4527311631045696906
+      GirlSample_Death_Down_9: -3009686298298938073
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

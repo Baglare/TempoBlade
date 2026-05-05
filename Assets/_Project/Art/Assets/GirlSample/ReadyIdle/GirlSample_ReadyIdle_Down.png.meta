@@ -1,0 +1,481 @@
+fileFormatVersion: 2
+guid: a3bbaa8647e924b4cb0a1cdd739f8587
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -902169942571841260
+    second: GirlSample_ReadyIdle_Down_0
+  - first:
+      213: 7920791763863721979
+    second: GirlSample_ReadyIdle_Down_1
+  - first:
+      213: -678687610450788983
+    second: GirlSample_ReadyIdle_Down_2
+  - first:
+      213: 1042873312855545714
+    second: GirlSample_ReadyIdle_Down_3
+  - first:
+      213: 1340694145492615595
+    second: GirlSample_ReadyIdle_Down_4
+  - first:
+      213: -5903805811159583724
+    second: GirlSample_ReadyIdle_Down_5
+  - first:
+      213: 223495206130770778
+    second: GirlSample_ReadyIdle_Down_6
+  - first:
+      213: 5524207753634532718
+    second: GirlSample_ReadyIdle_Down_7
+  - first:
+      213: -1402502352947023486
+    second: GirlSample_ReadyIdle_Down_8
+  - first:
+      213: 1311401664912452290
+    second: GirlSample_ReadyIdle_Down_9
+  - first:
+      213: 4856625281771641678
+    second: GirlSample_ReadyIdle_Down_10
+  - first:
+      213: 6407115425710507901
+    second: GirlSample_ReadyIdle_Down_11
+  - first:
+      213: 545816630306483330
+    second: GirlSample_ReadyIdle_Down_12
+  - first:
+      213: 5729689211211750282
+    second: GirlSample_ReadyIdle_Down_13
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_0
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 856
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41988f59739da73f0800000000000000
+      internalID: -902169942571841260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_1
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 856
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf7dfe0a42e4ced60800000000000000
+      internalID: 7920791763863721979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_2
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 856
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98d3f91d631d496f0800000000000000
+      internalID: -678687610450788983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_3
+      rect:
+        serializedVersion: 2
+        x: 875
+        y: 856
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2775d7ea0c7097e00800000000000000
+      internalID: 1042873312855545714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_4
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 600
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba18886d83a1b9210800000000000000
+      internalID: 1340694145492615595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_5
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 600
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41432faf4e7711ea0800000000000000
+      internalID: -5903805811159583724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_6
+      rect:
+        serializedVersion: 2
+        x: 620
+        y: 600
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a536d62b4b30a1300800000000000000
+      internalID: 223495206130770778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_7
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 600
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6d48d4feade9ac40800000000000000
+      internalID: 5524207753634532718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_8
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 344
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28171ff6a8f498ce0800000000000000
+      internalID: -1402502352947023486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_9
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 344
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ca66fabdd8033210800000000000000
+      internalID: 1311401664912452290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_10
+      rect:
+        serializedVersion: 2
+        x: 620
+        y: 344
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4b1e2756f2366340800000000000000
+      internalID: 4856625281771641678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_11
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 344
+        width: 43
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7786688885aae850800000000000000
+      internalID: 6407115425710507901
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_12
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 88
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28c2be95551239700800000000000000
+      internalID: 545816630306483330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_ReadyIdle_Down_13
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 88
+        width: 44
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8b1aabfaf1f38f40800000000000000
+      internalID: 5729689211211750282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GirlSample_ReadyIdle_Down_0: -902169942571841260
+      GirlSample_ReadyIdle_Down_1: 7920791763863721979
+      GirlSample_ReadyIdle_Down_10: 4856625281771641678
+      GirlSample_ReadyIdle_Down_11: 6407115425710507901
+      GirlSample_ReadyIdle_Down_12: 545816630306483330
+      GirlSample_ReadyIdle_Down_13: 5729689211211750282
+      GirlSample_ReadyIdle_Down_2: -678687610450788983
+      GirlSample_ReadyIdle_Down_3: 1042873312855545714
+      GirlSample_ReadyIdle_Down_4: 1340694145492615595
+      GirlSample_ReadyIdle_Down_5: -5903805811159583724
+      GirlSample_ReadyIdle_Down_6: 223495206130770778
+      GirlSample_ReadyIdle_Down_7: 5524207753634532718
+      GirlSample_ReadyIdle_Down_8: -1402502352947023486
+      GirlSample_ReadyIdle_Down_9: 1311401664912452290
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

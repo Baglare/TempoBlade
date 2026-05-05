@@ -1,0 +1,377 @@
+fileFormatVersion: 2
+guid: 6a4ed93bc3339d04c936bd2ba818387d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -17401612537326895
+    second: GirlSample_Damaged_UpLeft_0
+  - first:
+      213: 4519021611936438093
+    second: GirlSample_Damaged_UpLeft_1
+  - first:
+      213: -3321053460307868682
+    second: GirlSample_Damaged_UpLeft_2
+  - first:
+      213: -74419951685319752
+    second: GirlSample_Damaged_UpLeft_3
+  - first:
+      213: -5750415405854021988
+    second: GirlSample_Damaged_UpLeft_4
+  - first:
+      213: -2535049399194114561
+    second: GirlSample_Damaged_UpLeft_5
+  - first:
+      213: -6205972240555629827
+    second: GirlSample_Damaged_UpLeft_6
+  - first:
+      213: 4137903508849958241
+    second: GirlSample_Damaged_UpLeft_7
+  - first:
+      213: 9058634588993667058
+    second: GirlSample_Damaged_UpLeft_8
+  - first:
+      213: -2743564374619534465
+    second: GirlSample_Damaged_UpLeft_9
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_0
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 635
+        width: 51
+        height: 109
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d2913a535d22cff0800000000000000
+      internalID: -17401612537326895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_1
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 634
+        width: 47
+        height: 101
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d47d8c7963ac6be30800000000000000
+      internalID: 4519021611936438093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_2
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 635
+        width: 60
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f3844a397f39e1d0800000000000000
+      internalID: -3321053460307868682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_3
+      rect:
+        serializedVersion: 2
+        x: 873
+        y: 635
+        width: 69
+        height: 85
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b3489fb27b97fef0800000000000000
+      internalID: -74419951685319752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_4
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 379
+        width: 66
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c962327c7ab6230b0800000000000000
+      internalID: -5750415405854021988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_5
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 378
+        width: 53
+        height: 103
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff5a7f0b002b1dcd0800000000000000
+      internalID: -2535049399194114561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_6
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 378
+        width: 46
+        height: 105
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df22fbbb025ffd9a0800000000000000
+      internalID: -6205972240555629827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_7
+      rect:
+        serializedVersion: 2
+        x: 874
+        y: 378
+        width: 47
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16d18d75159cc6930800000000000000
+      internalID: 4137903508849958241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_8
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 123
+        width: 49
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ffb80bf92cb6bd70800000000000000
+      internalID: 9058634588993667058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GirlSample_Damaged_UpLeft_9
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 123
+        width: 50
+        height: 110
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7bc260ccb6ece9d0800000000000000
+      internalID: -2743564374619534465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GirlSample_Damaged_UpLeft_0: -17401612537326895
+      GirlSample_Damaged_UpLeft_1: 4519021611936438093
+      GirlSample_Damaged_UpLeft_2: -3321053460307868682
+      GirlSample_Damaged_UpLeft_3: -74419951685319752
+      GirlSample_Damaged_UpLeft_4: -5750415405854021988
+      GirlSample_Damaged_UpLeft_5: -2535049399194114561
+      GirlSample_Damaged_UpLeft_6: -6205972240555629827
+      GirlSample_Damaged_UpLeft_7: 4137903508849958241
+      GirlSample_Damaged_UpLeft_8: 9058634588993667058
+      GirlSample_Damaged_UpLeft_9: -2743564374619534465
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

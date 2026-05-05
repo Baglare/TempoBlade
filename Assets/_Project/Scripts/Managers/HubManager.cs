@@ -37,6 +37,7 @@ public class HubManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         ProgressionWalletUI.EnsureInstance();
+        HubRuntimeWallBuilder.EnsureWalls(transform);
 
         // Hub'a girince oyun durumunu guncelle
         if (GameManager.Instance != null)

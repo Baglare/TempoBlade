@@ -25,6 +25,8 @@ public class TempoVisualSkin : MonoBehaviour
     private Coroutine tintCoroutine;
     private Coroutine punchCoroutine;
     private RuntimeAnimatorController originalController;
+    private Vector3 baseScale;
+    private bool baseScaleInitialized;
 
     private void Start()
     {
@@ -33,6 +35,9 @@ public class TempoVisualSkin : MonoBehaviour
 
         if (animator != null)
             originalController = animator.runtimeAnimatorController;
+
+        baseScale = transform.localScale;
+        baseScaleInitialized = true;
 
         if (TempoManager.Instance != null)
         {
@@ -70,6 +75,7 @@ public class TempoVisualSkin : MonoBehaviour
         if (scalePunchAmount > 0f)
         {
             if (punchCoroutine != null) StopCoroutine(punchCoroutine);
+            transform.localScale = GetStableBaseScale();
             punchCoroutine = StartCoroutine(ScalePunch());
         }
     }
@@ -87,6 +93,8 @@ public class TempoVisualSkin : MonoBehaviour
 
         if (sr != null)
             sr.color = visual.playerTint;
+
+        transform.localScale = GetStableBaseScale();
     }
 
     private IEnumerator LerpTint(Color targetColor)
@@ -105,7 +113,7 @@ public class TempoVisualSkin : MonoBehaviour
 
     private IEnumerator ScalePunch()
     {
-        Vector3 originalScale = transform.localScale;
+        Vector3 originalScale = GetStableBaseScale();
         Vector3 punchedScale = originalScale * (1f + scalePunchAmount);
 
         // Büyü (0.08s)
@@ -126,5 +134,20 @@ public class TempoVisualSkin : MonoBehaviour
             yield return null;
         }
         transform.localScale = originalScale;
+    }
+
+    private Vector3 GetStableBaseScale()
+    {
+        if (!baseScaleInitialized)
+        {
+            baseScale = transform.localScale;
+            baseScaleInitialized = true;
+        }
+
+        float currentSign = Mathf.Sign(transform.localScale.x);
+        if (Mathf.Approximately(currentSign, 0f))
+            currentSign = Mathf.Sign(baseScale.x == 0f ? 1f : baseScale.x);
+
+        return new Vector3(Mathf.Abs(baseScale.x) * currentSign, baseScale.y, baseScale.z);
     }
 }

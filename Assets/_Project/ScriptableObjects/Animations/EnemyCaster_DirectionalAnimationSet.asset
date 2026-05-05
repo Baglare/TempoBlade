@@ -1,0 +1,170 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3d901b2e3c84be5b4ef4b88a91d6342, type: 3}
+  m_Name: EnemyCaster_DirectionalAnimationSet
+  m_EditorClassIdentifier: Assembly-CSharp::DirectionalAnimationSetSO
+  characterId: EnemyCaster
+  displayName: Enemy Caster
+  supportsEightDirections: 1
+  defaultFacingMode: 1
+  defaultFacing: 0
+  downRightFallback: 2
+  upRightFallback: 2
+  upLeftFallback: 6
+  downLeftFallback: 6
+  defaultClip: {fileID: 7400000, guid: c018b713a37e4384d87c01f150dc285e, type: 2}
+  stateFallbacks:
+  - state: 3
+    fallbackState: 1
+  - state: 4
+    fallbackState: 2
+  - state: 2
+    fallbackState: 0
+  - state: 5
+    fallbackState: 0
+  - state: 7
+    fallbackState: 2
+  - state: 8
+    fallbackState: 1
+  - state: 9
+    fallbackState: 10
+  - state: 10
+    fallbackState: 5
+  - state: 11
+    fallbackState: 2
+  - state: 12
+    fallbackState: 0
+  directionFallbacks: []
+  useSpriteFlip: 0
+  leftRightClipsAreSeparate: 1
+  flipWhenFacingLeft: 0
+  clips:
+  - state: 0
+    direction: 0
+    clip: {fileID: 7400000, guid: c018b713a37e4384d87c01f150dc285e, type: 2}
+  - state: 0
+    direction: 7
+    clip: {fileID: 7400000, guid: 52bd6fcb55326314a8affaa7a1445fc0, type: 2}
+  - state: 0
+    direction: 1
+    clip: {fileID: 7400000, guid: 890953557153c884aa5007d0d1913504, type: 2}
+  - state: 0
+    direction: 6
+    clip: {fileID: 7400000, guid: e7b245926fb613a4489292c5012d58bb, type: 2}
+  - state: 0
+    direction: 2
+    clip: {fileID: 7400000, guid: a36bdcca7f59865408845099876407c7, type: 2}
+  - state: 0
+    direction: 4
+    clip: {fileID: 7400000, guid: f3de22812987fc849a4526804b57efa5, type: 2}
+  - state: 0
+    direction: 5
+    clip: {fileID: 7400000, guid: ddf658aa089cf1042b3124f0ce1b2821, type: 2}
+  - state: 0
+    direction: 3
+    clip: {fileID: 7400000, guid: 7922d4928eec66b4d947b13069913d2d, type: 2}
+  - state: 1
+    direction: 0
+    clip: {fileID: 7400000, guid: 53e1b49a8d502584eaf3ba75ae1ef809, type: 2}
+  - state: 1
+    direction: 7
+    clip: {fileID: 7400000, guid: 3b7fa5f45009c1149b8b972b7cf76b93, type: 2}
+  - state: 1
+    direction: 1
+    clip: {fileID: 7400000, guid: bac0afa905b875e4b88a2d90ee3006d8, type: 2}
+  - state: 1
+    direction: 6
+    clip: {fileID: 7400000, guid: 07eb1606d13b6c84c8ac730f50f74165, type: 2}
+  - state: 1
+    direction: 2
+    clip: {fileID: 7400000, guid: 6d686db5b151d5e42aa9b26673755d14, type: 2}
+  - state: 1
+    direction: 4
+    clip: {fileID: 7400000, guid: f4a2aa81f4a32794c88d16a55c87f32f, type: 2}
+  - state: 1
+    direction: 5
+    clip: {fileID: 7400000, guid: 71c114fde8f2e334db9c4639c72f72b2, type: 2}
+  - state: 1
+    direction: 3
+    clip: {fileID: 7400000, guid: efe3434816f16ef45a044c1648c92ffc, type: 2}
+  - state: 7
+    direction: 0
+    clip: {fileID: 7400000, guid: 945ea7a589a83104e96b6e2e47a4391a, type: 2}
+  - state: 7
+    direction: 7
+    clip: {fileID: 7400000, guid: 0a0cfbcabb4f75a4791a8df2e3a7add0, type: 2}
+  - state: 7
+    direction: 1
+    clip: {fileID: 7400000, guid: 9eeddee4d3728de49b928573d1cec09e, type: 2}
+  - state: 7
+    direction: 6
+    clip: {fileID: 7400000, guid: 82d04c4e6d0375a4086fc814f5185b96, type: 2}
+  - state: 7
+    direction: 2
+    clip: {fileID: 7400000, guid: b5cbd60eb11e0eb4d98a773fdb7e1595, type: 2}
+  - state: 7
+    direction: 4
+    clip: {fileID: 7400000, guid: a790112eedac9da49bb397cfa2b79e71, type: 2}
+  - state: 7
+    direction: 5
+    clip: {fileID: 7400000, guid: 9525ffa478a958248bda060e9f4c5e68, type: 2}
+  - state: 7
+    direction: 3
+    clip: {fileID: 7400000, guid: 51c68531464c0ae4a98272ff0a9abdd2, type: 2}
+  - state: 5
+    direction: 0
+    clip: {fileID: 7400000, guid: 8e3cb7e698602e946bd749136396a118, type: 2}
+  - state: 5
+    direction: 7
+    clip: {fileID: 7400000, guid: ed02bbf8cfe188441be9307f3d32755b, type: 2}
+  - state: 5
+    direction: 1
+    clip: {fileID: 7400000, guid: 884bde7ae0ae7cd40bbd469b6883d237, type: 2}
+  - state: 5
+    direction: 6
+    clip: {fileID: 7400000, guid: d99bdbd6eb609e24dba1147751ad5912, type: 2}
+  - state: 5
+    direction: 2
+    clip: {fileID: 7400000, guid: 354a756b2ac8cca4590e09392a43c902, type: 2}
+  - state: 5
+    direction: 4
+    clip: {fileID: 7400000, guid: a0a63c37386d34547b11cb11947f755e, type: 2}
+  - state: 5
+    direction: 5
+    clip: {fileID: 7400000, guid: f107835a4ccb4e74aa14e7b60e6da265, type: 2}
+  - state: 5
+    direction: 3
+    clip: {fileID: 7400000, guid: 92e8fee5ad3c6944e9880862c11c0dbf, type: 2}
+  - state: 6
+    direction: 0
+    clip: {fileID: 7400000, guid: 2e00c14ab554fbf46bea88f7355b29ae, type: 2}
+  - state: 6
+    direction: 7
+    clip: {fileID: 7400000, guid: a9307950a1d2ae647b120a839261508c, type: 2}
+  - state: 6
+    direction: 1
+    clip: {fileID: 7400000, guid: 47075b3318d49d047be4c2a307b21add, type: 2}
+  - state: 6
+    direction: 6
+    clip: {fileID: 7400000, guid: a03f99ba09f3a7e4ca76b211b0e5b2dd, type: 2}
+  - state: 6
+    direction: 2
+    clip: {fileID: 7400000, guid: cf63a8b9d6e9403438740ec50efbe4a3, type: 2}
+  - state: 6
+    direction: 4
+    clip: {fileID: 7400000, guid: 0af6ca6ed7512134d810fdf9d6bcd2ff, type: 2}
+  - state: 6
+    direction: 5
+    clip: {fileID: 7400000, guid: b782c828955da4b4b9c45989fa261a97, type: 2}
+  - state: 6
+    direction: 3
+    clip: {fileID: 7400000, guid: 8ae2201454554e749b54c078dff588c4, type: 2}

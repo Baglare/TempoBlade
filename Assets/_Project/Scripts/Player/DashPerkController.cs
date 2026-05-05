@@ -122,6 +122,7 @@ public class DashPerkController : MonoBehaviour
     public float executeDashEntryRange = 2.0f;
     public float executeInvulnDuration = 0.35f;
     public float executeEntryWindow = 0.20f;
+    public float executeVulnerabilityDuration = 1.0f;
 
     // ═══════════ T2 AVCI: AV DEVRİ ═══════════
     [Header("=== T2 Avcı: Av Devri ===")]
@@ -229,6 +230,8 @@ public class DashPerkController : MonoBehaviour
     // -- Avcı: Kör Nokta --
     private bool _blindSpotTriggered;
     private float _blindSpotBonusTimer;
+    private EnemyBase _executeWindowTarget;
+    private float _executeWindowTimer;
 
     // -- Avcı: Hunt Flow --
     private float _huntFlowCheckTimer;
@@ -494,14 +497,15 @@ public class DashPerkController : MonoBehaviour
         }
 
         // Avcı: Kör Nokta kontrolü
-        if (_hasExecute)
-        {
-            TryExecute();
-        }
-
+        bool blindSpotTriggeredThisDash = false;
         if (_hasBlindSpot)
         {
-            CheckBlindSpot();
+            blindSpotTriggeredThisDash = CheckBlindSpot();
+        }
+
+        if (_hasExecute)
+        {
+            TryExecute(blindSpotTriggeredThisDash);
         }
     }
 
@@ -583,6 +587,16 @@ public class DashPerkController : MonoBehaviour
             {
                 _blindSpotTriggered = false;
                 _blindSpotBonusTimer = 0f;
+            }
+        }
+
+        if (_executeWindowTimer > 0f)
+        {
+            _executeWindowTimer -= dt;
+            if (_executeWindowTimer <= 0f || _executeWindowTarget == null)
+            {
+                _executeWindowTimer = 0f;
+                _executeWindowTarget = null;
             }
         }
 
@@ -1080,6 +1094,8 @@ public class DashPerkController : MonoBehaviour
             _currentHuntTarget.Stun(blindSpotStunDuration);
             _blindSpotTriggered = true;
             _blindSpotBonusTimer = counterWindowDuration;
+            _executeWindowTarget = _currentHuntTarget;
+            _executeWindowTimer = Mathf.Max(0.1f, executeVulnerabilityDuration);
 
             if (DamagePopupManager.Instance != null)
                 DamagePopupManager.Instance.CreateText(
@@ -1115,7 +1131,7 @@ public class DashPerkController : MonoBehaviour
     /// <summary>
     /// İnfaz koşullarını kontrol eder. Dash sırasında çağrılır.
     /// </summary>
-    public bool TryExecute()
+    public bool TryExecute(bool blindSpotTriggeredThisDash = false)
     {
         if (!_hasExecute || _currentHuntTarget == null) return false;
 
@@ -1123,13 +1139,15 @@ public class DashPerkController : MonoBehaviour
             return false;
 
         float dist = Vector2.Distance(transform.position, _currentHuntTarget.transform.position);
-        if (dist > executeDashEntryRange)
+        if (dist > executeDashEntryRange + Mathf.Max(0f, executeEntryWindow))
             return false;
 
         Vector2 targetForward = GetTargetForward(_currentHuntTarget);
         Vector2 toPlayer = ((Vector2)transform.position - (Vector2)_currentHuntTarget.transform.position).normalized;
         float rearAngle = Vector2.Angle(-targetForward, toPlayer);
-        if (rearAngle > executeRearConeAngle * 0.5f)
+        bool hasRearAngle = rearAngle <= executeRearConeAngle * 0.5f;
+        bool hasExecuteWindow = _executeWindowTarget == _currentHuntTarget && _executeWindowTimer > 0f;
+        if (!hasRearAngle && !hasExecuteWindow && !blindSpotTriggeredThisDash)
             return false;
 
         if (_currentHuntTarget.CombatClass == EnemyCombatClass.MiniBoss || _currentHuntTarget.CombatClass == EnemyCombatClass.Boss)
@@ -1156,6 +1174,8 @@ public class DashPerkController : MonoBehaviour
 
             _currentHuntTarget.SetPerkMarker(false, Color.red);
             _currentHuntTarget = null;
+            _executeWindowTarget = null;
+            _executeWindowTimer = 0f;
             return true;
         }
 
@@ -1183,6 +1203,8 @@ public class DashPerkController : MonoBehaviour
             _currentHuntTarget.SetPerkMarker(false, Color.red);
 
         _currentHuntTarget = null;
+        _executeWindowTarget = null;
+        _executeWindowTimer = 0f;
 
         return true;
     }
@@ -1218,6 +1240,8 @@ public class DashPerkController : MonoBehaviour
         }
         _flowMarkedTargets.Clear();
         _currentHuntTarget = null;
+        _executeWindowTarget = null;
+        _executeWindowTimer = 0f;
         _isBlackHoleActive = false;
         _isBurstWindowActive = false;
     }

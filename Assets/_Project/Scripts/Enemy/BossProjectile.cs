@@ -111,7 +111,9 @@ public class BossProjectile : MonoBehaviour, IDeflectable
         if (other.CompareTag("Player") && !hasBeenDeflected)
         {
             ParrySystem parry = other.GetComponent<ParrySystem>();
-            if (parry != null && parry.TryDeflect(transform.position, gameObject))
+            if (ParryIdentityUtility.AllowsParry(gameObject, ParryInteractionType.Projectile) &&
+                parry != null &&
+                parry.TryDeflect(transform.position, gameObject))
             {
                 Deflect(BuildDeflectContext(other.gameObject, other.transform.position));
                 return;

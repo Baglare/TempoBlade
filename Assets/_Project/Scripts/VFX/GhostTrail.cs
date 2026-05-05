@@ -5,8 +5,10 @@ public class GhostTrail : MonoBehaviour
     private SpriteRenderer sr;
     private Color color;
     public float fadeSpeed = 3f;
+    public float maxVisibleLifetime = 0.18f;
 
     public bool isFading = false;
+    private float visibleTimer;
 
     public void Setup(Sprite sprite, Color ghostColor)
     {
@@ -21,11 +23,20 @@ public class GhostTrail : MonoBehaviour
         sr.color = color;
         
         fadeSpeed = 8f; // Cok hizli kaybolsun (Cooldown bitince)
+        visibleTimer = 0f;
+        isFading = false;
     }
 
     private void Update()
     {
-        if (!isFading) return;
+        if (!isFading)
+        {
+            visibleTimer += Time.deltaTime;
+            if (visibleTimer >= maxVisibleLifetime)
+                isFading = true;
+            else
+                return;
+        }
 
         color.a -= fadeSpeed * Time.deltaTime;
         sr.color = color;

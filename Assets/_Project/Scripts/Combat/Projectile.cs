@@ -140,7 +140,10 @@ public class Projectile : MonoBehaviour, IDeflectable
         if (other.CompareTag("Player") && !hasBeenDeflected)
         {
             ParrySystem parry = other.GetComponent<ParrySystem>();
-            if (CanBeDeflected && parry != null && parry.TryDeflect(transform.position, gameObject))
+            if (CanBeDeflected &&
+                ParryIdentityUtility.AllowsParry(gameObject, ParryInteractionType.Projectile) &&
+                parry != null &&
+                parry.TryDeflect(transform.position, gameObject))
             {
                 Deflect(BuildDeflectContext(other.gameObject, other.transform.position));
                 return;

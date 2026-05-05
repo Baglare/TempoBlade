@@ -219,6 +219,9 @@ public class ParrySystem : MonoBehaviour
 
     public bool TryDeflect(Vector2 projectileWorldPos, GameObject sourceObject = null)
     {
+        if (!ParryIdentityUtility.AllowsParry(sourceObject, ParryInteractionType.Projectile))
+            return false;
+
         if (!CanDeflectProjectileAt(projectileWorldPos))
             return false;
 
@@ -228,6 +231,9 @@ public class ParrySystem : MonoBehaviour
 
     public bool TryBlockMelee(Vector2 attackerWorldPos, GameObject sourceObject = null)
     {
+        if (!ParryIdentityUtility.AllowsParry(sourceObject, ParryInteractionType.Melee))
+            return false;
+
         if (!IsParryActive)
             return false;
 
@@ -455,6 +461,9 @@ public class ParrySystem : MonoBehaviour
                 continue;
 
             if (projectile.ObjectOwner == gameObject || projectile.IsDeflected || !projectile.CanBeDeflected)
+                continue;
+
+            if (!ParryIdentityUtility.AllowsParry(hit.gameObject, ParryInteractionType.Projectile))
                 continue;
 
             if (!CanDeflectProjectileAt(hit.transform.position))

@@ -126,6 +126,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnDestroy()
     {
+        ForceFadeActiveTrails();
+
         if (parrySystem != null)
         {
             parrySystem.OnParryResolved -= HandleParryResolved;
@@ -169,12 +171,7 @@ public class PlayerController : MonoBehaviour
             dodgeCooldownTimer -= Time.fixedDeltaTime;
             if (dodgeCooldownTimer <= 0f)
             {
-                // Cooldown bitti, tum hayaletleri sil/fade et
-                foreach (var trail in activeTrails)
-                {
-                    if (trail != null) trail.isFading = true;
-                }
-                activeTrails.Clear(); // Listeyi temizle
+                ForceFadeActiveTrails();
             }
         }
 
@@ -387,6 +384,7 @@ public class PlayerController : MonoBehaviour
     {
         IsInvulnerable = false;
         dodgeCooldownTimer = baseDodgeCooldown * dashCommitmentDodgeCooldownMultiplier * parryCommitmentDodgeCooldownMultiplier;
+        ForceFadeActiveTrails();
 
         rb.linearVelocity = Vector2.zero;
 
@@ -431,13 +429,7 @@ public class PlayerController : MonoBehaviour
             IsInvulnerable    = false;
             rb.linearVelocity = Vector2.zero;
             currentState = HasMoveInput ? PlayerState.Moving : PlayerState.Idle;
-
-            // Dash bitti, trail'leri fade'e al
-            foreach (var trail in activeTrails)
-            {
-                if (trail != null) trail.isFading = true;
-            }
-            activeTrails.Clear();
+            ForceFadeActiveTrails();
         }
     }
 
@@ -467,6 +459,7 @@ public class PlayerController : MonoBehaviour
         externalStaggerTimer = Mathf.Max(externalStaggerTimer, duration);
         externalStaggerVelocity = knockbackVelocity;
         IsInvulnerable = false;
+        ForceFadeActiveTrails();
         currentState = PlayerState.Idle;
         rb.linearVelocity = knockbackVelocity;
     }
@@ -483,6 +476,7 @@ public class PlayerController : MonoBehaviour
         IsInvulnerable = false;
         externalDashTimer = 0f;
         dodgeTimer = 0f;
+        ForceFadeActiveTrails();
         rb.linearVelocity = Vector2.zero;
         currentState = PlayerState.Idle;
     }
@@ -506,12 +500,7 @@ public class PlayerController : MonoBehaviour
         movementLockTimer = float.MaxValue;
         currentState = PlayerState.Idle;
 
-        foreach (var trail in activeTrails)
-        {
-            if (trail != null)
-                trail.isFading = true;
-        }
-        activeTrails.Clear();
+        ForceFadeActiveTrails();
 
         if (rb != null)
         {
@@ -666,5 +655,17 @@ public class PlayerController : MonoBehaviour
     {
         if (amount <= 0f) return;
         dodgeCooldownTimer = Mathf.Max(0f, dodgeCooldownTimer - amount);
+    }
+
+    private void ForceFadeActiveTrails()
+    {
+        for (int i = 0; i < activeTrails.Count; i++)
+        {
+            GhostTrail trail = activeTrails[i];
+            if (trail != null)
+                trail.isFading = true;
+        }
+
+        activeTrails.Clear();
     }
 }
