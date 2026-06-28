@@ -24,6 +24,13 @@ MonoBehaviour:
       eliteProfile: {fileID: 0}
       count: 1
       spawnDelay: 0.1
+    - enemyType: {fileID: 11400000, guid: 67766853c8cd9644d87feb14f5f69192, type: 2}
+      eliteSpawnMode: 0
+      eliteChance: 0.15
+      isElite: 1
+      eliteProfile: {fileID: 0}
+      count: 1
+      spawnDelay: 0.1
   isBossRoom: 0
   encounterType: 1
   difficulty: 1

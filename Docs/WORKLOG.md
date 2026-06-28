@@ -87,3 +87,13 @@
   - `Assets/_Project/Scripts/Core/SimpleArena.cs`
 - **Next step:** Unity Editor üzerinden `Room_xxx` prefablarında SimpleArena bileşenine bir "Wall Sprite" (Örn: Square) atanmalı.
 - **Risks:** Sprite atamalarında resimlerin "Mesh Type" ayarı "Tight" kalırsa Tile işlemi bozulup sündürülebilir. Kullanılacak duvar resimlerinin Mesh Type'ı Inspector'dan `Full Rect` yapılmalıdır.
+
+## 2026-06-28 19:33:50 +03:00
+- **What changed:** Proje geneli baz alınarak kök `README.md` dosyası oluşturuldu. README; Unity sürümü, paketler, sahne akışı, klasör yapısı, ana oyun döngüsü, combat/tempo/enemy/room/hub/save/progression/UI/audio/VFX sistemleri, yeni içerik ekleme adımları ve bilinen dikkat noktalarını içerir.
+- **Files touched:**
+  - `README.md`
+  - `Docs/TASKS.md`
+  - `Docs/DECISIONS.md`
+  - `Docs/WORKLOG.md`
+- **Next step:** README'yi Unity Editor'daki güncel Inspector değerleriyle karşılaştır; özellikle sahne geçiş isimleri ve dodge/parry input action bağlantılarını kontrol et.
+- **Risks:** README statik dokümantasyondur; prefab/sahne Inspector değerleri kod varsayılanlarından farklıysa bazı bilgiler ileride güncellenmelidir.

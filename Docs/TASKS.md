@@ -1,5 +1,15 @@
 # Görevler (TASKS)
 
+## Tamamlanan Güncel Görev
+
+### [x] Proje README dokümantasyonu
+**Açıklama:** Bütün mevcut proje yapısını ve ana sistemleri baz alan kapsamlı kök `README.md` dosyası hazırlanacak.
+**Kabul Kriterleri (Acceptance Criteria):**
+- README, Unity sürümü, paketler, sahneler, klasör yapısı ve ana oyun döngüsünü açıklar.
+- README, combat, tempo, düşman, oda/ödül, hub, save, progression, UI, audio ve VFX sistemlerini projedeki gerçek dosyalara göre özetler.
+- README, projeyi açma/çalıştırma adımlarını ve yeni içerik eklerken bakılacak temel dosyaları adım adım verir.
+- Kod, sahne, prefab veya oynanış davranışı değiştirilmez.
+
 ## Tamamlanan Görevler
 
 ### [x] Silah Başına Kombo Sistemi

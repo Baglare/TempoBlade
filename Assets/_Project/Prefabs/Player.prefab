@@ -1353,6 +1353,7 @@ MonoBehaviour:
   executeDashEntryRange: 2
   executeInvulnDuration: 0.35
   executeEntryWindow: 0.2
+  executeVulnerabilityDuration: 1
   huntKillDamageBonus: 0.01
   huntKillMaxBonus: 0.15
   flowMarkWindow: 1.4
