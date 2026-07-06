@@ -28,6 +28,16 @@
 # Visual Studio cache directory
 .vs/
 
+# Local AI/editor/tooling state
+/.agents/
+/.claude/
+/.codex/
+
+# Local .NET SDK/cache state
+/.dotnet/
+/.dotnet-cli/
+/.dotnet_cli/
+
 # Gradle cache directory
 .gradle/
 
