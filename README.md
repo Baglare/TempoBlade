@@ -2,8 +2,6 @@
 
 TempoBlade, Unity 6 ile geliştirilmiş 2D/top-down aksiyon roguelite prototipidir. Proje; tempo tabanlı güçlenme, yakın dövüş, parry/deflect, oda bazlı encounter akışı, hub, kalıcı ilerleme, silah yükseltme ve data-driven düşman/ödül sistemleri üzerine kuruludur.
 
-Bu README, repodaki mevcut dosya yapısı ve kod üzerinden hazırlanmıştır. Sahne, prefab veya oynanış davranışı değiştirilmemiştir.
-
 ## Proje Bilgileri
 
 - Unity sürümü: `6000.3.1f1`
