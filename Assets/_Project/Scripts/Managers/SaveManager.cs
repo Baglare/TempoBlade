@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Kalici verileri (altin, acik silahlar, yukseltmeler) JSON olarak diske kaydeder ve okur.
-/// DontDestroyOnLoad Singleton. Application.persistentDataPath icerisine "save.json" yazar.
+/// DontDestroyOnLoad Singleton. Belgelerim/TempoBlade/save.json dosyasina yazar.
 /// </summary>
 public class SaveManager : MonoBehaviour
 {

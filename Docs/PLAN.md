@@ -1,11 +1,13 @@
-# Tempo Blade - Proje Planı
+# TempoBlade Plan
 
-## Tamamlanan Hedefler (Son Aşama)
-- Dışarıdan yeni kılıç assetlerinin (Sprite) Unity'ye doğru ayarlarla (PPU, Filter Mode) aktarılması.
-- Yeni kılıçların ScriptableObject (WeaponSO) olarak oluşturulup veritabanına eklenmesi.
-- **Parry Sisteminin İyileştirmesi:** Koni (Arc) Bazlı Radar Taraması ve görsel kalkan uyumsuzluğunun (Yeşil Arc -> Mavi Arc) giderilmesi.
-- **Dinamik Mermi (IDeflectable) Mimarisi:** BossProjectile ve genel Projectile hatalarının çözülerek tek çatı altında (Havada %100 sekmeyi sağlayacak şekilde) birleştirilmesi.
+## Tamamlanan Hedefler
+
+- Yeni kılıç assetleri Unity import ayarlarıyla projeye alındı.
+- Yeni kılıçlar `WeaponSO` verileri ve weapon database akışına bağlandı.
+- Parry sistemi arc bazlı radar taramasıyla güncellendi.
+- Boss ve standart projectile davranışları `IDeflectable` mimarisi altında toplandı.
 
 ## Sıradaki Hedefler
-4. (Gelecek Aşama) Kılıçlara özel kombo komutları veya diğer planlanan özelliklerin inşası.
-5. (Gelecek Aşama) Build versiyonundaki Save sistemi hatasının giderilmesi.
+
+- Kılıçlara özel combo seçeneklerini genişletme.
+- Build sürümünde save sistemi davranışını doğrulama.

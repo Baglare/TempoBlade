@@ -31,10 +31,7 @@ Not: `MainMenuManager` ve `HubManager` içinde bazı sahne adı alanlarının va
 
 ## Build ve Paketler
 
-Projede `Builds` klasörü altında önceki Windows build çıktıları bulunuyor:
-
-- `TempoBlade_v0.1` - `TempoBlade_v0.11` arası build klasörleri
-- `TempoBlade_v0.11.rar`
+Build çıktıları repoda tutulmaz. Paylaşılacak oynanabilir build gerekiyorsa GitHub Releases veya harici dağıtım kanalı üzerinden yayınlanabilir.
 
 Öne çıkan Unity paketleri:
 
@@ -47,7 +44,6 @@ Projede `Builds` klasörü altında önceki Windows build çıktıları bulunuyo
 - `com.unity.timeline`
 - `com.unity.ugui`
 - `com.unity.test-framework`
-- `com.coplaydev.unity-mcp`
 
 ## Klasör Yapısı
 
@@ -124,15 +120,16 @@ Ek sahneler:
 
 ## Kontroller
 
-Input asset içinde doğrulanan varsayılanlar:
+Input asset içindeki temel oynanış kontrolleri:
 
-- Hareket: `WASD` veya ok tuşları
-- Saldırı: Sol fare tuşu veya `Enter`
+- Hareket: `WASD`
+- Saldırı: `Left Mouse`
+- Dodge: `Left Shift`
+- Parry: `Right Mouse`
+- Finisher: `Space`
 - Hub etkileşimi: `E`
 - UI iptal/kapatma: `Escape`
 - UI navigasyon: `WASD`, ok tuşları, gamepad d-pad/stick
-
-Kod tarafında `PlayerController` içinde `OnDodge` ve `OnParry` callback'leri bulunur. Ancak mevcut input action dosyasında `Dodge` ve `Parry` adlı action görünmüyor. Dodge/parry test edilirken Player prefabındaki `PlayerInput` bağlantıları ve input action adları ayrıca kontrol edilmelidir.
 
 ## Ana Sistemler
 
@@ -556,15 +553,13 @@ Mevcut data-driven varlık grupları:
 ## Geliştirme Notları
 
 - Ana oyun kodu için ayrı `.asmdef` dosyası görünmüyor; kodlar varsayılan `Assembly-CSharp` altında derlenir.
-- Unity tarafından üretilen `.sln` ve `.csproj` dosyaları repoda mevcut.
-- `Library`, `obj`, `.vs` gibi Unity/IDE çıktıları geliştirme sırasında değişebilir.
-- `Docs/AI_RULES.md`, çalışma sırasında plan/görev/worklog kaydı bekleyen proje içi kuralları tanımlar.
+- Unity/IDE tarafından lokal üretilebilen `.sln` ve `.csproj` dosyaları ignore edilir.
+- `Library`, `obj`, `.vs`, build çıktıları ve lokal araç klasörleri repoda tutulmaz.
+- AI destekli araçlar geliştirme sırasında yardımcı araç olarak kullanılmıştır; sistem tasarımı, oynanış kararları, Unity entegrasyonu, test ve kabul kriterleri geliştirici tarafından yönetilmiştir.
 - Otomatik edit/play mode test klasörü görünmüyor. Mevcut doğrulama ağırlıklı olarak Unity Play Mode, sahne testi ve manuel kontrol üzerinden yapılmalıdır.
 
 ## Bilinen Dikkat Noktaları
 
-- Git çalışma alanında bu README hazırlanırken `Assets/_Project/Prefabs/Player.prefab` ve `Assets/_Project/ScriptableObjects/Rooms/Room_Test.asset` dosyalarında önceden var olan değişiklikler görünüyordu. README çalışması bu dosyalara dokunmaz.
-- Input asset ve `PlayerController` callback adları dodge/parry için yeniden kontrol edilmelidir.
 - `Docs/PLAN.md` ve `Docs/TASKS.md` içindeki bazı backlog notları kodun mevcut haliyle tamamen güncel olmayabilir; güncel davranış için önce kod ve sahne/prefab ayarları kontrol edilmelidir.
 - Save sistemi `Documents/TempoBlade/save.json` dosyasını kullanır. Build testlerinde eski save verisi davranışı etkileyebilir.
 
@@ -573,7 +568,6 @@ Mevcut data-driven varlık grupları:
 Proje içi dokümanlar:
 
 - `Docs/PLAN.md`: yüksek seviye plan ve sıradaki hedefler
-- `Docs/TASKS.md`: görev listesi ve kabul kriterleri
-- `Docs/WORKLOG.md`: yapılan değişiklik kayıtları
+- `Docs/TASKS.md`: public todo ve roadmap notları
+- `CHANGELOG.md`: public değişiklik günlüğü
 - `Docs/DECISIONS.md`: karar kayıtları
-- `Docs/AI_RULES.md`: AI/ajan çalışma kuralları

@@ -32,6 +32,9 @@
 /.agents/
 /.claude/
 /.codex/
+/Docs/AI_RULES.md
+/Docs/LOCAL_*.md
+UpgradeLog*.htm
 
 # Local .NET SDK/cache state
 /.dotnet/

@@ -274,7 +274,6 @@ public class PlayerCombat : MonoBehaviour, IDamageable, ICombatTarget
         if (isLastStep)
             comboIndex = 0;
 
-        Debug.Log($"[Combo] Adim {firedIndex + 1}/{steps.Length} tetiklendi");
         OnComboChanged?.Invoke(firedIndex + 1, steps.Length);
 
         float effectiveCooldown = Mathf.Max(step.cooldownAfter, stats.attackRate) * stats.recoveryMultiplier;
