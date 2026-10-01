@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# KnowledgeCompiler byte-exact generated contracts
+.ai/** text eol=lf
+AGENTS.md text eol=lf
